@@ -3,27 +3,27 @@ import { Check, Star, Heart } from 'lucide-react';
 
 export default function Membership() {
   const membershipTiers = [
-    { name: 'Fellow', price: '$50', desc: 'For practicing PAs specializing or interested in Addiction Medicine.' },
-    { name: 'Sustaining Member', price: '$75', desc: 'For PAs wishing to provide extra financial support to SAMPA.', highlight: true },
-    { name: 'Associate Member', price: '$40', desc: 'For non-PA healthcare professionals and allies.' },
-    { name: 'Legacy Member', price: '$25', desc: 'For retired PAs remaining active in the community.' },
+    { name: 'Fellow', price: '$50', desc: 'NCCPA certification + AAPA member', highlight: true },
+    { name: 'Sustaining Member', price: '$75', desc: 'NCCPA certification, not an AAPA member' },
+    { name: 'Associate Member', price: '$40', desc: 'Non-PA, but wishes to support SAMPA' },
+    { name: 'Legacy Member', price: '$25', desc: 'Expired NCCPA certification and/or retired' },
     { name: 'Student Member', price: '$10', desc: 'For currently enrolled PA students.' },
-    { name: 'Pre-PA Member', price: '$5', desc: 'For prospective students interested in the PA profession.' },
+    { name: 'Pre-PA Member', price: '$5', desc: 'For prospective students interested in the PA profession' },
   ];
 
   const donationTiers = [
     { name: 'Community Supporter', price: 'Free', desc: 'Newsletter access only' },
     { name: 'Bronze', price: '$25', desc: 'Supporter', color: 'text-orange-700', bg: 'bg-orange-700/5', border: 'border-orange-700/20' },
-    { name: 'Silver', price: '$75', desc: 'Supporter', color: 'text-slate-400', bg: 'bg-slate-400/5', border: 'border-slate-400/30' },
+    { name: 'Silver', price: '$75', desc: 'Supporter', highlight: true },
     { name: 'Gold', price: '$150', desc: 'Supporter', color: 'text-yellow-500', bg: 'bg-yellow-500/5', border: 'border-yellow-500/30' },
     { name: 'Platinum', price: '$300', desc: 'Supporter', color: 'text-slate-800', bg: 'bg-slate-800/5', border: 'border-slate-800/20' },
-    { name: 'Patron', price: '$600+', desc: 'Supporter', highlight: true },
+    { name: 'Patron', price: '$600+', desc: 'Supporter' },
     { name: 'Organizational', price: '$1,500+', desc: 'Supporter' },
   ];
 
   return (
     <section id="membership" className="py-24 px-4 max-w-7xl mx-auto">
-      
+
       {/* MEMBERSHIP SECTION */}
       <div className="text-center mb-16">
         <div className="inline-block px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-accent text-xs font-semibold mb-6 font-data uppercase tracking-wider">
@@ -45,7 +45,7 @@ export default function Membership() {
         <div>
           <h3 className="font-bold text-xl text-primary mb-2">Multi-Year Discounts Available!</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
-            Commit to the future of SAMPA and save: get <strong>~10% off for 2 years</strong>, or <strong>~17% off for 3 years</strong>. 
+            Commit to the future of SAMPA and save: get <strong>~10% off for 2 years</strong>, or <strong>~17% off for 3 years</strong>.
             <span className="block mt-1 text-xs opacity-70 italic">(Note: Student memberships max 2 years, Pre-PA max 1-2 years.)</span>
           </p>
         </div>
@@ -114,7 +114,7 @@ export default function Membership() {
           </a>
         </div>
       </div>
-      
+
     </section>
   );
 }
