@@ -46,7 +46,7 @@ export default function Membership() {
           <h3 className="font-bold text-xl text-primary mb-2">Multi-Year Discounts Available!</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
             Commit to the future of SAMPA and save: get <strong>~10% off for 2 years</strong>, or <strong>~17% off for 3 years</strong>.
-            <span className="block mt-1 text-xs opacity-70 italic">(Note: Student memberships max 2 years, Pre-PA max 1-2 years.)</span>
+            <span className="block mt-1 text-xs opacity-70 italic">(Note: Student memberships max 2 years, Pre-PA max 1 year)</span>
           </p>
         </div>
       </div>
