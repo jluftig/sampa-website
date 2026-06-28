@@ -31,7 +31,7 @@ export default function Navbar() {
 
         {/* Desktop CTA Button */}
         <div className="hidden lg:block">
-          <a href="https://forms.gle/vfSJS9LTPwT9TMT59" target="_blank" rel="noopener noreferrer" className="btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block">
+          <a href="#membership" className="btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block">
             <span>Join as a Founding Member</span>
           </a>
         </div>
@@ -61,7 +61,7 @@ export default function Navbar() {
           <a href="#events" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Events</a>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
           <div className="mt-2 pt-4 border-t border-primary/10 flex justify-center">
-             <a href="https://forms.gle/vfSJS9LTPwT9TMT59" target="_blank" rel="noopener noreferrer" className="bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full" onClick={() => setIsMobileMenuOpen(false)}>
+             <a href="#membership" className="bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full" onClick={() => setIsMobileMenuOpen(false)}>
               Join as a Founding Member
             </a>
           </div>
