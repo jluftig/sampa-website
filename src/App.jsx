@@ -6,7 +6,8 @@ import Home from './pages/Home';
 import News from './pages/News';
 import PostView from './pages/PostView';
 import Login from './pages/Login';
-import Editor from './pages/Editor';
+import EditorDashboard from './pages/EditorDashboard';
+import PostEditor from './pages/PostEditor';
 
 function App() {
   return (
@@ -21,11 +22,27 @@ function App() {
           path="/editor"
           element={
             <RequireEditor>
-              <Editor />
+              <EditorDashboard />
             </RequireEditor>
           }
         />
-        {/* Tag browse and the full editor tools are added in later phases. */}
+        <Route
+          path="/editor/new"
+          element={
+            <RequireEditor>
+              <PostEditor />
+            </RequireEditor>
+          }
+        />
+        <Route
+          path="/editor/:id"
+          element={
+            <RequireEditor>
+              <PostEditor />
+            </RequireEditor>
+          }
+        />
+        {/* Tag browse is added in a later phase. */}
       </Routes>
     </>
   );

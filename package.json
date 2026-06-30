@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
+    "@tiptap/extension-link": "^3.27.1",
+    "@tiptap/pm": "^3.27.1",
+    "@tiptap/react": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
     "dompurify": "^3.4.11",
     "gsap": "^3.12.5",
     "lucide-react": "^0.360.0",
