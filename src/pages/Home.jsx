@@ -5,6 +5,7 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import ValueProps from '../components/ValueProps';
 import Membership from '../components/Membership';
+import NewsTeaser from '../components/NewsTeaser';
 import EventsTeaser from '../components/EventsTeaser';
 import Footer from '../components/Footer';
 
@@ -30,6 +31,7 @@ export default function Home() {
         <Hero />
         <About />
         <ValueProps />
+        <NewsTeaser />
         <Membership />
         <EventsTeaser />
       </main>
