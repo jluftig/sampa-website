@@ -54,11 +54,15 @@ create table if not exists public.posts (
 );
 
 create table if not exists public.tags (
-  id         uuid primary key default gen_random_uuid(),
-  name       text not null,
-  slug       text not null unique,
-  created_at timestamptz not null default now()
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,              -- full name, e.g. "Opioid Use Disorder"
+  short_label text,                       -- compact chip shown inside posts, e.g. "OUD"
+  slug        text not null unique,
+  created_at  timestamptz not null default now()
 );
+
+-- Add short_label if the table already existed from an earlier run.
+alter table public.tags add column if not exists short_label text;
 
 create table if not exists public.items (
   id         uuid primary key default gen_random_uuid(),
@@ -246,23 +250,25 @@ create policy post_images_delete on storage.objects
   for delete using ( bucket_id = 'post-images' and public.is_editor() );
 
 -- ----- Seed: starter tag vocabulary (edit freely later in /editor/tags) -------
-insert into public.tags (name, slug) values
-  ('Buprenorphine',          'buprenorphine'),
-  ('Methadone',              'methadone'),
-  ('Naltrexone',             'naltrexone'),
-  ('Opioid Use Disorder',    'opioid-use-disorder'),
-  ('Alcohol Use Disorder',   'alcohol-use-disorder'),
-  ('Stimulants',             'stimulants'),
-  ('Harm Reduction',         'harm-reduction'),
-  ('Overdose Prevention',    'overdose-prevention'),
-  ('Treatment & Recovery',   'treatment-recovery'),
-  ('Pain Management',        'pain-management'),
-  ('Mental Health',          'mental-health'),
-  ('Adolescents',            'adolescents'),
-  ('Pregnancy & Perinatal',  'pregnancy-perinatal'),
-  ('Policy & Regulation',    'policy-regulation'),
-  ('Research',               'research')
-on conflict (slug) do nothing;
+insert into public.tags (name, short_label, slug) values
+  ('Buprenorphine',          'Bup',       'buprenorphine'),
+  ('Methadone',              'Methadone', 'methadone'),
+  ('Naltrexone',             'Naltrexone','naltrexone'),
+  ('Opioid Use Disorder',    'OUD',       'opioid-use-disorder'),
+  ('Alcohol Use Disorder',   'AUD',       'alcohol-use-disorder'),
+  ('Stimulants',             'Stimulants','stimulants'),
+  ('Harm Reduction',         'Harm Rdx',  'harm-reduction'),
+  ('Overdose Prevention',    'Overdose',  'overdose-prevention'),
+  ('Treatment & Recovery',   'Treatment', 'treatment-recovery'),
+  ('Pain Management',        'Pain',      'pain-management'),
+  ('Mental Health',          'Mental Hlth','mental-health'),
+  ('Adolescents',            'Teens',     'adolescents'),
+  ('Pregnancy & Perinatal',  'Perinatal', 'pregnancy-perinatal'),
+  ('Policy & Regulation',    'Policy',    'policy-regulation'),
+  ('Research',               'Research',  'research')
+on conflict (slug) do update
+  set name = excluded.name,
+      short_label = excluded.short_label;
 
 -- ============================================================================
 -- AFTER your first Google login (Phase 4), make yourself an admin by running:
