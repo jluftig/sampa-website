@@ -250,22 +250,29 @@ create policy post_images_delete on storage.objects
   for delete using ( bucket_id = 'post-images' and public.is_editor() );
 
 -- ----- Seed: starter tag vocabulary (edit freely later in /editor/tags) -------
+-- Remove the retired "Treatment & Recovery" tag (replaced by "Psychosocial").
+delete from public.tags where slug = 'treatment-recovery';
+
 insert into public.tags (name, short_label, slug) values
-  ('Buprenorphine',          'Bup',       'buprenorphine'),
-  ('Methadone',              'Methadone', 'methadone'),
-  ('Naltrexone',             'Naltrexone','naltrexone'),
-  ('Opioid Use Disorder',    'OUD',       'opioid-use-disorder'),
-  ('Alcohol Use Disorder',   'AUD',       'alcohol-use-disorder'),
-  ('Stimulants',             'Stimulants','stimulants'),
-  ('Harm Reduction',         'Harm Rdx',  'harm-reduction'),
-  ('Overdose Prevention',    'Overdose',  'overdose-prevention'),
-  ('Treatment & Recovery',   'Treatment', 'treatment-recovery'),
-  ('Pain Management',        'Pain',      'pain-management'),
-  ('Mental Health',          'Mental Hlth','mental-health'),
-  ('Adolescents',            'Teens',     'adolescents'),
-  ('Pregnancy & Perinatal',  'Perinatal', 'pregnancy-perinatal'),
-  ('Policy & Regulation',    'Policy',    'policy-regulation'),
-  ('Research',               'Research',  'research')
+  ('Buprenorphine',                'Bup',        'buprenorphine'),
+  ('Methadone',                    'Methadone',  'methadone'),
+  ('Naltrexone',                   'Naltrexone', 'naltrexone'),
+  ('Opioid Use Disorder',          'OUD',        'opioid-use-disorder'),
+  ('Alcohol Use Disorder',         'AUD',        'alcohol-use-disorder'),
+  ('Stimulant Use Disorder',       'StUD',       'stimulant-use-disorder'),
+  ('Methamphetamine Use Disorder', 'MUD',        'methamphetamine-use-disorder'),
+  ('Cocaine Use Disorder',         'CUD',        'cocaine-use-disorder'),
+  ('Kratom Use Disorder',          'KUD',        'kratom-use-disorder'),
+  ('Stimulants',                   'Stimulants', 'stimulants'),
+  ('Harm Reduction',               'Harm Rdx',   'harm-reduction'),
+  ('Overdose Prevention',          'OD',         'overdose-prevention'),
+  ('Psychosocial',                 'Psychosocial','psychosocial'),
+  ('Pain Management',              'Pain',       'pain-management'),
+  ('Mental Health',                'Mental Hlth','mental-health'),
+  ('Adolescents',                  'Teens',      'adolescents'),
+  ('Pregnancy & Perinatal',        'Perinatal',  'pregnancy-perinatal'),
+  ('Policy & Regulation',          'Policy',     'policy-regulation'),
+  ('Research',                     'Research',   'research')
 on conflict (slug) do update
   set name = excluded.name,
       short_label = excluded.short_label;
