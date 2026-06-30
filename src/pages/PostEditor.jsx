@@ -27,7 +27,21 @@ export default function PostEditor() {
   const [currentStatus, setCurrentStatus] = useState('draft');
   const [publishedAt, setPublishedAt] = useState(null);
 
-  // Load the post when editing.
+  // Key Points: each is { localId, content, tagIds[] }.
+  const [keyPoints, setKeyPoints] = useState([]);
+  const [allTags, setAllTags] = useState([]);
+
+  // Load the controlled tag vocabulary (for the chip pickers).
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data } = await supabase.from('tags').select('id, name, short_label, slug').order('name');
+      if (active) setAllTags(data || []);
+    })();
+    return () => { active = false; };
+  }, []);
+
+  // Load the post (and its Key Points) when editing.
   useEffect(() => {
     if (!isEditing) return;
     let active = true;
@@ -43,10 +57,40 @@ export default function PostEditor() {
       setCoverImageUrl(data.cover_image_url || '');
       setCurrentStatus(data.status);
       setPublishedAt(data.published_at);
+
+      const { data: itemData } = await supabase
+        .from('items')
+        .select('id, content, sort_order, item_tags(tag_id)')
+        .eq('post_id', id)
+        .order('sort_order');
+      if (active && itemData) {
+        setKeyPoints(itemData.map((it) => ({
+          localId: crypto.randomUUID(),
+          content: it.content,
+          tagIds: (it.item_tags || []).map((t) => t.tag_id),
+        })));
+      }
       setLoading(false);
     })();
     return () => { active = false; };
   }, [id, isEditing]);
+
+  function addKeyPoint() {
+    setKeyPoints((prev) => [...prev, { localId: crypto.randomUUID(), content: '', tagIds: [] }]);
+  }
+  function updateKeyPoint(localId, content) {
+    setKeyPoints((prev) => prev.map((k) => (k.localId === localId ? { ...k, content } : k)));
+  }
+  function removeKeyPoint(localId) {
+    setKeyPoints((prev) => prev.filter((k) => k.localId !== localId));
+  }
+  function toggleTag(localId, tagId) {
+    setKeyPoints((prev) => prev.map((k) => {
+      if (k.localId !== localId) return k;
+      const has = k.tagIds.includes(tagId);
+      return { ...k, tagIds: has ? k.tagIds.filter((t) => t !== tagId) : [...k.tagIds, tagId] };
+    }));
+  }
 
   // Keep slug in sync with the title until the editor edits the slug by hand.
   function onTitleChange(value) {
@@ -95,22 +139,44 @@ export default function PostEditor() {
       payload.published_at = new Date().toISOString();
     }
 
-    let result;
+    const postErrMsg = (err) =>
+      err.code === '23505'
+        ? 'That URL slug is already used by another post — change it and try again.'
+        : err.message;
+
+    // 1) Save the post itself, capturing its id (needed to link Key Points).
+    let postId = id;
     if (isEditing) {
-      result = await supabase.from('posts').update(payload).eq('id', id);
+      const { error: postErr } = await supabase.from('posts').update(payload).eq('id', id);
+      if (postErr) { setError(postErrMsg(postErr)); setSaving(false); return; }
     } else {
-      result = await supabase.from('posts').insert(payload);
+      const { data, error: postErr } = await supabase
+        .from('posts').insert(payload).select('id').single();
+      if (postErr) { setError(postErrMsg(postErr)); setSaving(false); return; }
+      postId = data.id;
     }
 
-    if (result.error) {
-      if (result.error.code === '23505') {
-        setError('That URL slug is already used by another post — change it and try again.');
-      } else {
-        setError(result.error.message);
+    // 2) Sync Key Points. Replace-all is simple and reliable at this scale;
+    //    deleting an item cascades to its item_tags automatically.
+    const { error: delErr } = await supabase.from('items').delete().eq('post_id', postId);
+    if (delErr) { setError(delErr.message); setSaving(false); return; }
+
+    let order = 0;
+    for (const kp of keyPoints) {
+      if (!kp.content.trim()) continue;
+      const { data: itemRow, error: itemErr } = await supabase
+        .from('items')
+        .insert({ post_id: postId, content: kp.content.trim(), sort_order: order++ })
+        .select('id').single();
+      if (itemErr) { setError(itemErr.message); setSaving(false); return; }
+      if (kp.tagIds.length) {
+        const { error: tagErr } = await supabase
+          .from('item_tags')
+          .insert(kp.tagIds.map((tag_id) => ({ item_id: itemRow.id, tag_id })));
+        if (tagErr) { setError(tagErr.message); setSaving(false); return; }
       }
-      setSaving(false);
-      return;
     }
+
     navigate('/editor');
   }
 
@@ -191,6 +257,57 @@ export default function PostEditor() {
             <div>
               <label className="block text-sm font-semibold mb-2">Article</label>
               <RichTextEditor initialContent={bodyHtml} onChange={setBodyHtml} />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">Key Points</label>
+              <p className="text-text/50 text-sm mb-4">
+                Each point is individually searchable by its tags across all posts. Write each as a
+                standalone statement (it should make sense on its own in a tag search), then tag it.
+              </p>
+
+              <div className="space-y-4">
+                {keyPoints.map((kp, idx) => (
+                  <div key={kp.localId} className="bg-white border border-primary/10 rounded-2xl p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="font-data text-text/30 text-sm pt-2.5">{idx + 1}</span>
+                      <textarea
+                        value={kp.content}
+                        onChange={(e) => updateKeyPoint(kp.localId, e.target.value)}
+                        rows={2}
+                        placeholder="A self-contained key takeaway…"
+                        className="flex-1 px-3 py-2 rounded-xl border border-primary/20 focus:outline-none focus:border-primary resize-y"
+                      />
+                      <button type="button" onClick={() => removeKeyPoint(kp.localId)}
+                        className="text-red-500 text-sm font-semibold pt-2.5 hover:underline">
+                        Remove
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-3 pl-7">
+                      {allTags.length === 0 && (
+                        <span className="text-text/40 text-xs">No tags yet — add some under Manage tags.</span>
+                      )}
+                      {allTags.map((tag) => {
+                        const selected = kp.tagIds.includes(tag.id);
+                        return (
+                          <button type="button" key={tag.id} title={tag.name}
+                            onClick={() => toggleTag(kp.localId, tag.id)}
+                            className={`px-2.5 py-0.5 rounded-full text-xs font-data font-semibold transition-colors ${
+                              selected ? 'bg-primary text-white' : 'bg-primary/10 text-primary hover:bg-primary/20'
+                            }`}>
+                            {tag.short_label || tag.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button type="button" onClick={addKeyPoint}
+                className="mt-4 text-primary font-semibold hover:underline">
+                + Add Key Point
+              </button>
             </div>
 
             {error && <p className="text-red-500">{error}</p>}

@@ -8,6 +8,7 @@ import PostView from './pages/PostView';
 import Login from './pages/Login';
 import EditorDashboard from './pages/EditorDashboard';
 import PostEditor from './pages/PostEditor';
+import AdminTags from './pages/AdminTags';
 
 function App() {
   return (
@@ -31,6 +32,14 @@ function App() {
           element={
             <RequireEditor>
               <PostEditor />
+            </RequireEditor>
+          }
+        />
+        <Route
+          path="/editor/tags"
+          element={
+            <RequireEditor adminOnly>
+              <AdminTags />
             </RequireEditor>
           }
         />
