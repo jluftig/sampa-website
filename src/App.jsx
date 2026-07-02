@@ -1,41 +1,78 @@
-import React, { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import ValueProps from './components/ValueProps';
-import Membership from './components/Membership';
-import EventsTeaser from './components/EventsTeaser';
-import Footer from './components/Footer';
+import React, { Suspense, lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
+import RequireEditor from './components/RequireEditor';
+import Home from './pages/Home';
+
+// Route-level code splitting: the homepage loads eagerly; every other page
+// (and its heavier dependencies — TipTap, DOMPurify) loads on demand.
+const News = lazy(() => import('./pages/News'));
+const PostView = lazy(() => import('./pages/PostView'));
+const Tags = lazy(() => import('./pages/Tags'));
+const TagView = lazy(() => import('./pages/TagView'));
+const Login = lazy(() => import('./pages/Login'));
+const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
+const PostEditor = lazy(() => import('./pages/PostEditor'));
+const AdminTags = lazy(() => import('./pages/AdminTags'));
+const AdminPeople = lazy(() => import('./pages/AdminPeople'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    // Basic GSAP fade in for the whole app
-    gsap.fromTo(containerRef.current, 
-      { opacity: 0 }, 
-      { opacity: 1, duration: 1, ease: "power2.out" }
-    );
-  }, []);
-
   return (
-    <div ref={containerRef} className="relative min-h-screen bg-background text-text overflow-hidden">
-      {/* Global CSS noise overlay */}
-      <div className="noise-overlay pointer-events-none"></div>
-
-      <Navbar />
-      
-      <main className="w-full">
-        <Hero />
-        <About />
-        <ValueProps />
-        <Membership />
-        <EventsTeaser />
-      </main>
-
-      <Footer />
-    </div>
+    <>
+      <ScrollToTop />
+      <Suspense fallback={<div className="min-h-screen bg-background" />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/news/:slug" element={<PostView />} />
+          <Route path="/keywords" element={<Tags />} />
+          <Route path="/keywords/:slug" element={<TagView />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/editor"
+            element={
+              <RequireEditor>
+                <EditorDashboard />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/new"
+            element={
+              <RequireEditor>
+                <PostEditor />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/keywords"
+            element={
+              <RequireEditor adminOnly>
+                <AdminTags />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/people"
+            element={
+              <RequireEditor adminOnly>
+                <AdminPeople />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/:id"
+            element={
+              <RequireEditor>
+                <PostEditor />
+              </RequireEditor>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }
 
