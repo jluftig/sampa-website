@@ -132,6 +132,11 @@ Login with Google → `/editor` → New Post → write the article in the rich-t
 
 ## Future phases (foundation already supports)
 
+- **FIRST STEP — publish the Google OAuth consent screen.** Google login is currently in
+  "Testing" mode, so only whitelisted test users can sign in. Before opening login to members,
+  publish the consent screen (Google Cloud Console → OAuth consent screen → Publish app). We
+  only request basic email/profile scopes, so this does **not** trigger Google's lengthy
+  sensitive-scope verification. Do this before the member dashboard/login work below.
 - **Membership via Stripe:** tier chips → Stripe Checkout/Payment Links collect name/email/phone
   → Stripe webhook → Vercel serverless function → upsert membership into Supabase (keyed by
   email + `stripe_customer_id`). Link payment→login by matching email at Google sign-in.
