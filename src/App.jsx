@@ -5,6 +5,8 @@ import RequireEditor from './components/RequireEditor';
 import Home from './pages/Home';
 import News from './pages/News';
 import PostView from './pages/PostView';
+import Tags from './pages/Tags';
+import TagView from './pages/TagView';
 import Login from './pages/Login';
 import EditorDashboard from './pages/EditorDashboard';
 import PostEditor from './pages/PostEditor';
@@ -18,6 +20,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/news" element={<News />} />
         <Route path="/news/:slug" element={<PostView />} />
+        <Route path="/tags" element={<Tags />} />
+        <Route path="/tags/:slug" element={<TagView />} />
         <Route path="/login" element={<Login />} />
         <Route
           path="/editor"

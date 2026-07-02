@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { collectPostTags } from '../lib/tags';
 import Navbar from '../components/Navbar';
@@ -43,6 +44,9 @@ export default function News() {
             Curated research, policy, and practice updates for addiction medicine PAs —
             published twice a month.
           </p>
+          <Link to="/tags" className="inline-block mt-6 text-primary font-semibold hover:underline">
+            Browse by tag →
+          </Link>
         </header>
 
         {loading && (
