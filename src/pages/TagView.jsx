@@ -30,8 +30,9 @@ export default function TagView() {
       // (enforced by RLS). Each links back to its source post.
       const { data: itemData, error: itemErr } = await supabase
         .from('items')
-        .select('id, content, item_tags!inner(tag_id), posts!inner(title, slug, published_at)')
+        .select('id, content, item_tags!inner(tag_id), posts!inner(title, slug, published_at, status)')
         .eq('item_tags.tag_id', tagData.id)
+        .eq('posts.status', 'published') // explicit: public view excludes drafts even for logged-in editors
         .order('published_at', { ascending: false, referencedTable: 'posts' });
       if (!active) return;
       if (itemErr) { setStatus('error'); return; }

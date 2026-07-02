@@ -12,17 +12,28 @@ export default function Tags() {
   useEffect(() => {
     let active = true;
     (async () => {
-      // item_tags(count) respects RLS, so counts only include key points from
-      // published posts.
+      // Count key points per keyword across PUBLISHED posts only. We filter
+      // explicitly (posts.status = 'published') rather than relying on RLS, so
+      // logged-in editors/admins see the same public counts as anonymous
+      // visitors (RLS would otherwise let them count their own drafts).
       const { data, error } = await supabase
-        .from('tags')
-        .select('id, name, short_label, slug, item_tags(count)')
-        .order('name');
+        .from('items')
+        .select('item_tags(tags(id, name, short_label, slug)), posts!inner(status)')
+        .eq('posts.status', 'published');
       if (!active) return;
       if (error) { setError(error.message); setLoading(false); return; }
-      const withCounts = (data || [])
-        .map((t) => ({ ...t, count: t.item_tags?.[0]?.count ?? 0 }))
-        .filter((t) => t.count > 0)
+
+      const bySlug = new Map();
+      (data || []).forEach((item) => {
+        (item.item_tags || []).forEach((link) => {
+          const t = link.tags;
+          if (!t) return;
+          const existing = bySlug.get(t.slug) || { ...t, count: 0 };
+          existing.count += 1;
+          bySlug.set(t.slug, existing);
+        });
+      });
+      const withCounts = Array.from(bySlug.values())
         .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
       setTags(withCounts);
       setLoading(false);
