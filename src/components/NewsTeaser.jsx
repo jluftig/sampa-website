@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Newspaper } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import { collectPostTags } from '../lib/tags';
 import PostCard from './PostCard';
 
 // Homepage "Latest News" section — shows the three most recent published posts
@@ -15,12 +16,12 @@ export default function NewsTeaser() {
     (async () => {
       const { data } = await supabase
         .from('posts')
-        .select('id, title, slug, excerpt, cover_image_url, published_at')
+        .select('id, title, slug, excerpt, cover_image_url, published_at, items(item_tags(tags(name, short_label, slug)))')
         .eq('status', 'published')
         .order('published_at', { ascending: false })
         .limit(3);
       if (!active) return;
-      setPosts(data || []);
+      setPosts((data || []).map((p) => ({ ...p, tags: collectPostTags(p) })));
       setLoaded(true);
     })();
     return () => { active = false; };

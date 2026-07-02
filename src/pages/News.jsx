@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { collectPostTags } from '../lib/tags';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PostCard from '../components/PostCard';
@@ -14,12 +15,12 @@ export default function News() {
     (async () => {
       const { data, error } = await supabase
         .from('posts')
-        .select('id, title, slug, excerpt, cover_image_url, author_name, published_at')
+        .select('id, title, slug, excerpt, cover_image_url, author_name, published_at, items(item_tags(tags(name, short_label, slug)))')
         .eq('status', 'published')
         .order('published_at', { ascending: false });
       if (!active) return;
       if (error) setError(error.message);
-      else setPosts(data || []);
+      else setPosts((data || []).map((p) => ({ ...p, tags: collectPostTags(p) })));
       setLoading(false);
     })();
     return () => { active = false; };

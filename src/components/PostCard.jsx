@@ -31,6 +31,20 @@ export default function PostCard({ post }) {
         {post.excerpt && (
           <p className="text-text/60 line-clamp-3">{post.excerpt}</p>
         )}
+
+        {post.tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-4">
+            {post.tags.map((tag) => (
+              <span
+                key={tag.slug}
+                title={tag.name}
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-data font-semibold bg-primary/10 text-primary"
+              >
+                {tag.short_label || tag.name}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </Link>
   );
