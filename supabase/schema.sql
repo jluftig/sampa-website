@@ -45,6 +45,7 @@ create table if not exists public.posts (
   excerpt         text,
   body_html       text,
   cover_image_url text,
+  cover_image_caption text,                    -- optional caption/citation for the cover image
   author_id       uuid references public.profiles(id) on delete set null,
   author_name     text,                       -- denormalized: public reads never touch profiles
   status          public.post_status not null default 'draft',
@@ -52,6 +53,9 @@ create table if not exists public.posts (
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
 );
+
+-- Add cover_image_caption if the table already existed from an earlier run.
+alter table public.posts add column if not exists cover_image_caption text;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),

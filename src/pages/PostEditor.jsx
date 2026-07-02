@@ -24,6 +24,7 @@ export default function PostEditor() {
   const [excerpt, setExcerpt] = useState('');
   const [bodyHtml, setBodyHtml] = useState('');
   const [coverImageUrl, setCoverImageUrl] = useState('');
+  const [coverImageCaption, setCoverImageCaption] = useState('');
   const [currentStatus, setCurrentStatus] = useState('draft');
   const [publishedAt, setPublishedAt] = useState(null);
 
@@ -55,6 +56,7 @@ export default function PostEditor() {
       setExcerpt(data.excerpt || '');
       setBodyHtml(data.body_html || '');
       setCoverImageUrl(data.cover_image_url || '');
+      setCoverImageCaption(data.cover_image_caption || '');
       setCurrentStatus(data.status);
       setPublishedAt(data.published_at);
 
@@ -130,6 +132,7 @@ export default function PostEditor() {
       excerpt: excerpt.trim() || null,
       body_html: bodyHtml,
       cover_image_url: coverImageUrl || null,
+      cover_image_caption: coverImageCaption.trim() || null,
       author_id: user.id,
       author_name: profile?.full_name || profile?.email,
       status: targetStatus,
@@ -252,6 +255,21 @@ export default function PostEditor() {
               <input type="file" accept="image/*" onChange={onCoverSelected} disabled={uploading}
                 className="block text-sm text-text/70 file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-primary/10 file:text-primary file:font-semibold hover:file:bg-primary/20" />
               {uploading && <p className="text-text/50 text-sm mt-2 font-data">Uploading…</p>}
+
+              {coverImageUrl && (
+                <div className="mt-3">
+                  <label className="block text-xs font-semibold mb-1 text-text/60">
+                    Caption / citation <span className="font-normal text-text/40">— optional; shown under the image (e.g. figure source)</span>
+                  </label>
+                  <textarea
+                    value={coverImageCaption}
+                    onChange={(e) => setCoverImageCaption(e.target.value)}
+                    rows={2}
+                    placeholder="Figure 1. Adapted from Smith et al., JAMA. 2025;333(2):101–110."
+                    className="w-full px-3 py-2 rounded-xl border border-primary/20 focus:outline-none focus:border-primary bg-white text-sm resize-y"
+                  />
+                </div>
+              )}
             </div>
 
             <div>

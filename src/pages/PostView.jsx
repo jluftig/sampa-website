@@ -80,11 +80,18 @@ export default function PostView() {
             </header>
 
             {post.cover_image_url && (
-              <img
-                src={post.cover_image_url}
-                alt=""
-                className="w-full rounded-4xl mb-10 object-cover"
-              />
+              <figure className="mb-10">
+                <img
+                  src={post.cover_image_url}
+                  alt=""
+                  className="w-full rounded-4xl object-cover"
+                />
+                {post.cover_image_caption && (
+                  <figcaption className="text-sm text-text/50 italic mt-3 px-2">
+                    {post.cover_image_caption}
+                  </figcaption>
+                )}
+              </figure>
             )}
 
             {post.body_html && (
