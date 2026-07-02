@@ -280,8 +280,9 @@ export default function PostEditor() {
             <div>
               <label className="block text-sm font-semibold mb-1">Key Points</label>
               <p className="text-text/50 text-sm mb-4">
-                Each point is individually searchable by its tags across all posts. Write each as a
-                standalone statement (it should make sense on its own in a tag search), then tag it.
+                Each point is individually searchable by its keywords across all posts. Write each as
+                a standalone statement (it should make sense on its own in a keyword search), then add
+                keywords.
               </p>
 
               <div className="space-y-4">
@@ -303,7 +304,7 @@ export default function PostEditor() {
                     </div>
                     <div className="flex flex-wrap gap-2 mt-3 pl-7">
                       {allTags.length === 0 && (
-                        <span className="text-text/40 text-xs">No tags yet — add some under Manage tags.</span>
+                        <span className="text-text/40 text-xs">No keywords yet — add some under Manage keywords.</span>
                       )}
                       {allTags.map((tag) => {
                         const selected = kp.tagIds.includes(tag.id);

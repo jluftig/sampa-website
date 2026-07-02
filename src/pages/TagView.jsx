@@ -47,8 +47,8 @@ export default function TagView() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
-        <Link to="/tags" className="text-primary font-data text-sm font-semibold hover:underline">
-          ← All tags
+        <Link to="/keywords" className="text-primary font-data text-sm font-semibold hover:underline">
+          ← All keywords
         </Link>
 
         {status === 'loading' && <p className="text-center text-text/50 font-data mt-16">Loading…</p>}
@@ -56,8 +56,8 @@ export default function TagView() {
 
         {status === 'notfound' && (
           <div className="text-center mt-16">
-            <h1 className="text-3xl font-bold mb-3">Tag not found</h1>
-            <p className="text-text/60">That topic doesn’t exist.</p>
+            <h1 className="text-3xl font-bold mb-3">Keyword not found</h1>
+            <p className="text-text/60">That keyword doesn’t exist.</p>
           </div>
         )}
 
@@ -65,7 +65,7 @@ export default function TagView() {
           <>
             <header className="mt-6 mb-10">
               <div className="text-primary font-bold font-data tracking-widest text-xs mb-3 uppercase">
-                Topic
+                Keyword
               </div>
               <h1 className="text-3xl md:text-5xl font-drama font-bold">{tag.name}</h1>
               <p className="text-text/60 mt-3">

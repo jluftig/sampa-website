@@ -74,10 +74,10 @@ export default function EditorDashboard() {
             </Link>
             {isAdmin && (
               <Link
-                to="/editor/tags"
+                to="/editor/keywords"
                 className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
               >
-                Manage tags
+                Manage keywords
               </Link>
             )}
             <button

@@ -46,7 +46,7 @@ export default function RequireEditor({ children, adminOnly = false }) {
       <FullPage>
         <h1 className="text-3xl font-drama font-bold mb-4">Admins only</h1>
         <p className="text-text/60 max-w-md mx-auto">
-          Managing the tag vocabulary is limited to administrators.
+          Managing keywords is limited to administrators.
         </p>
       </FullPage>
     );

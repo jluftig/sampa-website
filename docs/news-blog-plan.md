@@ -26,6 +26,8 @@ membership payments** later, with **no rework**.
 - **Schema now includes membership/billing fields** (empty until Stripe is wired up) to avoid a
   later migration.
 - **Hosting:** Vercel.
+- **Terminology:** user-facing label is **"keyword"** (and public URLs are `/keywords`).
+  The database keeps internal names `tags` / `item_tags` / `tag_id` — never shown to users.
 
 ## Architecture
 

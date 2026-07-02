@@ -5,8 +5,8 @@ import { slugify } from '../lib/slug';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-// Admin-only management of the controlled tag vocabulary. Tag slugs are the
-// permanent identifier used in URLs, so they're set once at creation and not
+// Admin-only management of the controlled keyword vocabulary. Keyword slugs are
+// the permanent identifier used in URLs, so they're set once at creation and not
 // editable here (name + short label can change freely).
 export default function AdminTags() {
   const [tags, setTags] = useState([]);
@@ -61,7 +61,7 @@ export default function AdminTags() {
   }
 
   async function deleteTag(tag) {
-    if (!window.confirm(`Delete the "${tag.name}" tag? It will be removed from every key point that uses it.`)) return;
+    if (!window.confirm(`Delete the "${tag.name}" keyword? It will be removed from every key point that uses it.`)) return;
     setBusy(true);
     setError(null);
     const { error } = await supabase.from('tags').delete().eq('id', tag.id);
@@ -83,9 +83,9 @@ export default function AdminTags() {
         <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
-        <h1 className="text-3xl font-drama font-bold mt-4 mb-2">Manage tags</h1>
+        <h1 className="text-3xl font-drama font-bold mt-4 mb-2">Manage keywords</h1>
         <p className="text-text/60 mb-8">
-          The controlled vocabulary editors choose from. <strong>Name</strong> shows on tag pages;
+          The controlled vocabulary editors choose from. <strong>Name</strong> shows on keyword pages;
           <strong> short label</strong> is the compact chip inside posts (e.g. OUD).
         </p>
 
@@ -93,7 +93,7 @@ export default function AdminTags() {
 
         {/* Add a new tag */}
         <div className="bg-white rounded-2xl border border-primary/10 p-5 mb-8">
-          <h2 className="font-bold mb-3">Add a tag</h2>
+          <h2 className="font-bold mb-3">Add a keyword</h2>
           <div className="flex flex-wrap gap-3 items-end">
             <div className="flex-1 min-w-[180px]">
               <label className="block text-xs font-semibold mb-1">Full name</label>

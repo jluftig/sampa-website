@@ -44,8 +44,8 @@ export default function News() {
             Curated research, policy, and practice updates for addiction medicine PAs —
             published twice a month.
           </p>
-          <Link to="/tags" className="inline-block mt-6 text-primary font-semibold hover:underline">
-            Browse by tag →
+          <Link to="/keywords" className="inline-block mt-6 text-primary font-semibold hover:underline">
+            Browse by keyword →
           </Link>
         </header>
 

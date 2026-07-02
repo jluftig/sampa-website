@@ -38,12 +38,12 @@ export default function Tags() {
       <main className="max-w-4xl mx-auto px-4 pt-32 pb-24">
         <header className="text-center mb-14">
           <div className="text-primary font-bold font-data tracking-widest text-sm mb-4 uppercase">
-            Browse by Tag
+            Browse by Keyword
           </div>
-          <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Explore key points by topic</h1>
+          <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Explore key points by keyword</h1>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Every key point we've published, organized by topic. Pick a tag to see each relevant point
-            across all issues.
+            Every key point we've published, organized by keyword. Pick a keyword to see each relevant
+            point across all issues.
           </p>
           <Link to="/news" className="inline-block mt-6 text-primary font-semibold hover:underline">
             ← Back to all news
@@ -55,8 +55,8 @@ export default function Tags() {
 
         {!loading && !error && tags.length === 0 && (
           <div className="text-center bg-white rounded-4xl border border-primary/10 p-16 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold mb-3">No tagged key points yet</h2>
-            <p className="text-text/60">Once posts with tagged key points are published, topics will appear here.</p>
+            <h2 className="text-2xl font-bold mb-3">No keywords yet</h2>
+            <p className="text-text/60">Once posts with key points are published, keywords will appear here.</p>
           </div>
         )}
 
@@ -65,7 +65,7 @@ export default function Tags() {
             {tags.map((tag) => (
               <Link
                 key={tag.slug}
-                to={`/tags/${tag.slug}`}
+                to={`/keywords/${tag.slug}`}
                 title={tag.name}
                 className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-white hover:bg-primary hover:text-white hover:border-primary transition-colors"
               >
