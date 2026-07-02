@@ -38,7 +38,7 @@ export default function NewsTeaser() {
           Latest News
         </h2>
         <p className="text-xl text-text/70 max-w-2xl mb-12">
-          Twice-monthly updates on addiction medicine research, policy, and practice.
+          Updates on addiction medicine research, policy, and practice.
         </p>
 
         {loaded && posts.length === 0 && (

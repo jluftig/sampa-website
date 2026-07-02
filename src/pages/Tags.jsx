@@ -40,10 +40,9 @@ export default function Tags() {
           <div className="text-primary font-bold font-data tracking-widest text-sm mb-4 uppercase">
             Browse by Keyword
           </div>
-          <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Explore key points by keyword</h1>
+          <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Explore by keyword</h1>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Every key point we've published, organized by keyword. Pick a keyword to see each relevant
-            point across all issues.
+            Pick a keyword to see each relevant post across all issues.
           </p>
           <Link to="/news" className="inline-block mt-6 text-primary font-semibold hover:underline">
             ← Back to all news

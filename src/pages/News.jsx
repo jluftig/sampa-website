@@ -41,8 +41,7 @@ export default function News() {
             Addiction Medicine News
           </h1>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Curated research, policy, and practice updates for addiction medicine PAs —
-            published twice a month.
+            Curated research, policy, and practice updates for addiction medicine PAs.
           </p>
           <Link to="/keywords" className="inline-block mt-6 text-primary font-semibold hover:underline">
             Browse by keyword →
