@@ -121,16 +121,22 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- Block non-admins from changing a profile's role (prevents self-promotion).
--- auth.uid() is null for the SQL editor / service role, so trusted backends
--- (and you, setting the first admin) are allowed through.
+-- Block non-admins from changing a profile's role OR its membership/billing
+-- fields (prevents self-promotion and self-granting a paid membership).
+-- Regular users can still edit their own name/phone. auth.uid() is null for the
+-- SQL editor / service role, so trusted backends (you setting the first admin,
+-- and the future Stripe webhook writing membership status) are allowed through.
 create or replace function public.guard_profile_role()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  if new.role is distinct from old.role
-     and auth.uid() is not null
-     and not public.is_admin() then
-    raise exception 'Only admins can change a user role';
+  if auth.uid() is not null and not public.is_admin() and (
+       new.role               is distinct from old.role
+    or new.membership_status  is distinct from old.membership_status
+    or new.membership_tier    is distinct from old.membership_tier
+    or new.stripe_customer_id is distinct from old.stripe_customer_id
+    or new.renews_on          is distinct from old.renews_on
+  ) then
+    raise exception 'Only admins can change role or membership fields';
   end if;
   return new;
 end; $$;
