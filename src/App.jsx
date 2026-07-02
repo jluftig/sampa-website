@@ -14,6 +14,7 @@ const Login = lazy(() => import('./pages/Login'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
 const PostEditor = lazy(() => import('./pages/PostEditor'));
 const AdminTags = lazy(() => import('./pages/AdminTags'));
+const AdminPeople = lazy(() => import('./pages/AdminPeople'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
@@ -49,6 +50,14 @@ function App() {
             element={
               <RequireEditor adminOnly>
                 <AdminTags />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/people"
+            element={
+              <RequireEditor adminOnly>
+                <AdminPeople />
               </RequireEditor>
             }
           />
