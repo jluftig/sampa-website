@@ -33,9 +33,45 @@ medicine who want the clinical and policy significance quickly and accurately.
 
 2. **Keyword vocabulary** — the site uses a *controlled* keyword list (admin-managed
    `tags` table; user-facing label is "keyword"). You may ONLY assign keywords that
-   already exist in this list.
-   - If the user has not provided the current keyword list, **ask for it** before
-     assigning any keywords (or, in direct-DB mode, query `select name, slug from tags`).
+   already exist in this list, and you assign them **by slug**.
+   - **Current controlled vocabulary (as of 2026-07-02)** — use this as the default. Format
+     is `Name (short label) — slug`:
+     - AAPA (AAPA) — `aapa`
+     - Adolescents (Teens) — `adolescents`
+     - Alcohol Use Disorder (AUD) — `alcohol-use-disorder`
+     - Buprenorphine (Bup) — `buprenorphine`
+     - Cannabis (Cannabis) — `cannabis`
+     - Cocaine Use Disorder (CUD) — `cocaine-use-disorder`
+     - DEA (DEA) — `dea`
+     - FDA (FDA) — `fda`
+     - Harm Reduction (Harm Rdx) — `harm-reduction`
+     - HHS (HHS) — `hhs`
+     - Kratom (Kratom) — `kratom`
+     - Kratom 7-OH (7-OH) — `7-oh`
+     - Kratom Dihydro-7-hydroxymitragynine (MGM-15) — `dihydro-7-hydroxymitragynine`
+     - Kratom Mitragynine pseudoindoxyl (MP) — `mitragynine-pseudoindoxyl`
+     - Kratom The 9-fluoro derivative of 7-OH (MGM-16) — `the-9-fluoro-derivative-of-7-oh`
+     - Kratom Use Disorder (KUD) — `kratom-use-disorder`
+     - Mental Health (Mental Hlth) — `mental-health`
+     - Methadone (Methadone) — `methadone`
+     - Methamphetamine Use Disorder (MUD) — `methamphetamine-use-disorder`
+     - Naltrexone (Naltrexone) — `naltrexone`
+     - NIDA (NIDA) — `nida`
+     - NIH (NIH) — `nih`
+     - Opioid Use Disorder (OUD) — `opioid-use-disorder`
+     - Overdose Prevention (OD) — `overdose-prevention`
+     - Pain Management (Pain) — `pain-management`
+     - Policy & Regulation (Policy) — `policy-regulation`
+     - Pregnancy & Perinatal (Perinatal) — `pregnancy-perinatal`
+     - Psychosocial (Psychosocial) — `psychosocial`
+     - Research (Research) — `research`
+     - SAMHSA (SAMHSA) — `samhsa`
+     - SAMPA (SAMPA) — `sampa`
+     - Stimulant Use Disorder (StUD) — `stimulant-use-disorder`
+   - This list can drift as admins add/remove keywords. **If the user provides a fresher
+     list, use theirs instead of this one.** To refresh it, run
+     `select name, short_label, slug from tags order by name;` in the Supabase SQL editor
+     (or query `tags` via a Supabase MCP connector in direct-DB mode) and update this section.
 
 ## Before you write
 
