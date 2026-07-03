@@ -96,6 +96,30 @@ The Article box is a visual editor, so you need to paste the body **with its for
 
 ---
 
+## Generating a cover image with AI (optional)
+
+Most image generators can't output *exactly* 1600×900, so **generate at 16:9, then resize/crop** to
+1600×900:
+
+1. **Ask for a 16:9 (widescreen / landscape) image** and describe a neutral, professional subject.
+   Avoid words/text in the image (AI usually garbles them), logos, and realistic depictions of
+   identifiable real people.
+   - **ChatGPT / DALL·E:** say "widescreen 16:9" (it produces 1792×1024).
+   - **Gemini / Imagen:** ask for "16:9 aspect ratio."
+   - **Grok (xAI):** ask for a "16:9 widescreen image" in the prompt.
+   - **Midjourney:** add `--ar 16:9` to the prompt.
+2. **Resize to exactly 1600×900.** On a Mac: open the image in **Preview → Tools → Adjust Size**, set
+   Width `1600` and Height `900`, and export as JPG. (Any free online image resizer works too.) Keep the
+   main subject centered so nothing important is lost.
+3. **Upload** the 1600×900 image as the cover in `/editor`.
+
+Example image prompt to adapt:
+
+> A clean, professional 16:9 editorial illustration for a health-policy news article about **[topic]**.
+> Neutral, modern, muted clinical color palette. No text, no logos, no identifiable real people.
+
+---
+
 *Keep the Approved Keywords list in sync with the site.* The current list lives in the `tags` table; an admin
 can refresh it in the Supabase SQL editor with `select name, short_label, slug from tags order by name;` and
 update the list in this prompt. (Managed in the app under **Manage keywords** / `/editor/keywords`.)
