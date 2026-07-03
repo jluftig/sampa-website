@@ -106,6 +106,7 @@ Most image generators can't output *exactly* 1600×900, so **generate at 16:9, t
    identifiable real people.
    - **ChatGPT / DALL·E:** say "widescreen 16:9" (it produces 1792×1024).
    - **Gemini / Imagen:** ask for "16:9 aspect ratio."
+   - **Grok (xAI):** ask for a "16:9 widescreen image" in the prompt.
    - **Midjourney:** add `--ar 16:9` to the prompt.
 2. **Resize to exactly 1600×900.** On a Mac: open the image in **Preview → Tools → Adjust Size**, set
    Width `1600` and Height `900`, and export as JPG. (Any free online image resizer works too.) Keep the
