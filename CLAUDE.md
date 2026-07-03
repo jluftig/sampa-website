@@ -144,6 +144,24 @@ DOMPurify-sanitized and only editor-writable.
     Do NOT tell the user to re-run the whole `schema.sql` casually — its tag seed is an
     upsert that would overwrite admin-customized keyword labels.
 
+## Rollback & recovery
+
+- **Branch deletion is lossless.** Merged commits persist in `main`; branches are pointers.
+  Recreate any branch with `git checkout -b <name> <sha>`. Deleting merged branches does not
+  impair reverting.
+- **Production emergency (fastest):** Vercel dashboard → Deployments → Promote a prior
+  deployment (Instant Rollback). No git/DB change. Last pre-News-blog commit: `7887071`.
+- **Undo in git (safe, no history rewrite):** `git revert -m 1 <merge-sha>` then push to `main`
+  (Vercel auto-deploys). Revert multiple newest-first. Re-apply a reverted feature via
+  `git revert <revert-sha>` (revert-the-revert); a plain re-merge won't re-add it. Do NOT
+  `git reset --hard` + force-push `main`.
+- **CODE AND DB ROLL BACK SEPARATELY — critical.** `git revert` / Vercel rollback do NOT touch
+  Supabase. Migrations here are additive + idempotent, so rolling code back is safe (unused
+  columns ignored). Deploying code that expects an unapplied migration breaks → always apply
+  DB migrations before dependent code. Destructive DB changes require a compensating SQL
+  migration or a Supabase backup restore, not a code revert.
+- Reference merges: PR#1 `9a8c74f` (feature), PR#2 `898200d` (draft-filter fix), PR#3 `ceb226b` (docs).
+
 ## Future architecture (planned — foundation already supports)
 
 ### Stripe membership payments

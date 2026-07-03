@@ -148,7 +148,46 @@ In plain terms, Supabase holds these tables:
 
 ---
 
-## 9. The roadmap — how the future pieces fit
+## 9. Rollback & recovery — how to undo a bad change
+
+**First, a reassurance:** deleting old merged branches never loses anything. Once a branch is
+merged, its changes live permanently in `main`'s history; a branch name is just a pointer.
+Any past state can be restored, and any branch can be recreated from any commit. So cleaning
+up merged branches is safe and does **not** make reverting harder.
+
+There are two ways to roll back, plus one caveat about the database.
+
+### Fastest — Vercel Instant Rollback (use this first in an emergency)
+Vercel keeps every past deployment, so you can restore the site without touching code:
+- Vercel → project → **Deployments** → find the last good deployment → **⋯ → Promote to Production**.
+- The site is restored in **seconds**, with no code or database changes — this buys you time to
+  diagnose calmly. The last known-good deployment from *before* the News blog is commit `7887071`.
+
+### Proper git undo — `git revert`
+This adds a new "undo" commit and is the safe way to undo history on a live branch (never
+force-push/rewrite `main`):
+```bash
+git revert -m 1 <merge-commit-sha>   # undoes everything a merged PR introduced
+git push origin main                  # Vercel auto-deploys the reverted state
+```
+Undo several by reverting newest-first. To bring a reverted feature back later, "revert the
+revert" (`git revert <the-revert-commit>`) — re-merging the old branch won't work, but nothing
+is ever lost.
+
+### ⚠️ The database rolls back separately from the code
+Reverting code does **not** change the Supabase database. They're independent:
+- Our migrations are **additive and idempotent**, so rolling code *back* is safe — an unused
+  column just sits there ignored.
+- The risky direction is deploying code that *expects* a DB change that hasn't been applied — so
+  always run DB migrations **before** the code that needs them.
+- Undoing a **destructive** DB change (dropped column, deleted data) needs a compensating SQL
+  migration or a **Supabase backup restore** — `git revert` can't do it.
+
+**Emergency sequence:** (1) Vercel Instant Rollback → (2) reproduce/diagnose on a branch's
+preview URL → (3) fix forward with a small PR, or `git revert` the bad merge → (4) touch the
+database only if the problem was a schema/data change.
+
+## 10. The roadmap — how the future pieces fit
 
 The system was intentionally built so these can be added **without redoing what exists.**
 The `profiles` table already has the reserved fields, and the login/role system already
@@ -202,7 +241,7 @@ Everything converges on the single Supabase database, keyed to each person's acc
 
 ---
 
-## 10. Key contacts & accounts to secure
+## 11. Key contacts & accounts to secure
 
 Make sure a trusted second person has access to (or knows how to recover):
 - The **GitHub** repository (`jluftig/sampa-website`)
