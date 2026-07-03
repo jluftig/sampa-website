@@ -27,10 +27,15 @@ export function AuthProvider({ children }) {
     return () => { active = false; sub.subscription.unsubscribe(); };
   }, []);
 
-  // Load the profile (role) whenever the session changes.
+  // Load the profile (role) only when the signed-in USER changes — not on every
+  // session object change. Supabase emits a new session on each background token
+  // refresh (and on tab refocus); keying this effect on the user id means those
+  // refreshes don't re-trigger the fetch, don't flip `loading`, and therefore
+  // don't cause RequireEditor to unmount/remount the editor (which would wipe an
+  // in-progress post).
+  const userId = session?.user?.id ?? null;
   useEffect(() => {
     let active = true;
-    const userId = session?.user?.id;
     if (!userId) {
       setProfile(null);
       setProfileReady(true);
@@ -48,7 +53,7 @@ export function AuthProvider({ children }) {
       setProfileReady(true);
     })();
     return () => { active = false; };
-  }, [session]);
+  }, [userId]);
 
   const signInWithGoogle = () =>
     supabase.auth.signInWithOAuth({
