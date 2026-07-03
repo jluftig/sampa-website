@@ -24,16 +24,21 @@ medicine who want the clinical and policy significance quickly and accurately.
 
 1. **Source** — this is: **$ARGUMENTS**
    - **If no source was provided** (`$ARGUMENTS` is empty/blank — the skill was invoked
-     with no URL or text), **STOP and ask the user for the article URL** (or pasted article
-     text) before doing anything else. Do not proceed, fetch, or draft until they provide it.
+     with no URL or text), **STOP and ask the user for the article URL, pasted article text,
+     or an uploaded article PDF** before doing anything else. Do not proceed, fetch, or draft
+     until they provide it.
    - If a URL, fetch it with WebFetch and read the full content.
+   - If given a PDF (path or attachment), read it with the Read tool and use its full content.
    - If the fetch fails, is paywalled, or returns too little, **stop and ask the
-     user to paste the article text.** Do not guess.
+     user to paste the article text or upload the PDF.** Do not guess.
    - If already pasted text, use it directly.
 
 2. **Keyword vocabulary** — the site uses a *controlled* keyword list (admin-managed
    `tags` table; user-facing label is "keyword"). You may ONLY assign keywords that
-   already exist in this list, and you assign them **by slug**.
+   already exist in this list. When you list a Key Point's keywords, write each as its
+   **full name with the button abbreviation in parentheses** — e.g. `Opioid Use Disorder (OUD)`
+   — so it matches both the vocabulary and the chip the editor clicks. (The `slug` is the
+   internal id, shown below for reference / direct-DB mode.)
    - **Current controlled vocabulary (as of 2026-07-02)** — use this as the default. Format
      is `Name (short label) — slug`:
      - AAPA (AAPA) — `aapa`
@@ -86,8 +91,8 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
 - **Preserve strength of evidence.** Distinguish a single study, preprint, guideline,
   meta-analysis, or opinion piece. Note sample size, design, and major limitations.
 - **Flag** anything preliminary, non-peer-reviewed, industry-funded, retracted, or contested.
-- **Paraphrase.** Do not copy sentences or long phrases. One short direct quote
-  (under ~15 words) is fine if it adds something — attribute it. In the HTML body,
+- **Paraphrase.** Do not copy sentences or long phrases. At most 1-3 short direct quotes
+  (under ~15 words each) are fine if they add something — attribute each. In the HTML body,
   wrap every directly quoted phrase (anything inside quotation marks) in `<em>` so it
   renders in italics; keep the quotation marks. E.g.
   `<em>"dangerous opioids that fuel addiction and put American lives at risk"</em>`.
@@ -99,7 +104,7 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
 
 - **Title** — Clear, specific headline (~6-12 words) stating clinical significance. No clickbait.
 - **Slug** — Lowercase kebab-case, 3-6 words, hyphen-separated, descriptive; add the year
-  if it aids clarity. Example: `xr-buprenorphine-pregnancy-mom-trial`. Must be unique.
+  (and month) when possible. Example: `xr-buprenorphine-pregnancy-trial-2026-02`. Must be unique.
 - **Excerpt** — One to two sentences (~25-45 words) for the news list.
 - **Body (HTML)** — ~250-500 words as **clean HTML**, because the site stores `body_html`
   from a TipTap editor. Use ONLY these HTML elements (the editor supports nothing else),
@@ -108,7 +113,8 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
   links (an "a" element with an href). Open with what happened and why it matters to
   addiction-medicine PAs. Use h2/h3 only if long enough to warrant them; lists for findings;
   at most one blockquote. End with a paragraph reading "Source:" followed by a link to the
-  original article. No markdown, no other elements.
+  original article. For academic sources, use AMA-style citations and include the DOI (as the
+  source link). No markdown, no other elements.
   - **Italicize quotes:** wrap any directly quoted text (inside quotation marks) in `<em>`,
     keeping the quote marks — e.g. `<em>"...put American lives at risk"</em>`.
 - **Key Points** — **only 2-3 items** (high-quality, not exhaustive). Each a **standalone
@@ -143,7 +149,7 @@ Return each field in its own fenced code block for clean copy/transfer, in this 
   ```
   [standalone statement — subject named, no leading label]
   ```
-  Keywords: existing-keyword, existing-keyword   ← plain text, OUTSIDE the block, only from the controlled list
+  Keywords: Full Name (ABBR), Full Name (ABBR)   ← plain text, OUTSIDE the block; only from the controlled list, e.g. "Opioid Use Disorder (OUD), Policy & Regulation (Policy)"
   Then the next point's block, then its keywords line, and so on (2-3 points total).
 - PROPOSED NEW KEYWORDS — a plain list of any keywords the content needed but the
   vocabulary lacks (empty if none). Label clearly as "needs admin to add at /editor/tags".
