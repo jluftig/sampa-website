@@ -23,6 +23,9 @@ medicine who want the clinical and policy significance quickly and accurately.
 ## Inputs
 
 1. **Source** — this is: **$ARGUMENTS**
+   - **If no source was provided** (`$ARGUMENTS` is empty/blank — the skill was invoked
+     with no URL or text), **STOP and ask the user for the article URL** (or pasted article
+     text) before doing anything else. Do not proceed, fetch, or draft until they provide it.
    - If a URL, fetch it with WebFetch and read the full content.
    - If the fetch fails, is paywalled, or returns too little, **stop and ask the
      user to paste the article text.** Do not guess.
