@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { slugify } from '../lib/slug';
+import { draftKeyFor, readDraft, writeDraft, clearDraft, draftSignature, draftHasContent } from '../lib/draft';
 import RichTextEditor from '../components/RichTextEditor';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -31,6 +32,14 @@ export default function PostEditor() {
   // Key Points: each is { localId, content, tagIds[] }.
   const [keyPoints, setKeyPoints] = useState([]);
   const [allTags, setAllTags] = useState([]);
+
+  // --- Local draft auto-save (survives reloads / crashes / tab close) ---
+  const draftKey = draftKeyFor(id);
+  const [captured] = useState(() => readDraft(draftKey)); // draft present at mount, if any
+  const [recoverable, setRecoverable] = useState(null);   // captured draft worth offering to restore
+  const [hydrated, setHydrated] = useState(!isEditing);   // gate autosave until initial data loaded
+  const [editorNonce, setEditorNonce] = useState(0);      // bump to remount the uncontrolled rich-text editor
+  const loadedSigRef = useRef(draftSignature({}));        // signature of the saved/loaded content
 
   // Load the controlled tag vocabulary (for the chip pickers).
   useEffect(() => {
@@ -65,17 +74,56 @@ export default function PostEditor() {
         .select('id, content, sort_order, item_tags(tag_id)')
         .eq('post_id', id)
         .order('sort_order');
-      if (active && itemData) {
-        setKeyPoints(itemData.map((it) => ({
-          localId: crypto.randomUUID(),
-          content: it.content,
-          tagIds: (it.item_tags || []).map((t) => t.tag_id),
-        })));
+      if (!active) return;
+      const loadedKeyPoints = (itemData || []).map((it) => ({
+        localId: crypto.randomUUID(),
+        content: it.content,
+        tagIds: (it.item_tags || []).map((t) => t.tag_id),
+      }));
+      setKeyPoints(loadedKeyPoints);
+
+      // Baseline signature of the saved post; offer to restore the local draft
+      // only if it actually differs from what's saved.
+      loadedSigRef.current = draftSignature({
+        title: data.title || '',
+        slug: data.slug || '',
+        excerpt: data.excerpt || '',
+        bodyHtml: data.body_html || '',
+        coverImageUrl: data.cover_image_url || '',
+        coverImageCaption: data.cover_image_caption || '',
+        keyPoints: loadedKeyPoints,
+      });
+      if (captured && draftHasContent(captured.data) &&
+          draftSignature(captured.data) !== loadedSigRef.current) {
+        setRecoverable(captured);
+      } else if (captured) {
+        clearDraft(draftKey); // stale or identical to saved — clean it up
       }
+      setHydrated(true);
       setLoading(false);
     })();
     return () => { active = false; };
   }, [id, isEditing]);
+
+  // New post: offer to restore any draft captured at mount.
+  useEffect(() => {
+    if (isEditing) return;
+    if (captured && draftHasContent(captured.data)) setRecoverable(captured);
+    else if (captured) clearDraft(draftKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Auto-save the in-progress post to local storage as it changes (debounced).
+  useEffect(() => {
+    if (!hydrated) return;
+    const fields = { title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption, keyPoints };
+    const t = setTimeout(() => {
+      if (draftHasContent(fields) && draftSignature(fields) !== loadedSigRef.current) {
+        writeDraft(draftKey, fields);
+      }
+    }, 700);
+    return () => clearTimeout(t);
+  }, [hydrated, title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption, keyPoints, draftKey]);
 
   function addKeyPoint() {
     setKeyPoints((prev) => [...prev, { localId: crypto.randomUUID(), content: '', tagIds: [] }]);
@@ -118,6 +166,30 @@ export default function PostEditor() {
       setCoverImageUrl(data.publicUrl);
     }
     setUploading(false);
+  }
+
+  function restoreDraft() {
+    const d = recoverable?.data;
+    if (!d) return;
+    setTitle(d.title || '');
+    setSlug(d.slug || '');
+    setSlugTouched(d.slugTouched ?? true);
+    setExcerpt(d.excerpt || '');
+    setCoverImageUrl(d.coverImageUrl || '');
+    setCoverImageCaption(d.coverImageCaption || '');
+    setKeyPoints((d.keyPoints || []).map((k) => ({
+      localId: crypto.randomUUID(),
+      content: k.content || '',
+      tagIds: k.tagIds || [],
+    })));
+    setBodyHtml(d.bodyHtml || '');
+    setEditorNonce((n) => n + 1); // remount the uncontrolled editor so it shows restored HTML
+    setRecoverable(null);
+  }
+
+  function discardDraft() {
+    clearDraft(draftKey);
+    setRecoverable(null);
   }
 
   async function save(targetStatus) {
@@ -180,6 +252,7 @@ export default function PostEditor() {
       }
     }
 
+    clearDraft(draftKey); // work is persisted to the DB now
     navigate('/editor');
   }
 
@@ -203,6 +276,25 @@ export default function PostEditor() {
           <p className="text-text/50 font-data">Loading…</p>
         ) : (
           <div className="space-y-6">
+            {recoverable && (
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm text-amber-900">
+                  <strong>Unsaved draft found.</strong> You have work from an earlier session that
+                  wasn't saved. Restore it?
+                </div>
+                <div className="flex gap-2">
+                  <button type="button" onClick={restoreDraft}
+                    className="px-4 py-2 rounded-full bg-amber-500 text-white text-sm font-semibold hover:opacity-90">
+                    Restore it
+                  </button>
+                  <button type="button" onClick={discardDraft}
+                    className="px-4 py-2 rounded-full border border-amber-300 text-amber-900 text-sm font-semibold hover:bg-amber-100">
+                    Discard
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-semibold mb-2">Title</label>
               <input
@@ -274,7 +366,7 @@ export default function PostEditor() {
 
             <div>
               <label className="block text-sm font-semibold mb-2">Article</label>
-              <RichTextEditor initialContent={bodyHtml} onChange={setBodyHtml} />
+              <RichTextEditor key={editorNonce} initialContent={bodyHtml} onChange={setBodyHtml} />
             </div>
 
             <div>
@@ -330,6 +422,11 @@ export default function PostEditor() {
             </div>
 
             {error && <p className="text-red-500">{error}</p>}
+
+            <p className="text-text/40 text-xs">
+              Your work is auto-saved in this browser as you type, so you won't lose it if the page
+              reloads. Publishing or saving stores it permanently.
+            </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
               {isPublished ? (
