@@ -29,9 +29,9 @@ export default function Home() {
 
       <main className="w-full">
         <Hero />
+        <NewsTeaser />
         <About />
         <ValueProps />
-        <NewsTeaser />
         <Membership />
         <EventsTeaser />
       </main>

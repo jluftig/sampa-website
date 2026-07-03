@@ -24,9 +24,9 @@ export default function Navbar() {
         
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6 font-medium text-sm text-text/80">
+          <Link to="/news" className="hover:text-primary transition-colors">News</Link>
           <a href="/#about" className="hover:text-primary transition-colors">About</a>
           <a href="/#value-props" className="hover:text-primary transition-colors">CE & Resources</a>
-          <Link to="/news" className="hover:text-primary transition-colors">News</Link>
           <a href="/#membership" className="hover:text-primary transition-colors">Membership</a>
           <a href="/#events" className="hover:text-primary transition-colors">Events</a>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Contact Us</a>
@@ -57,9 +57,9 @@ export default function Navbar() {
       {/* Mobile/Tablet Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
+          <Link to="/news" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>News</Link>
           <a href="/#about" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</a>
           <a href="/#value-props" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>CE & Resources</a>
-          <Link to="/news" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>News</Link>
           <a href="/#membership" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
           <a href="/#events" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Events</a>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
