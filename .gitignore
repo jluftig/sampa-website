@@ -18,6 +18,9 @@
 .env
 .env*.local
 
+# generated post drafts (sampa-post skill) — local only, never committed
+/drafts
+
 # debug
 npm-debug.log*
 yarn-debug.log*
