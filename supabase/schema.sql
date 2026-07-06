@@ -57,6 +57,16 @@ create table if not exists public.posts (
 -- Add cover_image_caption if the table already existed from an earlier run.
 alter table public.posts add column if not exists cover_image_caption text;
 
+-- Professional profile fields (member-editable via the dashboard onboarding
+-- form; these replace the old Google Form). Membership/billing columns above
+-- stay locked down by guard_profile_role().
+alter table public.profiles add column if not exists credentials       text;
+alter table public.profiles add column if not exists npi               text;
+alter table public.profiles add column if not exists organization      text;
+alter table public.profiles add column if not exists practice_setting  text;
+alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
+alter table public.profiles add column if not exists onboarded_at      timestamptz;
+
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
   name        text not null,              -- full name, e.g. "Opioid Use Disorder"
@@ -82,6 +92,14 @@ create table if not exists public.item_tags (
   primary key (item_id, tag_id)
 );
 
+-- Saved/favorite news posts for signed-in members ("My saved items").
+create table if not exists public.favorites (
+  user_id    uuid not null references public.profiles(id) on delete cascade,
+  post_id    uuid not null references public.posts(id)    on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (user_id, post_id)
+);
+
 create index if not exists posts_status_published_at_idx on public.posts (status, published_at desc);
 create index if not exists items_post_id_idx             on public.items (post_id);
 create index if not exists item_tags_tag_id_idx          on public.item_tags (tag_id);
@@ -98,6 +116,16 @@ create or replace function public.is_admin()
 returns boolean language sql stable security definer set search_path = public as $$
   select coalesce(
     (select role = 'admin' from public.profiles where id = auth.uid()),
+    false);
+$$;
+
+-- Paid-up member (or staff). Gate future member-only content (e.g. CME) on
+-- this, the same way posts/tags gate on is_editor()/is_admin().
+create or replace function public.is_active_member()
+returns boolean language sql stable security definer set search_path = public as $$
+  select coalesce(
+    (select membership_status = 'active' or role in ('editor','admin')
+       from public.profiles where id = auth.uid()),
     false);
 $$;
 
@@ -162,6 +190,7 @@ alter table public.posts     enable row level security;
 alter table public.tags      enable row level security;
 alter table public.items     enable row level security;
 alter table public.item_tags enable row level security;
+alter table public.favorites enable row level security;
 
 -- profiles: read own (or admin reads all); update own (role column guarded above)
 drop policy if exists profiles_select on public.profiles;
@@ -237,6 +266,22 @@ create policy item_tags_insert on public.item_tags for insert with check ( publi
 
 drop policy if exists item_tags_delete on public.item_tags;
 create policy item_tags_delete on public.item_tags for delete using ( public.is_editor() );
+
+-- favorites: strictly own rows; can only save posts that are published
+drop policy if exists favorites_select on public.favorites;
+create policy favorites_select on public.favorites
+  for select using ( auth.uid() = user_id );
+
+drop policy if exists favorites_insert on public.favorites;
+create policy favorites_insert on public.favorites
+  for insert with check (
+    auth.uid() = user_id
+    and exists (select 1 from public.posts p where p.id = post_id and p.status = 'published')
+  );
+
+drop policy if exists favorites_delete on public.favorites;
+create policy favorites_delete on public.favorites
+  for delete using ( auth.uid() = user_id );
 
 -- ----- Storage bucket for cover images ---------------------------------------
 insert into storage.buckets (id, name, public)

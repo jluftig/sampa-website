@@ -1,16 +1,35 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import { Mail } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-export default function Login() {
-  const { user, loading, signInWithGoogle } = useAuth();
+// Only follow in-app paths — never an absolute URL from the query string.
+function safeNext(raw) {
+  return raw && raw.startsWith('/') && !raw.startsWith('//') ? raw : '/dashboard';
+}
 
-  // Already signed in? Send them to the editor area.
+export default function Login() {
+  const { user, loading, signInWithGoogle, signInWithEmail } = useAuth();
+  const [searchParams] = useSearchParams();
+  const next = safeNext(searchParams.get('next'));
+
+  const [email, setEmail] = useState('');
+  const [linkState, setLinkState] = useState('idle'); // idle | sending | sent | error
+
+  // Already signed in? Continue to wherever they were headed.
   if (!loading && user) {
-    return <Navigate to="/editor" replace />;
+    return <Navigate to={next} replace />;
   }
+
+  const sendMagicLink = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setLinkState('sending');
+    const { error } = await signInWithEmail(email.trim(), next);
+    setLinkState(error ? 'error' : 'sent');
+  };
 
   return (
     <div className="relative min-h-screen bg-background text-text">
@@ -20,15 +39,16 @@ export default function Login() {
       <main className="max-w-md mx-auto px-4 pt-40 pb-24">
         <div className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 md:p-10 text-center">
           <div className="text-primary font-bold font-data tracking-widest text-xs mb-4 uppercase">
-            Editor Access
+            Member & Editor Access
           </div>
           <h1 className="text-2xl md:text-3xl font-drama font-bold mb-3">Sign in</h1>
           <p className="text-text/60 mb-8">
-            Editors sign in with Google to write and publish news posts.
+            Members sign in to save news articles, manage their membership, and
+            update their profile. Editors sign in to publish news.
           </p>
 
           <button
-            onClick={signInWithGoogle}
+            onClick={() => signInWithGoogle(next)}
             disabled={loading}
             className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
           >
@@ -41,8 +61,52 @@ export default function Login() {
             Continue with Google
           </button>
 
+          <div className="flex items-center gap-3 my-6 text-text/30 text-xs font-data uppercase tracking-widest">
+            <span className="flex-1 border-t border-primary/10"></span>
+            or
+            <span className="flex-1 border-t border-primary/10"></span>
+          </div>
+
+          {linkState === 'sent' ? (
+            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5 text-sm text-text/80">
+              <Mail className="w-5 h-5 mx-auto mb-2 text-primary" />
+              <strong>Check your email.</strong> We sent a sign-in link to{' '}
+              <span className="font-semibold">{email}</span> — click it and
+              you'll be signed in here automatically.
+            </div>
+          ) : (
+            <form onSubmit={sendMagicLink} className="text-left">
+              <label htmlFor="login-email" className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
+                Email me a sign-in link
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="login-email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="flex-1 min-w-0 px-4 py-3 rounded-full border border-primary/20 focus:outline-none focus:border-primary text-sm"
+                />
+                <button
+                  type="submit"
+                  disabled={linkState === 'sending'}
+                  className="px-5 py-3 rounded-full bg-primary text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
+                >
+                  {linkState === 'sending' ? 'Sending…' : 'Send link'}
+                </button>
+              </div>
+              {linkState === 'error' && (
+                <p className="text-red-500 text-xs mt-2">
+                  Couldn't send the link — check the address and try again.
+                </p>
+              )}
+            </form>
+          )}
+
           <p className="text-text/40 text-xs mt-6">
-            Members and readers don't need an account — the news is public.
+            No password needed — use your Google account or a one-time email link.
           </p>
         </div>
       </main>

@@ -1,11 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
+import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../lib/AuthContext';
+import { useFavorites } from '../lib/useFavorites';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import TagChip from '../components/TagChip';
 import { formatDate } from '../lib/format';
+
+// Save-for-later control shown in the article header. Signed-out readers get
+// a link into the login flow that returns them to this article.
+function SaveButton({ post }) {
+  const { user } = useAuth();
+  const { favoriteIds, ready, toggle } = useFavorites();
+
+  if (!user) {
+    return (
+      <Link
+        to={`/login?next=${encodeURIComponent(`/news/${post.slug}`)}`}
+        className="flex items-center gap-1.5 text-sm font-semibold text-text/50 hover:text-primary transition-colors"
+      >
+        <Bookmark className="w-4 h-4" /> Save
+      </Link>
+    );
+  }
+
+  const saved = favoriteIds.has(post.id);
+  return (
+    <button
+      onClick={() => toggle(post.id)}
+      disabled={!ready}
+      className={`flex items-center gap-1.5 text-sm font-semibold transition-colors disabled:opacity-50 ${saved ? 'text-primary' : 'text-text/50 hover:text-primary'}`}
+    >
+      {saved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+      {saved ? 'Saved' : 'Save'}
+    </button>
+  );
+}
 
 export default function PostView() {
   const { slug } = useParams();
@@ -70,9 +103,12 @@ export default function PostView() {
         {status === 'ready' && post && (
           <article className="mt-8">
             <header className="mb-10">
-              <div className="text-primary font-bold font-data tracking-widest text-xs mb-4 uppercase">
-                {formatDate(post.published_at)}
-                {post.author_name ? ` · ${post.author_name}` : ''}
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <div className="text-primary font-bold font-data tracking-widest text-xs uppercase">
+                  {formatDate(post.published_at)}
+                  {post.author_name ? ` · ${post.author_name}` : ''}
+                </div>
+                <SaveButton post={post} />
               </div>
               <h1 className="text-3xl md:text-5xl font-drama font-bold leading-tight">
                 {post.title}

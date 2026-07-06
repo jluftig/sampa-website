@@ -4,23 +4,33 @@ Machine-oriented reference for working on the SAMPA website. Optimized for an ag
 picking up this repo cold. Human-oriented operations guide: `docs/HANDOFF.md`.
 Original build plan/decisions: `docs/news-blog-plan.md`. Original design brief: `GEMINI.md`.
 
-Last updated: 2026-07-02.
+Last updated: 2026-07-06.
 
 ## What this project is
 
 Marketing site for SAMPA (Society for Addiction Medicine PAs) **plus** a News/blog
-subsystem with editor authentication and a keyword-searchable "Key Points" database.
-Single-page React app; all backend concerns (DB, auth, storage) are Supabase.
+subsystem with editor authentication and a keyword-searchable "Key Points" database,
+**plus** a member area (dashboard, saved articles, profile onboarding) with Stripe
+membership payments. Single-page React app; DB/auth/storage are Supabase; Stripe runs
+through Vercel serverless functions in `api/`.
 
 ## Stack & hosting
 
 - **Frontend:** Vite + React 18, React Router v6 (`BrowserRouter`), Tailwind CSS.
 - **Libs:** `@supabase/supabase-js` (DB/auth/storage), `@tiptap/*` (rich-text editor,
   editor-only), `dompurify` (sanitize post HTML on render), `gsap` (homepage animation),
-  `lucide-react` (icons).
-- **Backend:** Supabase project ref `xbzzawjnphpnexwfjtif` (Postgres + Auth + Storage).
-- **Auth:** Google OAuth only (Supabase provider). Consent screen currently in **Testing**
-  mode → only whitelisted Google "test users" can sign in. Publish before opening to members.
+  `lucide-react` (icons), `stripe` (SERVER-side only, imported only from `api/`).
+- **Backend:** Supabase project ref `xbzzawjnphpnexwfjtif` (Postgres + Auth + Storage)
+  + Vercel serverless functions in `api/` (Stripe checkout / portal / webhook).
+- **Auth:** Google OAuth + email magic link (Supabase providers). Google consent screen
+  currently in **Testing** mode → only whitelisted "test users" can sign in. Publish
+  before opening to members. One-time config steps: `docs/member-area-setup.md`.
+- **Payments:** Stripe annual subscriptions, sign-in-first: `/join` →
+  `/api/create-checkout-session` (stamps `client_reference_id` = Supabase user id) →
+  Stripe Checkout → `/api/stripe-webhook` writes membership columns on `profiles`.
+  The Stripe↔Supabase link is the user id, NEVER email matching. Stripe = source of
+  truth for billing; the app renders only from Supabase. Billing self-service = Stripe
+  Customer Portal via `/api/create-portal-session` (we build no payment UI).
 - **Hosting:** Vercel. `main` → production (www.addictionpas.org). Every branch → preview URL.
 - **Repo:** GitHub `jluftig/sampa-website`.
 
@@ -32,39 +42,58 @@ Single-page React app; all backend concerns (DB, auth, storage) are Supabase.
 
 ## Environment variables
 
-Both are build-time (`import.meta.env`, inlined by Vite) and **safe to expose** (publishable
-key; RLS enforces security):
+**Client (build-time, `import.meta.env`, inlined by Vite, safe to expose — RLS enforces
+security):**
 - `VITE_SUPABASE_URL` = `https://xbzzawjnphpnexwfjtif.supabase.co`
 - `VITE_SUPABASE_ANON_KEY` = `sb_publishable_...`
 
 Local: `.env.local` (gitignored). Prod/preview: Vercel → Settings → Environment Variables
 (set for Production AND Preview). Missing vars → `supabaseClient.js` throws at import → blank
-page. **Never** put the Supabase `service_role`/secret key in any `VITE_` var or client code.
+page.
+
+**Server (Vercel env vars WITHOUT the VITE_ prefix; read via `process.env` in `api/` only —
+NEVER client-side, never in a VITE_ var):**
+- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
+- `SUPABASE_SERVICE_ROLE_KEY` (+ optional `SUPABASE_URL`; falls back to `VITE_SUPABASE_URL`)
+- `STRIPE_PRICE_FELLOW|SUSTAINING|ASSOCIATE|LEGACY|STUDENT|PREPA` — Stripe Price ids per
+  membership tier (mapping in `api/_lib/tiers.js`; tier keys in `src/lib/membership.js`)
 
 ## Repo map
 
 ```
+api/                        Vercel serverless functions (Web-handler signature: export POST)
+  _lib/clients.js           stripeClient(), supabaseAdmin() (service role), requireUser(JWT), json()
+  _lib/tiers.js             tier key -> STRIPE_PRICE_* env mapping
+  create-checkout-session.js POST {tier} -> {url}; JWT required; client_reference_id = user id
+  create-portal-session.js  POST -> {url} of Stripe Customer Portal; JWT required
+  stripe-webhook.js         Stripe events -> membership columns on profiles (ONLY writer)
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
   lib/
     supabaseClient.js       single shared Supabase client
-    AuthContext.jsx         session + profile(role); useAuth() -> {user, profile, role, isEditor, isAdmin, loading, signInWithGoogle, signOut}
+    AuthContext.jsx         session + profile; useAuth() -> {user, profile, role, isEditor, isAdmin, isActiveMember, loading, signInWithGoogle(next), signInWithEmail(email,next), signOut, refreshProfile}
+    membership.js           MEMBERSHIP_TIERS (tier keys/names/prices) — keep in sync with api/_lib/tiers.js
+    api.js                  apiPost(path, body) — calls /api/* with the Supabase JWT
+    useFavorites.js         saved-post ids + optimistic toggle for the signed-in user
     tags.js                 collectPostTags(post) — dedupe a post's keywords from nested items
     slug.js                 slugify()
     format.js               formatDate()
   components/
     RequireEditor.jsx       route guard; prop adminOnly restricts to admins
+    RequireAuth.jsx         route guard: any signed-in user (member area)
     Navbar.jsx Footer.jsx   nav; section links are /#anchor so they work off-home
     RichTextEditor.jsx      TipTap wrapper (bold/italic/H2/H3/lists/quote/link)
-    PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx
+    PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx Membership.jsx
   pages/
-    Home.jsx                marketing homepage (was App) + NewsTeaser
+    Home.jsx                marketing homepage (was App) + NewsTeaser + Membership section
     News.jsx                /news — published post list
-    PostView.jsx            /news/:slug — article (DOMPurify) + Key Points
+    PostView.jsx            /news/:slug — article (DOMPurify) + Key Points + Save button
     Tags.jsx                /keywords — keyword index w/ counts
     TagView.jsx             /keywords/:slug — key points for a keyword (not articles)
-    Login.jsx               /login — Continue with Google
+    Login.jsx               /login — Google OAuth + email magic link; ?next= return path
+    Join.jsx                /join — tier picker -> Stripe Checkout (sign-in-first)
+    Dashboard.jsx           /dashboard — membership status/billing, profile form, saved articles
     EditorDashboard.jsx     /editor — post list + admin links
     PostEditor.jsx          /editor/new, /editor/:id — post + Key Points editor
     AdminTags.jsx           /editor/keywords (adminOnly) — manage keyword vocabulary
@@ -73,46 +102,61 @@ src/
 supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
   sample-post.sql           optional demo fixture
-docs/                       HANDOFF.md (humans), news-blog-plan.md (plan)
-vercel.json                 SPA rewrite: all paths -> /index.html
+docs/                       HANDOFF.md (humans), member-area-setup.md (one-time config), news-blog-plan.md
+vercel.json                 SPA rewrite: all non-/api paths -> /index.html
 ```
 
 ## Routes
 
-Public: `/`, `/news`, `/news/:slug`, `/keywords`, `/keywords/:slug`, `/login`.
+Public: `/`, `/news`, `/news/:slug`, `/keywords`, `/keywords/:slug`, `/login`, `/join`.
+Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
 Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.
 `*` → NotFound. Route order: `/editor/keywords` and `/editor/people` are declared before
 `/editor/:id` so they aren't captured as an id.
+`/login` honors `?next=<in-app path>` (sanitized: must start with `/`, not `//`); guards
+redirect to `/login?next=...` so users return where they were headed.
 
 ## Data model (see supabase/schema.sql for exact DDL)
 
-- `profiles` — PK `id` → `auth.users(id)`. `email, full_name, phone, role`, plus
-  membership/billing (reserved, empty until Stripe): `stripe_customer_id, membership_tier,
-  membership_status, renews_on`. `role` is enum `user_role` = member|editor|admin (default member).
+- `profiles` — PK `id` → `auth.users(id)`. `email, full_name, phone, role`; professional
+  profile (self-editable, dashboard onboarding form): `credentials, npi, organization,
+  practice_setting, newsletter_opt_in, onboarded_at`; membership/billing (webhook-written,
+  guarded): `stripe_customer_id, membership_tier (tier key from src/lib/membership.js),
+  membership_status ('active'|'past_due'|'canceled'), renews_on`. `role` is enum
+  `user_role` = member|editor|admin (default member).
 - `posts` — `id, title, slug (unique), excerpt, body_html, cover_image_url,
   cover_image_caption, author_id, author_name (denormalized), status` (enum post_status
   draft|published), `published_at, created_at, updated_at`.
 - `tags` — `id, name, short_label, slug (unique)`. (UI term: "keyword".)
 - `items` — Key Points: `id, post_id (FK posts), content (text), sort_order`.
 - `item_tags` — M2M: `(item_id, tag_id)` composite PK.
+- `favorites` — saved news posts: `(user_id, post_id)` composite PK, `created_at`.
 - Storage bucket `post-images` (public read) for cover images.
 
 ## Security model (RLS) — INVARIANTS, do not weaken
 
 RLS is the ONLY real authorization boundary. Client checks are UX only. Helpers
-`is_editor()` / `is_admin()` are SECURITY DEFINER (bypass RLS → no recursion), `search_path=public`.
+`is_editor()` / `is_admin()` / `is_active_member()` are SECURITY DEFINER (bypass RLS → no
+recursion), `search_path=public`. Gate future member-only content (CME) on
+`is_active_member()` (true for membership_status='active' OR editors/admins).
 
 - **posts/items/item_tags SELECT:** public sees `status='published'`; editors/admins see all
   (incl. drafts). items/item_tags gate on their parent post being published.
 - **posts/items/item_tags write (INS/UPD/DEL):** `is_editor()` only.
 - **tags SELECT:** public. **tags write:** `is_admin()` only.
 - **profiles SELECT:** own row or admin. **profiles UPDATE:** own row or admin.
+- **favorites:** SELECT/DELETE own rows only; INSERT own rows AND only for published posts.
 - **Privilege-escalation guard:** `guard_profile_role()` BEFORE UPDATE trigger blocks a
   non-admin from changing `role` OR any membership/billing column
   (`membership_status, membership_tier, stripe_customer_id, renews_on`). Bypass only when
-  `auth.uid() IS NULL` = trusted server-side (SQL editor / service_role / future Stripe
-  webhook). This is why members can safely edit name/phone but not grant themselves access.
+  `auth.uid() IS NULL` = trusted server-side (SQL editor / service_role / the Stripe
+  webhook). This is why members can safely edit name/phone/professional fields but cannot
+  grant themselves a role or membership. `api/stripe-webhook.js` (service role) is the ONLY
+  writer of the membership columns.
+- **`/api` endpoints:** `create-checkout-session` / `create-portal-session` require a valid
+  Supabase JWT (`Authorization: Bearer`) verified server-side via `auth.getUser()`;
+  `stripe-webhook` requires a valid Stripe signature (`STRIPE_WEBHOOK_SECRET`).
 - **Profile creation:** `handle_new_user()` trigger (SECURITY DEFINER) inserts a `member`
   row on `auth.users` insert; role is NEVER taken from user-controlled signup metadata.
 - **First admin** is bootstrapped manually (SQL editor, where `auth.uid()` is null).
@@ -143,6 +187,14 @@ DOMPurify-sanitized and only editor-writable.
     run in the Supabase SQL editor. There is ONE shared Supabase DB across prod+preview.
     Do NOT tell the user to re-run the whole `schema.sql` casually — its tag seed is an
     upsert that would overwrite admin-customized keyword labels.
+11. **Membership tier keys** live in three places that must stay in sync:
+    `src/lib/membership.js` (UI), `api/_lib/tiers.js` (env mapping), and the
+    `STRIPE_PRICE_*` Vercel env vars. `profiles.membership_tier` stores the key.
+12. **`api/` functions can't run under `npm run dev`** (Vite doesn't serve them). Test on a
+    Vercel preview deployment (or `vercel dev`). Client code should surface API errors
+    gracefully for this reason.
+13. **AuthContext fetches `profiles` with `select('*')`** so the client tolerates a DB
+    that hasn't had the latest additive migration yet — don't list new columns there.
 
 ## Rollback & recovery
 
@@ -162,39 +214,40 @@ DOMPurify-sanitized and only editor-writable.
   migration or a Supabase backup restore, not a code revert.
 - Reference merges: PR#1 `9a8c74f` (feature), PR#2 `898200d` (draft-filter fix), PR#3 `ceb226b` (docs).
 
-## Future architecture (planned — foundation already supports)
+## Member area & Stripe (BUILT 2026-07-06 — needs one-time config to go live)
 
-### Stripe membership payments
-- Membership tier chips → Stripe Checkout / Payment Links (collect name, email, phone, card).
-- **Stripe = source of truth for billing; Supabase = source of truth for identity/app data.**
-- Sync is one-directional: Stripe webhook → a **Vercel serverless function** (`/api/*`, to be
-  added) → upsert into `profiles` (`stripe_customer_id, membership_tier, membership_status,
-  renews_on`). The app only reads Supabase, never queries Stripe at render.
-- Webhook runs with the **service_role** key (server-side only) → `auth.uid()` is null →
-  passes `guard_profile_role`, so it can write membership columns that users cannot.
-- Payment↔account link: by email initially; harden later with Stripe Checkout
-  `client_reference_id`/metadata = Supabase user id.
-- Never store card data (PCI stays with Stripe). Store only IDs + status.
+Implemented: `/join` checkout flow, `/dashboard` (membership status + billing portal +
+profile onboarding form + saved articles), Google + magic-link login, favorites, the three
+`api/` functions. The old Google Form for member sign-up is retired from membership CTAs.
+**Non-negotiable design decisions (do not regress):**
+- Sign-in-first: checkout is only reachable signed in; the Supabase user id rides in
+  `client_reference_id` + subscription metadata. NEVER link Stripe↔Supabase by email.
+- Stripe collects ONLY payment data (card, name-on-card, billing address). Identity comes
+  from OAuth; professional details from the dashboard form. No Stripe custom fields.
+- Members join/renew/cancel through Stripe-hosted surfaces (Checkout, Customer Portal).
+  We never build card UI, never store card data.
+- `/join` blocks starting a second checkout for an already-active member (would create a
+  duplicate subscription) — tier changes go through the Customer Portal.
+Remaining config (Stripe products/prices, webhook, Vercel env vars, consent-screen publish,
+Supabase redirect allowlist) + test plan: **`docs/member-area-setup.md`**.
 
-### New-member onboarding
-- Replaces the current Google Form. Collects professional profile: name, credentials, NPI,
-  organization, practice setting, contact/comms prefs. Store on `profiles` (or a companion
-  `member_profiles` table if it grows). Profile row already auto-created at first login.
+## Future: iOS/Android apps (planned — architecture already accounts for this)
 
-### Member login + dashboard + profile
-- Enable Supabase magic-link (email OTP) provider alongside Google; publish the Google
-  consent screen (basic scopes → no lengthy verification).
-- New `/dashboard` route guarded by authenticated session (role `member`+). Reads membership
-  status/renewal from `profiles`. Profile edit page updates safe fields only (name/phone) —
-  the role/membership guard already blocks self-escalation.
-- Billing self-service: link to **Stripe Customer Portal** (hosted) rather than building
-  payment UI.
+- Mobile apps talk to the SAME Supabase project (RLS is the boundary — that's why client
+  checks stay UX-only) and the SAME `/api` endpoints (JWT auth via `Authorization: Bearer`,
+  no cookies — deliberately mobile-friendly).
+- **Do NOT sell memberships inside the iOS app** (Apple IAP would take 30% and forbid our
+  Stripe checkout in-app). The app reads `membership_status` from `profiles`
+  ("multiplatform services" rule) and sends people to the website to join/renew.
+- **Sign in with Apple is required** on iOS once Google login is offered there (guideline
+  4.8). Enable the Apple provider in Supabase then; identities auto-link by verified email.
+  Apple "Hide My Email" relays are harmless because Stripe↔Supabase links by user id.
+- OAuth deep-link/custom-scheme redirect config happens in Supabase when the app ships.
 
-### Extension checklist for the above
-- Add serverless functions under `/api` (Vercel) for Stripe webhooks / Checkout session
-  creation; store Stripe secret + webhook signing secret as Vercel server env vars (NOT VITE_).
+### Extension checklist
 - Any new user-writable table/column: add RLS + extend `guard_profile_role` (or equivalent)
   if it must not be self-set.
+- New member-only content (CME): gate SELECT policies on `is_active_member()`.
 - Keep the "public pages filter published explicitly" and "keyword=tag terminology" rules.
 
 ## Do / Don't

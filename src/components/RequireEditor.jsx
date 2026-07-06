@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -20,13 +20,15 @@ function FullPage({ children }) {
 // further restrict to admins (e.g. tag management).
 export default function RequireEditor({ children, adminOnly = false }) {
   const { loading, user, isEditor, isAdmin } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return <FullPage><p className="text-text/50 font-data">Checking access…</p></FullPage>;
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    const next = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/login?next=${next}`} replace />;
   }
 
   if (!isEditor) {
