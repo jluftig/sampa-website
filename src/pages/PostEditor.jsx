@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
-import { slugify } from '../lib/slug';
+import { slugify, slugifyWithDate } from '../lib/slug';
 import { draftKeyFor, readDraft, writeDraft, clearDraft, draftSignature, draftHasContent } from '../lib/draft';
 import RichTextEditor from '../components/RichTextEditor';
 import Navbar from '../components/Navbar';
@@ -143,9 +143,10 @@ export default function PostEditor() {
   }
 
   // Keep slug in sync with the title until the editor edits the slug by hand.
+  // Auto-slugs get a year-month suffix, e.g. "buprenorphine-access-2026-07".
   function onTitleChange(value) {
     setTitle(value);
-    if (!slugTouched) setSlug(slugify(value));
+    if (!slugTouched) setSlug(slugifyWithDate(value));
   }
 
   async function onCoverSelected(e) {
@@ -315,8 +316,10 @@ export default function PostEditor() {
               </div>
             )}
 
+            <p className="text-xs text-text/40"><span className="text-red-500">*</span> Required</p>
+
             <div>
-              <label className="block text-sm font-semibold mb-2">Title</label>
+              <label className="block text-sm font-semibold mb-2">Title <span className="text-red-500">*</span></label>
               <input
                 value={title}
                 onChange={(e) => onTitleChange(e.target.value)}
@@ -327,7 +330,7 @@ export default function PostEditor() {
 
             <div>
               <label className="block text-sm font-semibold mb-2">
-                URL slug <span className="text-text/40 font-normal">— the link will be /news/{slug || '…'}</span>
+                URL slug <span className="text-red-500">*</span> <span className="text-text/40 font-normal">— the link will be /news/{slug || '…'}</span>
               </label>
               <input
                 value={slug}
@@ -339,7 +342,7 @@ export default function PostEditor() {
 
             <div>
               <label className="block text-sm font-semibold mb-2">
-                Excerpt <span className="text-text/40 font-normal">— short summary shown on news cards. Optional; if blank, we'll use the start of your article.</span>
+                Excerpt <span className="text-text/40 font-normal">(optional) — shown on news cards; if blank, we'll use the start of your article.</span>
               </label>
               <textarea
                 value={excerpt}
@@ -351,7 +354,7 @@ export default function PostEditor() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Cover image</label>
+              <label className="block text-sm font-semibold mb-2">Cover image <span className="text-text/40 font-normal">(optional)</span></label>
               {coverImageUrl && (
                 <div className="mb-3">
                   <img src={coverImageUrl} alt="" className="w-full max-h-56 object-cover rounded-2xl" />
@@ -385,13 +388,13 @@ export default function PostEditor() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Article</label>
+              <label className="block text-sm font-semibold mb-2">Article <span className="text-text/40 font-normal">(optional)</span></label>
               <RichTextEditor key={editorNonce} initialContent={bodyHtml} onChange={setBodyHtml} />
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-1">
-                Key Points <span className="text-text/40 font-normal">— at least one required, each with at least one keyword</span>
+                Key Points <span className="text-red-500">*</span> <span className="text-text/40 font-normal">— at least one required, each with at least one keyword</span>
               </label>
               <p className="text-text/50 text-sm mb-4">
                 Each point is individually searchable by its keywords across all posts. Write each as
