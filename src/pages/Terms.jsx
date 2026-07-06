@@ -9,11 +9,11 @@ export default function Terms() {
     <LegalPage label="Legal" title="Terms of Service" effectiveDate="July 6, 2026">
       <p>
         These terms govern your use of <strong>www.addictionpas.org</strong>,
-        operated by the Society for Addiction Medicine PAs ("SAMPA," "we,"
-        "us") — SAMPA, Inc., a Wyoming corporation pending 501(c)(3) status — a
-        professional membership association for physician
-        associates/assistants practicing addiction medicine. By using the site
-        or becoming a member, you agree to these terms.
+        operated by the Society of Addiction Medicine Physician Associates
+        ("SAMPA," "we," "us") — SAMPA, Inc., a Wyoming corporation pending
+        501(c)(3) status — a professional membership association for physician
+        associates practicing addiction medicine. By using the site or becoming
+        a member, you agree to these terms.
       </p>
 
       <h2>Educational content — not medical advice</h2>

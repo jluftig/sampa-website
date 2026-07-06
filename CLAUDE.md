@@ -8,7 +8,8 @@ Last updated: 2026-07-06.
 
 ## What this project is
 
-Marketing site for SAMPA (Society for Addiction Medicine PAs) **plus** a News/blog
+Marketing site for SAMPA (Society of Addiction Medicine Physician Associates — say
+"physician associates", never "physician assistants", in all user-facing copy) **plus** a News/blog
 subsystem with editor authentication and a keyword-searchable "Key Points" database,
 **plus** a member area (dashboard, saved articles, profile onboarding) with Stripe
 membership payments. Single-page React app; DB/auth/storage are Supabase; Stripe runs

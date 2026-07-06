@@ -20,7 +20,7 @@ export default function About() {
             Empowering PAs in Addiction Medicine.
           </h3>
           <p className="text-lg text-text/80 leading-relaxed mb-6 font-medium">
-            The Society for Addiction Medicine PAs is a nonprofit organization dedicated to improving the health and well-being of people with substance use disorders by advocating for, educating, and connecting Physician Associates practicing in addiction medicine across the nation.
+            The Society of Addiction Medicine Physician Associates is a nonprofit organization dedicated to improving the health and well-being of people with substance use disorders by advocating for, educating, and connecting physician associates practicing in addiction medicine across the nation.
           </p>
           <p className="text-lg text-text/70 leading-relaxed">
             As the trusted digital headquarters for SAMPA, we are building a supportive environment that recognizes the unique role of PAs in combating substance use disorders and improving patient outcomes.
