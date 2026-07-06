@@ -71,6 +71,17 @@ $$;
    - `https://www.addictionpas.org/**`
    - `https://*.vercel.app/**` (previews)
    - `http://localhost:5173/**` and `http://localhost:5174/**` (local dev)
+4. **Optional — logo / brand verification** (Google Auth Platform → Branding).
+   Uploading a logo triggers Google's brand-verification review; until it
+   passes, the logo simply isn't shown (sign-in works fine — do NOT block
+   launch on this). To pass verification: app published (step 1), authorized
+   domain `addictionpas.org` verified in Google Search Console, and the
+   Branding page filled in with home page `https://www.addictionpas.org`,
+   privacy policy `https://www.addictionpas.org/privacy`, and terms
+   `https://www.addictionpas.org/terms` (these pages ship with the member-area
+   branch). Note: the consent screen says "to continue to
+   xbzzawjnphpnexwfjtif.supabase.co" either way — changing that needs a custom
+   Supabase auth domain (separate, later project).
 
 ## 3. Stripe setup (dashboard.stripe.com)
 

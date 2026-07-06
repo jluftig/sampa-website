@@ -84,6 +84,7 @@ src/
     RequireAuth.jsx         route guard: any signed-in user (member area)
     Navbar.jsx Footer.jsx   nav; section links are /#anchor so they work off-home
     RichTextEditor.jsx      TipTap wrapper (bold/italic/H2/H3/lists/quote/link)
+    LegalPage.jsx           shared shell for /privacy and /terms
     PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx Membership.jsx
   pages/
     Home.jsx                marketing homepage (was App) + NewsTeaser + Membership section
@@ -94,6 +95,7 @@ src/
     Login.jsx               /login — Google OAuth + email magic link; ?next= return path
     Join.jsx                /join — tier picker -> Stripe Checkout (sign-in-first)
     Dashboard.jsx           /dashboard — membership status/billing, profile form, saved articles
+    Privacy.jsx Terms.jsx   /privacy, /terms — static legal pages (drafts, pending counsel review)
     EditorDashboard.jsx     /editor — post list + admin links
     PostEditor.jsx          /editor/new, /editor/:id — post + Key Points editor
     AdminTags.jsx           /editor/keywords (adminOnly) — manage keyword vocabulary
@@ -108,7 +110,8 @@ vercel.json                 SPA rewrite: all non-/api paths -> /index.html
 
 ## Routes
 
-Public: `/`, `/news`, `/news/:slug`, `/keywords`, `/keywords/:slug`, `/login`, `/join`.
+Public: `/`, `/news`, `/news/:slug`, `/keywords`, `/keywords/:slug`, `/login`, `/join`,
+`/privacy`, `/terms` (static legal pages, LegalPage shell).
 Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
 Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.

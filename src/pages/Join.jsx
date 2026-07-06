@@ -129,7 +129,10 @@ export default function Join() {
         <p className="text-center text-text/40 text-xs mt-10 max-w-xl mx-auto">
           Payments are processed by Stripe — SAMPA never sees or stores your card
           details. You'll get a receipt by email, and you can manage billing anytime
-          from your dashboard.
+          from your dashboard. Memberships renew annually until canceled. By joining
+          you agree to our{' '}
+          <Link to="/terms" className="underline hover:text-primary">Terms of Service</Link> and{' '}
+          <Link to="/privacy" className="underline hover:text-primary">Privacy Policy</Link>.
         </p>
       </main>
 
