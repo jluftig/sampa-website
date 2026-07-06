@@ -193,15 +193,35 @@ export default function PostEditor() {
   }
 
   async function save(targetStatus) {
+    // --- Required-field validation ---
     if (!title.trim()) { setError('Please add a title.'); return; }
     if (!slug.trim()) { setError('Please add a URL slug.'); return; }
+    if (!keyPoints.some((k) => k.content.trim())) {
+      setError('Add at least one Key Point.');
+      return;
+    }
+    const untaggedPos = keyPoints.findIndex((k) => k.content.trim() && k.tagIds.length === 0);
+    if (untaggedPos !== -1) {
+      setError(`Key Point ${untaggedPos + 1} needs at least one keyword.`);
+      return;
+    }
+
     setSaving(true);
     setError(null);
+
+    // Excerpt is optional; if blank, derive a preview from the article body,
+    // falling back to the first Key Point, so news cards never look bare.
+    const plainBody = bodyHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const firstPoint = keyPoints.find((k) => k.content.trim())?.content.trim() || '';
+    const excerptSource = excerpt.trim() || plainBody || firstPoint;
+    const derivedExcerpt = excerptSource
+      ? (excerptSource.length > 200 ? `${excerptSource.slice(0, 200).trimEnd()}…` : excerptSource)
+      : null;
 
     const payload = {
       title: title.trim(),
       slug: slug.trim(),
-      excerpt: excerpt.trim() || null,
+      excerpt: derivedExcerpt,
       body_html: bodyHtml,
       cover_image_url: coverImageUrl || null,
       cover_image_caption: coverImageCaption.trim() || null,
@@ -319,7 +339,7 @@ export default function PostEditor() {
 
             <div>
               <label className="block text-sm font-semibold mb-2">
-                Excerpt <span className="text-text/40 font-normal">— short summary shown in the news list</span>
+                Excerpt <span className="text-text/40 font-normal">— short summary shown on news cards. Optional; if blank, we'll use the start of your article.</span>
               </label>
               <textarea
                 value={excerpt}
@@ -370,7 +390,9 @@ export default function PostEditor() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1">Key Points</label>
+              <label className="block text-sm font-semibold mb-1">
+                Key Points <span className="text-text/40 font-normal">— at least one required, each with at least one keyword</span>
+              </label>
               <p className="text-text/50 text-sm mb-4">
                 Each point is individually searchable by its keywords across all posts. Write each as
                 a standalone statement (it should make sense on its own in a keyword search), then add
