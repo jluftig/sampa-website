@@ -10,10 +10,10 @@ export default function Terms() {
       <p>
         These terms govern your use of <strong>www.addictionpas.org</strong>,
         operated by the Society for Addiction Medicine PAs ("SAMPA," "we,"
-        "us"), a professional membership association for physician
-        associates/assistants practicing addiction medicine (SAMPA, Inc.,
-        pending 501(c)(3) status). By using the site or becoming a member, you
-        agree to these terms.
+        "us") — SAMPA, Inc., a Wyoming corporation pending 501(c)(3) status — a
+        professional membership association for physician
+        associates/assistants practicing addiction medicine. By using the site
+        or becoming a member, you agree to these terms.
       </p>
 
       <h2>Educational content — not medical advice</h2>
@@ -79,6 +79,13 @@ export default function Terms() {
         its content, and our total liability for any claim is limited to the
         membership dues you paid us in the twelve months before the claim.
         Nothing in these terms limits liability that cannot be limited by law.
+      </p>
+
+      <h2>Governing law</h2>
+      <p>
+        These terms, and any dispute arising out of them or your use of the
+        site, are governed by the laws of the State of Wyoming, without regard
+        to its conflict-of-law rules.
       </p>
 
       <h2>Changes</h2>
