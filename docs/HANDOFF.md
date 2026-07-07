@@ -66,8 +66,11 @@ drafts and cannot change anything.
 ## 4. Everyday tasks
 
 ### Publish a news post
-1. Go to **www.addictionpas.org**, scroll to the footer, click **Editor Login** → **Continue with Google**.
-2. On the dashboard, click **+ New Post**.
+1. Go to **www.addictionpas.org**, click **Member Login** (navbar or footer) →
+   **Continue with Google**. There is one login for everyone; what you can do
+   is determined by your role (member / editor / admin).
+2. On your member dashboard, click **Editor dashboard** (only editors and
+   admins see this link), then click **+ New Post**.
 3. Fill in the title, a short summary (excerpt), optionally upload a cover image (and a
    caption/citation if it's a figure), and write the article.
 4. Add **Key Points** — each one a standalone takeaway — and click keyword chips to tag each point.
@@ -78,8 +81,9 @@ drafts and cannot change anything.
 Two gates must both be satisfied — one on Google's side, one in our app:
 1. **Google side (so they can sign in at all):** Google Cloud Console → APIs & Services →
    OAuth consent screen → **Test users** → **Add users** → enter their Google email.
-2. **They sign in once** at Editor Login (they'll see a "Google hasn't verified this app"
-   screen → **Advanced → continue** — that's normal while we're in "testing mode").
+2. **They sign in once** via Member Login (while Google sign-in is in "testing
+   mode" they'll see a "Google hasn't verified this app" screen → **Advanced →
+   continue** — that's normal until the consent screen is published).
 3. **You set their role:** on the dashboard click **Manage editors**, find them in the
    list, and choose **editor** or **admin** from the dropdown.
 

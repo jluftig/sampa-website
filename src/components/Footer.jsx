@@ -23,8 +23,7 @@ export default function Footer() {
           <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>
-          <Link to="/dashboard" className="hover:text-white transition-colors">Member Area</Link>
-          <Link to="/login?next=%2Feditor" className="hover:text-white transition-colors">Editor Login</Link>
+          <Link to="/dashboard" className="hover:text-white transition-colors">Member Login</Link>
         </div>
 
       </div>

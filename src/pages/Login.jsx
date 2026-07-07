@@ -39,12 +39,12 @@ export default function Login() {
       <main className="max-w-md mx-auto px-4 pt-40 pb-24">
         <div className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 md:p-10 text-center">
           <div className="text-primary font-bold font-data tracking-widest text-xs mb-4 uppercase">
-            Member & Editor Access
+            Member Access
           </div>
           <h1 className="text-2xl md:text-3xl font-drama font-bold mb-3">Sign in</h1>
           <p className="text-text/60 mb-8">
-            Members sign in to save news articles, manage their membership, and
-            update their profile. Editors sign in to publish news.
+            Members sign in to save news articles, manage their membership and
+            CME, and update their profile.
           </p>
 
           <button

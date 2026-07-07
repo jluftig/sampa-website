@@ -135,7 +135,7 @@ export default function Dashboard() {
         <header className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
             <div className="text-primary font-bold font-data tracking-widest text-xs mb-3 uppercase">
-              Member Area
+              Member Dashboard
             </div>
             <h1 className="text-3xl md:text-5xl font-drama font-bold">
               {firstName ? `Welcome, ${firstName}` : 'Welcome'}
