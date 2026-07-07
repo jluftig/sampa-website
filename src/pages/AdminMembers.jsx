@@ -21,11 +21,16 @@ const STATUS_BADGES = {
   canceled: 'bg-red-500/10 text-red-600',
 };
 
-// "Renews Jul 6, 2028" | "Ends Jul 6, 2028" | "Lifetime" | ""
+// Active: "Renews <date>" | "Ends <date>" (canceled at period end) | "Lifetime".
+// Past due: the date the failed renewal was due. Canceled/none: no date — the
+// stored period-end is history, and printing it would read like a renewal.
 function renewalLabel(p) {
-  if (p.membership_status !== 'active') return p.renews_on ? formatDate(p.renews_on) : '';
-  if (!p.renews_on) return 'Lifetime';
-  return `${p.cancel_at_period_end ? 'Ends' : 'Renews'} ${formatDate(p.renews_on)}`;
+  if (p.membership_status === 'active') {
+    if (!p.renews_on) return 'Lifetime';
+    return `${p.cancel_at_period_end ? 'Ends' : 'Renews'} ${formatDate(p.renews_on)}`;
+  }
+  if (p.membership_status === 'past_due' && p.renews_on) return `Due ${formatDate(p.renews_on)}`;
+  return '';
 }
 
 const CSV_COLUMNS = [
