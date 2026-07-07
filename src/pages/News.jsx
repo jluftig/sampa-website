@@ -5,6 +5,7 @@ import { collectPostTags } from '../lib/tags';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PostCard from '../components/PostCard';
+import SearchBox from '../components/SearchBox';
 
 export default function News() {
   const [posts, setPosts] = useState([]);
@@ -43,6 +44,9 @@ export default function News() {
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
             Curated research, policy, and practice updates for addiction medicine PAs.
           </p>
+          <div className="max-w-md mx-auto mt-8">
+            <SearchBox />
+          </div>
           <Link to="/keywords" className="inline-block mt-6 text-primary font-semibold hover:underline">
             Browse by keyword →
           </Link>

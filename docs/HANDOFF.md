@@ -77,9 +77,26 @@ Analyst) rather than granting anything here.
    news permission see this link), then click **+ New Post**.
 3. Fill in the title, a short summary (excerpt), optionally upload a cover image (and a
    caption/citation if it's a figure), and write the article.
-4. Add **Key Points** — each one a standalone takeaway — and click keyword chips to tag each point.
-5. Click **Publish**. It's live immediately; no technical steps needed.
-6. You can **Unpublish**, **Edit**, or **Delete** any post from the dashboard later.
+4. Fill in the **Original source** box (publication name, link — for studies use the DOI
+   link — and the original publication date). This is what readers get when they copy a
+   citation from a Key Point, so it's worth the 30 seconds; leave it blank only for
+   original SAMPA content.
+5. Add **Key Points** — each one a standalone takeaway — and click keyword chips to tag each point.
+6. Click **Publish**. It's live immediately; no technical steps needed.
+7. You can **Unpublish**, **Edit**, or **Delete** any post from the dashboard later.
+
+> **Readers can share and cite.** Every article has a Share button, and every Key Point
+> has **Copy citation** / **Copy link** — the link goes straight to that highlighted
+> point. That's also why editing a published post keeps its web address: changing the
+> slug (or deleting a post) breaks links people have already shared.
+
+### Find material for a talk or slide deck
+- **Search** (`/search`, or the search box on the News page) looks inside every article
+  AND every Key Point — try a drug name, policy, or study topic.
+- **Keywords** (`/keywords`) browse by topic; on a keyword page, use the **Refine** chips
+  to narrow to points that carry BOTH keywords (e.g. Buprenorphine + Pregnancy & Perinatal).
+- On any Key Point, **Copy citation** gives you the claim, the original source with its
+  date and link, and the SAMPA link — ready to paste into slides or notes.
 
 ### Grant someone permissions (editor, membership committee, admin)
 1. **They sign in once** via Member Login (Google or email link) — that creates

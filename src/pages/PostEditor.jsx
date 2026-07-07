@@ -26,10 +26,15 @@ export default function PostEditor() {
   const [bodyHtml, setBodyHtml] = useState('');
   const [coverImageUrl, setCoverImageUrl] = useState('');
   const [coverImageCaption, setCoverImageCaption] = useState('');
+  const [sourceName, setSourceName] = useState('');
+  const [sourceUrl, setSourceUrl] = useState('');
+  const [sourceDate, setSourceDate] = useState(''); // YYYY-MM-DD (original publication)
   const [currentStatus, setCurrentStatus] = useState('draft');
   const [publishedAt, setPublishedAt] = useState(null);
 
-  // Key Points: each is { localId, content, tagIds[] }.
+  // Key Points: each is { localId, dbId, content, tagIds[] }. dbId is the
+  // items.id row this point already has (null for new points) — saves sync by
+  // id so shared /news/<slug>#point-<id> links survive edits.
   const [keyPoints, setKeyPoints] = useState([]);
   const [allTags, setAllTags] = useState([]);
 
@@ -66,6 +71,9 @@ export default function PostEditor() {
       setBodyHtml(data.body_html || '');
       setCoverImageUrl(data.cover_image_url || '');
       setCoverImageCaption(data.cover_image_caption || '');
+      setSourceName(data.source_name || '');
+      setSourceUrl(data.source_url || '');
+      setSourceDate(data.source_published_at || '');
       setCurrentStatus(data.status);
       setPublishedAt(data.published_at);
 
@@ -77,6 +85,7 @@ export default function PostEditor() {
       if (!active) return;
       const loadedKeyPoints = (itemData || []).map((it) => ({
         localId: crypto.randomUUID(),
+        dbId: it.id,
         content: it.content,
         tagIds: (it.item_tags || []).map((t) => t.tag_id),
       }));
@@ -91,6 +100,9 @@ export default function PostEditor() {
         bodyHtml: data.body_html || '',
         coverImageUrl: data.cover_image_url || '',
         coverImageCaption: data.cover_image_caption || '',
+        sourceName: data.source_name || '',
+        sourceUrl: data.source_url || '',
+        sourceDate: data.source_published_at || '',
         keyPoints: loadedKeyPoints,
       });
       if (captured && draftHasContent(captured.data) &&
@@ -116,17 +128,21 @@ export default function PostEditor() {
   // Auto-save the in-progress post to local storage as it changes (debounced).
   useEffect(() => {
     if (!hydrated) return;
-    const fields = { title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption, keyPoints };
+    const fields = {
+      title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption,
+      sourceName, sourceUrl, sourceDate, keyPoints,
+    };
     const t = setTimeout(() => {
       if (draftHasContent(fields) && draftSignature(fields) !== loadedSigRef.current) {
         writeDraft(draftKey, fields);
       }
     }, 700);
     return () => clearTimeout(t);
-  }, [hydrated, title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption, keyPoints, draftKey]);
+  }, [hydrated, title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption,
+      sourceName, sourceUrl, sourceDate, keyPoints, draftKey]);
 
   function addKeyPoint() {
-    setKeyPoints((prev) => [...prev, { localId: crypto.randomUUID(), content: '', tagIds: [] }]);
+    setKeyPoints((prev) => [...prev, { localId: crypto.randomUUID(), dbId: null, content: '', tagIds: [] }]);
   }
   function updateKeyPoint(localId, content) {
     setKeyPoints((prev) => prev.map((k) => (k.localId === localId ? { ...k, content } : k)));
@@ -178,8 +194,12 @@ export default function PostEditor() {
     setExcerpt(d.excerpt || '');
     setCoverImageUrl(d.coverImageUrl || '');
     setCoverImageCaption(d.coverImageCaption || '');
+    setSourceName(d.sourceName || '');
+    setSourceUrl(d.sourceUrl || '');
+    setSourceDate(d.sourceDate || '');
     setKeyPoints((d.keyPoints || []).map((k) => ({
       localId: crypto.randomUUID(),
+      dbId: k.dbId || null, // keep the db identity so restoring doesn't recreate rows
       content: k.content || '',
       tagIds: k.tagIds || [],
     })));
@@ -206,6 +226,10 @@ export default function PostEditor() {
       setError(`Key Point ${untaggedPos + 1} needs at least one keyword.`);
       return;
     }
+    if (sourceUrl.trim() && !/^https?:\/\//i.test(sourceUrl.trim())) {
+      setError('The source URL should start with http:// or https://.');
+      return;
+    }
 
     setSaving(true);
     setError(null);
@@ -226,6 +250,9 @@ export default function PostEditor() {
       body_html: bodyHtml,
       cover_image_url: coverImageUrl || null,
       cover_image_caption: coverImageCaption.trim() || null,
+      source_name: sourceName.trim() || null,
+      source_url: sourceUrl.trim() || null,
+      source_published_at: sourceDate || null,
       author_id: user.id,
       author_name: profile?.full_name || profile?.email,
       status: targetStatus,
@@ -252,23 +279,65 @@ export default function PostEditor() {
       postId = data.id;
     }
 
-    // 2) Sync Key Points. Replace-all is simple and reliable at this scale;
-    //    deleting an item cascades to its item_tags automatically.
-    const { error: delErr } = await supabase.from('items').delete().eq('post_id', postId);
-    if (delErr) { setError(delErr.message); setSaving(false); return; }
-
+    // 2) Sync Key Points BY ID — update changed rows, insert new ones, delete
+    //    removed ones. Point ids are permanent share targets
+    //    (/news/<slug>#point-<id>), so the old delete-all/reinsert would break
+    //    every previously shared claim link on each save.
+    const desired = [];
     let order = 0;
     for (const kp of keyPoints) {
       if (!kp.content.trim()) continue;
-      const { data: itemRow, error: itemErr } = await supabase
-        .from('items')
-        .insert({ post_id: postId, content: kp.content.trim(), sort_order: order++ })
-        .select('id').single();
-      if (itemErr) { setError(itemErr.message); setSaving(false); return; }
-      if (kp.tagIds.length) {
+      desired.push({ dbId: kp.dbId, content: kp.content.trim(), sort_order: order++, tagIds: kp.tagIds });
+    }
+
+    const { data: existingItems, error: exErr } = await supabase
+      .from('items')
+      .select('id, content, sort_order, item_tags(tag_id)')
+      .eq('post_id', postId);
+    if (exErr) { setError(exErr.message); setSaving(false); return; }
+    const existingById = new Map((existingItems || []).map((it) => [it.id, it]));
+
+    // Delete points removed in the editor (cascades their item_tags).
+    const keptIds = new Set(desired.map((d) => d.dbId).filter((dbId) => dbId && existingById.has(dbId)));
+    const toDelete = (existingItems || []).map((it) => it.id).filter((itemId) => !keptIds.has(itemId));
+    if (toDelete.length) {
+      const { error: delErr } = await supabase.from('items').delete().in('id', toDelete);
+      if (delErr) { setError(delErr.message); setSaving(false); return; }
+    }
+
+    for (const d of desired) {
+      const existing = d.dbId ? existingById.get(d.dbId) : null;
+      let itemId = existing?.id;
+
+      if (!existing) {
+        const { data: itemRow, error: itemErr } = await supabase
+          .from('items')
+          .insert({ post_id: postId, content: d.content, sort_order: d.sort_order })
+          .select('id').single();
+        if (itemErr) { setError(itemErr.message); setSaving(false); return; }
+        itemId = itemRow.id;
+      } else if (existing.content !== d.content || existing.sort_order !== d.sort_order) {
+        const { error: updErr } = await supabase
+          .from('items')
+          .update({ content: d.content, sort_order: d.sort_order })
+          .eq('id', itemId);
+        if (updErr) { setError(updErr.message); setSaving(false); return; }
+      }
+
+      // Sync this point's keywords: insert added links, delete removed ones.
+      const have = new Set((existing?.item_tags || []).map((t) => t.tag_id));
+      const toAdd = d.tagIds.filter((t) => !have.has(t));
+      const toRemove = [...have].filter((t) => !d.tagIds.includes(t));
+      if (toAdd.length) {
         const { error: tagErr } = await supabase
           .from('item_tags')
-          .insert(kp.tagIds.map((tag_id) => ({ item_id: itemRow.id, tag_id })));
+          .insert(toAdd.map((tag_id) => ({ item_id: itemId, tag_id })));
+        if (tagErr) { setError(tagErr.message); setSaving(false); return; }
+      }
+      if (toRemove.length) {
+        const { error: tagErr } = await supabase
+          .from('item_tags')
+          .delete().eq('item_id', itemId).in('tag_id', toRemove);
         if (tagErr) { setError(tagErr.message); setSaving(false); return; }
       }
     }
@@ -338,11 +407,16 @@ export default function PostEditor() {
                 placeholder="buprenorphine-access-2026"
                 className="w-full px-4 py-3 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary bg-white font-data text-sm"
               />
+              {isPublished && (
+                <p className="text-amber-600 text-xs mt-2">
+                  This post is live — changing the slug breaks links that have already been shared.
+                </p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-2">
-                Excerpt <span className="text-text/40 font-normal">(optional) — shown on news cards; if blank, we'll use the start of your article.</span>
+                Excerpt <span className="text-text/40 font-normal">— short summary shown on news cards. Optional; if blank, we'll use the start of your article.</span>
               </label>
               <textarea
                 value={excerpt}
@@ -353,8 +427,40 @@ export default function PostEditor() {
               />
             </div>
 
+            <div className="bg-white/60 border border-primary/10 rounded-2xl p-4">
+              <label className="block text-sm font-semibold mb-1">
+                Original source <span className="text-text/40 font-normal">— the study or article this post covers</span>
+              </label>
+              <p className="text-text/50 text-xs mb-3">
+                Powers the citation readers can copy under every Key Point (for slide decks and
+                research), so fill it in whenever the post covers an external source. Leave blank
+                for original SAMPA content.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <input
+                  value={sourceName}
+                  onChange={(e) => setSourceName(e.target.value)}
+                  placeholder="Publication, e.g. JAMA Psychiatry"
+                  className="w-full px-4 py-2.5 rounded-xl border border-primary/20 focus:outline-none focus:border-primary bg-white text-sm"
+                />
+                <input
+                  type="date"
+                  value={sourceDate}
+                  onChange={(e) => setSourceDate(e.target.value)}
+                  title="Original publication date"
+                  className="w-full px-4 py-2.5 rounded-xl border border-primary/20 focus:outline-none focus:border-primary bg-white text-sm text-text/70"
+                />
+              </div>
+              <input
+                value={sourceUrl}
+                onChange={(e) => setSourceUrl(e.target.value)}
+                placeholder="https://doi.org/… or the article URL"
+                className="w-full mt-3 px-4 py-2.5 rounded-xl border border-primary/20 focus:outline-none focus:border-primary bg-white font-data text-sm"
+              />
+            </div>
+
             <div>
-              <label className="block text-sm font-semibold mb-2">Cover image <span className="text-text/40 font-normal">(optional)</span></label>
+              <label className="block text-sm font-semibold mb-2">Cover image</label>
               {coverImageUrl && (
                 <div className="mb-3">
                   <img src={coverImageUrl} alt="" className="w-full max-h-56 object-cover rounded-2xl" />
@@ -388,13 +494,13 @@ export default function PostEditor() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Article <span className="text-text/40 font-normal">(optional)</span></label>
+              <label className="block text-sm font-semibold mb-2">Article</label>
               <RichTextEditor key={editorNonce} initialContent={bodyHtml} onChange={setBodyHtml} />
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-1">
-                Key Points <span className="text-red-500">*</span> <span className="text-text/40 font-normal">— at least one required, each with at least one keyword</span>
+                Key Points <span className="text-text/40 font-normal">— at least one required, each with at least one keyword</span>
               </label>
               <p className="text-text/50 text-sm mb-4">
                 Each point is individually searchable by its keywords across all posts. Write each as

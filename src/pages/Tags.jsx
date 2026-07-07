@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import SearchBox from '../components/SearchBox';
 
 export default function Tags() {
   const [tags, setTags] = useState([]);
@@ -12,10 +13,19 @@ export default function Tags() {
   useEffect(() => {
     let active = true;
     (async () => {
-      // Count key points per keyword across PUBLISHED posts only. We filter
-      // explicitly (posts.status = 'published') rather than relying on RLS, so
-      // logged-in editors/admins see the same public counts as anonymous
-      // visitors (RLS would otherwise let them count their own drafts).
+      // Key-point count per keyword across PUBLISHED posts only. The RPC does
+      // the aggregation in the database (shared with future mobile apps) and
+      // filters published explicitly, so logged-in editors/admins see the same
+      // public counts as anonymous visitors.
+      const { data: rpcData, error: rpcErr } = await supabase.rpc('keyword_counts');
+      if (!active) return;
+      if (!rpcErr) {
+        setTags((rpcData || []).map((t) => ({ ...t, count: Number(t.points) })));
+        setLoading(false);
+        return;
+      }
+
+      // Fallback (pre-migration): aggregate client-side, same explicit filter.
       const { data, error } = await supabase
         .from('items')
         .select('item_tags(tags(id, name, short_label, slug)), posts!inner(status)')
@@ -53,8 +63,12 @@ export default function Tags() {
           </div>
           <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Explore by keyword</h1>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Pick a keyword to see each relevant post across all issues.
+            Pick a keyword to see each relevant post across all issues — then refine with a
+            second keyword to drill into an intersection.
           </p>
+          <div className="max-w-md mx-auto mt-8">
+            <SearchBox placeholder="Or search all news and key points…" />
+          </div>
           <Link to="/news" className="inline-block mt-6 text-primary font-semibold hover:underline">
             ← Back to all news
           </Link>
