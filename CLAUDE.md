@@ -4,16 +4,18 @@ Machine-oriented reference for working on the SAMPA website. Optimized for an ag
 picking up this repo cold. Human-oriented operations guide: `docs/HANDOFF.md`.
 Original build plan/decisions: `docs/news-blog-plan.md`. Original design brief: `GEMINI.md`.
 
-Last updated: 2026-07-06.
+Last updated: 2026-07-07.
 
 ## What this project is
 
 Marketing site for SAMPA (Society of Addiction Medicine Physician Associates — say
 "physician associates", never "physician assistants", in all user-facing copy) **plus** a News/blog
-subsystem with editor authentication and a keyword-searchable "Key Points" database,
-**plus** a member area (dashboard, saved articles, profile onboarding) with Stripe
-membership payments. Single-page React app; DB/auth/storage are Supabase; Stripe runs
-through Vercel serverless functions in `api/`.
+subsystem with editor authentication and a research-grade "Key Points" database
+(keyword browse + intersections, Postgres full-text search, per-claim share links and
+copyable citations, original-source provenance), **plus** a member area (dashboard,
+saved articles, profile onboarding) with Stripe membership payments. Single-page React
+app; DB/auth/storage are Supabase; Stripe + social-preview rendering run through Vercel
+serverless functions in `api/`.
 
 ## Stack & hosting
 
@@ -69,6 +71,7 @@ api/                        Vercel serverless functions (Web-handler signature: 
   create-checkout-session.js POST {tier} -> {url}; JWT required; client_reference_id = user id
   create-portal-session.js  POST -> {url} of Stripe Customer Portal; JWT required
   stripe-webhook.js         Stripe events -> membership columns on profiles (ONLY writer)
+  share.js                  GET ?slug= -> OG/Twitter meta HTML for social crawlers (anon key, published only)
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -80,7 +83,9 @@ src/
     useFavorites.js         saved-post ids + optimistic toggle for the signed-in user
     tags.js                 collectPostTags(post) — dedupe a post's keywords from nested items
     slug.js                 slugify()
-    format.js               formatDate()
+    format.js               formatDate(), formatDateOnly() (date-only, no TZ off-by-one)
+    cite.js                 postUrl()/pointUrl() (permanent share URLs) + pointCitation() (copyable citation)
+    share.js                copyText(), canNativeShare(), shareOrCopy() (Web Share API w/ clipboard fallback)
   components/
     RequireEditor.jsx       route guard; prop adminOnly restricts to admins
     RequireAuth.jsx         route guard: any signed-in user (member area)
@@ -88,13 +93,18 @@ src/
     Navbar.jsx Footer.jsx   nav; section links are /#anchor so they work off-home
     RichTextEditor.jsx      TipTap wrapper (bold/italic/H2/H3/lists/quote/link)
     LegalPage.jsx           shared shell for /privacy and /terms
+    KeyPointActions.jsx     copy-citation / copy-link / native-share row on a Key Point card
+    SearchBox.jsx           small form that routes to /search?q=…
     PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx Membership.jsx
   pages/
     Home.jsx                marketing homepage (was App) + NewsTeaser + Membership section
-    News.jsx                /news — published post list
-    PostView.jsx            /news/:slug — article (DOMPurify) + Key Points + Save button
-    Tags.jsx                /keywords — keyword index w/ counts
-    TagView.jsx             /keywords/:slug — key points for a keyword (not articles)
+    News.jsx                /news — published post list + search box
+    PostView.jsx            /news/:slug — article (DOMPurify) + Key Points (#point-<id> anchors,
+                            share/cite actions) + source line + Related news + Save/Share buttons
+    Tags.jsx                /keywords — keyword index w/ counts (keyword_counts RPC, client fallback)
+    TagView.jsx             /keywords/:slug — key points for keyword(s); ?and=slug2 = intersection;
+                            "Refine" chips (co-occurring keywords) drill down
+    Search.jsx              /search?q= — FTS over key points + articles (search_* RPCs) + keyword matches
     Login.jsx               /login — Google OAuth + email magic link; ?next= return path
     Join.jsx                /join — tier picker -> Stripe Checkout (sign-in-first)
     Dashboard.jsx           /dashboard — membership status/billing, profile form, saved articles
@@ -107,15 +117,18 @@ src/
     NotFound.jsx            catch-all 404
 supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
+  migrations/               standalone per-change snippets (already folded into schema.sql)
   sample-post.sql           optional demo fixture
 docs/                       HANDOFF.md (humans), member-area-setup.md (one-time config), news-blog-plan.md
-vercel.json                 SPA rewrite: all non-/api paths -> /index.html
+vercel.json                 SPA rewrite: all non-/api paths -> /index.html; crawler UAs on
+                            /news/:slug -> /api/share (per-article social previews)
 ```
 
 ## Routes
 
-Public: `/`, `/news`, `/news/:slug`, `/keywords`, `/keywords/:slug`, `/login`, `/join`,
-`/privacy`, `/terms` (static legal pages, LegalPage shell).
+Public: `/`, `/news`, `/news/:slug` (`#point-<item id>` deep-links/highlights one Key
+Point), `/keywords`, `/keywords/:slug` (`?and=slug2,slug3` = keyword intersection),
+`/search?q=`, `/login`, `/join`, `/privacy`, `/terms` (static legal pages, LegalPage shell).
 Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
 Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.
@@ -140,11 +153,21 @@ redirect to `/login?next=...` so users return where they were headed.
   `can_view_members` (read-only roster/pledges). Admin role implies all capabilities.
 - `posts` — `id, title, slug (unique), excerpt, body_html, cover_image_url,
   cover_image_caption, author_id, author_name (denormalized), status` (enum post_status
-  draft|published), `published_at, created_at, updated_at`.
+  draft|published), `published_at, created_at, updated_at`; original-source citation
+  (nullable): `source_url, source_name, source_published_at (date)` — published_at is
+  when WE posted, source_published_at is when the SOURCE did; `fts` (generated tsvector
+  over title+excerpt+tag-stripped body, GIN-indexed).
 - `tags` — `id, name, short_label, slug (unique)`. (UI term: "keyword".)
-- `items` — Key Points: `id, post_id (FK posts), content (text), sort_order`.
+- `items` — Key Points: `id, post_id (FK posts), content (text), sort_order`; `fts`
+  (generated tsvector over content, GIN-indexed). **Item ids are permanent share targets**
+  (`/news/<slug>#point-<id>`) — see gotcha 5.
 - `item_tags` — M2M: `(item_id, tag_id)` composite PK.
 - `favorites` — saved news posts: `(user_id, post_id)` composite PK, `created_at`.
+- **RPCs** (SECURITY INVOKER + explicit `status='published'` filter; shared by web and
+  future mobile apps — put cross-client read logic here, not in React):
+  `search_key_points(q)`, `search_posts(q)` (websearch_to_tsquery + ts_rank),
+  `key_points_for_tags(tag_slugs text[])` (AND semantics), `related_posts(for_post_id,
+  max_results)` (ranked by shared keywords), `keyword_counts()`.
 - Storage bucket `post-images` (public read) for cover images.
 
 ## Security model (RLS) — INVARIANTS, do not weaken
@@ -194,8 +217,12 @@ DOMPurify-sanitized and only editor-writable.
 3. **Vite inlines env at build**; changing Vercel env vars requires a redeploy.
 4. **SPA rewrite** (`vercel.json`) is required — without it deep links / the OAuth redirect
    to `/editor` 404 on Vercel.
-5. **Key Points save = replace-all:** `PostEditor` deletes all `items` for the post then
-   re-inserts (cascades `item_tags`). Fine at this scale; not diff-based.
+5. **Key Points save is diff-based BY DESIGN — do not "simplify" it to replace-all.**
+   `PostEditor` updates/inserts/deletes items by id and syncs `item_tags` per item, so a
+   point's `items.id` survives edits. Ids are public share targets
+   (`/news/<slug>#point-<id>`, copied citations, future mobile deep links); replace-all
+   would break every previously shared claim link on each save. Same reason the slug
+   warning shows on published posts — slugs and point ids are permanent identifiers.
 6. **Tag slugs are immutable** in the UI (permanent URL identifier); only name/short_label edit.
 7. **RichTextEditor is uncontrolled after mount** — parent loads post data before rendering it
    (`initialContent`), so there's no content-sync loop.
@@ -218,6 +245,16 @@ DOMPurify-sanitized and only editor-writable.
     gracefully for this reason.
 13. **AuthContext fetches `profiles` with `select('*')`** so the client tolerates a DB
     that hasn't had the latest additive migration yet — don't list new columns there.
+14. **New-RPC callers degrade gracefully:** pages calling the research-db RPCs treat an
+    RPC error as "feature not available yet" (Tags falls back to client aggregation,
+    PostView hides Related news, Search shows an "unavailable" card) so code can deploy
+    ahead of — but should not; see gotcha 10 — the migration. Keep this pattern for new RPCs.
+15. **New public RPCs/views must filter `status='published'` inside the SQL** (gotcha 2
+    applies in the DB too — SECURITY INVOKER means an editor's session would otherwise
+    surface drafts through an aggregate).
+16. **Social previews:** `vercel.json` rewrites crawler user-agents on `/news/:slug` to
+    `api/share.js` (OG meta). New public content types that get shared need the same
+    treatment; browsers must NEVER be routed there (bot UA list only).
 
 ## Rollback & recovery
 
