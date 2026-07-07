@@ -87,17 +87,21 @@ for (const tier of TIERS) {
 // without a deploy. duration 'once' = the discount applies to the checkout's
 // first invoice (i.e. the whole first term); renewals bill at full price.
 const SMS_PROMO_CODE = 'SAMPATEXT5';
+const SMS_COUPON_NAME = 'SMS updates dues discount (5%)';
 const smsExisting = await stripe.promotionCodes.list({ code: SMS_PROMO_CODE, limit: 1 });
 if (smsExisting.data[0]) {
-  const pc = smsExisting.data[0];
-  console.log(`\n✓ Promo code ${SMS_PROMO_CODE} already exists (${pc.active ? 'active' : 'INACTIVE'}, ${pc.coupon?.percent_off}% off)`);
+  console.log(`\n✓ Promo code ${SMS_PROMO_CODE} already exists (${smsExisting.data[0].active ? 'active' : 'INACTIVE'})`);
 } else {
-  const coupon = await stripe.coupons.create({
-    percent_off: 5,
-    duration: 'once',
-    name: 'SMS updates dues discount (5%)',
+  // Reuse a matching coupon from a prior partial run rather than piling up dupes.
+  const coupons = await stripe.coupons.list({ limit: 100 });
+  const coupon =
+    coupons.data.find((c) => c.name === SMS_COUPON_NAME && c.valid) ||
+    (await stripe.coupons.create({ percent_off: 5, duration: 'once', name: SMS_COUPON_NAME }));
+  // API versions ≥ 2025 attach the coupon via a promotion object.
+  await stripe.promotionCodes.create({
+    promotion: { type: 'coupon', coupon: coupon.id },
+    code: SMS_PROMO_CODE,
   });
-  await stripe.promotionCodes.create({ coupon: coupon.id, code: SMS_PROMO_CODE });
   console.log(`\n✓ Created promo code ${SMS_PROMO_CODE} — 5% off the first membership term`);
 }
 
