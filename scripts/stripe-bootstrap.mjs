@@ -82,6 +82,25 @@ for (const tier of TIERS) {
   }
 }
 
+// Board-approved 5% dues discount for SMS opt-ins, as a promotion code so it
+// can be deactivated or replaced (Stripe dashboard → Products → Coupons)
+// without a deploy. duration 'once' = the discount applies to the checkout's
+// first invoice (i.e. the whole first term); renewals bill at full price.
+const SMS_PROMO_CODE = 'SAMPATEXT5';
+const smsExisting = await stripe.promotionCodes.list({ code: SMS_PROMO_CODE, limit: 1 });
+if (smsExisting.data[0]) {
+  const pc = smsExisting.data[0];
+  console.log(`\n✓ Promo code ${SMS_PROMO_CODE} already exists (${pc.active ? 'active' : 'INACTIVE'}, ${pc.coupon?.percent_off}% off)`);
+} else {
+  const coupon = await stripe.coupons.create({
+    percent_off: 5,
+    duration: 'once',
+    name: 'SMS updates dues discount (5%)',
+  });
+  await stripe.promotionCodes.create({ coupon: coupon.id, code: SMS_PROMO_CODE });
+  console.log(`\n✓ Created promo code ${SMS_PROMO_CODE} — 5% off the first membership term`);
+}
+
 if (webhookUrl) {
   const existing = (await stripe.webhookEndpoints.list({ limit: 100 })).data;
   const found = existing.find((w) => w.url === webhookUrl);

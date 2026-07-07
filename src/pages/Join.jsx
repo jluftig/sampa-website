@@ -74,6 +74,14 @@ export default function Join() {
           </div>
         )}
 
+        {user && profile?.sms_opt_in && !isActiveMember && (
+          <div className="max-w-2xl mx-auto bg-accent/5 border border-accent/20 rounded-2xl p-4 mb-10 text-center text-sm text-text/80">
+            You're signed up for SAMPA text updates — enter code{' '}
+            <strong className="font-data tracking-wider">SAMPATEXT5</strong> at checkout
+            for 5% off your dues.
+          </div>
+        )}
+
         {isActiveMember && (
           <div className="max-w-2xl mx-auto bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-10 text-center">
             <p className="font-semibold text-primary mb-1">

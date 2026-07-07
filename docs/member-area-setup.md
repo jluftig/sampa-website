@@ -182,7 +182,17 @@ already has promo codes enabled) rather than more price variants.
 3. **Customer Portal**: Settings → Billing → Customer portal → enable, and
    allow: update payment method, cancel subscription, switch plans (add the six
    membership prices as switchable products so members can change tiers there).
-4. Do all of the above in **Test mode** first; repeat in Live mode when ready.
+4. **SMS-discount promo code (board-approved 2026-07-06):** the bootstrap
+   script also creates coupon "SMS updates dues discount (5%)" behind
+   promotion code **`SAMPATEXT5`** (duration `once`: 5% off the whole first
+   term at checkout; auto-renewals bill full price). Members who opt into text
+   updates see the code on `/join`; checkout has a promo-code field.
+   - **Retire it:** Stripe dashboard → Products → Coupons → deactivate the
+     promotion code (existing memberships are unaffected).
+   - **Change the %:** coupons are immutable — deactivate `SAMPATEXT5`, create
+     a new coupon + code in the dashboard, and update the code shown in
+     `src/pages/Join.jsx` (and in `scripts/stripe-bootstrap.mjs` for reruns).
+5. Do all of the above in **Test mode** first; repeat in Live mode when ready.
 
 ## 4. Vercel environment variables (server-side — no VITE_ prefix)
 
