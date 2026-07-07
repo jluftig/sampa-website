@@ -234,6 +234,21 @@ export default function Dashboard() {
               >
                 Become a member
               </Link>
+              <p className="text-text/40 text-xs mt-4">
+                Expecting to see a membership here? You're signed in as{' '}
+                <strong className="text-text/60">{profile?.email || user?.email}</strong> — if
+                you joined SAMPA using a different email address, sign out (top of
+                this page) and sign back in with that one, or{' '}
+                <a
+                  href="https://forms.gle/YqYYRVE9z2nCYdNz5"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-primary"
+                >
+                  contact us
+                </a>{' '}
+                and we'll connect your accounts.
+              </p>
             </>
           )}
         </section>
