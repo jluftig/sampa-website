@@ -163,11 +163,21 @@ tier/term combination (the API rejects it).
    dashboard shows **Canceled** after the webhook fires.
 6. Sign out; confirm `/dashboard` bounces to `/login` and news pages still load.
 
-## Phase 2 — Donations (NOT yet built; info preserved from the board doc)
+## Phase 2 — Donations (NOT yet built; deliberately deferred)
 
-The old Google Form also took donations; the homepage donation section still
-links to it for now. When we build Stripe donations, the approved tiers
-("SAMPA Membership & Donor Tiers 2026") are:
+**Plan (decided 2026-07-06): donations will run through Fiscal Sponsorship
+Allies (https://fiscalsponsorshipallies.org), NOT our own Stripe.** The fiscal
+sponsor's 501(c)(3) makes gifts tax-deductible while SAMPA's own status is
+pending, and they handle receipts/IRS acknowledgment compliance. Expected
+integration: point the homepage "Donate Now" button (and optionally each donor
+tier card) at the FSA-hosted donation page once SAMPA's FSA account exists —
+no backend work; the membership webhook already ignores non-membership
+payments. Until then the donation section keeps linking to the old Google
+Form. When FSA goes live, also revisit the donation-section copy ("pending
+501(c)(3)") with sponsor-approved tax-deductibility language.
+
+The approved donor tiers ("SAMPA Membership & Donor Tiers 2026"), for whenever
+that build happens:
 
 | Tier | Annual | 2-yr (−10%) | 3-yr (−15%) | Tax note |
 |---|---|---|---|---|
