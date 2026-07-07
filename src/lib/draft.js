@@ -32,7 +32,8 @@ export function clearDraft(key) {
 }
 
 // Canonical string of the editable fields — used to detect real changes vs. the
-// saved version (ignores volatile bits like a key point's local id).
+// saved version (ignores volatile bits like a key point's local id; a point's
+// dbId is identity rather than content, so it's excluded too).
 export function draftSignature(f) {
   return JSON.stringify({
     title: (f?.title || '').trim(),
@@ -41,6 +42,9 @@ export function draftSignature(f) {
     bodyHtml: f?.bodyHtml || '',
     coverImageUrl: f?.coverImageUrl || '',
     coverImageCaption: (f?.coverImageCaption || '').trim(),
+    sourceName: (f?.sourceName || '').trim(),
+    sourceUrl: (f?.sourceUrl || '').trim(),
+    sourceDate: f?.sourceDate || '',
     keyPoints: (f?.keyPoints || []).map((k) => ({
       content: (k.content || '').trim(),
       tagIds: [...(k.tagIds || [])].sort(),
@@ -55,6 +59,8 @@ export function draftHasContent(f) {
     (f.title || '').trim() ||
     (f.excerpt || '').trim() ||
     plain ||
+    (f.sourceName || '').trim() ||
+    (f.sourceUrl || '').trim() ||
     (f.keyPoints || []).some((k) => (k.content || '').trim())
   );
 }

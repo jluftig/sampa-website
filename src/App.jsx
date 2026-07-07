@@ -12,6 +12,7 @@ const News = lazy(() => import('./pages/News'));
 const PostView = lazy(() => import('./pages/PostView'));
 const Tags = lazy(() => import('./pages/Tags'));
 const TagView = lazy(() => import('./pages/TagView'));
+const Search = lazy(() => import('./pages/Search'));
 const Login = lazy(() => import('./pages/Login'));
 const Join = lazy(() => import('./pages/Join'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -35,6 +36,7 @@ function App() {
           <Route path="/news/:slug" element={<PostView />} />
           <Route path="/keywords" element={<Tags />} />
           <Route path="/keywords/:slug" element={<TagView />} />
+          <Route path="/search" element={<Search />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/privacy" element={<Privacy />} />

@@ -106,6 +106,15 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
 - **Slug** — Lowercase kebab-case, 3-6 words, hyphen-separated, descriptive; add the year
   (and month) when possible. Example: `xr-buprenorphine-pregnancy-trial-2026-02`. Must be unique.
 - **Excerpt** — One to two sentences (~25-45 words) for the news list.
+- **Source citation** — three values for the editor's **"Original source"** box. They are
+  stored on the post (`source_name`, `source_url`, `source_published_at`) and power the
+  copyable per-Key-Point citation and the source line shown under the article title, so
+  get them right:
+  - **Source name** — the journal or outlet, e.g. `JAMA Psychiatry`, `AP News`.
+  - **Source URL** — the canonical link to the original; for academic sources prefer the
+    DOI URL (`https://doi.org/...`).
+  - **Source date** — the ORIGINAL publication date in `YYYY-MM-DD` (not the date the
+    SAMPA post goes up). Never guess: omit it if the source doesn't state it.
 - **Body (HTML)** — ~250-500 words as **clean HTML**, because the site stores `body_html`
   from a TipTap editor. Use ONLY these HTML elements (the editor supports nothing else),
   written with normal angle-bracket tags in your output: paragraph (p), headings h2 and h3,
@@ -129,6 +138,9 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
 Return each field in its own fenced code block for clean copy/transfer, in this order:
 
 - TITLE / SLUG / EXCERPT — one plain code block each.
+- SOURCE NAME / SOURCE URL / SOURCE DATE — one plain code block each, in that order
+  (SOURCE DATE as `YYYY-MM-DD`). These go into the editor's "Original source" fields.
+  If the source genuinely lacks one of them, leave that block empty rather than guessing.
 - BODY — **do NOT deliver the body only as a code block to paste into the editor.** The
   Article field is a TipTap WYSIWYG surface: pasting raw HTML *source* into it renders the
   tags as literal text. Instead, **use Write to save the body to a standalone `.html` file**
@@ -180,7 +192,8 @@ If wired to write drafts directly (via a Supabase MCP connector or a repo import
 script), add the needed write tools to allowed-tools and emit a structured object
 instead of paste blocks, then insert:
 
-- `posts`: title, slug, excerpt, body_html, cover_image_url, author_name, and
+- `posts`: title, slug, excerpt, body_html, cover_image_url, author_name,
+  source_name, source_url, source_published_at, and
   status set to `draft` (NEVER `published` — publishing stays human-gated).
 - `items`: one row per Key Point (content, sort_order, post_id).
 - `item_tags`: (item_id, tag_id) using ONLY tag_ids resolved from existing tags;
