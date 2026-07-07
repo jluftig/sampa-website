@@ -222,6 +222,17 @@ tier/term combination (the API rejects it).
    dashboard shows **Canceled** after the webhook fires.
 6. Sign out; confirm `/dashboard` bounces to `/login` and news pages still load.
 
+**After testing, before go-live:** any account used for test-mode checkouts now
+holds TEST billing data in the shared DB — including a test `stripe_customer_id`
+that live-mode checkout would try (and fail) to reuse. Reset each tester:
+
+```sql
+update public.profiles
+   set stripe_customer_id = null, membership_tier = null,
+       membership_status = null, renews_on = null, cancel_at_period_end = false
+ where email = 'tester@example.com';  -- one per test account
+```
+
 ## Phase 2 — Donations (NOT yet built; deliberately deferred)
 
 **Plan (decided 2026-07-06): donations will run through Fiscal Sponsorship
