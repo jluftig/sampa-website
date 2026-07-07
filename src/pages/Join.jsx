@@ -60,6 +60,14 @@ export default function Join() {
               ? 'Pick the membership level that fits your career stage — payment is handled securely by Stripe.'
               : 'Two quick steps: sign in (one click, no password), then pick your membership level.'}
           </p>
+          {user && !isActiveMember && (
+            <p className="text-text/40 text-xs mt-4 max-w-xl mx-auto">
+              You're signed in as <strong className="text-text/60">{user.email}</strong>.
+              Already a member under a different email? Sign out from your{' '}
+              <Link to="/dashboard" className="underline hover:text-primary">dashboard</Link>{' '}
+              and sign back in with that address instead of paying again.
+            </p>
+          )}
         </header>
 
         {canceled && (

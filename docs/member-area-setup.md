@@ -246,6 +246,81 @@ update public.profiles
  where email = 'tester@example.com';  -- one per test account
 ```
 
+## Support runbook — member signed in with the wrong email
+
+Identity is keyed by email, so someone with multiple Google accounts can land
+in a fresh, empty account. The dashboard and `/join` show "you're signed in
+as X" hints for self-service; when someone writes in anyway, it's one of three
+cases:
+
+**Case A — pledger (old form sign-up) whose profile didn't pre-fill.**
+Their `member_import` row is unclaimed because they signed in with a different
+address. Re-point the row, then re-run the claim (SQL editor):
+
+```sql
+update public.member_import
+   set email = lower('actual@email.com')
+ where email = 'form@email.com' and claimed_at is null;
+
+select public.claim_member_import(p.id, p.email)
+from public.profiles p
+join public.member_import m on m.email = lower(p.email)
+where m.claimed_at is null;
+```
+
+**Case B — paid member who accidentally signed in on a second account.**
+Nothing to move — tell them to sign out and sign back in with the email they
+joined under. The stray empty profile is harmless (optionally delete it:
+Supabase → Authentication → Users).
+
+**Case C — member PAID on the "wrong" account and wants their membership on
+another one.** Move the membership, then re-point Stripe:
+
+```sql
+-- 1. Copy membership/billing onto the account they want to keep
+update public.profiles dst
+   set stripe_customer_id   = src.stripe_customer_id,
+       membership_tier      = src.membership_tier,
+       membership_status    = src.membership_status,
+       renews_on            = src.renews_on,
+       cancel_at_period_end = src.cancel_at_period_end
+  from public.profiles src
+ where src.email = 'wrong@email.com'
+   and dst.email = 'right@email.com';
+
+-- 2. Clear it off the old account
+update public.profiles
+   set stripe_customer_id = null, membership_tier = null,
+       membership_status = null, renews_on = null, cancel_at_period_end = false
+ where email = 'wrong@email.com';
+
+-- 3. Note the surviving profile's id (needed for step 4)
+select id, email from public.profiles where email = 'right@email.com';
+```
+
+4. **Stripe (Live mode)** → Customers → open their subscription → **Edit
+   metadata** → set `supabase_user_id` to the id from step 3. Without this,
+   future renewal/cancellation webhooks would update the old, now-empty
+   profile.
+5. Optional — move saved articles too:
+
+```sql
+insert into public.favorites (user_id, post_id, created_at)
+select (select id from public.profiles where email = 'right@email.com'),
+       post_id, created_at
+  from public.favorites
+ where user_id = (select id from public.profiles where email = 'wrong@email.com')
+on conflict do nothing;
+
+delete from public.favorites
+ where user_id = (select id from public.profiles where email = 'wrong@email.com');
+```
+
+**Prevention:** the pledger invitation email tells each person exactly which
+email to sign in with. If wrong-email support requests become frequent at
+scale, the next step up is Supabase identity linking (members add a second
+email to one account) — not worth building until then.
+
 ## Phase 2 — Donations (NOT yet built; deliberately deferred)
 
 **Plan (decided 2026-07-06): donations will run through Fiscal Sponsorship
