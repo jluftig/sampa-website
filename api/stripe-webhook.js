@@ -54,6 +54,7 @@ export async function POST(request) {
             membership_tier: session.metadata?.tier || subscription.metadata?.tier || null,
             membership_status: membershipStatus(subscription.status),
             renews_on: renewsOn(subscription),
+            cancel_at_period_end: subscription.cancel_at_period_end ?? false,
           };
         } else if (session.mode === 'payment' && session.metadata?.duration === 'lifetime') {
           // Lifetime membership (Legacy): one-time payment, never expires.
@@ -62,6 +63,7 @@ export async function POST(request) {
             membership_tier: session.metadata?.tier || null,
             membership_status: 'active',
             renews_on: null,
+            cancel_at_period_end: false,
           };
         } else {
           break; // some other one-time payment (e.g. future donations) — not membership
@@ -94,6 +96,9 @@ export async function POST(request) {
         const update = {
           membership_status: membershipStatus(subscription.status),
           renews_on: renewsOn(subscription),
+          cancel_at_period_end:
+            event.type !== 'customer.subscription.deleted' &&
+            (subscription.cancel_at_period_end ?? false),
         };
         if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
 

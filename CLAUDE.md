@@ -129,7 +129,8 @@ redirect to `/login?next=...` so users return where they were headed.
   practice_setting, state, newsletter_opt_in, sms_opt_in, onboarded_at`;
   membership/billing (webhook-written, guarded): `stripe_customer_id, membership_tier
   (tier key from src/lib/membership.js), membership_status
-  ('active'|'past_due'|'canceled'), renews_on` (null renews_on + active = lifetime).
+  ('active'|'past_due'|'canceled'), renews_on` (null renews_on + active = lifetime),
+  `cancel_at_period_end` (true = still active but won't renew; renews_on is the END date).
   `role` is enum `user_role` = member|editor|admin (default member).
 - `posts` — `id, title, slug (unique), excerpt, body_html, cover_image_url,
   cover_image_caption, author_id, author_name (denormalized), status` (enum post_status

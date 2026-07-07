@@ -69,6 +69,36 @@ alter table public.profiles add column if not exists sms_opt_in boolean not null
 (`state` = US state dropdown from the old sign-up form; `sms_opt_in` = text-message
 updates consent, collected with the required "msg rates / reply STOP" language.)
 
+### Migration 4 — cancel-at-period-end flag (added 2026-07-06, post-test)
+
+Run before deploying the matching webhook code (or just after — Stripe retries
+failed webhook deliveries, so nothing is lost):
+
+```sql
+alter table public.profiles add column if not exists cancel_at_period_end boolean not null default false;
+
+create or replace function public.guard_profile_role()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is not null and not public.is_admin() and (
+       new.role               is distinct from old.role
+    or new.membership_status  is distinct from old.membership_status
+    or new.membership_tier    is distinct from old.membership_tier
+    or new.stripe_customer_id is distinct from old.stripe_customer_id
+    or new.renews_on          is distinct from old.renews_on
+    or new.cancel_at_period_end is distinct from old.cancel_at_period_end
+  ) then
+    raise exception 'Only admins can change role or membership fields';
+  end if;
+  return new;
+end; $$;
+```
+
+Why: Stripe's portal cancellation is "cancel at period end" — the member stays
+active until the term they paid for runs out. Without this flag the dashboard
+would say "renews <date>" after a cancellation; with it, it says "member
+benefits end <date>".
+
 ### Migration 3 — importing the Google Form sign-ups (added 2026-07-06)
 
 The 2026 Google Form sign-ups are **unpaid pledges** (the form predates the

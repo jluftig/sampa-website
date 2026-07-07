@@ -35,6 +35,7 @@ create table if not exists public.profiles (
   membership_tier    text,
   membership_status  text,
   renews_on          timestamptz,
+  cancel_at_period_end boolean not null default false,
   created_at         timestamptz not null default now()
 );
 
@@ -68,6 +69,9 @@ alter table public.profiles add column if not exists state             text;
 alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
 alter table public.profiles add column if not exists sms_opt_in        boolean not null default false;
 alter table public.profiles add column if not exists onboarded_at      timestamptz;
+-- True when a member canceled but their paid term hasn't ended yet: the
+-- membership stays active and renews_on becomes the END date, not a renewal.
+alter table public.profiles add column if not exists cancel_at_period_end boolean not null default false;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
@@ -224,6 +228,7 @@ begin
     or new.membership_tier    is distinct from old.membership_tier
     or new.stripe_customer_id is distinct from old.stripe_customer_id
     or new.renews_on          is distinct from old.renews_on
+    or new.cancel_at_period_end is distinct from old.cancel_at_period_end
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;

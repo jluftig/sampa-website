@@ -186,7 +186,9 @@ export default function Dashboard() {
                   ? ' — lifetime, no renewal needed'
                   : ''}
                 {profile.renews_on && profile.membership_status === 'active'
-                  ? ` — renews ${formatDate(profile.renews_on)}`
+                  ? profile.cancel_at_period_end
+                    ? ` — canceled; member benefits end ${formatDate(profile.renews_on)}. Changed your mind? You can resume in the billing portal.`
+                    : ` — renews ${formatDate(profile.renews_on)}`
                   : ''}
                 {profile.membership_status === 'past_due'
                   ? ' — please update your payment method to keep your membership active.'
