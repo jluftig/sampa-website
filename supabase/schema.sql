@@ -102,6 +102,26 @@ create table if not exists public.favorites (
   primary key (user_id, post_id)
 );
 
+-- One-time staging for members who signed up via the pre-Stripe Google Form.
+-- Rows are matched by email at first login (see claim_member_import) to
+-- pre-fill the profile and grandfather paid memberships. Data is inserted
+-- manually via the SQL editor and MUST NOT be committed to this public repo.
+create table if not exists public.member_import (
+  email            text primary key,          -- lowercase; the match key
+  first_name       text,
+  last_name        text,
+  state            text,
+  credentials      text,
+  phone            text,
+  sms_opt_in       boolean not null default false,
+  membership_tier  text,                      -- tier key from src/lib/membership.js
+  membership_years int,                       -- 1 | 2 | 3 (term they signed up for)
+  member_since     timestamptz,               -- original form submission time
+  activate         boolean not null default true, -- set false if they never paid
+  claimed_at       timestamptz,               -- set once a login consumes the row
+  created_at       timestamptz not null default now()
+);
+
 create index if not exists posts_status_published_at_idx on public.posts (status, published_at desc);
 create index if not exists items_post_id_idx             on public.items (post_id);
 create index if not exists item_tags_tag_id_idx          on public.item_tags (tag_id);
@@ -132,6 +152,39 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 
 -- ----- Triggers ---------------------------------------------------------------
+-- Merge a member_import row (pre-Stripe Google Form sign-up) into a profile,
+-- matched by email. Fills profile fields, and — only if the profile has no
+-- membership yet — activates the grandfathered membership with a renewal date
+-- computed from the original sign-up date + purchased term. SECURITY DEFINER:
+-- runs with auth.uid() null, so guard_profile_role lets it write membership.
+create or replace function public.claim_member_import(p_profile_id uuid, p_email text)
+returns void language plpgsql security definer set search_path = public as $$
+declare m public.member_import%rowtype;
+begin
+  select * into m from public.member_import
+   where email = lower(p_email) and claimed_at is null;
+  if not found then return; end if;
+
+  update public.profiles set
+    full_name   = coalesce(nullif(btrim(concat(m.first_name, ' ', m.last_name)), ''), full_name),
+    state       = coalesce(m.state, state),
+    credentials = coalesce(m.credentials, credentials),
+    phone       = coalesce(m.phone, phone),
+    sms_opt_in  = (m.sms_opt_in or sms_opt_in),
+    membership_tier = case
+      when m.activate and m.membership_tier is not null and membership_status is null
+      then m.membership_tier else membership_tier end,
+    renews_on = case
+      when m.activate and m.membership_tier is not null and membership_status is null
+      then m.member_since + make_interval(years => m.membership_years) else renews_on end,
+    membership_status = case
+      when m.activate and m.membership_tier is not null and membership_status is null
+      then 'active' else membership_status end
+  where id = p_profile_id;
+
+  update public.member_import set claimed_at = now() where email = lower(p_email);
+end; $$;
+
 -- Create a profile row automatically the first time someone signs in.
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
@@ -143,6 +196,8 @@ begin
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name')
   )
   on conflict (id) do nothing;
+  -- Grandfather pre-Stripe sign-ups (no-op when there's no matching import row).
+  perform public.claim_member_import(new.id, new.email);
   return new;
 end; $$;
 
@@ -193,6 +248,9 @@ alter table public.tags      enable row level security;
 alter table public.items     enable row level security;
 alter table public.item_tags enable row level security;
 alter table public.favorites enable row level security;
+-- member_import: RLS on with deliberately NO policies — contains contact info;
+-- only the SQL editor, service role, and SECURITY DEFINER functions can read it.
+alter table public.member_import enable row level security;
 
 -- profiles: read own (or admin reads all); update own (role column guarded above)
 drop policy if exists profiles_select on public.profiles;

@@ -21,6 +21,10 @@
 # generated post drafts (sampa-post skill) — local only, never committed
 /drafts
 
+# member data (this repo is PUBLIC — contact info must never be committed)
+*member-import*
+*Responses*.csv
+
 # debug
 npm-debug.log*
 yarn-debug.log*

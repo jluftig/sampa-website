@@ -193,14 +193,16 @@ export default function Dashboard() {
                   : ''}
               </p>
               <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={openBillingPortal}
-                  disabled={portalBusy}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
-                >
-                  <CreditCard className="w-4 h-4" />
-                  {portalBusy ? 'Opening…' : 'Manage billing'}
-                </button>
+                {profile.stripe_customer_id && (
+                  <button
+                    onClick={openBillingPortal}
+                    disabled={portalBusy}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    {portalBusy ? 'Opening…' : 'Manage billing'}
+                  </button>
+                )}
                 {profile.membership_status === 'canceled' && (
                   <Link
                     to="/join"
@@ -212,8 +214,9 @@ export default function Dashboard() {
               </div>
               {portalError && <p className="text-red-500 text-xs mt-3">{portalError}</p>}
               <p className="text-text/40 text-xs mt-4">
-                Card updates, tier changes, cancellation, and receipts are all
-                handled securely in the Stripe billing portal.
+                {profile.stripe_customer_id
+                  ? 'Card updates, tier changes, cancellation, and receipts are all handled securely in the Stripe billing portal.'
+                  : 'Your membership was imported from our sign-up records. Online billing will be available when you renew.'}
               </p>
             </>
           ) : (

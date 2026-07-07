@@ -69,6 +69,32 @@ alter table public.profiles add column if not exists sms_opt_in boolean not null
 (`state` = US state dropdown from the old sign-up form; `sms_opt_in` = text-message
 updates consent, collected with the required "msg rates / reply STOP" language.)
 
+### Migration 3 — grandfathering pre-Stripe members (added 2026-07-06)
+
+Members who signed up via the old Google Form are imported through a staging
+table (`member_import`): at their first login, `claim_member_import()` matches
+their email, pre-fills the profile (name, state, credentials, phone, SMS
+preference), and — if `activate` is true and they have no membership yet —
+sets their membership to active with a renewal date of *form sign-up date +
+purchased term*. Imported members have no `stripe_customer_id`, so the
+dashboard hides "Manage billing" until they renew online.
+
+**This repo is PUBLIC — the INSERT statements with real member data must NEVER
+be committed.** The structure lives in `supabase/schema.sql`; the data-bearing
+SQL is generated locally from the form-responses CSV and pasted straight into
+the Supabase SQL editor (regenerate from the CSV if lost; `.gitignore` blocks
+`*member-import*` and `*Responses*.csv` as a safety net). To mark someone who
+never actually paid, before their first login:
+`update public.member_import set activate = false where email = '...';`
+If a member signs in with a different email than the one on their form
+response, their row stays unclaimed — fix by updating that row's `email` to
+match, then re-running the backfill `select` from the import script.
+
+**Note on the old form's "save 5% on my dues" SMS incentive:** the v2 pricing
+doc dropped it and the new checkout doesn't implement it. If the board wants
+to keep honoring it, the clean mechanism is a Stripe promotion code (checkout
+already has promo codes enabled) rather than more price variants.
+
 ## 2. Supabase Auth configuration
 
 1. **Publish the Google consent screen** (Google Cloud Console → APIs & Services
