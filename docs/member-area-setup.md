@@ -99,6 +99,69 @@ active until the term they paid for runs out. Without this flag the dashboard
 would say "renews <date>" after a cancellation; with it, it says "member
 benefits end <date>".
 
+### Migration 6 — checkbox permissions (added 2026-07-07)
+
+Replaces the single-role ladder with independent capabilities: **publish news**
+(`can_edit_news`, the old editor role), **view members** (`can_view_members` —
+READ-ONLY roster + pledge tracker, for the membership committee/treasurer/
+board), and **admin** (everything). People can hold any combination. Run
+before deploying the matching code:
+
+```sql
+alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
+alter table public.profiles add column if not exists can_view_members boolean not null default false;
+
+update public.profiles set can_edit_news = true where role = 'editor' and not can_edit_news;
+
+create or replace function public.is_editor()
+returns boolean language sql stable security definer set search_path = public as $$
+  select coalesce(
+    (select role in ('editor','admin') or can_edit_news
+       from public.profiles where id = auth.uid()),
+    false);
+$$;
+
+create or replace function public.is_member_viewer()
+returns boolean language sql stable security definer set search_path = public as $$
+  select coalesce(
+    (select role = 'admin' or can_view_members
+       from public.profiles where id = auth.uid()),
+    false);
+$$;
+
+create or replace function public.guard_profile_role()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is not null and not public.is_admin() and (
+       new.role               is distinct from old.role
+    or new.membership_status  is distinct from old.membership_status
+    or new.membership_tier    is distinct from old.membership_tier
+    or new.stripe_customer_id is distinct from old.stripe_customer_id
+    or new.renews_on          is distinct from old.renews_on
+    or new.cancel_at_period_end is distinct from old.cancel_at_period_end
+    or new.can_edit_news      is distinct from old.can_edit_news
+    or new.can_view_members   is distinct from old.can_view_members
+  ) then
+    raise exception 'Only admins can change role or membership fields';
+  end if;
+  return new;
+end; $$;
+
+drop policy if exists profiles_select on public.profiles;
+create policy profiles_select on public.profiles
+  for select using ( auth.uid() = id or public.is_admin() or public.is_member_viewer() );
+
+drop policy if exists member_import_select on public.member_import;
+create policy member_import_select on public.member_import
+  for select using ( public.is_admin() or public.is_member_viewer() );
+
+select 'migration 6 applied ✓' as status;
+```
+
+Note for the treasurer/accountant: financial reporting lives in Stripe, which
+has its own team roles — invite them at Stripe → Settings → Team with a
+view-only/Analyst role instead of building anything here.
+
 ### Migration 5 — admin pledge tracking (added 2026-07-07)
 
 Lets admins see pledge-conversion status on `/editor/members` (who hasn't

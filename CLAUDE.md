@@ -84,6 +84,7 @@ src/
   components/
     RequireEditor.jsx       route guard; prop adminOnly restricts to admins
     RequireAuth.jsx         route guard: any signed-in user (member area)
+    RequireMemberViewer.jsx route guard: can_view_members capability or admin
     Navbar.jsx Footer.jsx   nav; section links are /#anchor so they work off-home
     RichTextEditor.jsx      TipTap wrapper (bold/italic/H2/H3/lists/quote/link)
     LegalPage.jsx           shared shell for /privacy and /terms
@@ -101,8 +102,8 @@ src/
     EditorDashboard.jsx     /editor — post list + admin links
     PostEditor.jsx          /editor/new, /editor/:id — post + Key Points editor
     AdminTags.jsx           /editor/keywords (adminOnly) — manage keyword vocabulary
-    AdminPeople.jsx         /editor/people (adminOnly) — assign roles
-    AdminMembers.jsx        /editor/members (adminOnly) — roster, tier/state counts, CSV export
+    AdminPeople.jsx         /editor/people (adminOnly) — checkbox permissions per person
+    AdminMembers.jsx        /editor/members (RequireMemberViewer) — roster, pledge tracker, counts, CSV
     NotFound.jsx            catch-all 404
 supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
@@ -117,7 +118,8 @@ Public: `/`, `/news`, `/news/:slug`, `/keywords`, `/keywords/:slug`, `/login`, `
 `/privacy`, `/terms` (static legal pages, LegalPage shell).
 Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
-Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`, `/editor/members`.
+Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.
+Member-viewer (RequireMemberViewer — can_view_members capability or admin): `/editor/members`.
 `*` → NotFound. Route order: `/editor/keywords`, `/editor/people`, and `/editor/members`
 are declared before `/editor/:id` so they aren't captured as an id.
 `/login` honors `?next=<in-app path>` (sanitized: must start with `/`, not `//`); guards
@@ -132,7 +134,10 @@ redirect to `/login?next=...` so users return where they were headed.
   (tier key from src/lib/membership.js), membership_status
   ('active'|'past_due'|'canceled'), renews_on` (null renews_on + active = lifetime),
   `cancel_at_period_end` (true = still active but won't renew; renews_on is the END date).
-  `role` is enum `user_role` = member|editor|admin (default member).
+  `role` is enum `user_role` = member|editor|admin (default member; 'editor' is a LEGACY
+  value — the People & permissions UI normalizes it to member + flag on first edit).
+  Capability flags (admin-set, guarded, combinable): `can_edit_news` (news writing),
+  `can_view_members` (read-only roster/pledges). Admin role implies all capabilities.
 - `posts` — `id, title, slug (unique), excerpt, body_html, cover_image_url,
   cover_image_caption, author_id, author_name (denormalized), status` (enum post_status
   draft|published), `published_at, created_at, updated_at`.
@@ -145,18 +150,22 @@ redirect to `/login?next=...` so users return where they were headed.
 ## Security model (RLS) — INVARIANTS, do not weaken
 
 RLS is the ONLY real authorization boundary. Client checks are UX only. Helpers
-`is_editor()` / `is_admin()` / `is_active_member()` are SECURITY DEFINER (bypass RLS → no
-recursion), `search_path=public`. Gate future member-only content (CME) on
-`is_active_member()` (true for membership_status='active' OR editors/admins).
+`is_editor()` (can_edit_news flag OR legacy editor role OR admin) / `is_admin()` /
+`is_member_viewer()` (can_view_members flag OR admin) / `is_active_member()` are
+SECURITY DEFINER (bypass RLS → no recursion), `search_path=public`. Gate future
+member-only content (CME) on `is_active_member()` (true for membership_status='active'
+OR editors/admins).
 
 - **posts/items/item_tags SELECT:** public sees `status='published'`; editors/admins see all
   (incl. drafts). items/item_tags gate on their parent post being published.
 - **posts/items/item_tags write (INS/UPD/DEL):** `is_editor()` only.
 - **tags SELECT:** public. **tags write:** `is_admin()` only.
-- **profiles SELECT:** own row or admin. **profiles UPDATE:** own row or admin.
+- **profiles SELECT:** own row, admin, or member-viewer (read-only roster access).
+  **profiles UPDATE:** own row or admin — member-viewers cannot write.
 - **favorites:** SELECT/DELETE own rows only; INSERT own rows AND only for published posts.
-- **member_import:** SELECT `is_admin()` only (pledge tracking on /editor/members); NO
-  write policies — writes happen server-side only (SQL editor / SECURITY DEFINER claim).
+- **member_import:** SELECT `is_admin()` or `is_member_viewer()` (pledge tracking on
+  /editor/members); NO write policies — writes happen server-side only (SQL editor /
+  SECURITY DEFINER claim).
 - **Privilege-escalation guard:** `guard_profile_role()` BEFORE UPDATE trigger blocks a
   non-admin from changing `role` OR any membership/billing column
   (`membership_status, membership_tier, stripe_customer_id, renews_on`). Bypass only when

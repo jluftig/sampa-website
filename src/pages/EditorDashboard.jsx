@@ -7,7 +7,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function EditorDashboard() {
-  const { profile, signOut, isAdmin } = useAuth();
+  const { profile, signOut, isAdmin, canViewMembers } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -85,10 +85,10 @@ export default function EditorDashboard() {
                 to="/editor/people"
                 className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
               >
-                Manage editors
+                People & permissions
               </Link>
             )}
-            {isAdmin && (
+            {canViewMembers && (
               <Link
                 to="/editor/members"
                 className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"

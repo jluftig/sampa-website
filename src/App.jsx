@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
+import RequireMemberViewer from './components/RequireMemberViewer';
 import Home from './pages/Home';
 
 // Route-level code splitting: the homepage loads eagerly; every other page
@@ -81,9 +82,9 @@ function App() {
           <Route
             path="/editor/members"
             element={
-              <RequireEditor adminOnly>
+              <RequireMemberViewer>
                 <AdminMembers />
-              </RequireEditor>
+              </RequireMemberViewer>
             }
           />
           <Route
