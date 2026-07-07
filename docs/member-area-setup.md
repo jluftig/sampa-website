@@ -256,6 +256,9 @@ already has promo codes enabled) rather than more price variants.
    - `checkout.session.completed`
    - `customer.subscription.updated`
    - `customer.subscription.deleted`
+   - `invoice.paid` *(needed for recurring **donations** — records each monthly
+     gift cycle. One-time gifts arrive via `checkout.session.completed`, which is
+     already in the list.)*
    Copy the **signing secret** (`whsec_...`).
 3. **Customer Portal**: Settings → Billing → Customer portal → enable, and
    allow: update payment method, cancel subscription, switch plans (add the six

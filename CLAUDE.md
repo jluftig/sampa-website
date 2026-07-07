@@ -69,8 +69,12 @@ api/                        Vercel serverless functions (Web-handler signature: 
   _lib/clients.js           stripeClient(), supabaseAdmin() (service role), requireUser(JWT), json()
   _lib/tiers.js             tier key -> STRIPE_PRICE_* env mapping
   create-checkout-session.js POST {tier} -> {url}; JWT required; client_reference_id = user id
+  create-donation-session.js POST {amount,frequency} -> {url}; NO auth (public donate);
+                            metadata.type='donation' keeps gifts OUT of membership columns
   create-portal-session.js  POST -> {url} of Stripe Customer Portal; JWT required
-  stripe-webhook.js         Stripe events -> membership columns on profiles (ONLY writer)
+  stripe-webhook.js         Stripe events -> membership columns on profiles (ONLY writer) +
+                            donations table (one-time: checkout.session.completed; recurring
+                            cycles: invoice.paid). type='donation' segregates the two flows.
   share.js                  GET ?slug= -> OG/Twitter meta HTML for social crawlers (anon key, published only)
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
@@ -107,6 +111,8 @@ src/
     Search.jsx              /search?q= — FTS over key points + articles (search_* RPCs) + keyword matches
     Login.jsx               /login — Google OAuth + email magic link; ?next= return path
     Join.jsx                /join — tier picker -> Stripe Checkout (sign-in-first)
+    Donate.jsx              /donate — PUBLIC donation page (one-time/monthly, preset+custom
+                            amounts) -> Stripe Checkout; pending-501(c)(3) deductibility disclosure
     Dashboard.jsx           /dashboard — membership status/billing, profile form, saved articles
     Privacy.jsx Terms.jsx   /privacy, /terms — static legal pages (drafts, pending counsel review)
     EditorDashboard.jsx     /editor — post list + admin links
@@ -128,7 +134,8 @@ vercel.json                 SPA rewrite: all non-/api paths -> /index.html; craw
 
 Public: `/`, `/news`, `/news/:slug` (`#point-<item id>` deep-links/highlights one Key
 Point), `/keywords`, `/keywords/:slug` (`?and=slug2,slug3` = keyword intersection),
-`/search?q=`, `/login`, `/join`, `/privacy`, `/terms` (static legal pages, LegalPage shell).
+`/search?q=`, `/login`, `/join`, `/donate` (public donation page — no sign-in required),
+`/privacy`, `/terms` (static legal pages, LegalPage shell).
 Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
 Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.
@@ -163,6 +170,12 @@ redirect to `/login?next=...` so users return where they were headed.
   (`/news/<slug>#point-<id>`) — see gotcha 5.
 - `item_tags` — M2M: `(item_id, tag_id)` composite PK.
 - `favorites` — saved news posts: `(user_id, post_id)` composite PK, `created_at`.
+- `donations` — gifts (separate from dues). `id, user_id (FK profiles, NULLABLE = anonymous),
+  donor_email, donor_name, amount (cents), currency, frequency ('once'|'monthly'), status,
+  stripe_customer_id, stripe_session_id (one-time), stripe_subscription_id + stripe_invoice_id
+  (recurring cycles), stripe_payment_intent_id, created_at`. Webhook-written ONLY (no client
+  write policy). SELECT: own rows OR is_member_viewer()/is_admin(). Unique on session_id and
+  invoice_id → webhook retries are idempotent.
 - **RPCs** (SECURITY INVOKER + explicit `status='published'` filter; shared by web and
   future mobile apps — put cross-client read logic here, not in React):
   `search_key_points(q)`, `search_posts(q)` (websearch_to_tsquery + ts_rank),
@@ -189,6 +202,8 @@ OR editors/admins).
 - **member_import:** SELECT `is_admin()` or `is_member_viewer()` (pledge tracking on
   /editor/members); NO write policies — writes happen server-side only (SQL editor /
   SECURITY DEFINER claim).
+- **donations:** SELECT own rows (`auth.uid() = user_id`) OR `is_admin()`/`is_member_viewer()`
+  (donor management); NO write policies — only `stripe-webhook.js` (service role) inserts.
 - **Privilege-escalation guard:** `guard_profile_role()` BEFORE UPDATE trigger blocks a
   non-admin from changing `role` OR any membership/billing column
   (`membership_status, membership_tier, stripe_customer_id, renews_on`). Bypass only when
@@ -198,7 +213,9 @@ OR editors/admins).
   writer of the membership columns.
 - **`/api` endpoints:** `create-checkout-session` / `create-portal-session` require a valid
   Supabase JWT (`Authorization: Bearer`) verified server-side via `auth.getUser()`;
-  `stripe-webhook` requires a valid Stripe signature (`STRIPE_WEBHOOK_SECRET`).
+  `create-donation-session` is PUBLIC (donating needs no account) — JWT is optional and only
+  used to link a gift to a profile; the amount is validated server-side ($1–$50k), never trusted
+  from the client. `stripe-webhook` requires a valid Stripe signature (`STRIPE_WEBHOOK_SECRET`).
 - **Profile creation:** `handle_new_user()` trigger (SECURITY DEFINER) inserts a `member`
   row on `auth.users` insert; role is NEVER taken from user-controlled signup metadata.
 - **First admin** is bootstrapped manually (SQL editor, where `auth.uid()` is null).

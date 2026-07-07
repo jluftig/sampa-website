@@ -29,6 +29,7 @@ export default function Navbar() {
           <a href="/#value-props" className="hover:text-primary transition-colors">CE & Resources</a>
           <a href="/#membership" className="hover:text-primary transition-colors">Membership</a>
           <a href="/#events" className="hover:text-primary transition-colors">Events</a>
+          <Link to="/donate" className="hover:text-primary transition-colors">Donate</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Contact Us</a>
           <Link to="/dashboard" className="hover:text-primary transition-colors">Member Login</Link>
         </div>
@@ -63,6 +64,7 @@ export default function Navbar() {
           <a href="/#value-props" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>CE & Resources</a>
           <a href="/#membership" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
           <a href="/#events" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Events</a>
+          <Link to="/donate" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
           <Link to="/dashboard" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Member Login</Link>
           <div className="mt-2 pt-4 border-t border-primary/10 flex justify-center">

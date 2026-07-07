@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { BookmarkX, CreditCard, PenSquare, Users } from 'lucide-react';
+import { BookmarkX, CreditCard, Heart, PenSquare, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { tierByKey } from '../lib/membership';
@@ -78,6 +78,23 @@ export default function Dashboard() {
     setSaved((prev) => prev.filter((f) => f.post_id !== postId));
     await supabase.from('favorites').delete().eq('user_id', user.id).eq('post_id', postId);
   };
+
+  // ---- donations (own gifts; RLS scopes the query to this user) --------------
+  const [donations, setDonations] = useState(null); // null = loading
+  useEffect(() => {
+    let active = true;
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from('donations')
+        .select('id, amount, currency, frequency, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (!active) return;
+      setDonations(data || []);
+    })();
+    return () => { active = false; };
+  }, [user?.id]);
 
   // ---- profile form -----------------------------------------------------------
   const [form, setForm] = useState(null);
@@ -388,6 +405,54 @@ export default function Dashboard() {
               ))}
             </ul>
           )}
+        </section>
+
+        {/* Donations */}
+        <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mt-8">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <h2 className="text-xl font-bold">Your donations</h2>
+            <Link
+              to="/donate"
+              className="flex items-center gap-1.5 text-primary font-semibold text-sm hover:underline"
+            >
+              <Heart className="w-4 h-4" /> Make a donation
+            </Link>
+          </div>
+
+          {donations === null && <p className="text-text/50 font-data text-sm">Loading…</p>}
+
+          {donations?.length === 0 && (
+            <p className="text-text/60 text-sm">
+              No donations yet. Gifts are separate from your membership dues —{' '}
+              <Link to="/donate" className="text-primary font-semibold hover:underline">donate here</Link>{' '}
+              to support SAMPA's mission.
+            </p>
+          )}
+
+          {donations?.length > 0 && (
+            <ul className="divide-y divide-primary/10">
+              {donations.map((d) => (
+                <li key={d.id} className="py-4 flex items-center justify-between gap-4">
+                  <div>
+                    <div className="font-semibold">
+                      ${(d.amount / 100).toFixed(2)}
+                      <span className="text-text/40 font-normal text-sm">
+                        {d.frequency === 'monthly' ? ' · monthly' : ' · one-time'}
+                      </span>
+                    </div>
+                    <div className="text-xs text-text/50 font-data mt-1">{formatDate(d.created_at)}</div>
+                  </div>
+                  <span className="text-xs text-text/40 font-data uppercase tracking-wider">
+                    {(d.currency || 'usd').toUpperCase()}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="text-text/40 text-xs mt-6">
+            SAMPA's 501(c)(3) status is pending IRS determination; keep your emailed
+            receipts and consult your tax advisor about deductibility.
+          </p>
         </section>
       </main>
 
