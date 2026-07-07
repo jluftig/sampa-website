@@ -257,9 +257,14 @@ alter table public.tags      enable row level security;
 alter table public.items     enable row level security;
 alter table public.item_tags enable row level security;
 alter table public.favorites enable row level security;
--- member_import: RLS on with deliberately NO policies — contains contact info;
--- only the SQL editor, service role, and SECURITY DEFINER functions can read it.
+-- member_import: contains contact info. Admins may read it (pledge tracking on
+-- /editor/members); nobody writes via the API — only the SQL editor, service
+-- role, and SECURITY DEFINER functions.
 alter table public.member_import enable row level security;
+
+drop policy if exists member_import_select on public.member_import;
+create policy member_import_select on public.member_import
+  for select using ( public.is_admin() );
 
 -- profiles: read own (or admin reads all); update own (role column guarded above)
 drop policy if exists profiles_select on public.profiles;

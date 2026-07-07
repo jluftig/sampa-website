@@ -62,6 +62,7 @@ function toCsv(rows) {
 // are allowed by the profiles RLS policy (admins see all rows).
 export default function AdminMembers() {
   const [people, setPeople] = useState([]);
+  const [pledges, setPledges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -70,13 +71,22 @@ export default function AdminMembers() {
   useEffect(() => {
     let active = true;
     (async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_status, renews_on, cancel_at_period_end, created_at')
-        .order('full_name', { ascending: true, nullsFirst: false });
+      const [profilesRes, pledgesRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_status, renews_on, cancel_at_period_end, created_at')
+          .order('full_name', { ascending: true, nullsFirst: false }),
+        // Pre-Stripe sign-up-form pledges (admin-readable via RLS). Rows stay
+        // after claiming, so this doubles as the invitation-conversion tracker.
+        supabase
+          .from('member_import')
+          .select('email, first_name, last_name, membership_tier, membership_years, member_since, claimed_at')
+          .order('member_since', { ascending: true }),
+      ]);
       if (!active) return;
-      if (error) setError(error.message);
-      else setPeople(data || []);
+      if (profilesRes.error) setError(profilesRes.error.message);
+      else setPeople(profilesRes.data || []);
+      setPledges(pledgesRes.data || []); // empty if the admin-read policy migration hasn't run
       setLoading(false);
     })();
     return () => { active = false; };
@@ -98,6 +108,30 @@ export default function AdminMembers() {
     const sorted = (obj) => Object.entries(obj).sort((a, b) => b[1] - a[1]);
     return { byStatus, byTier: sorted(byTier), byState: sorted(byState) };
   }, [people]);
+
+  // Pledge conversion: match pledges to accounts by email, then bucket them.
+  // Sorted action-first: not signed in, then signed-in-unpaid, then paid.
+  const pledgeRows = useMemo(() => {
+    const byEmail = new Map(people.map((p) => [(p.email || '').toLowerCase(), p]));
+    const order = { invited: 0, signed_in: 1, paid: 2 };
+    return pledges
+      .map((m) => {
+        const prof = byEmail.get(m.email);
+        const status = prof?.membership_status === 'active'
+          ? 'paid'
+          : (m.claimed_at || prof)
+            ? 'signed_in'
+            : 'invited';
+        return { ...m, status };
+      })
+      .sort((a, b) => order[a.status] - order[b.status]);
+  }, [pledges, people]);
+
+  const pledgeCounts = useMemo(() => ({
+    paid: pledgeRows.filter((r) => r.status === 'paid').length,
+    signed_in: pledgeRows.filter((r) => r.status === 'signed_in').length,
+    invited: pledgeRows.filter((r) => r.status === 'invited').length,
+  }), [pledgeRows]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -188,6 +222,70 @@ export default function AdminMembers() {
                   )}
                 </div>
               ))}
+            </div>
+
+            {/* Pledge conversion (pre-Stripe sign-up form) */}
+            <div className="bg-white rounded-2xl border border-primary/10 p-5 mb-8">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <h2 className="font-bold text-sm">Pledges from the sign-up form</h2>
+                {pledgeRows.length > 0 && (
+                  <div className="flex flex-wrap gap-2 text-xs font-data font-semibold">
+                    <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">{pledgeCounts.paid} paid</span>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700">{pledgeCounts.signed_in} signed in, not paid</span>
+                    <span className="px-2 py-0.5 rounded-full bg-text/10 text-text/60">{pledgeCounts.invited} not signed in yet</span>
+                  </div>
+                )}
+              </div>
+
+              {pledgeRows.length === 0 ? (
+                <p className="text-text/40 text-sm">
+                  No pledge data visible. If pledges were imported, run the
+                  admin-read policy migration (docs/member-area-setup.md,
+                  Migration 5).
+                </p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-text/40 font-data text-xs uppercase tracking-wider border-b border-primary/10">
+                        <th className="px-3 py-2">Name</th>
+                        <th className="px-3 py-2">Email</th>
+                        <th className="px-3 py-2">Pledged</th>
+                        <th className="px-3 py-2">Pledge date</th>
+                        <th className="px-3 py-2">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-primary/10">
+                      {pledgeRows.map((m) => (
+                        <tr key={m.email}>
+                          <td className="px-3 py-2 font-semibold whitespace-nowrap">
+                            {`${m.first_name || ''} ${m.last_name || ''}`.trim() || '—'}
+                          </td>
+                          <td className="px-3 py-2 text-text/60">{m.email}</td>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            {tierByKey(m.membership_tier)?.name || m.membership_tier || '—'}
+                            {m.membership_years ? `, ${m.membership_years} yr` : ''}
+                          </td>
+                          <td className="px-3 py-2 text-text/60 whitespace-nowrap">
+                            {m.member_since ? formatDate(m.member_since) : '—'}
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            {m.status === 'paid' && (
+                              <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">Paid ✓</span>
+                            )}
+                            {m.status === 'signed_in' && (
+                              <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700">Signed in — not paid</span>
+                            )}
+                            {m.status === 'invited' && (
+                              <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-text/10 text-text/60">Hasn't signed in</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* Roster */}

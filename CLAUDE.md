@@ -155,6 +155,8 @@ recursion), `search_path=public`. Gate future member-only content (CME) on
 - **tags SELECT:** public. **tags write:** `is_admin()` only.
 - **profiles SELECT:** own row or admin. **profiles UPDATE:** own row or admin.
 - **favorites:** SELECT/DELETE own rows only; INSERT own rows AND only for published posts.
+- **member_import:** SELECT `is_admin()` only (pledge tracking on /editor/members); NO
+  write policies — writes happen server-side only (SQL editor / SECURITY DEFINER claim).
 - **Privilege-escalation guard:** `guard_profile_role()` BEFORE UPDATE trigger blocks a
   non-admin from changing `role` OR any membership/billing column
   (`membership_status, membership_tier, stripe_customer_id, renews_on`). Bypass only when
