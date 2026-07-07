@@ -69,6 +69,18 @@ alter table public.profiles add column if not exists state             text;
 alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
 alter table public.profiles add column if not exists sms_opt_in        boolean not null default false;
 alter table public.profiles add column if not exists onboarded_at      timestamptz;
+
+-- Capability flags (checkbox permissions — people can wear multiple hats).
+-- can_edit_news = write news posts (the old 'editor' role, which is kept as a
+-- legacy value and honored by is_editor()); can_view_members = READ-ONLY
+-- access to the member roster + pledge tracker (/editor/members) for the
+-- membership committee, treasurer, etc. Admins implicitly have everything.
+-- Both are admin-set only (guarded by guard_profile_role).
+alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
+alter table public.profiles add column if not exists can_view_members boolean not null default false;
+
+-- One-time backfill: existing editors keep their news permission as a flag.
+update public.profiles set can_edit_news = true where role = 'editor' and not can_edit_news;
 -- True when a member canceled but their paid term hasn't ended yet: the
 -- membership stays active and renews_on becomes the END date, not a renewal.
 alter table public.profiles add column if not exists cancel_at_period_end boolean not null default false;
@@ -134,10 +146,22 @@ create index if not exists items_post_id_idx             on public.items (post_i
 create index if not exists item_tags_tag_id_idx          on public.item_tags (tag_id);
 
 -- ----- Helper functions (SECURITY DEFINER so they bypass RLS = no recursion) --
+-- "Can write news": the can_edit_news flag, the legacy 'editor' role, or admin.
 create or replace function public.is_editor()
 returns boolean language sql stable security definer set search_path = public as $$
   select coalesce(
-    (select role in ('editor','admin') from public.profiles where id = auth.uid()),
+    (select role in ('editor','admin') or can_edit_news
+       from public.profiles where id = auth.uid()),
+    false);
+$$;
+
+-- "Can READ member data" (roster + pledge tracker): the can_view_members flag
+-- or admin. Read-only by design — profile writes stay own-row-or-admin.
+create or replace function public.is_member_viewer()
+returns boolean language sql stable security definer set search_path = public as $$
+  select coalesce(
+    (select role = 'admin' or can_view_members
+       from public.profiles where id = auth.uid()),
     false);
 $$;
 
@@ -229,6 +253,8 @@ begin
     or new.stripe_customer_id is distinct from old.stripe_customer_id
     or new.renews_on          is distinct from old.renews_on
     or new.cancel_at_period_end is distinct from old.cancel_at_period_end
+    or new.can_edit_news      is distinct from old.can_edit_news
+    or new.can_view_members   is distinct from old.can_view_members
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;
@@ -264,12 +290,13 @@ alter table public.member_import enable row level security;
 
 drop policy if exists member_import_select on public.member_import;
 create policy member_import_select on public.member_import
-  for select using ( public.is_admin() );
+  for select using ( public.is_admin() or public.is_member_viewer() );
 
--- profiles: read own (or admin reads all); update own (role column guarded above)
+-- profiles: read own row, or all rows for admins and member-viewers (roster);
+-- update stays own-or-admin (role/membership/permission columns guarded above)
 drop policy if exists profiles_select on public.profiles;
 create policy profiles_select on public.profiles
-  for select using ( auth.uid() = id or public.is_admin() );
+  for select using ( auth.uid() = id or public.is_admin() or public.is_member_viewer() );
 
 drop policy if exists profiles_update on public.profiles;
 create policy profiles_update on public.profiles

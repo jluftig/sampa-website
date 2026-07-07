@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { BookmarkX, CreditCard, PenSquare } from 'lucide-react';
+import { BookmarkX, CreditCard, PenSquare, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { tierByKey } from '../lib/membership';
@@ -27,7 +27,7 @@ const PROFILE_FIELDS = [
 ];
 
 export default function Dashboard() {
-  const { user, profile, isEditor, refreshProfile, signOut } = useAuth();
+  const { user, profile, isEditor, canViewMembers, refreshProfile, signOut } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
 
@@ -145,6 +145,11 @@ export default function Dashboard() {
             {isEditor && (
               <Link to="/editor" className="flex items-center gap-1.5 text-primary font-semibold hover:underline">
                 <PenSquare className="w-4 h-4" /> Editor dashboard
+              </Link>
+            )}
+            {canViewMembers && (
+              <Link to="/editor/members" className="flex items-center gap-1.5 text-primary font-semibold hover:underline">
+                <Users className="w-4 h-4" /> Members
               </Link>
             )}
             <button onClick={signOut} className="text-text/50 hover:text-text font-semibold">

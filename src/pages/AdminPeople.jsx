@@ -6,11 +6,12 @@ import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const ROLES = ['member', 'editor', 'admin'];
-
-// Admin-only page to view everyone who has signed in and set their role.
-// People only appear here after their first Google login (which creates their
-// profile as a 'member').
+// Admin-only page: everyone who has signed in, with checkbox permissions.
+// Capabilities are independent (people wear multiple hats):
+//   Publish news  -> can_edit_news (news posts; the old 'editor' role)
+//   View members  -> can_view_members (READ-ONLY roster + pledge tracker)
+//   Administrator -> role 'admin' (everything, incl. this page)
+// Saving normalizes the legacy 'editor' role value into the flag.
 export default function AdminPeople() {
   const { user } = useAuth();
   const [people, setPeople] = useState([]);
@@ -22,7 +23,7 @@ export default function AdminPeople() {
     setLoading(true);
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, email, full_name, role, created_at')
+      .select('id, email, full_name, role, can_edit_news, can_view_members, created_at')
       .order('created_at', { ascending: true });
     if (error) setError(error.message);
     else setPeople(data || []);
@@ -31,29 +32,48 @@ export default function AdminPeople() {
 
   useEffect(() => { load(); }, []);
 
-  async function changeRole(person, role) {
+  // Effective (displayed) permissions; legacy role 'editor' counts as news.
+  const perms = (p) => ({
+    news: p.can_edit_news || p.role === 'editor',
+    view: p.can_view_members,
+    admin: p.role === 'admin',
+  });
+
+  async function apply(person, next) {
     setBusyId(person.id);
     setError(null);
-    const { error } = await supabase.from('profiles').update({ role }).eq('id', person.id);
+    const patch = {
+      role: next.admin ? 'admin' : 'member', // legacy 'editor' normalizes to member + flag
+      can_edit_news: next.news,
+      can_view_members: next.view,
+    };
+    const { error } = await supabase.from('profiles').update(patch).eq('id', person.id);
     if (error) setError(error.message);
-    else setPeople((prev) => prev.map((p) => (p.id === person.id ? { ...p, role } : p)));
+    else setPeople((prev) => prev.map((p) => (p.id === person.id ? { ...p, ...patch } : p)));
     setBusyId(null);
   }
+
+  const checkboxCls =
+    'w-4 h-4 accent-primary disabled:opacity-40 disabled:cursor-not-allowed';
 
   return (
     <div className="relative min-h-screen bg-background text-text">
       <div className="noise-overlay pointer-events-none"></div>
       <Navbar />
 
-      <main className="max-w-3xl mx-auto px-4 pt-40 pb-24">
+      <main className="max-w-4xl mx-auto px-4 pt-40 pb-24">
         <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
-        <h1 className="text-3xl font-drama font-bold mt-4 mb-2">Manage editors</h1>
+        <h1 className="text-3xl font-drama font-bold mt-4 mb-2">People & permissions</h1>
         <p className="text-text/60 mb-8">
-          People appear here after they sign in once with Google. Set someone to <strong>editor</strong> to
-          let them write and publish, or <strong>admin</strong> to also manage keywords and roles.
-          New sign-ins must first be added as a Google test user.
+          People appear here after their first sign-in. Permissions are
+          independent checkboxes — check as many as someone's hats require.
+          <strong> Publish news</strong> lets them write and publish posts;
+          <strong> view members</strong> gives read-only access to the member
+          roster and pledge tracker (for the membership committee, treasurer,
+          and board); <strong>administrators</strong> have everything, including
+          this page and editing member records.
         </p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -63,8 +83,10 @@ export default function AdminPeople() {
           <div className="bg-white rounded-2xl border border-primary/10 divide-y divide-primary/10">
             {people.map((person) => {
               const isSelf = person.id === user?.id;
+              const p = perms(person);
+              const disabled = isSelf || busyId === person.id;
               return (
-                <div key={person.id} className="flex flex-wrap items-center gap-4 p-4">
+                <div key={person.id} className="flex flex-wrap items-center gap-x-6 gap-y-3 p-4">
                   <div className="flex-1 min-w-[200px]">
                     <div className="font-semibold">
                       {person.full_name || '—'}
@@ -74,17 +96,47 @@ export default function AdminPeople() {
                     <div className="text-text/30 text-xs font-data mt-0.5">joined {formatDate(person.created_at)}</div>
                   </div>
 
-                  <select
-                    value={person.role}
-                    disabled={isSelf || busyId === person.id}
-                    onChange={(e) => changeRole(person, e.target.value)}
-                    title={isSelf ? "You can't change your own role" : 'Set role'}
-                    className="px-3 py-2 rounded-xl border border-primary/20 bg-white font-semibold text-sm focus:outline-none focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {ROLES.map((r) => (
-                      <option key={r} value={r}>{r}</option>
-                    ))}
-                  </select>
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+                    {p.admin ? (
+                      <span className="text-primary font-semibold text-xs font-data uppercase tracking-wider">
+                        All permissions
+                      </span>
+                    ) : (
+                      <>
+                        <label className={`flex items-center gap-2 ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
+                          <input
+                            type="checkbox"
+                            checked={p.news}
+                            disabled={disabled}
+                            onChange={() => apply(person, { ...p, news: !p.news, admin: false })}
+                            className={checkboxCls}
+                          />
+                          Publish news
+                        </label>
+                        <label className={`flex items-center gap-2 ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
+                          <input
+                            type="checkbox"
+                            checked={p.view}
+                            disabled={disabled}
+                            onChange={() => apply(person, { ...p, view: !p.view, admin: false })}
+                            className={checkboxCls}
+                          />
+                          View members
+                        </label>
+                      </>
+                    )}
+                    <label className={`flex items-center gap-2 font-semibold ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
+                      <input
+                        type="checkbox"
+                        checked={p.admin}
+                        disabled={disabled}
+                        title={isSelf ? "You can't change your own permissions" : 'Administrator'}
+                        onChange={() => apply(person, { ...p, admin: !p.admin })}
+                        className={checkboxCls}
+                      />
+                      Admin
+                    </label>
+                  </div>
                 </div>
               );
             })}
@@ -92,8 +144,11 @@ export default function AdminPeople() {
         )}
 
         <p className="text-text/40 text-xs mt-4">
-          You can't change your own role here (a safety measure against locking yourself out). If you
-          ever need to, an admin can do it, or use the Supabase SQL editor.
+          You can't change your own permissions (a safety measure against
+          locking yourself out) — another admin can, or use the Supabase SQL
+          editor. "View members" is read-only by design: the database refuses
+          member-record writes from non-admins regardless of what the browser
+          asks for.
         </p>
       </main>
 

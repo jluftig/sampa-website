@@ -48,18 +48,22 @@ can see or change what.
 
 ---
 
-## 3. Who can do what (roles)
+## 3. Who can do what (permissions)
 
-Everyone who signs in gets a **role**. Roles are the heart of the permission system:
+Everyone who signs in is a **member** account. On top of that, admins can grant
+**independent checkbox permissions** — people can hold several at once (board
+members wear multiple hats):
 
-- **member** — the default for anyone who signs in. Can't publish anything. (This is the
-  placeholder for future paying members.)
-- **editor** — can create, edit, publish, and delete news posts and their Key Points.
-- **admin** — everything an editor can do, **plus** manage the keyword list and change
-  other people's roles.
+- **Publish news** — create, edit, publish, and delete news posts and Key Points.
+- **View members** — **read-only** access to the member roster, counts, pledge
+  tracker, and CSV export (for the membership committee, treasurer, and board).
+  They cannot change anyone's record — the database enforces this, not just the UI.
+- **Admin** — everything, plus managing keywords, permissions, and member records.
 
-The public (people who never log in) can only **read published** posts. They cannot see
-drafts and cannot change anything.
+The public (people who never log in) can only **read published** posts.
+Note for the **treasurer/accountant**: financial reports live in Stripe, which
+has its own team roles — invite them at Stripe → Settings → Team (view-only or
+Analyst) rather than granting anything here.
 
 ---
 
@@ -69,26 +73,23 @@ drafts and cannot change anything.
 1. Go to **www.addictionpas.org**, click **Member Login** (navbar or footer) →
    **Continue with Google**. There is one login for everyone; what you can do
    is determined by your role (member / editor / admin).
-2. On your member dashboard, click **Editor dashboard** (only editors and
-   admins see this link), then click **+ New Post**.
+2. On your member dashboard, click **Editor dashboard** (only people with the
+   news permission see this link), then click **+ New Post**.
 3. Fill in the title, a short summary (excerpt), optionally upload a cover image (and a
    caption/citation if it's a figure), and write the article.
 4. Add **Key Points** — each one a standalone takeaway — and click keyword chips to tag each point.
 5. Click **Publish**. It's live immediately; no technical steps needed.
 6. You can **Unpublish**, **Edit**, or **Delete** any post from the dashboard later.
 
-### Add a new editor or admin
-Two gates must both be satisfied — one on Google's side, one in our app:
-1. **Google side (so they can sign in at all):** Google Cloud Console → APIs & Services →
-   OAuth consent screen → **Test users** → **Add users** → enter their Google email.
-2. **They sign in once** via Member Login (while Google sign-in is in "testing
-   mode" they'll see a "Google hasn't verified this app" screen → **Advanced →
-   continue** — that's normal until the consent screen is published).
-3. **You set their role:** on the dashboard click **Manage editors**, find them in the
-   list, and choose **editor** or **admin** from the dropdown.
+### Grant someone permissions (editor, membership committee, admin)
+1. **They sign in once** via Member Login (Google or email link) — that creates
+   their account.
+2. **You check their boxes:** on the editor dashboard click **People &
+   permissions**, find them, and check **Publish news**, **View members**,
+   and/or **Admin** as their hats require.
 
-> You can't change your own role in the UI (a safety measure). If you ever must, another
-> admin can, or it can be done directly in Supabase.
+> You can't change your own permissions in the UI (a safety measure). If you
+> ever must, another admin can, or it can be done directly in Supabase.
 
 ### Manage the keyword list (admins)
 Dashboard → **Manage keywords**. You can add keywords, rename them, tweak the short
@@ -151,7 +152,7 @@ In plain terms, Supabase holds these tables:
 | Whole site is a blank white page | The Supabase environment variables are missing/renamed in Vercel | Re-check `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` in Vercel, then redeploy |
 | A direct link like `/news/…` shows a Vercel 404 | The `vercel.json` "SPA rewrite" file is missing | Ensure `vercel.json` is present (it tells Vercel to serve the app for all routes) |
 | An editor can't sign in | They're not on the Google **Test users** list | Add their email in Google Cloud Console |
-| Someone signed in but can't publish | They're still a **member** | Set them to **editor** in Manage editors |
+| Someone signed in but can't publish | They don't have the news permission | Check **Publish news** for them in People & permissions |
 | A new post won't save | A database column is missing (rare, only after code changes) | Check the latest migration notes; the master schema is `supabase/schema.sql` |
 
 ---

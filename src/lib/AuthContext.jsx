@@ -90,7 +90,10 @@ export function AuthProvider({ children }) {
     user: session?.user ?? null,
     profile,
     role,
-    isEditor: role === 'editor' || role === 'admin',
+    // Capabilities are checkboxes, not a ladder — people can hold several.
+    // The legacy 'editor' role still implies news editing; admins imply all.
+    isEditor: role === 'editor' || role === 'admin' || !!profile?.can_edit_news,
+    canViewMembers: role === 'admin' || !!profile?.can_view_members,
     isAdmin: role === 'admin',
     isActiveMember: profile?.membership_status === 'active',
     // True until we know both the session and (if signed in) the profile.

@@ -360,8 +360,8 @@ export default function AdminMembers() {
             <p className="text-text/40 text-xs mt-4">
               The CSV export includes additional columns: credentials,
               organization, practice setting, phone, and newsletter/SMS
-              preferences. Roles are managed on{' '}
-              <Link to="/editor/people" className="underline hover:text-primary">Manage editors</Link>.
+              preferences. Permissions are managed by administrators on{' '}
+              <Link to="/editor/people" className="underline hover:text-primary">People & permissions</Link>.
             </p>
           </>
         )}
