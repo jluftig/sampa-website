@@ -102,6 +102,7 @@ src/
     PostEditor.jsx          /editor/new, /editor/:id — post + Key Points editor
     AdminTags.jsx           /editor/keywords (adminOnly) — manage keyword vocabulary
     AdminPeople.jsx         /editor/people (adminOnly) — assign roles
+    AdminMembers.jsx        /editor/members (adminOnly) — roster, tier/state counts, CSV export
     NotFound.jsx            catch-all 404
 supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
@@ -116,9 +117,9 @@ Public: `/`, `/news`, `/news/:slug`, `/keywords`, `/keywords/:slug`, `/login`, `
 `/privacy`, `/terms` (static legal pages, LegalPage shell).
 Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
-Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.
-`*` → NotFound. Route order: `/editor/keywords` and `/editor/people` are declared before
-`/editor/:id` so they aren't captured as an id.
+Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`, `/editor/members`.
+`*` → NotFound. Route order: `/editor/keywords`, `/editor/people`, and `/editor/members`
+are declared before `/editor/:id` so they aren't captured as an id.
 `/login` honors `?next=<in-app path>` (sanitized: must start with `/`, not `//`); guards
 redirect to `/login?next=...` so users return where they were headed.
 
