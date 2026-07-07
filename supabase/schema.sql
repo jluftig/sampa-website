@@ -118,6 +118,35 @@ create table if not exists public.favorites (
   primary key (user_id, post_id)
 );
 
+-- Donations (separate from membership dues). PUBLIC can give — signed in or
+-- not — so user_id is nullable (null = anonymous/non-member gift). Written ONLY
+-- server-side by the Stripe webhook (service role); there are no client write
+-- policies, same as member_import. One row per successful gift: a one-time gift
+-- is keyed by stripe_session_id; each monthly cycle is keyed by its
+-- stripe_invoice_id (both unique → the webhook is safe to retry).
+create table if not exists public.donations (
+  id                       uuid primary key default gen_random_uuid(),
+  user_id                  uuid references public.profiles(id) on delete set null,
+  donor_email              text,
+  donor_name               text,
+  amount                   integer not null,            -- cents
+  currency                 text not null default 'usd',
+  frequency                text not null default 'once', -- 'once' | 'monthly'
+  status                   text not null default 'succeeded',
+  stripe_customer_id       text,
+  stripe_session_id        text,                         -- one-time gifts
+  stripe_subscription_id   text,                         -- recurring gifts
+  stripe_invoice_id        text,                         -- recurring gift cycles
+  stripe_payment_intent_id text,
+  created_at               timestamptz not null default now()
+);
+-- NULLs are distinct in a Postgres unique index, so many rows may leave the
+-- unused id column null while non-null Stripe ids stay unique (idempotency).
+create unique index if not exists donations_session_uidx on public.donations (stripe_session_id);
+create unique index if not exists donations_invoice_uidx on public.donations (stripe_invoice_id);
+create index if not exists donations_user_id_idx    on public.donations (user_id);
+create index if not exists donations_created_at_idx on public.donations (created_at desc);
+
 -- One-time staging for members who signed up via the pre-Stripe Google Form.
 -- Rows are matched by email at first login (see claim_member_import) to
 -- pre-fill the profile and grandfather paid memberships. Data is inserted
@@ -287,6 +316,16 @@ alter table public.favorites enable row level security;
 -- /editor/members); nobody writes via the API — only the SQL editor, service
 -- role, and SECURITY DEFINER functions.
 alter table public.member_import enable row level security;
+-- donations: a donor may read their OWN gifts (dashboard history); the donor-
+-- management group (can_view_members) and admins may read ALL for cultivation.
+-- No write policies — only the Stripe webhook (service role) inserts.
+alter table public.donations enable row level security;
+
+drop policy if exists donations_select on public.donations;
+create policy donations_select on public.donations
+  for select using (
+    auth.uid() = user_id or public.is_admin() or public.is_member_viewer()
+  );
 
 drop policy if exists member_import_select on public.member_import;
 create policy member_import_select on public.member_import

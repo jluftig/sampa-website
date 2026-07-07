@@ -14,6 +14,7 @@ const Tags = lazy(() => import('./pages/Tags'));
 const TagView = lazy(() => import('./pages/TagView'));
 const Login = lazy(() => import('./pages/Login'));
 const Join = lazy(() => import('./pages/Join'));
+const Donate = lazy(() => import('./pages/Donate'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
@@ -37,6 +38,7 @@ function App() {
           <Route path="/keywords/:slug" element={<TagView />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/donate" element={<Donate />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route
