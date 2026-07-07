@@ -115,9 +115,12 @@ create table if not exists public.member_import (
   phone            text,
   sms_opt_in       boolean not null default false,
   membership_tier  text,                      -- tier key from src/lib/membership.js
-  membership_years int,                       -- 1 | 2 | 3 (term they signed up for)
+  membership_years int,                       -- 1 | 2 | 3 (term they PLEDGED — reference only)
   member_since     timestamptz,               -- original form submission time
-  activate         boolean not null default true, -- set false if they never paid
+  -- The 2026 form sign-ups are unpaid pledges, so importing NEVER grants a
+  -- membership by default. Set true (before first login) only for someone
+  -- whose payment is confirmed outside Stripe.
+  activate         boolean not null default false,
   claimed_at       timestamptz,               -- set once a login consumes the row
   created_at       timestamptz not null default now()
 );
@@ -153,9 +156,10 @@ $$;
 
 -- ----- Triggers ---------------------------------------------------------------
 -- Merge a member_import row (pre-Stripe Google Form sign-up) into a profile,
--- matched by email. Fills profile fields, and — only if the profile has no
--- membership yet — activates the grandfathered membership with a renewal date
--- computed from the original sign-up date + purchased term. SECURITY DEFINER:
+-- matched by email. Fills profile fields; membership is granted ONLY for rows
+-- explicitly marked activate=true (payment confirmed outside Stripe), with a
+-- renewal date of sign-up date + pledged term. Normal path: profile pre-fills,
+-- member pays via /join, Stripe webhook sets the membership. SECURITY DEFINER:
 -- runs with auth.uid() null, so guard_profile_role lets it write membership.
 create or replace function public.claim_member_import(p_profile_id uuid, p_email text)
 returns void language plpgsql security definer set search_path = public as $$
