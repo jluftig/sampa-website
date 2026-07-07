@@ -99,6 +99,18 @@ active until the term they paid for runs out. Without this flag the dashboard
 would say "renews <date>" after a cancellation; with it, it says "member
 benefits end <date>".
 
+### Migration 5 — admin pledge tracking (added 2026-07-07)
+
+Lets admins see pledge-conversion status on `/editor/members` (who hasn't
+signed in, who signed in but hasn't paid, who's paid). Read-only, admins only;
+the table still can't be written through the site.
+
+```sql
+drop policy if exists member_import_select on public.member_import;
+create policy member_import_select on public.member_import
+  for select using ( public.is_admin() );
+```
+
 ### Migration 3 — importing the Google Form sign-ups (added 2026-07-06)
 
 The 2026 Google Form sign-ups are **unpaid pledges** (the form predates the

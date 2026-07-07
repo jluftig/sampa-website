@@ -88,6 +88,14 @@ export default function EditorDashboard() {
                 Manage editors
               </Link>
             )}
+            {isAdmin && (
+              <Link
+                to="/editor/members"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
+              >
+                Members
+              </Link>
+            )}
             <button
               onClick={signOut}
               className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
