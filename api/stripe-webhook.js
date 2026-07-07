@@ -20,6 +20,13 @@ function renewsOn(subscription) {
   return end ? new Date(end * 1000).toISOString() : null;
 }
 
+// "Member canceled but stays active until the paid term ends." Older API
+// versions signal this via cancel_at_period_end; newer ones may only set the
+// cancel_at timestamp — accept either.
+function willCancel(subscription) {
+  return subscription.cancel_at_period_end === true || Boolean(subscription.cancel_at);
+}
+
 export async function POST(request) {
   const stripe = stripeClient();
   const signature = request.headers.get('stripe-signature');
@@ -54,7 +61,7 @@ export async function POST(request) {
             membership_tier: session.metadata?.tier || subscription.metadata?.tier || null,
             membership_status: membershipStatus(subscription.status),
             renews_on: renewsOn(subscription),
-            cancel_at_period_end: subscription.cancel_at_period_end ?? false,
+            cancel_at_period_end: willCancel(subscription),
           };
         } else if (session.mode === 'payment' && session.metadata?.duration === 'lifetime') {
           // Lifetime membership (Legacy): one-time payment, never expires.
@@ -97,13 +104,20 @@ export async function POST(request) {
           membership_status: membershipStatus(subscription.status),
           renews_on: renewsOn(subscription),
           cancel_at_period_end:
-            event.type !== 'customer.subscription.deleted' &&
-            (subscription.cancel_at_period_end ?? false),
+            event.type !== 'customer.subscription.deleted' && willCancel(subscription),
         };
         if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
 
-        const { error } = await admin.from('profiles').update(update).eq(matchCol, matchVal);
+        const { data: updated, error } = await admin
+          .from('profiles')
+          .update(update)
+          .eq(matchCol, matchVal)
+          .select('id');
         if (error) throw error;
+        // A zero-row match is silent data loss — make it visible in the logs.
+        if (!updated?.length) {
+          console.error(`stripe-webhook: ${event.type}: no profile matched ${matchCol}=${matchVal}`);
+        }
         break;
       }
 
