@@ -150,9 +150,12 @@ already has promo codes enabled) rather than more price variants.
    Branding page filled in with home page `https://www.addictionpas.org`,
    privacy policy `https://www.addictionpas.org/privacy`, and terms
    `https://www.addictionpas.org/terms` (these pages ship with the member-area
-   branch). Note: the consent screen says "to continue to
-   xbzzawjnphpnexwfjtif.supabase.co" either way — changing that needs a custom
-   Supabase auth domain (separate, later project).
+   branch). Payoff: the Google sign-in screen stops saying "to continue to
+   xbzzawjnphpnexwfjtif.supabase.co" and shows the app name ("SAMPA") instead.
+   For the full white-label (your domain in fine print AND in magic-link email
+   URLs), the later upgrade is a Supabase custom domain (Pro plan + add-on,
+   ~$35/mo total): auth moves to e.g. api.addictionpas.org, with matching
+   updates to the Google OAuth redirect URI and VITE_SUPABASE_URL.
 
 ## 3. Stripe setup (dashboard.stripe.com)
 
