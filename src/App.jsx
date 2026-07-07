@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RequireEditor from './components/RequireEditor';
+import RequireAuth from './components/RequireAuth';
 import Home from './pages/Home';
 
 // Route-level code splitting: the homepage loads eagerly; every other page
@@ -11,6 +12,10 @@ const PostView = lazy(() => import('./pages/PostView'));
 const Tags = lazy(() => import('./pages/Tags'));
 const TagView = lazy(() => import('./pages/TagView'));
 const Login = lazy(() => import('./pages/Login'));
+const Join = lazy(() => import('./pages/Join'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
 const PostEditor = lazy(() => import('./pages/PostEditor'));
 const AdminTags = lazy(() => import('./pages/AdminTags'));
@@ -29,6 +34,17 @@ function App() {
           <Route path="/keywords" element={<Tags />} />
           <Route path="/keywords/:slug" element={<TagView />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/join" element={<Join />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <Dashboard />
+              </RequireAuth>
+            }
+          />
           <Route
             path="/editor"
             element={

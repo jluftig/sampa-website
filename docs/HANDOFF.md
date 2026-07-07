@@ -4,7 +4,7 @@ _A plain-English guide to how the SAMPA website and its News/blog system are bui
 who runs what, how to do everyday tasks, and where it's all heading. If you're taking
 this over cold, start here._
 
-_Last updated: 2026-07-02_
+_Last updated: 2026-07-06_
 
 ---
 
@@ -66,8 +66,11 @@ drafts and cannot change anything.
 ## 4. Everyday tasks
 
 ### Publish a news post
-1. Go to **www.addictionpas.org**, scroll to the footer, click **Editor Login** → **Continue with Google**.
-2. On the dashboard, click **+ New Post**.
+1. Go to **www.addictionpas.org**, click **Member Login** (navbar or footer) →
+   **Continue with Google**. There is one login for everyone; what you can do
+   is determined by your role (member / editor / admin).
+2. On your member dashboard, click **Editor dashboard** (only editors and
+   admins see this link), then click **+ New Post**.
 3. Fill in the title, a short summary (excerpt), optionally upload a cover image (and a
    caption/citation if it's a figure), and write the article.
 4. Add **Key Points** — each one a standalone takeaway — and click keyword chips to tag each point.
@@ -78,8 +81,9 @@ drafts and cannot change anything.
 Two gates must both be satisfied — one on Google's side, one in our app:
 1. **Google side (so they can sign in at all):** Google Cloud Console → APIs & Services →
    OAuth consent screen → **Test users** → **Add users** → enter their Google email.
-2. **They sign in once** at Editor Login (they'll see a "Google hasn't verified this app"
-   screen → **Advanced → continue** — that's normal while we're in "testing mode").
+2. **They sign in once** via Member Login (while Google sign-in is in "testing
+   mode" they'll see a "Google hasn't verified this app" screen → **Advanced →
+   continue** — that's normal until the consent screen is published).
 3. **You set their role:** on the dashboard click **Manage editors**, find them in the
    list, and choose **editor** or **admin** from the dropdown.
 
@@ -126,7 +130,11 @@ label (the compact chip like "OUD"), or delete them. The web address part of a k
 In plain terms, Supabase holds these tables:
 
 - **profiles** — one row per person who has ever signed in: their name, email, phone,
-  their role, and (currently empty) fields reserved for future membership/billing info.
+  their role, their professional details (credentials, NPI, organization, practice
+  setting — filled in by the member on their dashboard), and their membership info
+  (tier, status, renewal date — written automatically by Stripe).
+- **favorites** — which news articles each member has saved ("Saved articles" on the
+  dashboard).
 - **posts** — the news articles (title, summary, article text, cover image + caption,
   draft/published status, publish date).
 - **tags** — the keyword vocabulary (full name + short label). ("Tag" is the internal
@@ -187,57 +195,49 @@ Reverting code does **not** change the Supabase database. They're independent:
 preview URL → (3) fix forward with a small PR, or `git revert` the bad merge → (4) touch the
 database only if the problem was a schema/data change.
 
-## 10. The roadmap — how the future pieces fit
+## 10. The member area — how it works (built July 2026)
 
-The system was intentionally built so these can be added **without redoing what exists.**
-The `profiles` table already has the reserved fields, and the login/role system already
-supports members.
+The pieces that used to live in this section as "roadmap" are now **built**: Stripe
+membership payments, the member dashboard, in-app profile onboarding (replacing the
+Google Form), saved articles, and passwordless email login. What remains is one-time
+**configuration** — creating the Stripe products, the webhook, environment variables, and
+publishing the Google sign-in screen. The exact click-by-click checklist and test plan:
+**`docs/member-area-setup.md`**.
 
-### A) Stripe membership payments
-- **What it is:** the membership tier chips on the site will link to **Stripe** to collect
-  a membership fee.
-- **What data Stripe collects:** name, email, phone, and payment details. **Stripe stores
-  the card data — we never do** (that keeps us out of scope for sensitive payment handling).
-- **How it fits:** Stripe becomes the source of truth for *billing*. When someone pays,
-  Stripe notifies our system (a small automated "webhook"), and we copy the relevant facts
-  into that person's **profiles** row: their Stripe customer ID, membership tier, status
-  (active / past-due / canceled), and renewal date. The website only ever reads from
-  Supabase — it never has to ask Stripe directly. **One database, fed by Stripe.**
-- **The link between a payment and a login** is the person's **email address** (later made
-  bulletproof by tagging the payment with their account ID).
+### How joining works (the "account-first" flow)
+1. A visitor clicks **Join** → signs in with Google (one click, no password — we get
+   their name and email automatically) or requests an email sign-in link.
+2. They pick a membership tier on **/join** → we hand them to **Stripe Checkout**, which
+   collects **only payment details**. Their account ID rides along with the payment.
+3. Stripe notifies our webhook, which stamps their **profiles** row: customer ID, tier,
+   status (active / past-due / canceled), renewal date. **Stripe stores the card — we
+   never do.** The website only ever reads from Supabase.
+4. They land on **/dashboard**: membership status, a short professional-profile form
+   (name, credentials, NPI, organization, practice setting — this replaces the Google
+   Form), and their saved news articles.
+5. Card updates, tier changes, receipts, and cancellation all happen in **Stripe's own
+   hosted billing portal** ("Manage billing" button) — we build no payment screens.
 
-### B) New-member onboarding workflow
-- **What it is:** today, member sign-up + profile info is a Google Form. The future version
-  collects that information in the app itself (likely right after payment, or at first login).
-- **What data it collects:** professional profile details — name, credentials, possibly NPI,
-  employer/organization, practice setting, contact info, communication preferences. (These
-  are *clinicians'* professional details, not patient data — but still personal info to
-  handle respectfully.)
-- **How it fits:** this data lands in the **profiles** table (or a dedicated companion
-  table if it grows large). Because a profile row is created automatically at first login,
-  onboarding is just "fill in the rest of your profile."
-
-### C) Member login + dashboard + profile
-- **What it is:** members log in (same Google button, plus we'll likely enable a
-  passwordless email link) and see a **member dashboard** — their membership status,
-  renewal date, and an editable **profile**.
-- **How it fits:** it reuses everything. A new route (e.g. `/dashboard`) is shown to anyone
-  signed in; it reads their membership info from **profiles**. Members can edit safe fields
-  (name, phone) but the system already **prevents them from editing their own role or
-  membership status** — only the Stripe automation and admins can touch those. For billing
-  changes (update card, cancel), we'll hand off to **Stripe's own hosted customer portal**,
-  so we don't build payment screens.
-- **One setup note:** to open login beyond the current staff, the Google sign-in must be
-  moved from "testing mode" to "published" (a quick step, because we only use basic
-  email/profile permissions).
+Because the payment is tagged with the member's account ID (not matched by email),
+someone paying with a work card/email still gets the right membership on the right login.
 
 ### The big picture
 ```
-Stripe (payments)  ──webhook──►  Supabase profiles  ◄── Member dashboard reads status
-Google Form (today)      ──►     Supabase profiles  ◄── Onboarding fills in details
-Editors (today)          ──►     Supabase posts/keywords  ──► Public News + keyword search
+Stripe (payments)  ──webhook──►  Supabase profiles  ◄── /dashboard reads status
+Member (dashboard form)  ──►     Supabase profiles  (professional details)
+Members (save button)    ──►     Supabase favorites ◄── /dashboard "Saved articles"
+Editors                  ──►     Supabase posts/keywords ──► Public News + keyword search
 ```
 Everything converges on the single Supabase database, keyed to each person's account.
+
+### Still ahead
+- **CME content** for members — gate it with the `is_active_member()` database rule that
+  already exists.
+- **Multi-year discount pricing** in checkout (extra Stripe prices billed every 2–3 years).
+- **iPhone/Android apps** — they'll read the same database and call the same `/api`
+  endpoints. Two rules already baked in: memberships stay purchased on the website (Apple
+  would otherwise take 30% via In-App Purchase), and "Sign in with Apple" gets enabled in
+  Supabase when the iOS app ships (Apple requires it alongside Google sign-in).
 
 ---
 

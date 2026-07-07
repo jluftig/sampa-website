@@ -35,7 +35,7 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 md:mt-8 max-w-2xl mx-auto text-lg md:text-xl text-text/70 leading-relaxed font-medium">
-          The Society for Addiction Medicine PAs is building a supportive national network, elevating patient care, and increasing access to evidence-based education for Physician Associates.
+          The Society of Addiction Medicine Physician Associates is building a supportive national network, elevating patient care, and increasing access to evidence-based education for physician associates.
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 justify-center">

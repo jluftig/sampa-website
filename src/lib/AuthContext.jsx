@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useCallback, useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
 
 const AuthContext = createContext(null);
@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
     (async () => {
       const { data } = await supabase
         .from('profiles')
-        .select('id, email, full_name, role')
+        .select('*')
         .eq('id', userId)
         .maybeSingle();
       if (!active) return;
@@ -55,10 +55,31 @@ export function AuthProvider({ children }) {
     return () => { active = false; };
   }, [userId]);
 
-  const signInWithGoogle = () =>
+  // Re-fetch the profile without flipping `loading` (so route guards don't
+  // remount) — used after profile edits and after Stripe checkout returns.
+  const refreshProfile = useCallback(async () => {
+    if (!userId) return;
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+    setProfile(data);
+  }, [userId]);
+
+  // `next` is an in-app path to land on after auth completes. Both flows
+  // redirect through Supabase, so the URL must be covered by the allowlist in
+  // Supabase Auth → URL Configuration.
+  const signInWithGoogle = (next = '/dashboard') =>
     supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/editor` },
+      options: { redirectTo: `${window.location.origin}${next}` },
+    });
+
+  const signInWithEmail = (email, next = '/dashboard') =>
+    supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${window.location.origin}${next}` },
     });
 
   const signOut = () => supabase.auth.signOut();
@@ -71,10 +92,13 @@ export function AuthProvider({ children }) {
     role,
     isEditor: role === 'editor' || role === 'admin',
     isAdmin: role === 'admin',
+    isActiveMember: profile?.membership_status === 'active',
     // True until we know both the session and (if signed in) the profile.
     loading: !authReady || (!!session?.user && !profileReady),
     signInWithGoogle,
+    signInWithEmail,
     signOut,
+    refreshProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

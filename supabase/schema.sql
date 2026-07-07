@@ -35,6 +35,7 @@ create table if not exists public.profiles (
   membership_tier    text,
   membership_status  text,
   renews_on          timestamptz,
+  cancel_at_period_end boolean not null default false,
   created_at         timestamptz not null default now()
 );
 
@@ -56,6 +57,21 @@ create table if not exists public.posts (
 
 -- Add cover_image_caption if the table already existed from an earlier run.
 alter table public.posts add column if not exists cover_image_caption text;
+
+-- Professional profile fields (member-editable via the dashboard onboarding
+-- form; these replace the old Google Form). Membership/billing columns above
+-- stay locked down by guard_profile_role().
+alter table public.profiles add column if not exists credentials       text;
+alter table public.profiles add column if not exists npi               text;
+alter table public.profiles add column if not exists organization      text;
+alter table public.profiles add column if not exists practice_setting  text;
+alter table public.profiles add column if not exists state             text;
+alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
+alter table public.profiles add column if not exists sms_opt_in        boolean not null default false;
+alter table public.profiles add column if not exists onboarded_at      timestamptz;
+-- True when a member canceled but their paid term hasn't ended yet: the
+-- membership stays active and renews_on becomes the END date, not a renewal.
+alter table public.profiles add column if not exists cancel_at_period_end boolean not null default false;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
@@ -82,6 +98,37 @@ create table if not exists public.item_tags (
   primary key (item_id, tag_id)
 );
 
+-- Saved/favorite news posts for signed-in members ("My saved items").
+create table if not exists public.favorites (
+  user_id    uuid not null references public.profiles(id) on delete cascade,
+  post_id    uuid not null references public.posts(id)    on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (user_id, post_id)
+);
+
+-- One-time staging for members who signed up via the pre-Stripe Google Form.
+-- Rows are matched by email at first login (see claim_member_import) to
+-- pre-fill the profile and grandfather paid memberships. Data is inserted
+-- manually via the SQL editor and MUST NOT be committed to this public repo.
+create table if not exists public.member_import (
+  email            text primary key,          -- lowercase; the match key
+  first_name       text,
+  last_name        text,
+  state            text,
+  credentials      text,
+  phone            text,
+  sms_opt_in       boolean not null default false,
+  membership_tier  text,                      -- tier key from src/lib/membership.js
+  membership_years int,                       -- 1 | 2 | 3 (term they PLEDGED — reference only)
+  member_since     timestamptz,               -- original form submission time
+  -- The 2026 form sign-ups are unpaid pledges, so importing NEVER grants a
+  -- membership by default. Set true (before first login) only for someone
+  -- whose payment is confirmed outside Stripe.
+  activate         boolean not null default false,
+  claimed_at       timestamptz,               -- set once a login consumes the row
+  created_at       timestamptz not null default now()
+);
+
 create index if not exists posts_status_published_at_idx on public.posts (status, published_at desc);
 create index if not exists items_post_id_idx             on public.items (post_id);
 create index if not exists item_tags_tag_id_idx          on public.item_tags (tag_id);
@@ -101,7 +148,51 @@ returns boolean language sql stable security definer set search_path = public as
     false);
 $$;
 
+-- Paid-up member (or staff). Gate future member-only content (e.g. CME) on
+-- this, the same way posts/tags gate on is_editor()/is_admin().
+create or replace function public.is_active_member()
+returns boolean language sql stable security definer set search_path = public as $$
+  select coalesce(
+    (select membership_status = 'active' or role in ('editor','admin')
+       from public.profiles where id = auth.uid()),
+    false);
+$$;
+
 -- ----- Triggers ---------------------------------------------------------------
+-- Merge a member_import row (pre-Stripe Google Form sign-up) into a profile,
+-- matched by email. Fills profile fields; membership is granted ONLY for rows
+-- explicitly marked activate=true (payment confirmed outside Stripe), with a
+-- renewal date of sign-up date + pledged term. Normal path: profile pre-fills,
+-- member pays via /join, Stripe webhook sets the membership. SECURITY DEFINER:
+-- runs with auth.uid() null, so guard_profile_role lets it write membership.
+create or replace function public.claim_member_import(p_profile_id uuid, p_email text)
+returns void language plpgsql security definer set search_path = public as $$
+declare m public.member_import%rowtype;
+begin
+  select * into m from public.member_import
+   where email = lower(p_email) and claimed_at is null;
+  if not found then return; end if;
+
+  update public.profiles set
+    full_name   = coalesce(nullif(btrim(concat(m.first_name, ' ', m.last_name)), ''), full_name),
+    state       = coalesce(m.state, state),
+    credentials = coalesce(m.credentials, credentials),
+    phone       = coalesce(m.phone, phone),
+    sms_opt_in  = (m.sms_opt_in or sms_opt_in),
+    membership_tier = case
+      when m.activate and m.membership_tier is not null and membership_status is null
+      then m.membership_tier else membership_tier end,
+    renews_on = case
+      when m.activate and m.membership_tier is not null and membership_status is null
+      then m.member_since + make_interval(years => m.membership_years) else renews_on end,
+    membership_status = case
+      when m.activate and m.membership_tier is not null and membership_status is null
+      then 'active' else membership_status end
+  where id = p_profile_id;
+
+  update public.member_import set claimed_at = now() where email = lower(p_email);
+end; $$;
+
 -- Create a profile row automatically the first time someone signs in.
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
@@ -113,6 +204,8 @@ begin
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name')
   )
   on conflict (id) do nothing;
+  -- Grandfather pre-Stripe sign-ups (no-op when there's no matching import row).
+  perform public.claim_member_import(new.id, new.email);
   return new;
 end; $$;
 
@@ -135,6 +228,7 @@ begin
     or new.membership_tier    is distinct from old.membership_tier
     or new.stripe_customer_id is distinct from old.stripe_customer_id
     or new.renews_on          is distinct from old.renews_on
+    or new.cancel_at_period_end is distinct from old.cancel_at_period_end
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;
@@ -162,6 +256,10 @@ alter table public.posts     enable row level security;
 alter table public.tags      enable row level security;
 alter table public.items     enable row level security;
 alter table public.item_tags enable row level security;
+alter table public.favorites enable row level security;
+-- member_import: RLS on with deliberately NO policies — contains contact info;
+-- only the SQL editor, service role, and SECURITY DEFINER functions can read it.
+alter table public.member_import enable row level security;
 
 -- profiles: read own (or admin reads all); update own (role column guarded above)
 drop policy if exists profiles_select on public.profiles;
@@ -237,6 +335,22 @@ create policy item_tags_insert on public.item_tags for insert with check ( publi
 
 drop policy if exists item_tags_delete on public.item_tags;
 create policy item_tags_delete on public.item_tags for delete using ( public.is_editor() );
+
+-- favorites: strictly own rows; can only save posts that are published
+drop policy if exists favorites_select on public.favorites;
+create policy favorites_select on public.favorites
+  for select using ( auth.uid() = user_id );
+
+drop policy if exists favorites_insert on public.favorites;
+create policy favorites_insert on public.favorites
+  for insert with check (
+    auth.uid() = user_id
+    and exists (select 1 from public.posts p where p.id = post_id and p.status = 'published')
+  );
+
+drop policy if exists favorites_delete on public.favorites;
+create policy favorites_delete on public.favorites
+  for delete using ( auth.uid() = user_id );
 
 -- ----- Storage bucket for cover images ---------------------------------------
 insert into storage.buckets (id, name, public)
