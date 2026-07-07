@@ -1,16 +1,23 @@
-// Membership tier keys — must match src/lib/membership.js. Each tier maps to
-// a Stripe Price id supplied via env vars so prices can change in Stripe (or
-// point at test prices on previews) without a code change.
-export const TIER_PRICE_ENV = {
-  fellow: 'STRIPE_PRICE_FELLOW',
-  sustaining: 'STRIPE_PRICE_SUSTAINING',
-  associate: 'STRIPE_PRICE_ASSOCIATE',
-  legacy: 'STRIPE_PRICE_LEGACY',
-  student: 'STRIPE_PRICE_STUDENT',
-  prepa: 'STRIPE_PRICE_PREPA',
+// Membership tier keys and allowed term durations — must match
+// src/lib/membership.js (the client copy drives the UI; this copy is what
+// actually authorizes a checkout, so never trust the client's duration).
+//
+// Each (tier, duration) maps to a Stripe Price id via env vars:
+//   1/2/3-year terms -> recurring prices billed every N years
+//     (Stripe: interval "year", interval_count N), e.g. STRIPE_PRICE_FELLOW_2Y
+//   lifetime         -> one-time price, e.g. STRIPE_PRICE_LEGACY_LIFETIME
+export const TIER_DURATIONS = {
+  fellow: [1, 2, 3],
+  sustaining: [1, 2, 3],
+  associate: [1, 2, 3],
+  legacy: [1, 2, 3, 'lifetime'],
+  student: [1, 2],
+  prepa: [1, 2],
 };
 
-export function priceIdForTier(tier) {
-  const envName = TIER_PRICE_ENV[tier];
-  return envName ? process.env[envName] || null : null;
+export function priceIdFor(tier, duration) {
+  const allowed = TIER_DURATIONS[tier];
+  if (!allowed || !allowed.includes(duration)) return null;
+  const suffix = duration === 'lifetime' ? 'LIFETIME' : `${duration}Y`;
+  return process.env[`STRIPE_PRICE_${tier.toUpperCase()}_${suffix}`] || null;
 }

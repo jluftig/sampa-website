@@ -56,8 +56,9 @@ page.
 NEVER client-side, never in a VITE_ var):**
 - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
 - `SUPABASE_SERVICE_ROLE_KEY` (+ optional `SUPABASE_URL`; falls back to `VITE_SUPABASE_URL`)
-- `STRIPE_PRICE_FELLOW|SUSTAINING|ASSOCIATE|LEGACY|STUDENT|PREPA` — Stripe Price ids per
-  membership tier (mapping in `api/_lib/tiers.js`; tier keys in `src/lib/membership.js`)
+- `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>` — one Stripe Price id per tier+term
+  (17 total; grid in `api/_lib/tiers.js`, prices in `src/lib/membership.js`). Multi-year
+  terms are subscriptions billed every N years; LIFETIME (legacy only) is a one-time price.
 
 ## Repo map
 
@@ -125,10 +126,11 @@ redirect to `/login?next=...` so users return where they were headed.
 
 - `profiles` — PK `id` → `auth.users(id)`. `email, full_name, phone, role`; professional
   profile (self-editable, dashboard onboarding form): `credentials, npi, organization,
-  practice_setting, newsletter_opt_in, onboarded_at`; membership/billing (webhook-written,
-  guarded): `stripe_customer_id, membership_tier (tier key from src/lib/membership.js),
-  membership_status ('active'|'past_due'|'canceled'), renews_on`. `role` is enum
-  `user_role` = member|editor|admin (default member).
+  practice_setting, state, newsletter_opt_in, sms_opt_in, onboarded_at`;
+  membership/billing (webhook-written, guarded): `stripe_customer_id, membership_tier
+  (tier key from src/lib/membership.js), membership_status
+  ('active'|'past_due'|'canceled'), renews_on` (null renews_on + active = lifetime).
+  `role` is enum `user_role` = member|editor|admin (default member).
 - `posts` — `id, title, slug (unique), excerpt, body_html, cover_image_url,
   cover_image_caption, author_id, author_name (denormalized), status` (enum post_status
   draft|published), `published_at, created_at, updated_at`.
@@ -191,9 +193,13 @@ DOMPurify-sanitized and only editor-writable.
     run in the Supabase SQL editor. There is ONE shared Supabase DB across prod+preview.
     Do NOT tell the user to re-run the whole `schema.sql` casually — its tag seed is an
     upsert that would overwrite admin-customized keyword labels.
-11. **Membership tier keys** live in three places that must stay in sync:
-    `src/lib/membership.js` (UI), `api/_lib/tiers.js` (env mapping), and the
-    `STRIPE_PRICE_*` Vercel env vars. `profiles.membership_tier` stores the key.
+11. **Membership tier keys AND term durations** live in three places that must stay in
+    sync: `src/lib/membership.js` (UI: prices grid + lifetime), `api/_lib/tiers.js`
+    (TIER_DURATIONS + env mapping — this copy authorizes checkouts), and the
+    `STRIPE_PRICE_<TIER>_<TERM>` Vercel env vars. `profiles.membership_tier` stores the
+    tier key. Student/Pre-PA cap at 2-year terms; Legacy has a one-time lifetime option
+    (webhook stores it as membership_status='active' with renews_on=null — an active
+    profile with null renews_on means lifetime, and subscription events never downgrade it).
 12. **`api/` functions can't run under `npm run dev`** (Vite doesn't serve them). Test on a
     Vercel preview deployment (or `vercel dev`). Client code should surface API errors
     gracefully for this reason.

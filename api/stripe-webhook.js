@@ -44,18 +44,30 @@ export async function POST(request) {
       case 'checkout.session.completed': {
         const session = event.data.object;
         const userId = session.client_reference_id || session.metadata?.supabase_user_id;
-        if (!userId || session.mode !== 'subscription') break;
+        if (!userId) break;
 
-        const subscription = await stripe.subscriptions.retrieve(session.subscription);
-        const { error } = await admin
-          .from('profiles')
-          .update({
+        let update;
+        if (session.mode === 'subscription') {
+          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          update = {
             stripe_customer_id: session.customer,
             membership_tier: session.metadata?.tier || subscription.metadata?.tier || null,
             membership_status: membershipStatus(subscription.status),
             renews_on: renewsOn(subscription),
-          })
-          .eq('id', userId);
+          };
+        } else if (session.mode === 'payment' && session.metadata?.duration === 'lifetime') {
+          // Lifetime membership (Legacy): one-time payment, never expires.
+          update = {
+            stripe_customer_id: session.customer,
+            membership_tier: session.metadata?.tier || null,
+            membership_status: 'active',
+            renews_on: null,
+          };
+        } else {
+          break; // some other one-time payment (e.g. future donations) — not membership
+        }
+
+        const { error } = await admin.from('profiles').update(update).eq('id', userId);
         if (error) throw error;
         break;
       }
@@ -65,6 +77,19 @@ export async function POST(request) {
       case 'customer.subscription.deleted': {
         const subscription = event.data.object;
         const userId = subscription.metadata?.supabase_user_id;
+        const matchCol = userId ? 'id' : 'stripe_customer_id';
+        const matchVal = userId || subscription.customer;
+
+        // An active lifetime membership (renews_on is null) outranks any
+        // leftover subscription — e.g. someone who upgraded to lifetime while
+        // an old annual term was still running. Don't let that subscription's
+        // later cancellation/renewal events downgrade or overwrite it.
+        const { data: current } = await admin
+          .from('profiles')
+          .select('membership_status, renews_on')
+          .eq(matchCol, matchVal)
+          .maybeSingle();
+        if (current?.membership_status === 'active' && current.renews_on === null) break;
 
         const update = {
           membership_status: membershipStatus(subscription.status),
@@ -72,10 +97,7 @@ export async function POST(request) {
         };
         if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
 
-        const query = admin.from('profiles').update(update);
-        const { error } = userId
-          ? await query.eq('id', userId)
-          : await query.eq('stripe_customer_id', subscription.customer);
+        const { error } = await admin.from('profiles').update(update).eq(matchCol, matchVal);
         if (error) throw error;
         break;
       }

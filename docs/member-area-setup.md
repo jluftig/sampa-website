@@ -57,6 +57,18 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 ```
 
+### Migration 2 (added 2026-07-06, after the sign-up-form gap analysis)
+
+If you already ran the snippet above, run just this delta:
+
+```sql
+alter table public.profiles add column if not exists state      text;
+alter table public.profiles add column if not exists sms_opt_in boolean not null default false;
+```
+
+(`state` = US state dropdown from the old sign-up form; `sms_opt_in` = text-message
+updates consent, collected with the required "msg rates / reply STOP" language.)
+
 ## 2. Supabase Auth configuration
 
 1. **Publish the Google consent screen** (Google Cloud Console → APIs & Services
@@ -85,17 +97,23 @@ $$;
 
 ## 3. Stripe setup (dashboard.stripe.com)
 
-1. Create a **Product** per membership tier, each with a **recurring yearly
-   Price** (these are the current site prices):
-   | Tier key | Product | Price |
-   |---|---|---|
-   | `fellow` | SAMPA Fellow Membership | $50/yr |
-   | `sustaining` | SAMPA Sustaining Membership | $75/yr |
-   | `associate` | SAMPA Associate Membership | $40/yr |
-   | `legacy` | SAMPA Legacy Membership | $25/yr |
-   | `student` | SAMPA Student Membership | $10/yr |
-   | `prepa` | SAMPA Pre-PA Membership | $5/yr |
-   Copy each **Price id** (`price_...`) for step 5.
+1. Create a **Product** per membership tier, each with one **Price per term**
+   below (pricing per the board's "SAMPA Membership & Donor Tiers 2026" doc).
+   - 1-year: recurring, billing period **Yearly**.
+   - 2-/3-year: recurring, billing period **Custom → every 2 (or 3) years** —
+     one charge up front, auto-renews at the end of the term.
+   - Lifetime (Legacy only): **One-off** price.
+
+   | Tier key | Product | 1-yr | 2-yr | 3-yr | Lifetime |
+   |---|---|---|---|---|---|
+   | `fellow` | SAMPA Fellow Membership | $50 | $90 | $125 | — |
+   | `sustaining` | SAMPA Sustaining Membership | $75 | $135 | $185 | — |
+   | `associate` | SAMPA Associate Membership | $40 | $70 | $100 | — |
+   | `legacy` | SAMPA Legacy Membership | $25 | $45 | $60 | $125 |
+   | `student` | SAMPA Student Membership | $10 | $18 | — | — |
+   | `prepa` | SAMPA Pre-PA Membership | $5 | $9 | — | — |
+
+   Copy each **Price id** (`price_...`) for step 5 — 17 prices total.
 2. **Webhook endpoint**: Developers → Webhooks → Add endpoint →
    `https://www.addictionpas.org/api/stripe-webhook`, subscribed to:
    - `checkout.session.completed`
@@ -117,7 +135,13 @@ Stripe *test* keys ideally):
 | `STRIPE_SECRET_KEY` | `sk_live_...` (or `sk_test_...` on Preview) |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_...` from step 3.2 |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API → service_role |
-| `STRIPE_PRICE_FELLOW` … `STRIPE_PRICE_PREPA` | the six Price ids from step 3.1 |
+| `STRIPE_PRICE_<TIER>_<TERM>` | the 17 Price ids from step 3.1 |
+
+Price env names: `STRIPE_PRICE_FELLOW_1Y`, `STRIPE_PRICE_FELLOW_2Y`,
+`STRIPE_PRICE_FELLOW_3Y`, same `_1Y/_2Y/_3Y` pattern for `SUSTAINING`,
+`ASSOCIATE`, and `LEGACY`, plus `STRIPE_PRICE_LEGACY_LIFETIME`, and `_1Y/_2Y`
+only for `STUDENT` and `PREPA`. A missing env var simply disables that
+tier/term combination (the API rejects it).
 
 (`SUPABASE_URL` is optional — the functions fall back to `VITE_SUPABASE_URL`.)
 
@@ -130,12 +154,37 @@ Stripe *test* keys ideally):
    and a profile row exists with your name.
 2. Save an article from `/news/...` → appears under "Saved articles".
 3. Fill in the profile form → Save → reload → values persist.
-4. `/join` → pick a tier → pay with test card `4242 4242 4242 4242` → land on
-   `/dashboard?checkout=success` → within seconds status shows **Active** with
-   tier + renewal date.
+4. `/join` → pick a tier and a term (try a 2-year to confirm the discount
+   price and a renewal date two years out; also test Legacy → Lifetime, which
+   should show **Active** with "lifetime, no renewal needed") → pay with test
+   card `4242 4242 4242 4242` → land on `/dashboard?checkout=success` → within
+   seconds status shows **Active** with tier + renewal date.
 5. "Manage billing" opens the Stripe portal; cancel the test subscription →
    dashboard shows **Canceled** after the webhook fires.
 6. Sign out; confirm `/dashboard` bounces to `/login` and news pages still load.
+
+## Phase 2 — Donations (NOT yet built; info preserved from the board doc)
+
+The old Google Form also took donations; the homepage donation section still
+links to it for now. When we build Stripe donations, the approved tiers
+("SAMPA Membership & Donor Tiers 2026") are:
+
+| Tier | Annual | 2-yr (−10%) | 3-yr (−15%) | Tax note |
+|---|---|---|---|---|
+| Community Supporter | Free | — | — | — |
+| Bronze | $25 | $45 | $64 | fully deductible (≤$75 IRS threshold) |
+| Silver | $75 | $135 | $191 | fully deductible (≤$75 IRS threshold) |
+| Gold | $150 | $270 | $383 | partially deductible |
+| Platinum | $300 | $540 | $765 | partially deductible |
+| Patron/Benefactor | $600+ | — | — | partially deductible |
+| Organizational | $1,500–$5,000+ | — | — | partially deductible |
+
+Also from the old form, to include in the build: custom amounts, one-time vs.
+recurring frequency, and an "keep my gift anonymous" (donor recognition)
+checkbox. Per the 501(c)(3) compliance note, tiers above $75 need written
+acknowledgment of the tax-deductible portion (fair-market-value of benefits
+documented annually). The webhook already ignores non-membership one-time
+payments, so donation checkouts won't disturb membership status.
 
 ## Notes for the future mobile apps (iOS/Android)
 

@@ -64,7 +64,9 @@ alter table public.profiles add column if not exists credentials       text;
 alter table public.profiles add column if not exists npi               text;
 alter table public.profiles add column if not exists organization      text;
 alter table public.profiles add column if not exists practice_setting  text;
+alter table public.profiles add column if not exists state             text;
 alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
+alter table public.profiles add column if not exists sms_opt_in        boolean not null default false;
 alter table public.profiles add column if not exists onboarded_at      timestamptz;
 
 create table if not exists public.tags (

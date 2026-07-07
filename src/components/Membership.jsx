@@ -40,8 +40,8 @@ export default function Membership() {
         <div>
           <h3 className="font-bold text-xl text-primary mb-2">Multi-Year Discounts Available!</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
-            Commit to the future of SAMPA and save: get <strong>~10% off for 2 years</strong>, or <strong>~17% off for 3 years</strong>.
-            <span className="block mt-1 text-xs opacity-70 italic">(Note: Student memberships max 2 years, Pre-PA max 1 year)</span>
+            Commit to the future of SAMPA and save: get <strong>~10% off for 2 years</strong>, or <strong>up to ~20% off for 3 years</strong> — pick your term at checkout.
+            <span className="block mt-1 text-xs opacity-70 italic">(Student and Pre-PA memberships: up to 2 years. Legacy members can choose a $125 lifetime membership.)</span>
           </p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function Membership() {
               <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
               <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-6 h-10`}>{tier.desc}</p>
               <div className={`text-4xl font-bold font-sans mb-8 ${tier.highlight ? 'text-white' : 'text-primary'}`}>
-                {tier.price}<span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>/yr</span>
+                ${tier.prices[1]}<span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>/yr</span>
               </div>
             </div>
             <Link to={`/join?tier=${tier.key}`} className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 ${tier.highlight ? 'bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg hover:scale-[1.02]' : 'border-2 border-primary text-primary hover:bg-primary/5'}`}>

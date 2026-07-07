@@ -4,6 +4,7 @@ import { BookmarkX, CreditCard, PenSquare } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { tierByKey } from '../lib/membership';
+import { US_STATES } from '../lib/usStates';
 import { apiPost } from '../lib/api';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
@@ -21,7 +22,8 @@ const PROFILE_FIELDS = [
   { key: 'npi',              label: 'NPI number',       placeholder: '10 digits (optional)' },
   { key: 'organization',     label: 'Organization / employer', placeholder: 'Where you practice' },
   { key: 'practice_setting', label: 'Practice setting', placeholder: 'e.g. OTP, FQHC, hospital, private practice' },
-  { key: 'phone',            label: 'Phone',            placeholder: 'Optional' },
+  { key: 'state',            label: 'State',            type: 'select', options: US_STATES },
+  { key: 'phone',            label: 'Mobile phone',     placeholder: 'For text updates (optional)' },
 ];
 
 export default function Dashboard() {
@@ -88,14 +90,20 @@ export default function Dashboard() {
         npi: profile.npi || '',
         organization: profile.organization || '',
         practice_setting: profile.practice_setting || '',
+        state: profile.state || '',
         phone: profile.phone || '',
         newsletter_opt_in: profile.newsletter_opt_in ?? true,
+        sms_opt_in: profile.sms_opt_in ?? false,
       });
     }
   }, [profile, form]);
 
   const saveProfile = async (e) => {
     e.preventDefault();
+    if (form.sms_opt_in && !form.phone.trim()) {
+      setSaveState('needsPhone');
+      return;
+    }
     setSaveState('saving');
     const { error } = await supabase
       .from('profiles')
@@ -174,6 +182,9 @@ export default function Dashboard() {
             <>
               <p className="text-text/70 text-sm mb-6">
                 {tier ? `${tier.name} membership` : 'SAMPA membership'}
+                {profile.membership_status === 'active' && !profile.renews_on
+                  ? ' — lifetime, no renewal needed'
+                  : ''}
                 {profile.renews_on && profile.membership_status === 'active'
                   ? ` — renews ${formatDate(profile.renews_on)}`
                   : ''}
@@ -237,18 +248,32 @@ export default function Dashboard() {
             <form onSubmit={saveProfile}>
               <div className="grid md:grid-cols-2 gap-5">
                 {PROFILE_FIELDS.map((f) => (
-                  <div key={f.key} className={f.key === 'practice_setting' || f.key === 'organization' ? 'md:col-span-1' : ''}>
+                  <div key={f.key}>
                     <label htmlFor={`pf-${f.key}`} className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
                       {f.label}
                     </label>
-                    <input
-                      id={`pf-${f.key}`}
-                      type="text"
-                      value={form[f.key]}
-                      onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                      placeholder={f.placeholder}
-                      className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm"
-                    />
+                    {f.type === 'select' ? (
+                      <select
+                        id={`pf-${f.key}`}
+                        value={form[f.key]}
+                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                      >
+                        <option value="">Select…</option>
+                        {f.options.map((opt) => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        id={`pf-${f.key}`}
+                        type="text"
+                        value={form[f.key]}
+                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                        placeholder={f.placeholder}
+                        className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm"
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -263,6 +288,21 @@ export default function Dashboard() {
                 Send me the SAMPA newsletter and member updates
               </label>
 
+              <label className="flex items-start gap-3 mt-4 text-sm text-text/70 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.sms_opt_in}
+                  onChange={(e) => setForm({ ...form, sms_opt_in: e.target.checked })}
+                  className="w-4 h-4 accent-primary mt-0.5"
+                />
+                <span>
+                  Send me SAMPA text updates at the mobile number above.
+                  <span className="block text-xs text-text/40 mt-0.5">
+                    Message and data rates may apply. Reply STOP at any time to opt out.
+                  </span>
+                </span>
+              </label>
+
               <div className="flex items-center gap-4 mt-6">
                 <button
                   type="submit"
@@ -273,6 +313,7 @@ export default function Dashboard() {
                 </button>
                 {saveState === 'saved' && <span className="text-green-700 text-sm font-semibold">Saved ✓</span>}
                 {saveState === 'error' && <span className="text-red-500 text-sm">Couldn't save — try again.</span>}
+                {saveState === 'needsPhone' && <span className="text-red-500 text-sm">Add a mobile phone number to receive text updates.</span>}
               </div>
             </form>
           )}
