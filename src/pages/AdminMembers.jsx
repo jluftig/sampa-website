@@ -23,6 +23,17 @@ const STATUS_BADGES = {
   canceled: 'bg-red-500/10 text-red-600',
 };
 
+// "Fellow, 3 yr" | "Legacy Member, lifetime" | "Fellow" (term unknown) — same
+// format as the pledge table. Term is unknown only for memberships that
+// predate term tracking; their next Stripe event fills it in.
+function tierLabel(p) {
+  const name = tierByKey(p.membership_tier)?.name || p.membership_tier;
+  if (!name) return '—';
+  if (p.membership_years) return `${name}, ${p.membership_years} yr`;
+  if (p.membership_status === 'active' && !p.renews_on) return `${name}, lifetime`;
+  return name;
+}
+
 // Active: "Renews <date>" | "Ends <date>" (canceled at period end) | "Lifetime".
 // Past due: the date the failed renewal was due. Canceled/none: no date — the
 // stored period-end is history, and printing it would read like a renewal.
@@ -40,6 +51,7 @@ const CSV_COLUMNS = [
   ['Email', (p) => p.email],
   ['Role', (p) => p.role],
   ['Membership tier', (p) => tierByKey(p.membership_tier)?.name || p.membership_tier],
+  ['Term (years)', (p) => p.membership_years || (p.membership_status === 'active' && !p.renews_on ? 'lifetime' : '')],
   ['Status', (p) => p.membership_status],
   ['Renews/ends', (p) => (p.renews_on ? p.renews_on.slice(0, 10) : p.membership_status === 'active' ? 'lifetime' : '')],
   ['Won\'t renew', (p) => (p.cancel_at_period_end ? 'yes' : '')],
@@ -87,7 +99,7 @@ export default function AdminMembers() {
       const [profilesRes, pledgesRes] = await Promise.all([
         supabase
           .from('profiles')
-          .select('id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_status, renews_on, cancel_at_period_end, created_at')
+          .select('id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at')
           .order('full_name', { ascending: true, nullsFirst: false }),
         // Pre-Stripe sign-up-form pledges (admin-readable via RLS). Rows stay
         // after claiming, so this doubles as the invitation-conversion tracker.
@@ -353,7 +365,7 @@ export default function AdminMembers() {
                     <tr key={p.id}>
                       <td className="px-4 py-3 font-semibold whitespace-nowrap">{p.full_name || '—'}</td>
                       <td className="px-4 py-3 text-text/60">{p.email}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{tierByKey(p.membership_tier)?.name || p.membership_tier || '—'}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{tierLabel(p)}</td>
                       <td className="px-4 py-3">
                         {p.membership_status ? (
                           <span className={`text-xs font-data font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGES[p.membership_status] || 'bg-text/10 text-text/60'}`}>

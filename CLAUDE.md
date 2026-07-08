@@ -153,7 +153,9 @@ redirect to `/login?next=...` so users return where they were headed.
   membership/billing (webhook-written, guarded): `stripe_customer_id, membership_tier
   (tier key from src/lib/membership.js), membership_status
   ('active'|'past_due'|'canceled'), renews_on` (null renews_on + active = lifetime),
-  `cancel_at_period_end` (true = still active but won't renew; renews_on is the END date).
+  `cancel_at_period_end` (true = still active but won't renew; renews_on is the END date),
+  `membership_years` (purchased term 1/2/3 from the subscription price's interval_count;
+  null = lifetime or pre-term-tracking data).
   `role` is enum `user_role` = member|editor|admin (default member; 'editor' is a LEGACY
   value — the People & permissions UI normalizes it to member + flag on first edit).
   Capability flags (admin-set, guarded, combinable): `can_edit_news` (news writing),
