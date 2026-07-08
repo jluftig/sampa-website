@@ -77,7 +77,7 @@ function ChecklistBlock({ step }) {
       </ul>
       {step.linkTo && (
         <Link
-          to={`/tools/bup/${step.linkTo.protocol}`}
+          to={step.linkTo.to || `/tools/bup/${step.linkTo.protocol}`}
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline mt-4"
         >
           {step.linkTo.label}
