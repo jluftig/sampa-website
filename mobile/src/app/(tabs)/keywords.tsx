@@ -50,7 +50,9 @@ export default function KeywordsScreen() {
                     styles.chip,
                     { backgroundColor: theme.backgroundElement, borderColor: theme.border, opacity: pressed ? 0.8 : 1 },
                   ]}>
-                  <Text style={[styles.chipName, { color: theme.text }]}>{tag.name}</Text>
+                  <Text style={[styles.chipName, { color: theme.text }]}>
+                    {tag.short_label || tag.name}
+                  </Text>
                   <View style={[styles.count, { backgroundColor: theme.backgroundSelected }]}>
                     <Text style={[styles.countText, { color: theme.tint }]}>{tag.count}</Text>
                   </View>
