@@ -174,14 +174,33 @@ Return each field in its own fenced code block for clean copy/transfer, in this 
   vocabulary lacks (empty if none). Label clearly as "needs admin to add at /editor/tags".
 
 After the blocks, an **Editor notes** section (plain text): anything to verify before
-publishing, a one-line cover-image suggestion (uploaded to the `post-images` bucket),
-the **cover-image sizing guidance** below, and a reminder that this is a **draft** — a human
-reviews and publishes in `/editor`.
+publishing, the **cover image** deliverables below (a ready-to-paste AI image-generation
+prompt + the sizing guidance; the chosen image is uploaded to the `post-images` bucket), and
+a reminder that this is a **draft** — a human reviews and publishes in `/editor`.
 
-## Cover image sizing (include in Editor notes)
+## Cover image (include in Editor notes)
 
-This skill does NOT generate images, but always give the user these dimensions so their
-uploaded/cropped image fills the news card without being cut off:
+Every run, produce TWO things for the cover image.
+
+**1. A ready-to-paste AI image-generation prompt** the editor can drop into any image
+generator (DALL·E, Gemini/Imagen, Grok, Midjourney). It must:
+- Describe a specific, relevant scene drawn from THIS post — not a generic stock idea.
+- **If the image includes people/humans, specify a hand-drawn sketch style** (e.g. "loose
+  hand-drawn pen-and-ink sketch," "hand-drawn illustration"). For non-human subjects
+  (molecules, medications, documents, buildings, maps, abstract concepts), a clean modern
+  editorial illustration style is fine.
+- Use a neutral, professional, muted clinical palette. **No text/words in the image, no
+  logos, no identifiable real people.**
+- End with a 16:9 aspect-ratio instruction, and tell the editor how to get 16:9 in their
+  tool: DALL·E → "widescreen 16:9" (outputs 1792×1024); Gemini/Imagen → "16:9 aspect ratio";
+  Grok → "16:9 widescreen image"; Midjourney → add `--ar 16:9`. Then resize to exactly
+  1600×900.
+
+  Template — `A [hand-drawn sketch | clean editorial illustration] of [specific scene from
+  the post], neutral professional muted clinical palette, no text, no logos, no identifiable
+  real people. Widescreen 16:9 aspect ratio.`
+
+**2. Sizing guidance** so the final image fills the news card without being cut off:
 
 - **Use a 16:9 image.** The homepage/News **card** renders the cover in a fixed **16:9** box
   with `object-cover` (center-crop) — a non-16:9 image gets its edges cropped on the card.
