@@ -24,6 +24,10 @@ declare module 'sampa-shared/format' {
   export function formatDateOnly(value: string | number | Date | null | undefined): string;
 }
 
+declare module 'sampa-shared/usStates' {
+  export const US_STATES: string[];
+}
+
 declare module 'sampa-shared/tags' {
   export type SharedTag = { id?: string; name: string; short_label: string | null; slug: string };
   export function collectPostTags(post: any): SharedTag[];

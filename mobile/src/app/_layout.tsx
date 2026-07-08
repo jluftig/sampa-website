@@ -84,10 +84,24 @@ export default function RootLayout() {
           <ThemeProvider value={colorScheme === 'dark' ? NavDark : NavLight}>
             <BiometricGate>
               <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="news/[slug]" options={{ headerShown: true, title: '' }} />
-                <Stack.Screen name="keywords/[slug]" options={{ headerShown: true, title: '' }} />
-                <Stack.Screen name="search" options={{ headerShown: true, title: 'Search' }} />
+                {/* title feeds the back-button label on pushed screens (else "(tabs)" leaks) */}
+                <Stack.Screen name="(tabs)" options={{ title: 'Back' }} />
+                <Stack.Screen
+                  name="news/[slug]"
+                  options={{ headerShown: true, title: '', headerBackTitle: 'Back' }}
+                />
+                <Stack.Screen
+                  name="keywords/[slug]"
+                  options={{ headerShown: true, title: '', headerBackTitle: 'Back' }}
+                />
+                <Stack.Screen
+                  name="search"
+                  options={{ headerShown: true, title: 'Search', headerBackTitle: 'Back' }}
+                />
+                <Stack.Screen
+                  name="profile"
+                  options={{ headerShown: true, title: 'Edit profile', headerBackTitle: 'Back' }}
+                />
               </Stack>
             </BiometricGate>
             <StatusBar style="auto" />
