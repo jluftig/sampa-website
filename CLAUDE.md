@@ -158,6 +158,12 @@ redirect to `/login?next=...` so users return where they were headed.
   value — the People & permissions UI normalizes it to member + flag on first edit).
   Capability flags (admin-set, guarded, combinable): `can_edit_news` (news writing),
   `can_view_members` (read-only roster/pledges). Admin role implies all capabilities.
+  `privileged_terms_accepted_at` — click-accept timestamp for the Confidentiality &
+  Acceptable Use Agreement (PrivilegedAccessAgreement.jsx); /editor/members refuses to
+  render until set. Deliberately self-settable (accepting grants nothing by itself).
+- `audit_log` — governance trail: 'permissions_changed' rows written by the
+  log_permission_change() trigger (old→new in detail jsonb), 'member_csv_export' rows
+  written by AdminMembers. SELECT is_admin(); INSERT only rows with actor_id = self.
 - `posts` — `id, title, slug (unique), excerpt, body_html, cover_image_url,
   cover_image_caption, author_id, author_name (denormalized), status` (enum post_status
   draft|published), `published_at, created_at, updated_at`; original-source citation

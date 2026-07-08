@@ -79,6 +79,12 @@ alter table public.profiles add column if not exists onboarded_at      timestamp
 alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
 alter table public.profiles add column if not exists can_view_members boolean not null default false;
 
+-- When this person click-accepted the Confidentiality & Acceptable Use
+-- Agreement for privileged access to member data. The members page refuses to
+-- render until it's set; the timestamp IS the signature record. Deliberately
+-- self-settable (accepting grants nothing — access still requires a flag).
+alter table public.profiles add column if not exists privileged_terms_accepted_at timestamptz;
+
 -- One-time backfill: existing editors keep their news permission as a flag.
 update public.profiles set can_edit_news = true where role = 'editor' and not can_edit_news;
 -- True when a member canceled but their paid term hasn't ended yet: the
@@ -267,6 +273,51 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
+-- Audit trail for member-data governance: permission changes (written by the
+-- trigger below) and roster CSV exports (written by the members page).
+create table if not exists public.audit_log (
+  id           bigint generated always as identity primary key,
+  at           timestamptz not null default now(),
+  actor_id     uuid,             -- who did it (null = SQL editor / service role)
+  actor_email  text,
+  action       text not null,    -- 'permissions_changed' | 'member_csv_export'
+  target_email text,             -- whose permissions changed (if applicable)
+  detail       jsonb             -- changed fields / export row count+filter
+);
+
+-- Log any change to the permission columns, with old -> new values.
+-- SECURITY DEFINER so the insert bypasses audit_log RLS.
+create or replace function public.log_permission_change()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare changes jsonb := '{}'::jsonb;
+begin
+  if new.role is distinct from old.role then
+    changes := changes || jsonb_build_object('role', jsonb_build_array(old.role, new.role));
+  end if;
+  if new.can_edit_news is distinct from old.can_edit_news then
+    changes := changes || jsonb_build_object('can_edit_news', jsonb_build_array(old.can_edit_news, new.can_edit_news));
+  end if;
+  if new.can_view_members is distinct from old.can_view_members then
+    changes := changes || jsonb_build_object('can_view_members', jsonb_build_array(old.can_view_members, new.can_view_members));
+  end if;
+  if changes <> '{}'::jsonb then
+    insert into public.audit_log (actor_id, actor_email, action, target_email, detail)
+    values (
+      auth.uid(),
+      (select email from public.profiles where id = auth.uid()),
+      'permissions_changed',
+      new.email,
+      changes
+    );
+  end if;
+  return new;
+end; $$;
+
+drop trigger if exists profiles_log_permission_change on public.profiles;
+create trigger profiles_log_permission_change
+  after update on public.profiles
+  for each row execute function public.log_permission_change();
+
 -- Block non-admins from changing a profile's role OR its membership/billing
 -- fields (prevents self-promotion and self-granting a paid membership).
 -- Regular users can still edit their own name/phone. auth.uid() is null for the
@@ -330,6 +381,18 @@ create policy donations_select on public.donations
 drop policy if exists member_import_select on public.member_import;
 create policy member_import_select on public.member_import
   for select using ( public.is_admin() or public.is_member_viewer() );
+
+-- audit_log: admins read; signed-in users may append rows about THEMSELVES
+-- (the members page logs its own CSV exports); no update/delete via the API.
+alter table public.audit_log enable row level security;
+
+drop policy if exists audit_log_select on public.audit_log;
+create policy audit_log_select on public.audit_log
+  for select using ( public.is_admin() );
+
+drop policy if exists audit_log_insert on public.audit_log;
+create policy audit_log_insert on public.audit_log
+  for insert with check ( actor_id = auth.uid() );
 
 -- profiles: read own row, or all rows for admins and member-viewers (roster);
 -- update stays own-or-admin (role/membership/permission columns guarded above)

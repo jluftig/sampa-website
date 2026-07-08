@@ -99,6 +99,70 @@ active until the term they paid for runs out. Without this flag the dashboard
 would say "renews <date>" after a cancellation; with it, it says "member
 benefits end <date>".
 
+### Migration 7 — data governance: confidentiality gate + audit log (added 2026-07-07)
+
+The members page now requires click-accepting the Confidentiality & Acceptable
+Use Agreement before rendering (acceptance timestamp = signature record), and
+permission changes + roster CSV exports are logged to `audit_log` (readable by
+admins: `select * from audit_log order by at desc;`).
+
+```sql
+alter table public.profiles add column if not exists privileged_terms_accepted_at timestamptz;
+
+create table if not exists public.audit_log (
+  id           bigint generated always as identity primary key,
+  at           timestamptz not null default now(),
+  actor_id     uuid,
+  actor_email  text,
+  action       text not null,
+  target_email text,
+  detail       jsonb
+);
+
+create or replace function public.log_permission_change()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare changes jsonb := '{}'::jsonb;
+begin
+  if new.role is distinct from old.role then
+    changes := changes || jsonb_build_object('role', jsonb_build_array(old.role, new.role));
+  end if;
+  if new.can_edit_news is distinct from old.can_edit_news then
+    changes := changes || jsonb_build_object('can_edit_news', jsonb_build_array(old.can_edit_news, new.can_edit_news));
+  end if;
+  if new.can_view_members is distinct from old.can_view_members then
+    changes := changes || jsonb_build_object('can_view_members', jsonb_build_array(old.can_view_members, new.can_view_members));
+  end if;
+  if changes <> '{}'::jsonb then
+    insert into public.audit_log (actor_id, actor_email, action, target_email, detail)
+    values (
+      auth.uid(),
+      (select email from public.profiles where id = auth.uid()),
+      'permissions_changed',
+      new.email,
+      changes
+    );
+  end if;
+  return new;
+end; $$;
+
+drop trigger if exists profiles_log_permission_change on public.profiles;
+create trigger profiles_log_permission_change
+  after update on public.profiles
+  for each row execute function public.log_permission_change();
+
+alter table public.audit_log enable row level security;
+
+drop policy if exists audit_log_select on public.audit_log;
+create policy audit_log_select on public.audit_log
+  for select using ( public.is_admin() );
+
+drop policy if exists audit_log_insert on public.audit_log;
+create policy audit_log_insert on public.audit_log
+  for insert with check ( actor_id = auth.uid() );
+
+select 'migration 7 applied ✓' as status;
+```
+
 ### Migration 6 — checkbox permissions (added 2026-07-07)
 
 Replaces the single-role ladder with independent capabilities: **publish news**
