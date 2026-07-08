@@ -20,6 +20,7 @@ export default function Footer() {
         <div className="flex gap-8 text-sm font-medium text-white/60">
           <a href="/#about" className="hover:text-white transition-colors">About</a>
           <a href="/#membership" className="hover:text-white transition-colors">Membership</a>
+          <Link to="/tools/bup" className="hover:text-white transition-colors">Bup Dosing Tool</Link>
           <Link to="/donate" className="hover:text-white transition-colors">Donate</Link>
           <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>

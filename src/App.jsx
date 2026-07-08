@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
@@ -16,6 +16,9 @@ const Search = lazy(() => import('./pages/Search'));
 const Login = lazy(() => import('./pages/Login'));
 const Join = lazy(() => import('./pages/Join'));
 const Donate = lazy(() => import('./pages/Donate'));
+// The bup dosing tool owns its whole subtree (nested routes inside) so the
+// tool + its clinical data modules ship as one on-demand chunk.
+const BupTool = lazy(() => import('./pages/tools/BupTool'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
@@ -41,6 +44,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/donate" element={<Donate />} />
+          <Route path="/tools" element={<Navigate to="/tools/bup" replace />} />
+          <Route path="/tools/bup/*" element={<BupTool />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route
