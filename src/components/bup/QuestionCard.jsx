@@ -9,7 +9,7 @@ import { Check } from 'lucide-react';
 // `multiselect` nodes render checkbox-style rows plus an explicit
 // "None of these apply" action: [] (explicit none) and undefined (unanswered)
 // route differently, so none must be a deliberate tap, not a default.
-export default function QuestionCard({ node, value, onAnswer, step }) {
+export default function QuestionCard({ node, value, onAnswer, step, timing }) {
   const isMulti = node.kind === 'multiselect';
   const selected = isMulti ? (Array.isArray(value) ? value : null) : value;
 
@@ -23,6 +23,11 @@ export default function QuestionCard({ node, value, onAnswer, step }) {
 
   return (
     <section className="bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7">
+      {timing && (
+        <div className="inline-block px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-data font-semibold uppercase tracking-wider mb-3">
+          {timing}
+        </div>
+      )}
       <div className="flex items-baseline gap-3 mb-4">
         <span className="font-data text-xs text-primary font-semibold shrink-0">{step}</span>
         <div>

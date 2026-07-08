@@ -16,6 +16,63 @@
 // without any bookkeeping. If two branches rejoin at the same node, a
 // previously given answer there is reused (it stays visible on screen).
 
+export function isInteractiveStep(step) {
+  return step.kind === 'question' || step.kind === 'reassess' || step.kind === 'multiselect';
+}
+
+// Sequential walker for protocol flows, which — unlike the chooser DAG — may
+// loop (Quick Start's "reassess in 30–60 min → more bup → reassess again").
+// `answerSeq` is the ordered list of answers given so far:
+// [{ stepId, value }, ...]. Non-interactive steps (dose/alert/note/checklist/
+// table) are passed through automatically; each visit to a step is a separate
+// path entry, so a loop shows up as repeated cards. Rewind = truncate the
+// sequence at an answer's `answerIndex` and everything after it re-derives.
+export function evaluateSequence(flow, answerSeq) {
+  const path = [];
+  let nodeId = flow.start;
+  let answerIndex = 0;
+  let guard = 0;
+
+  while (nodeId && guard++ < 200) {
+    const step = flow.steps[nodeId];
+    if (!step) break;
+
+    if (isInteractiveStep(step)) {
+      const entry = answerSeq[answerIndex];
+      if (!entry || entry.stepId !== nodeId) {
+        return { path, currentStepId: nodeId, complete: false };
+      }
+
+      if (step.kind === 'multiselect') {
+        const selected = Array.isArray(entry.value) ? entry.value : [];
+        const labels = step.options.filter((o) => selected.includes(o.value)).map((o) => o.label);
+        path.push({
+          stepId: nodeId,
+          step,
+          answer: selected,
+          answerLabel: labels.length ? labels.join('; ') : step.noneLabel,
+          answerIndex,
+        });
+        nodeId = selected.length ? step.anyNext : step.noneNext;
+      } else {
+        const option = step.options.find((o) => o.value === entry.value);
+        if (!option) {
+          return { path, currentStepId: nodeId, complete: false };
+        }
+        path.push({ stepId: nodeId, step, answer: entry.value, answerLabel: option.label, answerIndex });
+        nodeId = option.next;
+      }
+      answerIndex += 1;
+    } else {
+      path.push({ stepId: nodeId, step });
+      if (!step.next) return { path, currentStepId: null, complete: true };
+      nodeId = step.next;
+    }
+  }
+
+  return { path, currentStepId: null, complete: true };
+}
+
 export function evaluateFlow(flow, answers) {
   const path = [];
   const visited = new Set();
