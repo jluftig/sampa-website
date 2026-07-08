@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import { Heart, UserCheck, LogIn } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import { apiPost } from '../lib/api';
 import Navbar from '../components/Navbar';
@@ -89,6 +89,36 @@ export default function Donate() {
             {status === 'canceled' && (
               <div className="bg-text/5 border border-text/10 rounded-2xl p-4 mb-6 text-center text-sm text-text/70">
                 Checkout was canceled — no charge was made. Whenever you're ready.
+              </div>
+            )}
+
+            {/* Account status — make the signed-in vs. guest choice explicit, so a
+                member never accidentally gives as a guest and then sees an empty
+                donation history. Gifts link to an account by user id, not email. */}
+            {user ? (
+              <div className="flex items-center gap-3 bg-primary/5 border border-primary/20 rounded-2xl p-4 mb-6 text-sm">
+                <UserCheck className="w-5 h-5 text-primary shrink-0" />
+                <span className="text-text/80">
+                  Signed in as <strong className="text-text">{user.email}</strong> — this gift
+                  will be saved to your account and shown on your dashboard.
+                </span>
+              </div>
+            ) : (
+              <div className="bg-accent/5 border border-accent/20 rounded-2xl p-4 mb-6 text-sm">
+                <p className="text-text/80 mb-3">
+                  <strong className="text-text">SAMPA member?</strong> Sign in first so this
+                  donation is saved to your account and appears in your dashboard. Otherwise
+                  it's recorded as a guest gift and won't be linked to your login.
+                </p>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <Link
+                    to="/login?next=/donate"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    <LogIn className="w-4 h-4" /> Sign in
+                  </Link>
+                  <span className="text-text/50 text-xs">or continue below to donate as a guest.</span>
+                </div>
               </div>
             )}
 
@@ -181,12 +211,7 @@ export default function Donate() {
             <p className="text-center text-text/40 text-xs mt-6">
               Payments are processed securely by Stripe — SAMPA never sees or
               stores your card details. Monthly gifts continue until you cancel,
-              which you can do anytime from the link in your receipt.{' '}
-              {!user && (
-                <>Are you a member?{' '}
-                  <Link to="/login?next=/donate" className="underline hover:text-primary">Sign in</Link>{' '}
-                  first to keep your gifts with your account.</>
-              )}
+              which you can do anytime from the link in your receipt.
             </p>
           </div>
         )}
