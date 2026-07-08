@@ -2,10 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Download } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../lib/AuthContext';
 import { tierByKey } from '../lib/membership';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import PrivilegedAccessAgreement from '../components/PrivilegedAccessAgreement';
 
 const STATUS_FILTERS = [
   { key: 'all', label: 'All accounts' },
@@ -66,6 +68,11 @@ function toCsv(rows) {
 // status, counts by tier/state, and a CSV export of the filtered view. Reads
 // are allowed by the profiles RLS policy (admins see all rows).
 export default function AdminMembers() {
+  const { user, profile } = useAuth();
+  // Confidentiality agreement gate: no member data is fetched or rendered
+  // until this person has click-accepted (timestamp on their profile).
+  const accepted = !!profile?.privileged_terms_accepted_at;
+
   const [people, setPeople] = useState([]);
   const [pledges, setPledges] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,6 +82,7 @@ export default function AdminMembers() {
 
   useEffect(() => {
     let active = true;
+    if (!accepted) return;
     (async () => {
       const [profilesRes, pledgesRes] = await Promise.all([
         supabase
@@ -95,7 +103,7 @@ export default function AdminMembers() {
       setLoading(false);
     })();
     return () => { active = false; };
-  }, []);
+  }, [accepted]);
 
   const counts = useMemo(() => {
     const byStatus = { active: 0, past_due: 0, canceled: 0, none: 0 };
@@ -156,6 +164,13 @@ export default function AdminMembers() {
     a.download = `sampa-members-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+    // Governance: exports are logged (fire-and-forget; visible to admins).
+    supabase.from('audit_log').insert({
+      actor_id: user.id,
+      actor_email: profile?.email || user.email,
+      action: 'member_csv_export',
+      detail: { rows: filtered.length, filter: statusFilter, search: search.trim() || null },
+    }).then(() => {});
   };
 
   return (
@@ -167,6 +182,13 @@ export default function AdminMembers() {
         <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
+
+        {!accepted ? (
+          <div className="mt-8">
+            <PrivilegedAccessAgreement />
+          </div>
+        ) : (
+        <>
         <div className="flex flex-wrap items-end justify-between gap-4 mt-4 mb-8">
           <div>
             <h1 className="text-3xl font-drama font-bold mb-2">Members</h1>
@@ -364,6 +386,8 @@ export default function AdminMembers() {
               <Link to="/editor/people" className="underline hover:text-primary">People & permissions</Link>.
             </p>
           </>
+        )}
+        </>
         )}
       </main>
 

@@ -65,6 +65,25 @@ Note for the **treasurer/accountant**: financial reports live in Stripe, which
 has its own team roles — invite them at Stripe → Settings → Team (view-only or
 Analyst) rather than granting anything here.
 
+### Member-data governance
+
+- **Confidentiality agreement:** the first time anyone opens the Members page,
+  they must click-accept the Confidentiality & Acceptable Use Agreement (use
+  only for SAMPA business, keep it confidential, handle exports carefully,
+  Google 2-Step Verification required, access ends with the role, sanctions
+  for misuse). The click is recorded with a timestamp — that's the signature.
+  The agreement is a careful draft pending counsel review; the board should
+  formally adopt it.
+- **Audit trail:** every permission change and every roster CSV export is
+  logged. Admins can review it in the Supabase SQL editor:
+  `select * from audit_log order by at desc;`
+- **Annual access review (put it on the calendar):** once a year, open
+  People & permissions and confirm every checked box still matches a current
+  role. Uncheck anyone whose service ended.
+- **Offboarding (do immediately):** when someone leaves a role — uncheck their
+  boxes in People & permissions, remove them from the Stripe team if they had
+  it, and remind them to delete any exported member data (they agreed to).
+
 ---
 
 ## 4. Everyday tasks

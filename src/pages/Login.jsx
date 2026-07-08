@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import Navbar from '../components/Navbar';
@@ -107,6 +107,9 @@ export default function Login() {
 
           <p className="text-text/40 text-xs mt-6">
             No password needed — use your Google account or a one-time email link.
+            By signing in you agree to our{' '}
+            <Link to="/terms" className="underline hover:text-primary">Terms of Service</Link> and{' '}
+            <Link to="/privacy" className="underline hover:text-primary">Privacy Policy</Link>.
           </p>
         </div>
       </main>
