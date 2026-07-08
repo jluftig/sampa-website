@@ -18,3 +18,8 @@ declare module 'sampa-shared/membership' {
   export function durationsForTier(tier: MembershipTier): (number | 'lifetime')[];
   export function durationLabel(duration: number | 'lifetime'): string;
 }
+
+declare module 'sampa-shared/format' {
+  export function formatDate(value: string | number | Date | null | undefined): string;
+  export function formatDateOnly(value: string | number | Date | null | undefined): string;
+}

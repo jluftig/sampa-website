@@ -18,7 +18,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
+import { BiometricGate } from '@/components/biometric-gate';
 import { Colors } from '@/constants/theme';
+import { AuthProvider } from '@/lib/AuthContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -71,11 +73,15 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? NavDark : NavLight}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? NavDark : NavLight}>
+        <BiometricGate>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </BiometricGate>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
