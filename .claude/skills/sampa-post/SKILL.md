@@ -39,16 +39,19 @@ medicine who want the clinical and policy significance quickly and accurately.
    **full name with the button abbreviation in parentheses** — e.g. `Opioid Use Disorder (OUD)`
    — so it matches both the vocabulary and the chip the editor clicks. (The `slug` is the
    internal id, shown below for reference / direct-DB mode.)
-   - **Current controlled vocabulary (as of 2026-07-02)** — use this as the default. Format
+   - **Current controlled vocabulary (as of 2026-07-06)** — use this as the default. Format
      is `Name (short label) — slug`:
      - AAPA (AAPA) — `aapa`
      - Adolescents (Teens) — `adolescents`
      - Alcohol Use Disorder (AUD) — `alcohol-use-disorder`
+     - Bup Macrodose (Bup Macro) — `bup-macrodose`
      - Buprenorphine (Bup) — `buprenorphine`
      - Cannabis (Cannabis) — `cannabis`
      - Cocaine Use Disorder (CUD) — `cocaine-use-disorder`
      - DEA (DEA) — `dea`
+     - Drug-checking (Drug-checking) — `drug-checking`
      - FDA (FDA) — `fda`
+     - Fentanyl (Fentanyl) — `fentanyl`
      - Harm Reduction (Harm Rdx) — `harm-reduction`
      - HHS (HHS) — `hhs`
      - Kratom (Kratom) — `kratom`
@@ -56,7 +59,6 @@ medicine who want the clinical and policy significance quickly and accurately.
      - Kratom Dihydro-7-hydroxymitragynine (MGM-15) — `dihydro-7-hydroxymitragynine`
      - Kratom Mitragynine pseudoindoxyl (MP) — `mitragynine-pseudoindoxyl`
      - Kratom The 9-fluoro derivative of 7-OH (MGM-16) — `the-9-fluoro-derivative-of-7-oh`
-     - Kratom Use Disorder (KUD) — `kratom-use-disorder`
      - Mental Health (Mental Hlth) — `mental-health`
      - Methadone (Methadone) — `methadone`
      - Methamphetamine Use Disorder (MUD) — `methamphetamine-use-disorder`
@@ -73,6 +75,8 @@ medicine who want the clinical and policy significance quickly and accurately.
      - SAMHSA (SAMHSA) — `samhsa`
      - SAMPA (SAMPA) — `sampa`
      - Stimulant Use Disorder (StUD) — `stimulant-use-disorder`
+     - Street Medicine (Street Medicine) — `street-medicine`
+     - Unstable housing (Unhoused) — `unstable-housing`
    - This list can drift as admins add/remove keywords. **If the user provides a fresher
      list, use theirs instead of this one.** To refresh it, run
      `select name, short_label, slug from tags order by name;` in the Supabase SQL editor
@@ -106,15 +110,18 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
 - **Slug** — Lowercase kebab-case, 3-6 words, hyphen-separated, descriptive; add the year
   (and month) when possible. Example: `xr-buprenorphine-pregnancy-trial-2026-02`. Must be unique.
 - **Excerpt** — One to two sentences (~25-45 words) for the news list.
-- **Source citation** — three values for the editor's **"Original source"** box. They are
-  stored on the post (`source_name`, `source_url`, `source_published_at`) and power the
-  copyable per-Key-Point citation and the source line shown under the article title, so
-  get them right:
+- **Source citation** — three values that map one-to-one to the editor's **"Original source"**
+  box (stored on the post as `source_name`, `source_url`, `source_published_at`). They power the
+  copyable per-Key-Point citation and the source line under the article title. **Fill all three
+  in whenever the post covers an external source; leave them blank for original SAMPA content.**
+  Get them right:
   - **Source name** — the journal or outlet, e.g. `JAMA Psychiatry`, `AP News`.
-  - **Source URL** — the canonical link to the original; for academic sources prefer the
-    DOI URL (`https://doi.org/...`).
-  - **Source date** — the ORIGINAL publication date in `YYYY-MM-DD` (not the date the
-    SAMPA post goes up). Never guess: omit it if the source doesn't state it.
+  - **Source URL** — the canonical link to the original, as a full `http(s)://` URL (the editor
+    rejects anything that doesn't start with `http://` or `https://`); for academic sources
+    prefer the DOI URL (`https://doi.org/...`).
+  - **Source date** — the ORIGINAL publication date as `YYYY-MM-DD` (the editor field is a
+    native date-picker), NOT the date the SAMPA post goes up. Never guess: omit it if the
+    source doesn't state it.
 - **Body (HTML)** — ~250-500 words as **clean HTML**, because the site stores `body_html`
   from a TipTap editor. Use ONLY these HTML elements (the editor supports nothing else),
   written with normal angle-bracket tags in your output: paragraph (p), headings h2 and h3,
