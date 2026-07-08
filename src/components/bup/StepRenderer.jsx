@@ -89,8 +89,11 @@ function ChecklistBlock({ step }) {
 }
 
 function TableBlock({ step }) {
+  // `bare` renders without the card wrapper — for tables nested inside
+  // another card (ramp picker, full-agonist alternatives).
+  const Wrapper = step.bare ? 'div' : 'section';
   return (
-    <section className="bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7">
+    <Wrapper className={step.bare ? '' : 'bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7'}>
       {step.title && <h3 className="font-bold text-lg mb-3">{step.title}</h3>}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -117,7 +120,7 @@ function TableBlock({ step }) {
         </table>
       </div>
       {step.footnote && <p className="text-xs text-text/50 mt-3">{step.footnote}</p>}
-    </section>
+    </Wrapper>
   );
 }
 
