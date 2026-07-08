@@ -4,8 +4,23 @@
 // characters already in the content (≥, –).
 import { TOOL } from './meta';
 import { protocolBySlug } from './protocols';
+import { cowsBand } from './cows';
 
 const DISCLAIMER_LINE = 'Decision support only — does not replace clinical judgment.';
+
+// Compact timestamped COWS series (recorded via the calculator this tab)
+// appended to the main summaries when scores exist. The calculator's own
+// copy button uses the fuller cowsSeriesText (series + itemized latest).
+function cowsSeriesLines(cowsEntries) {
+  if (!cowsEntries?.length) return [];
+  const lines = ['', 'COWS SCORES'];
+  cowsEntries.forEach((entry, i) => {
+    lines.push(
+      `${i + 1}. ${new Date(entry.takenAt).toLocaleString()} — COWS ${entry.total} (${cowsBand(entry.total).label.toLowerCase()}) — ${entry.objectiveCount} objective sign${entry.objectiveCount === 1 ? '' : 's'}`
+    );
+  });
+  return lines;
+}
 
 function headerLines(now) {
   return [
@@ -19,7 +34,7 @@ function sourceLine(protocol) {
 }
 
 // result = evaluateChooser() output ({ path, outcome }).
-export function chooserSummaryText(result, now = new Date()) {
+export function chooserSummaryText(result, now = new Date(), cowsEntries = []) {
   const { path, outcome } = result;
   const lines = [...headerLines(now), '', 'INPUTS'];
   path.forEach((entry) => lines.push(`- ${entry.prompt} ${entry.label}`));
@@ -45,12 +60,13 @@ export function chooserSummaryText(result, now = new Date()) {
     }
   }
 
+  lines.push(...cowsSeriesLines(cowsEntries));
   lines.push('', TOOL.methadoneNote, '', DISCLAIMER_LINE);
   return lines.join('\n');
 }
 
 // result = evaluateSequence() output over protocol.flow.
-export function protocolSummaryText(protocol, result, now = new Date()) {
+export function protocolSummaryText(protocol, result, now = new Date(), cowsEntries = []) {
   const lines = [...headerLines(now), '', `PROTOCOL: ${protocol.title}`, ''];
 
   result.path.forEach((entry) => {
@@ -67,6 +83,7 @@ export function protocolSummaryText(protocol, result, now = new Date()) {
     }
   });
 
+  lines.push(...cowsSeriesLines(cowsEntries));
   lines.push('', TOOL.methadoneNote, '', DISCLAIMER_LINE, sourceLine(protocol));
   return lines.join('\n');
 }

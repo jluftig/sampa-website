@@ -690,7 +690,7 @@ create table if not exists public.tool_events (
   tool_version text not null check (char_length(tool_version) <= 20),
   session_id uuid not null,
   event text not null check (event in
-    ('terms_accepted','outcome_reached','protocol_viewed','summary_copied','summary_printed')),
+    ('terms_accepted','outcome_reached','protocol_viewed','summary_copied','summary_printed','cows_scored')),
   outcome_key text check (char_length(outcome_key) <= 60),
   answers jsonb check (pg_column_size(answers) <= 4096),
   environment text check (environment in ('production','preview','development')),

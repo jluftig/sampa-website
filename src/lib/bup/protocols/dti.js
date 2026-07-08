@@ -54,6 +54,7 @@ export const DTI = {
 
       q_cows: {
         kind: 'question',
+        cowsHint: true,
         prompt: 'COWS ≥ 4 AND last opioid use > 6 hours ago?',
         options: [
           { value: 'yes', label: 'Yes — both', next: 'dose24' },

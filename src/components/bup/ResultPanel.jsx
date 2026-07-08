@@ -4,16 +4,18 @@ import { chooserSummaryText } from '../../lib/bup/summary';
 import OutcomeCard from './OutcomeCard';
 import CopySummaryButton from './CopySummaryButton';
 import PrintButton from './PrintButton';
+import { useCows } from './CowsContext';
 
 function PanelBody({ result }) {
   const { path, outcome } = result;
+  const { entries: cowsEntries } = useCows();
 
   if (outcome) {
     return (
       <div>
         <OutcomeCard outcome={outcome} />
         <div className="flex flex-wrap gap-3 mt-4">
-          <CopySummaryButton getText={() => chooserSummaryText(result)} />
+          <CopySummaryButton getText={() => chooserSummaryText(result, new Date(), cowsEntries)} />
           <PrintButton label="Print summary" />
         </div>
       </div>

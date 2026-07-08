@@ -98,7 +98,10 @@ src/
                             decision tree, 9 stable outcomeKeys), summary.js (plain-text EHR/copy formatters),
                             consent.js (disclaimer acceptance, localStorage), protocols/ (one content module per
                             protocol w/ {version, source:{title, revised, url}} — a protocol revision is a data
-                            edit + version bump, never a JSX change; doses transcribed from the CA Bridge PDFs)
+                            edit + version bump, never a JSX change; doses transcribed from the CA Bridge PDFs),
+                            cows.js (Wesson & Ling scale — per-answer `objective: true` flags mark the grades
+                            counting toward the "≥ 2 objective signs" condition, SAMPA-reviewed, tune in data) +
+                            cowsSession.js (per-tab recorded score series, sessionStorage)
   components/
     RequireEditor.jsx       route guard; prop adminOnly restricts to admins
     RequireAuth.jsx         route guard: any signed-in user (member area)
@@ -151,8 +154,11 @@ Point), `/keywords`, `/keywords/:slug` (`?and=slug2,slug3` = keyword intersectio
 `/search?q=`, `/login`, `/join`, `/donate` (public donation page — no sign-in required),
 `/privacy`, `/terms` (static legal pages, LegalPage shell), `/tools` (→ `/tools/bup`),
 `/tools/bup/*` (bup dosing tool — one lazy chunk owning a nested route subtree: chooser
-at index + `quick-start`, `low-dose`, `dti`, `od-reversal`, `self-start`; every route
-gated behind a one-time per-device clinician disclaimer; slugs are permanent).
+at index + `cows` (optional COWS calculator) + `quick-start`, `low-dose`, `dti`,
+`od-reversal`, `self-start`; every route gated behind a one-time per-device clinician
+disclaimer; slugs are permanent). COWS scores are recorded per browser tab
+(sessionStorage via CowsProvider) and surface as a floating chip + question-card hints
+across the tool; never auto-answers the chooser (bands embed judgment conditions).
 Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
 Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.

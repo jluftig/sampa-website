@@ -44,6 +44,7 @@ export const CHOOSER = {
 
     cows: {
       kind: 'question',
+      cowsHint: true, // surfaces the optional COWS calculator + latest recorded score
       prompt: 'Assess withdrawal severity — COWS score?',
       options: [
         {

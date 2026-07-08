@@ -5,7 +5,10 @@ import Footer from '../../components/Footer';
 import DisclaimerGate from '../../components/bup/DisclaimerGate';
 import WarmlineBlock from '../../components/bup/WarmlineBlock';
 import AttributionBlock from '../../components/bup/AttributionBlock';
+import { CowsProvider } from '../../components/bup/CowsContext';
+import CowsChip from '../../components/bup/CowsChip';
 import BupChooser from './bup/BupChooser';
+import CowsCalculatorPage from './bup/CowsCalculatorPage';
 import QuickStartPage from './bup/QuickStartPage';
 import LowDosePage from './bup/LowDosePage';
 import DtiPage from './bup/DtiPage';
@@ -16,37 +19,42 @@ import SelfStartPage from './bup/SelfStartPage';
 // /tools/bup/*, and everything below here (pages + clinical data modules)
 // ships as one chunk so chooser → protocol taps never wait on a second fetch.
 // The shared layout puts every route — including deep links — behind the
-// one-time clinician DisclaimerGate.
+// one-time clinician DisclaimerGate. CowsProvider shares the recorded COWS
+// series (per tab) with every page; CowsChip keeps it visible while paging.
 export default function BupTool() {
   return (
-    <div className="relative min-h-screen bg-background text-text">
-      <div className="noise-overlay pointer-events-none"></div>
-      <div className="print:hidden">
-        <Navbar />
-      </div>
-
-      <main className="max-w-6xl mx-auto px-4 pt-32 pb-16">
-        <DisclaimerGate>
-          <Routes>
-            <Route index element={<BupChooser />} />
-            <Route path="quick-start" element={<QuickStartPage />} />
-            <Route path="low-dose" element={<LowDosePage />} />
-            <Route path="dti" element={<DtiPage />} />
-            <Route path="od-reversal" element={<OdReversalPage />} />
-            <Route path="self-start" element={<SelfStartPage />} />
-            <Route path="*" element={<Navigate to="/tools/bup" replace />} />
-          </Routes>
-        </DisclaimerGate>
-
-        <div className="mt-16 space-y-8 print:hidden">
-          <WarmlineBlock />
-          <AttributionBlock />
+    <CowsProvider>
+      <div className="relative min-h-screen bg-background text-text">
+        <div className="noise-overlay pointer-events-none"></div>
+        <div className="print:hidden">
+          <Navbar />
         </div>
-      </main>
 
-      <div className="print:hidden">
-        <Footer />
+        <main className="max-w-6xl mx-auto px-4 pt-32 pb-16">
+          <DisclaimerGate>
+            <Routes>
+              <Route index element={<BupChooser />} />
+              <Route path="cows" element={<CowsCalculatorPage />} />
+              <Route path="quick-start" element={<QuickStartPage />} />
+              <Route path="low-dose" element={<LowDosePage />} />
+              <Route path="dti" element={<DtiPage />} />
+              <Route path="od-reversal" element={<OdReversalPage />} />
+              <Route path="self-start" element={<SelfStartPage />} />
+              <Route path="*" element={<Navigate to="/tools/bup" replace />} />
+            </Routes>
+            <CowsChip />
+          </DisclaimerGate>
+
+          <div className="mt-16 space-y-8 print:hidden">
+            <WarmlineBlock />
+            <AttributionBlock />
+          </div>
+        </main>
+
+        <div className="print:hidden">
+          <Footer />
+        </div>
       </div>
-    </div>
+    </CowsProvider>
   );
 }

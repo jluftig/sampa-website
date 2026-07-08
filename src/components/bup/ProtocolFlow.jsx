@@ -5,6 +5,14 @@ import { protocolSummaryText } from '../../lib/bup/summary';
 import QuestionCard from './QuestionCard';
 import StepRenderer from './StepRenderer';
 import CopySummaryButton from './CopySummaryButton';
+import CowsHint from './CowsHint';
+import { useCows } from './CowsContext';
+
+// Reassess steps are natural re-scoring moments; data can also opt any step
+// in with `cowsHint: true` (e.g., DTI's COWS-band question).
+function hintFor(step) {
+  return step.kind === 'reassess' || step.cowsHint ? <CowsHint /> : undefined;
+}
 
 // Stateful runner for a protocol's step graph. Answers live in an ordered
 // sequence (protocol flows can loop — the same reassess step may be visited
@@ -14,6 +22,7 @@ import CopySummaryButton from './CopySummaryButton';
 export default function ProtocolFlow({ flow, protocol }) {
   const [answerSeq, setAnswerSeq] = useState([]);
   const result = useMemo(() => evaluateSequence(flow, answerSeq), [flow, answerSeq]);
+  const { entries: cowsEntries } = useCows();
 
   const currentStep = result.currentStepId ? flow.steps[result.currentStepId] : null;
 
@@ -27,6 +36,7 @@ export default function ProtocolFlow({ flow, protocol }) {
               key={key}
               node={entry.step}
               timing={entry.step.timing}
+              hint={hintFor(entry.step)}
               value={entry.answer}
               onAnswer={(value) =>
                 setAnswerSeq((prev) => [
@@ -44,6 +54,7 @@ export default function ProtocolFlow({ flow, protocol }) {
         <QuestionCard
           node={currentStep}
           timing={currentStep.timing}
+          hint={hintFor(currentStep)}
           value={undefined}
           onAnswer={(value) =>
             setAnswerSeq((prev) => [...prev, { stepId: result.currentStepId, value }])
@@ -54,7 +65,7 @@ export default function ProtocolFlow({ flow, protocol }) {
       {answerSeq.length > 0 && (
         <div className="flex flex-wrap items-center gap-3 print:hidden">
           {protocol && (
-            <CopySummaryButton getText={() => protocolSummaryText(protocol, result)} />
+            <CopySummaryButton getText={() => protocolSummaryText(protocol, result, new Date(), cowsEntries)} />
           )}
           <button
             type="button"

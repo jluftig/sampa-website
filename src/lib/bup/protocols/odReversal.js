@@ -54,6 +54,7 @@ export const OD_REVERSAL = {
 
       q_awake: {
         kind: 'question',
+        cowsHint: true,
         prompt: 'Is the patient awake with signs of opioid withdrawal (i.e., COWS > 4)?',
         options: [
           { value: 'yes', label: 'Yes', next: 'q_agreeable' },

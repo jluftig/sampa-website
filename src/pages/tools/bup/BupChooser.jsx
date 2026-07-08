@@ -6,6 +6,7 @@ import { PROTOCOLS } from '../../../lib/bup/protocols';
 import QuestionCard from '../../../components/bup/QuestionCard';
 import ResultPanel from '../../../components/bup/ResultPanel';
 import PrintSummary from '../../../components/bup/PrintSummary';
+import CowsHint from '../../../components/bup/CowsHint';
 import { logToolEvent } from '../../../lib/toolAnalytics';
 
 export default function BupChooser() {
@@ -54,6 +55,7 @@ export default function BupChooser() {
               key={nodeId}
               step={`Q${i + 1}`}
               node={CHOOSER.nodes[nodeId]}
+              hint={CHOOSER.nodes[nodeId].cowsHint ? <CowsHint /> : undefined}
               value={answers[nodeId]}
               onAnswer={(value) => setAnswers((prev) => ({ ...prev, [nodeId]: value }))}
             />
@@ -97,6 +99,20 @@ export default function BupChooser() {
               <ArrowRight className="w-5 h-5 text-primary shrink-0" />
             </Link>
           ))}
+          <Link
+            to="/tools/bup/cows"
+            className="bg-white rounded-2xl shadow-sm border border-accent/20 p-5 flex items-center justify-between gap-4 hover:border-accent/50 transition-colors"
+          >
+            <span>
+              <span className="font-semibold text-sm md:text-base block">
+                COWS calculator <span className="text-text/50 font-normal">(optional)</span>
+              </span>
+              <span className="text-sm text-text/60">
+                Score withdrawal severity — result stays visible as you work through the tool.
+              </span>
+            </span>
+            <ArrowRight className="w-5 h-5 text-accent shrink-0" />
+          </Link>
         </div>
       </section>
     </div>
