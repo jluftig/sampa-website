@@ -1,6 +1,6 @@
+import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { formatDate, formatDateOnly } from 'sampa-shared/format';
 
@@ -9,7 +9,7 @@ import { KeyPointCard } from '@/components/key-point-card';
 import { SaveButton } from '@/components/save-button';
 import { Fonts, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { fetchPost, type KeyPoint, type PostFull, type RelatedPost } from '@/lib/content';
+import { fetchPost, type KeyPoint } from '@/lib/content';
 
 function tagsForPoint(item: KeyPoint) {
   return (item.item_tags || []).map((l) => l.tags).filter(Boolean);
@@ -20,47 +20,27 @@ export default function ArticleScreen() {
   const router = useRouter();
   const { slug } = useLocalSearchParams<{ slug: string }>();
 
-  const [post, setPost] = useState<PostFull | null>(null);
-  const [items, setItems] = useState<KeyPoint[]>([]);
-  const [related, setRelated] = useState<RelatedPost[]>([]);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'notfound' | 'error'>('loading');
+  const { data, status } = useQuery({
+    queryKey: ['post', slug],
+    queryFn: () => fetchPost(String(slug)),
+    enabled: !!slug,
+  });
+  const post = data?.post ?? null;
+  const items = data?.items ?? [];
+  const related = data?.related ?? [];
 
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      setStatus('loading');
-      try {
-        const { post, items, related } = await fetchPost(String(slug));
-        if (!active) return;
-        if (!post) {
-          setStatus('notfound');
-          return;
-        }
-        setPost(post);
-        setItems(items);
-        setRelated(related);
-        setStatus('ready');
-      } catch {
-        if (active) setStatus('error');
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, [slug]);
-
-  if (status === 'loading') {
+  if (status === 'pending') {
     return (
       <View style={[styles.center, { backgroundColor: theme.background }]}>
         <ActivityIndicator color={theme.tint} />
       </View>
     );
   }
-  if (status !== 'ready' || !post) {
+  if (status === 'error' || !post) {
     return (
       <View style={[styles.center, { backgroundColor: theme.background }]}>
         <Text style={[styles.notFound, { color: theme.text }]}>
-          {status === 'notfound' ? 'Post not found' : 'Something went wrong'}
+          {status === 'error' ? 'Something went wrong' : 'Post not found'}
         </Text>
       </View>
     );

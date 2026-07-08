@@ -1,5 +1,5 @@
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { CheckCircle2, Mail } from 'lucide-react-native';
+import { Mail, MailCheck } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
 
@@ -11,17 +11,23 @@ import { isAppleAuthAvailable } from '@/lib/auth';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Signed-out sign-in options: Apple (iOS), Google, and passwordless email link. */
+/**
+ * Signed-out sign-in options: Apple (iOS), Google, and passwordless email.
+ * Email flow: we send a 6-digit code (plus a sign-in link as fallback); the
+ * user types the code here — no reliance on tappable links, which corporate
+ * mail scanners often prefetch and invalidate.
+ */
 export function SignInCard() {
   const theme = useTheme();
   const scheme = useColorScheme();
-  const { signInWithGoogle, signInWithApple, sendEmailLink } = useAuth();
+  const { signInWithGoogle, signInWithApple, sendEmailCode, verifyEmailCode } = useAuth();
 
   const [appleAvailable, setAppleAvailable] = useState(false);
-  const [busy, setBusy] = useState<null | 'google' | 'apple' | 'email'>(null);
+  const [busy, setBusy] = useState<null | 'google' | 'apple' | 'email' | 'verify'>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -62,26 +68,70 @@ export function SignInCard() {
     }
     setBusy('email');
     try {
-      await sendEmailLink(email);
+      await sendEmailCode(email);
       setSentTo(email.trim());
+      setCode('');
     } catch (e: any) {
-      setError(e?.message ?? 'Could not send the link.');
+      setError(e?.message ?? 'Could not send the code.');
     } finally {
       setBusy(null);
     }
   };
 
+  const onVerify = async () => {
+    setError(null);
+    if (!sentTo || code.trim().length < 6) {
+      setError('Enter the 6-digit code from the email.');
+      return;
+    }
+    setBusy('verify');
+    try {
+      await verifyEmailCode(sentTo, code);
+      // Success → onAuthStateChange flips the app to signed-in.
+    } catch (e: any) {
+      setError(e?.message ?? 'That code didn’t work. Check it and try again.');
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  // Code-entry step.
   if (sentTo) {
     return (
       <View style={[styles.card, { backgroundColor: theme.backgroundElement, borderColor: theme.border }]}>
         <View style={styles.sentHeader}>
-          <CheckCircle2 color={theme.tint} size={22} />
+          <MailCheck color={theme.tint} size={22} />
           <Text style={[styles.sentTitle, { color: theme.text }]}>Check your email</Text>
         </View>
         <Text style={[styles.body, { color: theme.textSecondary }]}>
-          We sent a sign-in link to {sentTo}. Open it on this device to finish signing in.
+          We emailed a 6-digit code to {sentTo}. Enter it below (or tap the link in the email on
+          this device).
         </Text>
-        <AuthButton label="Use a different email" onPress={() => setSentTo(null)} />
+        <TextInput
+          value={code}
+          onChangeText={setCode}
+          placeholder="123456"
+          placeholderTextColor={theme.textSecondary}
+          keyboardType="number-pad"
+          inputMode="numeric"
+          maxLength={6}
+          autoFocus
+          style={[
+            styles.input,
+            styles.codeInput,
+            { color: theme.text, borderColor: theme.border, backgroundColor: theme.background },
+          ]}
+        />
+        <AuthButton label="Verify code" variant="primary" onPress={onVerify} loading={busy === 'verify'} />
+        <AuthButton
+          label="Use a different email"
+          onPress={() => {
+            setSentTo(null);
+            setCode('');
+            setError(null);
+          }}
+        />
+        {error ? <Text style={[styles.error, { color: theme.accent }]}>{error}</Text> : null}
       </View>
     );
   }
@@ -128,7 +178,7 @@ export function SignInCard() {
             ]}
           />
           <AuthButton
-            label="Email me a sign-in link"
+            label="Email me a sign-in code"
             variant="primary"
             onPress={onSendEmail}
             loading={busy === 'email'}
@@ -159,6 +209,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sans,
     fontSize: 16,
   },
+  codeInput: { fontFamily: Fonts.mono, fontSize: 22, letterSpacing: 8, textAlign: 'center' },
   sentHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
   sentTitle: { fontFamily: Fonts.semibold, fontSize: 18 },
   body: { fontFamily: Fonts.sans, fontSize: 15, lineHeight: 22 },

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PostCard } from '@/components/post-card';
@@ -7,30 +7,14 @@ import { SearchTrigger } from '@/components/search-bar';
 import { Wordmark } from '@/components/wordmark';
 import { Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { fetchPublishedPosts, type PostSummary } from '@/lib/content';
+import { fetchPublishedPosts } from '@/lib/content';
 
 export default function NewsScreen() {
   const theme = useTheme();
-  const [posts, setPosts] = useState<PostSummary[]>([]);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const data = await fetchPublishedPosts();
-        if (active) {
-          setPosts(data);
-          setStatus('ready');
-        }
-      } catch {
-        if (active) setStatus('error');
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: posts = [], status, refetch, isRefetching } = useQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPublishedPosts,
+  });
 
   return (
     <View style={[styles.fill, { backgroundColor: theme.background }]}>
@@ -41,6 +25,9 @@ export default function NewsScreen() {
           renderItem={({ item }) => <PostCard post={item} />}
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.tint} />
+          }
           ListHeaderComponent={
             <View style={styles.header}>
               <Wordmark size={20} />
@@ -49,11 +36,11 @@ export default function NewsScreen() {
             </View>
           }
           ListEmptyComponent={
-            status === 'loading' ? (
+            status === 'pending' ? (
               <ActivityIndicator color={theme.tint} style={{ marginTop: Spacing.five }} />
             ) : status === 'error' ? (
               <Text style={[styles.muted, { color: theme.textSecondary }]}>
-                Couldn’t load the news. Please try again later.
+                Couldn’t load the news. Pull down to try again.
               </Text>
             ) : (
               <Text style={[styles.muted, { color: theme.textSecondary }]}>

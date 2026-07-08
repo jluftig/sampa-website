@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { useCallback } from 'react';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AuthButton } from '@/components/auth-button';
@@ -9,38 +10,33 @@ import { Wordmark } from '@/components/wordmark';
 import { Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/lib/AuthContext';
-import { fetchPostsByIds, type PostSummary } from '@/lib/content';
-import { supabase } from '@/lib/supabaseClient';
+import { fetchPostsByIds } from '@/lib/content';
+import { useFavorites } from '@/lib/favorites';
 
 export default function SavedScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { user } = useAuth();
-  const userId = user?.id ?? null;
+  const { favoriteIds, ready, refresh } = useFavorites();
 
-  const [posts, setPosts] = useState<PostSummary[]>([]);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-
-  // Reload saved posts every time the tab is focused, so a save/unsave made in
-  // an article (or on the website) is reflected here.
-  const load = useCallback(async () => {
-    if (!userId) return;
-    setStatus('loading');
-    try {
-      const { data } = await supabase.from('favorites').select('post_id').eq('user_id', userId);
-      const ids = (data || []).map((r: any) => r.post_id);
-      setPosts(await fetchPostsByIds(ids));
-      setStatus('ready');
-    } catch {
-      setStatus('error');
-    }
-  }, [userId]);
+  // Sorted ids in the key → saving/unsaving anywhere in the app updates this
+  // screen reactively; `refresh()` on focus picks up website-side changes too.
+  const ids = [...favoriteIds].sort();
+  const { data: posts = [], status, refetch, isRefetching } = useQuery({
+    queryKey: ['saved-posts', ids],
+    queryFn: () => fetchPostsByIds(ids),
+    enabled: !!user && ready,
+  });
 
   useFocusEffect(
     useCallback(() => {
-      if (userId) load();
-    }, [userId, load])
+      if (user) refresh();
+    }, [user, refresh])
   );
+
+  const onPullRefresh = useCallback(async () => {
+    await Promise.all([refresh(), refetch()]);
+  }, [refresh, refetch]);
 
   const Header = (
     <View style={styles.header}>
@@ -67,6 +63,8 @@ export default function SavedScreen() {
     );
   }
 
+  const loading = !ready || (status === 'pending' && ids.length > 0);
+
   return (
     <View style={[styles.fill, { backgroundColor: theme.background }]}>
       <SafeAreaView style={styles.fill} edges={['top', 'left', 'right']}>
@@ -76,12 +74,17 @@ export default function SavedScreen() {
           renderItem={({ item }) => <PostCard post={item} />}
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetching} onRefresh={onPullRefresh} tintColor={theme.tint} />
+          }
           ListHeaderComponent={Header}
           ListEmptyComponent={
-            status === 'loading' ? (
+            loading ? (
               <ActivityIndicator color={theme.tint} style={{ marginTop: Spacing.five }} />
             ) : status === 'error' ? (
-              <Text style={[styles.muted, { color: theme.textSecondary }]}>Couldn’t load your saved articles.</Text>
+              <Text style={[styles.muted, { color: theme.textSecondary }]}>
+                Couldn’t load your saved articles. Pull down to try again.
+              </Text>
             ) : (
               <Text style={[styles.muted, { color: theme.textSecondary }]}>
                 No saved articles yet. Tap “Save” on any article to add it here.

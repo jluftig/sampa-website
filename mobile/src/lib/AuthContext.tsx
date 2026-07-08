@@ -6,7 +6,13 @@
 import * as Linking from 'expo-linking';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
-import { createSessionFromUrl, sendEmailLink, signInWithApple, signInWithGoogle } from './auth';
+import {
+  createSessionFromUrl,
+  sendEmailCode,
+  signInWithApple,
+  signInWithGoogle,
+  verifyEmailCode,
+} from './auth';
 import { supabase } from './supabaseClient';
 import type { Session } from '@supabase/supabase-js';
 
@@ -24,7 +30,8 @@ type AuthValue = {
   loading: boolean;
   signInWithGoogle: () => Promise<unknown>;
   signInWithApple: () => Promise<unknown>;
-  sendEmailLink: (email: string) => Promise<void>;
+  sendEmailCode: (email: string) => Promise<void>;
+  verifyEmailCode: (email: string, code: string) => Promise<unknown>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 };
@@ -112,7 +119,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading: !authReady || (!!session?.user && !profileReady),
     signInWithGoogle,
     signInWithApple,
-    sendEmailLink,
+    sendEmailCode,
+    verifyEmailCode,
     signOut,
     refreshProfile,
   };

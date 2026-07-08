@@ -54,11 +54,21 @@ the app shows the Apple button on iOS. To make it work:
 Identities auto-link by verified email, and Apple "Hide My Email" relays are harmless because
 the Stripe↔Supabase link is by user id, never email.
 
-## 5. Email magic link
+## 5. Email sign-in (6-digit code + link fallback)
 
-Works with Supabase's default email templates — the link's redirect just needs to be the
-`sampa://auth-callback` URL from step 2 (the app passes it as `emailRedirectTo`). Tapping the
-link on the same device finishes sign-in.
+The app asks users to **type a 6-digit code** from the email (more reliable on mobile than
+tappable links, which corporate mail scanners often prefetch and invalidate). The emailed
+link still works as a fallback on the same device (redirects to `sampa://auth-callback`
+from step 2).
+
+**Required template change:** Supabase → Auth → Emails → **Magic Link** template — make sure
+the body includes the code placeholder, e.g. add a line like:
+
+```
+Your sign-in code: {{ .Token }}
+```
+
+(Keep the existing `{{ .ConfirmationURL }}` link too — that's the fallback.)
 
 ---
 

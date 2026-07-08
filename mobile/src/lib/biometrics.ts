@@ -27,8 +27,20 @@ export async function getBiometricPref(): Promise<boolean> {
   return (await AsyncStorage.getItem(PREF_KEY)) === 'true';
 }
 
+// The Account toggle and the BiometricGate live in different parts of the tree;
+// a change subscription keeps the gate current the moment the toggle flips
+// (AsyncStorage alone would leave the gate stale until the next foreground).
+type PrefListener = (value: boolean) => void;
+const prefListeners = new Set<PrefListener>();
+
+export function subscribeBiometricPref(listener: PrefListener): () => void {
+  prefListeners.add(listener);
+  return () => prefListeners.delete(listener);
+}
+
 export async function setBiometricPref(value: boolean): Promise<void> {
   await AsyncStorage.setItem(PREF_KEY, value ? 'true' : 'false');
+  prefListeners.forEach((fn) => fn(value));
 }
 
 /** Prompt for biometric auth. Returns true on success. */

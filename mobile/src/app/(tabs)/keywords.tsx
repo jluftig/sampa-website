@@ -1,50 +1,41 @@
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SearchTrigger } from '@/components/search-bar';
 import { Wordmark } from '@/components/wordmark';
 import { Fonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { fetchKeywordCounts, type KeywordCount } from '@/lib/content';
+import { fetchKeywordCounts } from '@/lib/content';
 
 export default function KeywordsScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const [tags, setTags] = useState<KeywordCount[]>([]);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const data = await fetchKeywordCounts();
-        if (active) {
-          setTags(data);
-          setStatus('ready');
-        }
-      } catch {
-        if (active) setStatus('error');
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data: tags = [], status, refetch, isRefetching } = useQuery({
+    queryKey: ['keywords'],
+    queryFn: fetchKeywordCounts,
+  });
 
   return (
     <View style={[styles.fill, { backgroundColor: theme.background }]}>
       <SafeAreaView style={styles.fill} edges={['top', 'left', 'right']}>
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.tint} />
+          }>
           <Wordmark size={20} />
           <Text style={[styles.title, { color: theme.text }]}>Keywords</Text>
           <SearchTrigger placeholder="Search all news and key points…" />
 
-          {status === 'loading' ? (
+          {status === 'pending' ? (
             <ActivityIndicator color={theme.tint} style={{ marginTop: Spacing.five }} />
           ) : status === 'error' ? (
-            <Text style={[styles.muted, { color: theme.textSecondary }]}>Couldn’t load keywords.</Text>
+            <Text style={[styles.muted, { color: theme.textSecondary }]}>
+              Couldn’t load keywords. Pull down to try again.
+            </Text>
           ) : tags.length === 0 ? (
             <Text style={[styles.muted, { color: theme.textSecondary }]}>
               Keywords appear once posts with key points are published.

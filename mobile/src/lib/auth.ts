@@ -90,13 +90,30 @@ export async function signInWithGoogle() {
   return null; // user dismissed / cancelled
 }
 
-/** Send a passwordless email link. Tapping it deep-links back into the app (handled in AuthContext). */
-export async function sendEmailLink(email: string) {
+/**
+ * Send a passwordless sign-in email. The email carries BOTH a 6-digit code (the
+ * primary mobile path — immune to corporate link-scanners that prefetch and burn
+ * one-tap links; requires `{{ .Token }}` in the Supabase Magic Link template, see
+ * docs/mobile-app-setup.md) and a link that deep-links back into the app
+ * (handled in AuthContext) as a fallback.
+ */
+export async function sendEmailCode(email: string) {
   const { error } = await supabase.auth.signInWithOtp({
     email: email.trim(),
     options: { emailRedirectTo: getRedirectTo() },
   });
   if (error) throw error;
+}
+
+/** Verify the emailed 6-digit code → authenticated session. */
+export async function verifyEmailCode(email: string, code: string) {
+  const { data, error } = await supabase.auth.verifyOtp({
+    email: email.trim(),
+    token: code.trim(),
+    type: 'email',
+  });
+  if (error) throw error;
+  return data.session;
 }
 
 /** Whether Sign in with Apple is offered on this device (iOS 13+). */

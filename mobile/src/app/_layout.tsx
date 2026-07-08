@@ -18,9 +18,13 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+
 import { BiometricGate } from '@/components/biometric-gate';
 import { Colors } from '@/constants/theme';
 import { AuthProvider } from '@/lib/AuthContext';
+import { FavoritesProvider } from '@/lib/favorites';
+import { persistOptions, queryClient, useQueryFocusManager } from '@/lib/query';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,6 +55,7 @@ const NavDark = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  useQueryFocusManager();
 
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
@@ -74,17 +79,21 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? NavDark : NavLight}>
-        <BiometricGate>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="news/[slug]" options={{ headerShown: true, title: '' }} />
-            <Stack.Screen name="keywords/[slug]" options={{ headerShown: true, title: '' }} />
-            <Stack.Screen name="search" options={{ headerShown: true, title: 'Search' }} />
-          </Stack>
-        </BiometricGate>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
+        <FavoritesProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? NavDark : NavLight}>
+            <BiometricGate>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="news/[slug]" options={{ headerShown: true, title: '' }} />
+                <Stack.Screen name="keywords/[slug]" options={{ headerShown: true, title: '' }} />
+                <Stack.Screen name="search" options={{ headerShown: true, title: 'Search' }} />
+              </Stack>
+            </BiometricGate>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </FavoritesProvider>
+      </PersistQueryClientProvider>
     </AuthProvider>
   );
 }

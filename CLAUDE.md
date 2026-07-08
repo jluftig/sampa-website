@@ -119,7 +119,10 @@ supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
   migrations/               standalone per-change snippets (already folded into schema.sql)
   sample-post.sql           optional demo fixture
-docs/                       HANDOFF.md (humans), member-area-setup.md (one-time config), news-blog-plan.md
+docs/                       HANDOFF.md (humans), member-area-setup.md (one-time config), news-blog-plan.md,
+                            mobile-app-setup.md (mobile auth config + dev builds)
+mobile/                     Expo (React Native) iOS/Android app — SEPARATE build, same Supabase.
+                            See "Mobile app" section below + mobile/AGENTS.md before editing.
 vercel.json                 SPA rewrite: all non-/api paths -> /index.html; crawler UAs on
                             /news/:slug -> /api/share (per-article social previews)
 ```
@@ -291,18 +294,34 @@ profile onboarding form + saved articles), Google + magic-link login, favorites,
 Remaining config (Stripe products/prices, webhook, Vercel env vars, consent-screen publish,
 Supabase redirect allowlist) + test plan: **`docs/member-area-setup.md`**.
 
-## Future: iOS/Android apps (planned — architecture already accounts for this)
+## Mobile app (mobile/ — IN PROGRESS on feature/mobile-app, PR #22)
 
-- Mobile apps talk to the SAME Supabase project (RLS is the boundary — that's why client
-  checks stay UX-only) and the SAME `/api` endpoints (JWT auth via `Authorization: Bearer`,
-  no cookies — deliberately mobile-friendly).
+Standalone Expo (React Native) iOS/Android app; NOT a webview. Separate build from the
+website (Vite/Vercel never touch `mobile/`), same Supabase project. Read `mobile/AGENTS.md`
+before editing app code. Status: Phases 0–2 built (tab shell + brand theme, auth, News/Key
+Points/keywords/search/saved) + a hardening pass; NOT yet run on a device; store launch
+phases pending.
+
+- **Shared code:** the app imports the pure-JS modules in `src/lib/` (membership.js, tags.js,
+  slug.js, format.js, usStates.js) as the npm package **`sampa-shared`** — a `file:../src/lib`
+  dependency (marker: `src/lib/package.json`, inert for the web build). npm materializes it as
+  a symlink in `mobile/node_modules`; Metro follows it (`unstable_enableSymlinks` +
+  repo-root watchFolder in `mobile/metro.config.js`). Do NOT copy these modules into the app
+  (drift — see rule 11), do NOT delete `src/lib/package.json`, and keep those modules free of
+  DOM/Vite-specific code (`window`, `import.meta.env`).
+- Mobile talks to the SAME Supabase (RLS is the boundary — client checks stay UX-only) and,
+  later, the same `/api` endpoints (JWT via `Authorization: Bearer`, no cookies).
 - **Do NOT sell memberships inside the iOS app** (Apple IAP would take 30% and forbid our
-  Stripe checkout in-app). The app reads `membership_status` from `profiles`
-  ("multiplatform services" rule) and sends people to the website to join/renew.
-- **Sign in with Apple is required** on iOS once Google login is offered there (guideline
-  4.8). Enable the Apple provider in Supabase then; identities auto-link by verified email.
-  Apple "Hide My Email" relays are harmless because Stripe↔Supabase links by user id.
-- OAuth deep-link/custom-scheme redirect config happens in Supabase when the app ships.
+  Stripe checkout in-app). The app reads `membership_status` from `profiles` and sends
+  people to the website to join/renew (system browser).
+- **Sign in with Apple is required** on iOS alongside Google (guideline 4.8) — built;
+  identities auto-link by verified email. "Hide My Email" relays are harmless because
+  Stripe↔Supabase links by user id. Deep-link scheme `sampa://`; auth flows are PKCE.
+- **Public reads in the app must filter `status='published'` explicitly** (same rule 2 as
+  the website) — `mobile/src/lib/content.ts` mirrors the web queries/RPCs.
+- Store-readiness gotcha: App Store guideline 5.1.1(v) requires **in-app account deletion**
+  (planned Phase 3; needs a service-role `/api` endpoint).
+- One-time auth/dashboard config + dev-build instructions: `docs/mobile-app-setup.md`.
 
 ### Extension checklist
 - Any new user-writable table/column: add RLS + extend `guard_profile_role` (or equivalent)

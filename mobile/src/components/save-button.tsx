@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/lib/AuthContext';
-import { useFavorites } from '@/lib/useFavorites';
+import { useFavorites } from '@/lib/favorites';
 
 /**
  * Save-for-later toggle. Signed-out readers are sent to the Account tab to sign
