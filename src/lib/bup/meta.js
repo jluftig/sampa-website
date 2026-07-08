@@ -28,6 +28,13 @@ export const TOOL = {
       'Clinical algorithms adapted from CA Bridge / Bridge Center (Public Health Institute) protocols. CC BY-NC-ND 4.0. Attribution and permission language pending confirmation with CA Bridge.',
   },
 
+  // Standing clinical guardrail shown on every recommendation and protocol
+  // screen. The approved decision tree deliberately does not branch on
+  // methadone — there is no acute-care methadone→bup transition pathway;
+  // transitions are planned outpatient with the patient's methadone program.
+  methadoneNote:
+    'On methadone maintenance? Continue methadone — do not transition to bup in acute care. Methadone→bup transitions are planned outpatient with the patient’s methadone program.',
+
   // One-time acceptance gate shown before any tool content (per device).
   disclaimer: {
     badge: 'For clinicians',
