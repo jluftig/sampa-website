@@ -2,18 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, RotateCcw } from 'lucide-react';
 import { CHOOSER, evaluateChooser } from '../../../lib/bup/chooser';
+import { PROTOCOLS } from '../../../lib/bup/protocols';
 import QuestionCard from '../../../components/bup/QuestionCard';
 import ResultPanel from '../../../components/bup/ResultPanel';
-
-// Direct access for clinicians who already know their protocol — the chooser
-// is never a required detour. (Slugs are permanent identifiers.)
-const PROTOCOL_LINKS = [
-  { to: '/tools/bup/quick-start', label: 'Buprenorphine (Bup) Quick Start' },
-  { to: '/tools/bup/low-dose', label: 'Bup Low Dose with Opioid Continuation (Inpatient)' },
-  { to: '/tools/bup/dti', label: 'Direct-to-Inject (DTI) Buprenorphine' },
-  { to: '/tools/bup/od-reversal', label: 'Starting Bup After Opioid Overdose Reversal' },
-  { to: '/tools/bup/self-start', label: 'Buprenorphine Self-Start (Patient Handout)' },
-];
 
 export default function BupChooser() {
   const [answers, setAnswers] = useState({});
@@ -73,13 +64,19 @@ export default function BupChooser() {
           Know which protocol you need?
         </h2>
         <div className="grid gap-4">
-          {PROTOCOL_LINKS.map((p) => (
+          {PROTOCOLS.map((p) => (
             <Link
-              key={p.to}
-              to={p.to}
+              key={p.slug}
+              to={`/tools/bup/${p.slug}`}
               className="bg-white rounded-2xl shadow-sm border border-primary/10 p-5 flex items-center justify-between gap-4 hover:border-primary/40 transition-colors"
             >
-              <span className="font-semibold text-sm md:text-base">{p.label}</span>
+              <span>
+                <span className="font-semibold text-sm md:text-base block">
+                  {p.title}
+                  {p.patientFacing && <span className="text-text/50 font-normal"> (patient handout)</span>}
+                </span>
+                <span className="text-sm text-text/60">{p.blurb}</span>
+              </span>
               <ArrowRight className="w-5 h-5 text-primary shrink-0" />
             </Link>
           ))}
