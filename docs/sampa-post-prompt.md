@@ -46,9 +46,11 @@ Everything you create is a **draft** — a human still reviews and hits Publish 
 > 3. **Excerpt** — one or two sentences (~25–45 words) summarizing the post for the news list.
 > 4. **Article body** — about 250–500 words. Open with what happened and why it matters to
 >    addiction-medicine PAs. Use short paragraphs; use a heading or two only if it's long enough to need
->    them; use a bullet list for findings; end with a final line that says "Source:" followed by the article
->    link. For academic articles, use AMA-style citations and include the DOI. **Put any directly quoted
->    words in italics** (keep the quotation marks). **Show this body as normal formatted text — real bold,
+>    them; use a bullet list for findings; end with a final line starting with "Source:". For academic
+>    articles, write the full AMA-style citation as plain text and make **only the DOI** at the very end a
+>    clickable link (linking to `https://doi.org/<doi>`) — do NOT turn the whole citation into one big
+>    link. For non-academic sources (news, press releases), link just the article title or publication
+>    name, not the entire line. **Put any directly quoted words in italics** (keep the quotation marks). **Show this body as normal formatted text — real bold,
 >    headings, bullets, and a clickable link — NOT as code and NOT with any angle-bracket tags visible.**
 > 5. **Key Points** — exactly **2 or 3** of them. Each must be a single standalone sentence that makes sense
 >    on its own in a keyword search (name the actual subject — never "this study"). After each Key Point,

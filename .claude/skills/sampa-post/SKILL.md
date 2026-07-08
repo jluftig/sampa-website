@@ -128,9 +128,11 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
   bold (strong), italic (em), unordered and ordered lists (ul, ol, li), blockquote, and
   links (an "a" element with an href). Open with what happened and why it matters to
   addiction-medicine PAs. Use h2/h3 only if long enough to warrant them; lists for findings;
-  at most one blockquote. End with a paragraph reading "Source:" followed by a link to the
-  original article. For academic sources, use AMA-style citations and include the DOI (as the
-  source link). No markdown, no other elements.
+  at most one blockquote. End with a paragraph starting with "Source:". For academic sources,
+  write the full AMA-style citation as plain text and hyperlink ONLY the DOI at the end — wrap
+  just the DOI (e.g. `doi:10.1001/jamanetworkopen.2026.18698`) in the `<a href="https://doi.org/<doi>">`,
+  NOT the whole citation. For non-academic sources (news, press releases), link only the article
+  title or publication name, not the entire line. No markdown, no other elements.
   - **Italicize quotes:** wrap any directly quoted text (inside quotation marks) in `<em>`,
     keeping the quote marks — e.g. `<em>"...put American lives at risk"</em>`.
 - **Key Points** — **only 2-3 items** (high-quality, not exhaustive). Each a **standalone
