@@ -54,13 +54,15 @@ export default function Donate() {
       <main className="max-w-2xl mx-auto px-4 pt-32 pb-24">
         <header className="text-center mb-10">
           <div className="inline-block px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-accent text-xs font-semibold mb-6 font-data uppercase tracking-wider">
-            Support SAMPA
+            Support better care
           </div>
-          <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Make a donation</h1>
+          <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">
+            Better care for substance use disorder
+          </h1>
           <p className="text-lg text-text/70">
-            Your gift funds SAMPA's mission to advance addiction medicine for
-            Physician Associates nationwide — education, advocacy, and a growing
-            professional community.
+            Your gift helps physician associates deliver evidence-based, compassionate
+            care to people with substance use disorder — expanding access to treatment
+            and improving health outcomes in communities across the country.
           </p>
         </header>
 
@@ -69,9 +71,10 @@ export default function Donate() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-6">
               <Heart className="w-8 h-8 fill-primary/20" />
             </div>
-            <h2 className="text-2xl font-bold mb-3">Thank you for your gift! 💛</h2>
+            <h2 className="text-2xl font-bold mb-3">Thank you for supporting better care 💛</h2>
             <p className="text-text/70 text-sm mb-6">
-              Your donation went through and a receipt is on its way by email.
+              Your gift helps physician associates expand access to treatment for people
+              with substance use disorder. A receipt is on its way by email.
               {user ? (
                 <> You can see your giving history on your{' '}
                   <Link to="/dashboard" className="text-primary font-semibold hover:underline">dashboard</Link>.</>
