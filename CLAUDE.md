@@ -90,6 +90,15 @@ src/
     format.js               formatDate(), formatDateOnly() (date-only, no TZ off-by-one)
     cite.js                 postUrl()/pointUrl() (permanent share URLs) + pointCitation() (copyable citation)
     share.js                copyText(), canNativeShare(), shareOrCopy() (Web Share API w/ clipboard fallback)
+    toolAnalytics.js        logToolEvent() — anonymous fire-and-forget inserts to tool_events; must never break the tool
+    bup/                    BUP DOSING TOOL clinical layer — PURE JS, zero React imports (future mobile reuse):
+                            meta.js (tool version, warmline, disclaimer copy, ATTRIBUTION PLACEHOLDER pending
+                            CA Bridge permission), flow.js (evaluateFlow DAG walker for the chooser +
+                            evaluateSequence ordered walker for loopable protocol flows), chooser.js (approved
+                            decision tree, 9 stable outcomeKeys), summary.js (plain-text EHR/copy formatters),
+                            consent.js (disclaimer acceptance, localStorage), protocols/ (one content module per
+                            protocol w/ {version, source:{title, revised, url}} — a protocol revision is a data
+                            edit + version bump, never a JSX change; doses transcribed from the CA Bridge PDFs)
   components/
     RequireEditor.jsx       route guard; prop adminOnly restricts to admins
     RequireAuth.jsx         route guard: any signed-in user (member area)
@@ -100,6 +109,9 @@ src/
     KeyPointActions.jsx     copy-citation / copy-link / native-share row on a Key Point card
     SearchBox.jsx           small form that routes to /search?q=…
     PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx Membership.jsx
+    bup/                    dosing-tool UI: DisclaimerGate, QuestionCard, ResultPanel (sticky/bottom-bar),
+                            OutcomeCard (dual variant), ProtocolShell, ProtocolFlow, StepRenderer (dose/alert/
+                            note/checklist/table), PrintSummary, CopySummaryButton, PrintButton, Warmline/Attribution blocks
   pages/
     Home.jsx                marketing homepage (was App) + NewsTeaser + Membership section
     News.jsx                /news — published post list + search box
@@ -121,6 +133,8 @@ src/
     AdminPeople.jsx         /editor/people (adminOnly) — checkbox permissions per person
     AdminMembers.jsx        /editor/members (RequireMemberViewer) — roster, pledge tracker, counts, CSV
     NotFound.jsx            catch-all 404
+    tools/BupTool.jsx       /tools/bup/* lazy entry: nested Routes + layout + DisclaimerGate
+    tools/bup/              BupChooser.jsx + one thin page per protocol (compose shell + data module)
 supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
   migrations/               standalone per-change snippets (already folded into schema.sql)
@@ -135,7 +149,10 @@ vercel.json                 SPA rewrite: all non-/api paths -> /index.html; craw
 Public: `/`, `/news`, `/news/:slug` (`#point-<item id>` deep-links/highlights one Key
 Point), `/keywords`, `/keywords/:slug` (`?and=slug2,slug3` = keyword intersection),
 `/search?q=`, `/login`, `/join`, `/donate` (public donation page — no sign-in required),
-`/privacy`, `/terms` (static legal pages, LegalPage shell).
+`/privacy`, `/terms` (static legal pages, LegalPage shell), `/tools` (→ `/tools/bup`),
+`/tools/bup/*` (bup dosing tool — one lazy chunk owning a nested route subtree: chooser
+at index + `quick-start`, `low-dose`, `dti`, `od-reversal`, `self-start`; every route
+gated behind a one-time per-device clinician disclaimer; slugs are permanent).
 Member (RequireAuth — any signed-in user): `/dashboard`.
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
 Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.
@@ -184,6 +201,11 @@ redirect to `/login?next=...` so users return where they were headed.
   (recurring cycles), stripe_payment_intent_id, created_at`. Webhook-written ONLY (no client
   write policy). SELECT: own rows OR is_member_viewer()/is_admin(). Unique on session_id and
   invoice_id → webhook retries are idempotent.
+- `tool_events` — anonymous bup-tool usage analytics. Append-only, NO PII by design:
+  `session_id` is a random per-visit uuid (sessionStorage), never a user id; columns are
+  length/enum-constrained, no free text. INSERT: anon+authenticated with RLS check
+  `tool = 'bup'`; SELECT: `is_admin()` only; no UPDATE/DELETE policies. `environment`
+  column ('production'|'preview'|'development') disambiguates test rows in the shared DB.
 - **RPCs** (SECURITY INVOKER + explicit `status='published'` filter; shared by web and
   future mobile apps — put cross-client read logic here, not in React):
   `search_key_points(q)`, `search_posts(q)` (websearch_to_tsquery + ts_rank),
@@ -280,6 +302,15 @@ DOMPurify-sanitized and only editor-writable.
 16. **Social previews:** `vercel.json` rewrites crawler user-agents on `/news/:slug` to
     `api/share.js` (OG meta). New public content types that get shared need the same
     treatment; browsers must NEVER be routed there (bot UA list only).
+17. **Bup dosing tool — clinical guardrails are FIRM** (docs/bup-dosing-tool-brief.md):
+    Low Dose w/ Opioid Continuation is never an outpatient/discharge pathway; methadone
+    maintenance patients continue methadone (no methadone→bup pathway anywhere); the word
+    "precipitously" must never appear (say "imminent discharge" — grep dist/ before deploy).
+    Clinical content lives ONLY in `src/lib/bup/` data modules (pure JS, versioned; doses
+    transcribed from the CA Bridge PDFs — re-verify against the PDFs when revising).
+    **LAUNCH HOLD:** source content is CC BY-NC-ND (CA Bridge / Public Health Institute);
+    do not merge the tool to main until Josh confirms permission and the final attribution
+    wording is set in `src/lib/bup/meta.js` (`TOOL.attribution` — the only place it lives).
 
 ## Rollback & recovery
 
