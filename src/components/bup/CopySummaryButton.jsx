@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ClipboardCopy, Check } from 'lucide-react';
 import { copyText } from '../../lib/share';
+import { logToolEvent } from '../../lib/toolAnalytics';
 
 // "Copy for EHR" button — getText is a thunk so the summary is generated at
 // click time (with the answers as they stand right then).
@@ -16,6 +17,7 @@ export default function CopySummaryButton({ getText, label = 'Copy for EHR' }) {
       onClick={async () => {
         const ok = await copyText(getText());
         if (ok) {
+          logToolEvent({ event: 'summary_copied' });
           setCopied(true);
           clearTimeout(timer.current);
           timer.current = setTimeout(() => setCopied(false), 2000);

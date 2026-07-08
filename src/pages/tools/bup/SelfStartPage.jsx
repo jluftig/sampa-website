@@ -2,6 +2,7 @@ import React from 'react';
 import { Printer, Stethoscope } from 'lucide-react';
 import { SELF_START } from '../../../lib/bup/protocols/selfStart';
 import ProtocolShell from '../../../components/bup/ProtocolShell';
+import { logToolEvent } from '../../../lib/toolAnalytics';
 
 // Patient-facing handout — plain patient language by design (the deliberate
 // exception to the tool's clinician-language rule), laid out print-first so
@@ -22,7 +23,10 @@ export default function SelfStartPage() {
 
       <button
         type="button"
-        onClick={() => window.print()}
+        onClick={() => {
+          logToolEvent({ event: 'summary_printed' });
+          window.print();
+        }}
         className="btn-magnetic bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-full text-sm font-semibold shadow-md inline-flex items-center gap-2 mb-8 print:hidden"
       >
         <Printer className="w-4 h-4" />

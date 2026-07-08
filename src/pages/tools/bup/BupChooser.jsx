@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, RotateCcw } from 'lucide-react';
 import { CHOOSER, evaluateChooser } from '../../../lib/bup/chooser';
@@ -6,10 +6,23 @@ import { PROTOCOLS } from '../../../lib/bup/protocols';
 import QuestionCard from '../../../components/bup/QuestionCard';
 import ResultPanel from '../../../components/bup/ResultPanel';
 import PrintSummary from '../../../components/bup/PrintSummary';
+import { logToolEvent } from '../../../lib/toolAnalytics';
 
 export default function BupChooser() {
   const [answers, setAnswers] = useState({});
   const result = useMemo(() => evaluateChooser(answers), [answers]);
+
+  // Which pathways clinicians actually reach — logged once per outcome per
+  // visit (rewind + re-answer to a different outcome logs the new one too).
+  useEffect(() => {
+    if (!result.outcome) return;
+    logToolEvent({
+      event: 'outcome_reached',
+      outcomeKey: result.outcome.outcomeKey,
+      answers: result.path.map(({ nodeId, value }) => ({ nodeId, value })),
+      oncePerSession: true,
+    });
+  }, [result]);
 
   // Cards shown = every answered node on the active path + the next
   // unanswered one. Changing an earlier answer rewinds automatically: the

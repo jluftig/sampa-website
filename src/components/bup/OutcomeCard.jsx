@@ -7,6 +7,7 @@ function ProtocolCta({ protocol, children }) {
   return (
     <Link
       to={`/tools/bup/${protocol}`}
+      state={{ from: 'chooser' }}
       className="btn-magnetic bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-full text-sm font-semibold shadow-md inline-flex items-center gap-2"
     >
       <span>{children}</span>

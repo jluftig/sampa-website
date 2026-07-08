@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Stethoscope } from 'lucide-react';
 import { TOOL } from '../../lib/bup/meta';
 import { hasAcceptedBupTerms, acceptBupTerms } from '../../lib/bup/consent';
+import { logToolEvent } from '../../lib/toolAnalytics';
 
 // One-time (per device) clinician disclaimer gate. Every /tools/bup* route
 // renders through this, so deep links are gated too; acceptance is a state
@@ -39,6 +40,7 @@ export default function DisclaimerGate({ children }) {
           type="button"
           onClick={() => {
             acceptBupTerms();
+            logToolEvent({ event: 'terms_accepted', oncePerSession: true });
             setAccepted(true);
           }}
           className="btn-magnetic bg-gradient-to-r from-primary to-accent text-white px-8 py-4 rounded-full font-semibold shadow-md w-full"

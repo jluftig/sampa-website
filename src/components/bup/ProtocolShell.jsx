@@ -1,7 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, ShieldAlert, ExternalLink } from 'lucide-react';
 import { TOOL } from '../../lib/bup/meta';
+import { logToolEvent } from '../../lib/toolAnalytics';
 import PrintButton from './PrintButton';
 
 // Shared frame for the five protocol pages: back link, header, optional
@@ -60,6 +61,18 @@ function InfoSection({ section }) {
 }
 
 export default function ProtocolShell({ protocol, guardrail, children }) {
+  const location = useLocation();
+
+  // Which protocols get opened, and whether via the chooser or directly
+  // (bookmark / grid). outcome_key holds the protocol slug for easy grouping.
+  useEffect(() => {
+    logToolEvent({
+      event: 'protocol_viewed',
+      outcomeKey: protocol.slug,
+      answers: { referrer: location.state?.from === 'chooser' ? 'chooser' : 'direct' },
+    });
+  }, [protocol.slug]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className="max-w-3xl mx-auto">
       <Link
