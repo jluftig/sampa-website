@@ -1,8 +1,23 @@
 import React from 'react';
-import ProtocolPlaceholder from './ProtocolPlaceholder';
+import { OD_REVERSAL } from '../../../lib/bup/protocols/odReversal';
+import ProtocolShell from '../../../components/bup/ProtocolShell';
+import ProtocolFlow from '../../../components/bup/ProtocolFlow';
+import StepRenderer from '../../../components/bup/StepRenderer';
 
 export default function OdReversalPage() {
   return (
-    <ProtocolPlaceholder title="Starting Buprenorphine Immediately After Reversal of Opioid Overdose with Naloxone" />
+    <ProtocolShell protocol={OD_REVERSAL}>
+      <ProtocolFlow flow={OD_REVERSAL.flow} />
+      <div className="mt-10">
+        <StepRenderer
+          step={{
+            kind: 'alert',
+            title: OD_REVERSAL.bePrepared.title,
+            intro: OD_REVERSAL.bePrepared.intro,
+            items: OD_REVERSAL.bePrepared.items,
+          }}
+        />
+      </div>
+    </ProtocolShell>
   );
 }
