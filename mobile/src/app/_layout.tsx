@@ -78,6 +78,9 @@ export default function RootLayout() {
         <BiometricGate>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="news/[slug]" options={{ headerShown: true, title: '' }} />
+            <Stack.Screen name="keywords/[slug]" options={{ headerShown: true, title: '' }} />
+            <Stack.Screen name="search" options={{ headerShown: true, title: 'Search' }} />
           </Stack>
         </BiometricGate>
         <StatusBar style="auto" />

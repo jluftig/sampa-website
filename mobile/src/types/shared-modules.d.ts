@@ -23,3 +23,8 @@ declare module 'sampa-shared/format' {
   export function formatDate(value: string | number | Date | null | undefined): string;
   export function formatDateOnly(value: string | number | Date | null | undefined): string;
 }
+
+declare module 'sampa-shared/tags' {
+  export type SharedTag = { id?: string; name: string; short_label: string | null; slug: string };
+  export function collectPostTags(post: any): SharedTag[];
+}
