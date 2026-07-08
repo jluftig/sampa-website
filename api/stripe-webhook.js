@@ -27,6 +27,14 @@ function willCancel(subscription) {
   return subscription.cancel_at_period_end === true || Boolean(subscription.cancel_at);
 }
 
+// Purchased term length in years, read from the price the subscription is
+// actually on (interval_count of a yearly price) — robust to portal plan
+// switches, where checkout metadata would go stale.
+function termYears(subscription) {
+  const recurring = subscription.items?.data?.[0]?.price?.recurring;
+  return recurring?.interval === 'year' ? recurring.interval_count ?? 1 : null;
+}
+
 function idOf(v) {
   return typeof v === 'string' ? v : v?.id ?? null;
 }
@@ -99,6 +107,7 @@ export async function POST(request) {
             membership_status: membershipStatus(subscription.status),
             renews_on: renewsOn(subscription),
             cancel_at_period_end: willCancel(subscription),
+            membership_years: termYears(subscription),
           };
         } else if (session.mode === 'payment' && session.metadata?.duration === 'lifetime') {
           // Lifetime membership (Legacy): one-time payment, never expires.
@@ -108,6 +117,7 @@ export async function POST(request) {
             membership_status: 'active',
             renews_on: null,
             cancel_at_period_end: false,
+            membership_years: null, // lifetime — no term
           };
         } else {
           break; // some other one-time payment (e.g. future donations) — not membership
@@ -145,6 +155,7 @@ export async function POST(request) {
           renews_on: renewsOn(subscription),
           cancel_at_period_end:
             event.type !== 'customer.subscription.deleted' && willCancel(subscription),
+          membership_years: termYears(subscription),
         };
         if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
 

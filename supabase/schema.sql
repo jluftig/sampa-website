@@ -90,6 +90,9 @@ update public.profiles set can_edit_news = true where role = 'editor' and not ca
 -- True when a member canceled but their paid term hasn't ended yet: the
 -- membership stays active and renews_on becomes the END date, not a renewal.
 alter table public.profiles add column if not exists cancel_at_period_end boolean not null default false;
+-- Purchased term length in years (1/2/3; null = lifetime or pre-term data).
+-- Webhook-written from the subscription's price interval, shown on the roster.
+alter table public.profiles add column if not exists membership_years int;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
@@ -333,6 +336,7 @@ begin
     or new.stripe_customer_id is distinct from old.stripe_customer_id
     or new.renews_on          is distinct from old.renews_on
     or new.cancel_at_period_end is distinct from old.cancel_at_period_end
+    or new.membership_years   is distinct from old.membership_years
     or new.can_edit_news      is distinct from old.can_edit_news
     or new.can_view_members   is distinct from old.can_view_members
   ) then

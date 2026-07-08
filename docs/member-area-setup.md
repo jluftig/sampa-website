@@ -99,6 +99,42 @@ active until the term they paid for runs out. Without this flag the dashboard
 would say "renews <date>" after a cancellation; with it, it says "member
 benefits end <date>".
 
+### Migration 8 — purchased term length on profiles (added 2026-07-07)
+
+The roster's Tier column now reads "Fellow, 3 yr" like the pledge table. The
+webhook stores the term from the subscription's actual price interval (robust
+to portal plan switches). Run before deploying the matching code:
+
+```sql
+alter table public.profiles add column if not exists membership_years int;
+
+create or replace function public.guard_profile_role()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is not null and not public.is_admin() and (
+       new.role               is distinct from old.role
+    or new.membership_status  is distinct from old.membership_status
+    or new.membership_tier    is distinct from old.membership_tier
+    or new.stripe_customer_id is distinct from old.stripe_customer_id
+    or new.renews_on          is distinct from old.renews_on
+    or new.cancel_at_period_end is distinct from old.cancel_at_period_end
+    or new.membership_years   is distinct from old.membership_years
+    or new.can_edit_news      is distinct from old.can_edit_news
+    or new.can_view_members   is distinct from old.can_view_members
+  ) then
+    raise exception 'Only admins can change role or membership fields';
+  end if;
+  return new;
+end; $$;
+
+select 'migration 8 applied ✓' as status;
+```
+
+Backfill note: members who paid BEFORE this change show their tier without a
+term until their next Stripe event. To fill them in immediately, resend each
+one's `checkout.session.completed` event from Stripe → Developers → Webhooks →
+recent deliveries (the updated webhook recomputes the term).
+
 ### Migration 7 — data governance: confidentiality gate + audit log (added 2026-07-07)
 
 The members page now requires click-accepting the Confidentiality & Acceptable
