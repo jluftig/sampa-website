@@ -59,9 +59,13 @@ Everything you create is a **draft** — a human still reviews and hits Publish 
 >    later.
 > 6. **Suggested new keywords** — any keywords the article clearly needed but the approved list doesn't have
 >    (write "none" if there aren't any).
-> 7. **Editor notes** — anything I should double-check before publishing, plus a one-line cover-image
->    suggestion, plus this reminder: cover images should be **16:9, about 1600×900 pixels** (the news card
->    crops to 16:9, so a 16:9 image won't get cut off; keep the main subject centered).
+> 7. **Editor notes** — anything I should double-check before publishing; a **ready-to-paste AI
+>    image-generation prompt** for the cover image (describe a specific scene from this article; if the
+>    image shows people, use a hand-drawn sketch style, otherwise a clean editorial illustration;
+>    neutral professional muted clinical palette; no text, logos, or identifiable real people; end by
+>    asking for a **16:9 widescreen** image); and this reminder: cover images should be **16:9, about
+>    1600×900 pixels** (the news card crops to 16:9, so a 16:9 image won't get cut off; keep the main
+>    subject centered).
 >
 > **Approved Keywords** — only use these. Output the **full name**; the abbreviation in parentheses is the
 > button label the editor clicks in `/editor`:
@@ -105,12 +109,14 @@ The Article box is a visual editor, so you need to paste the body **with its for
 
 ## Generating a cover image with AI (optional)
 
+The chatbot already gives you a ready-to-paste image prompt in its **Editor notes** — start with that.
 Most image generators can't output *exactly* 1600×900, so **generate at 16:9, then resize/crop** to
 1600×900:
 
 1. **Ask for a 16:9 (widescreen / landscape) image** and describe a neutral, professional subject.
    Avoid words/text in the image (AI usually garbles them), logos, and realistic depictions of
-   identifiable real people.
+   identifiable real people. **For images that include people, ask for a hand-drawn sketch style** —
+   it reads well on the card and avoids the "AI photo" look.
    - **ChatGPT / DALL·E:** say "widescreen 16:9" (it produces 1792×1024).
    - **Gemini / Imagen:** ask for "16:9 aspect ratio."
    - **Grok (xAI):** ask for a "16:9 widescreen image" in the prompt.
@@ -120,10 +126,14 @@ Most image generators can't output *exactly* 1600×900, so **generate at 16:9, t
    main subject centered so nothing important is lost.
 3. **Upload** the 1600×900 image as the cover in `/editor`.
 
-Example image prompt to adapt:
+Example image prompts to adapt:
 
-> A clean, professional 16:9 editorial illustration for a health-policy news article about **[topic]**.
-> Neutral, modern, muted clinical color palette. No text, no logos, no identifiable real people.
+> **With people —** A loose hand-drawn pen-and-ink sketch of **[scene with people from the article]**.
+> Neutral, muted clinical palette. No text, no logos, no identifiable real people. Widescreen 16:9
+> aspect ratio.
+
+> **Without people —** A clean, modern 16:9 editorial illustration of **[non-human subject from the
+> article]**. Neutral, muted clinical color palette. No text, no logos. Widescreen 16:9 aspect ratio.
 
 ---
 
