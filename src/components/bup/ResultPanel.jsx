@@ -1,11 +1,24 @@
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown, CircleDashed } from 'lucide-react';
+import { chooserSummaryText } from '../../lib/bup/summary';
 import OutcomeCard from './OutcomeCard';
+import CopySummaryButton from './CopySummaryButton';
+import PrintButton from './PrintButton';
 
 function PanelBody({ result }) {
   const { path, outcome } = result;
 
-  if (outcome) return <OutcomeCard outcome={outcome} />;
+  if (outcome) {
+    return (
+      <div>
+        <OutcomeCard outcome={outcome} />
+        <div className="flex flex-wrap gap-3 mt-4">
+          <CopySummaryButton getText={() => chooserSummaryText(result)} />
+          <PrintButton label="Print summary" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7">

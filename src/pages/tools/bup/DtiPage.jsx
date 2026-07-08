@@ -11,7 +11,7 @@ export default function DtiPage() {
 
   return (
     <ProtocolShell protocol={DTI}>
-      <ProtocolFlow flow={DTI.flow} />
+      <ProtocolFlow flow={DTI.flow} protocol={DTI} />
 
       <div className="mt-10 space-y-6">
         {/* Return precautions */}

@@ -51,3 +51,15 @@
     @apply relative z-10;
   }
 }
+
+/* Print: clean output for the bup tool's summaries and the Self-Start
+   handout. Layout chrome is hidden per-element with Tailwind's print:hidden;
+   this block covers the global overlays. */
+@media print {
+  body {
+    background: white;
+  }
+  .noise-overlay {
+    display: none;
+  }
+}

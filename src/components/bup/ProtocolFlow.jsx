@@ -1,15 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { evaluateSequence, isInteractiveStep } from '../../lib/bup/flow';
+import { protocolSummaryText } from '../../lib/bup/summary';
 import QuestionCard from './QuestionCard';
 import StepRenderer from './StepRenderer';
+import CopySummaryButton from './CopySummaryButton';
 
 // Stateful runner for a protocol's step graph. Answers live in an ordered
 // sequence (protocol flows can loop — the same reassess step may be visited
 // several times, each visit its own card). Re-answering an earlier card
 // truncates the sequence there, so everything downstream re-derives.
 // No timers, no timestamps, no persistence — nothing patient-related is stored.
-export default function ProtocolFlow({ flow }) {
+export default function ProtocolFlow({ flow, protocol }) {
   const [answerSeq, setAnswerSeq] = useState([]);
   const result = useMemo(() => evaluateSequence(flow, answerSeq), [flow, answerSeq]);
 
@@ -50,14 +52,19 @@ export default function ProtocolFlow({ flow }) {
       )}
 
       {answerSeq.length > 0 && (
-        <button
-          type="button"
-          onClick={() => setAnswerSeq([])}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-text/60 hover:text-primary transition-colors px-2 py-1"
-        >
-          <RotateCcw className="w-4 h-4" />
-          Start over
-        </button>
+        <div className="flex flex-wrap items-center gap-3 print:hidden">
+          {protocol && (
+            <CopySummaryButton getText={() => protocolSummaryText(protocol, result)} />
+          )}
+          <button
+            type="button"
+            onClick={() => setAnswerSeq([])}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-text/60 hover:text-primary transition-colors px-2 py-1"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Start over
+          </button>
+        </div>
       )}
     </div>
   );

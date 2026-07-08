@@ -7,7 +7,7 @@ import StepRenderer from '../../../components/bup/StepRenderer';
 export default function OdReversalPage() {
   return (
     <ProtocolShell protocol={OD_REVERSAL}>
-      <ProtocolFlow flow={OD_REVERSAL.flow} />
+      <ProtocolFlow flow={OD_REVERSAL.flow} protocol={OD_REVERSAL} />
       <div className="mt-10">
         <StepRenderer
           step={{

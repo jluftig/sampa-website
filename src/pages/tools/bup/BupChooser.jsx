@@ -5,6 +5,7 @@ import { CHOOSER, evaluateChooser } from '../../../lib/bup/chooser';
 import { PROTOCOLS } from '../../../lib/bup/protocols';
 import QuestionCard from '../../../components/bup/QuestionCard';
 import ResultPanel from '../../../components/bup/ResultPanel';
+import PrintSummary from '../../../components/bup/PrintSummary';
 
 export default function BupChooser() {
   const [answers, setAnswers] = useState({});
@@ -20,7 +21,10 @@ export default function BupChooser() {
 
   return (
     <div>
-      <header className="text-center mb-12 max-w-3xl mx-auto">
+      {/* What actually prints: an order-set-style summary of this session */}
+      <PrintSummary result={result} />
+
+      <header className="text-center mb-12 max-w-3xl mx-auto print:hidden">
         <div className="inline-block px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold mb-6 font-data uppercase tracking-wider">
           Clinical decision support
         </div>
@@ -30,7 +34,7 @@ export default function BupChooser() {
         <p className="text-lg text-text/70">{CHOOSER.entry}</p>
       </header>
 
-      <div className="grid lg:grid-cols-5 gap-8 items-start">
+      <div className="grid lg:grid-cols-5 gap-8 items-start print:hidden">
         <div className="lg:col-span-3 space-y-4 pb-24 lg:pb-0">
           {visibleNodeIds.map((nodeId, i) => (
             <QuestionCard
@@ -59,7 +63,7 @@ export default function BupChooser() {
         </div>
       </div>
 
-      <section className="mt-20 max-w-3xl mx-auto">
+      <section className="mt-20 max-w-3xl mx-auto print:hidden">
         <h2 className="text-2xl font-drama font-bold mb-6 text-center">
           Know which protocol you need?
         </h2>

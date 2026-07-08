@@ -6,7 +6,7 @@ import ProtocolFlow from '../../../components/bup/ProtocolFlow';
 export default function QuickStartPage() {
   return (
     <ProtocolShell protocol={QUICK_START}>
-      <ProtocolFlow flow={QUICK_START.flow} />
+      <ProtocolFlow flow={QUICK_START.flow} protocol={QUICK_START} />
     </ProtocolShell>
   );
 }

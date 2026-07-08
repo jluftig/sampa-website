@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ShieldAlert, ExternalLink } from 'lucide-react';
 import { TOOL } from '../../lib/bup/meta';
+import PrintButton from './PrintButton';
 
 // Shared frame for the five protocol pages: back link, header, optional
 // guardrail banner, eligibility card, the page's own content (flow +
@@ -77,6 +78,11 @@ export default function ProtocolShell({ protocol, guardrail, children }) {
           {protocol.title}
         </h1>
         {protocol.intro && <p className="text-text/70">{protocol.intro}</p>}
+        {!protocol.patientFacing && (
+          <div className="mt-5">
+            <PrintButton label="Print this page" />
+          </div>
+        )}
       </header>
 
       {guardrail && (
