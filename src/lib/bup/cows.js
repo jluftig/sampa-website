@@ -20,6 +20,31 @@ export const COWS = {
     citation: 'J Psychoactive Drugs. 2003;35(2):253–259',
   },
 
+  // References shown as a footnote on the calculator (MD-Calc style). The first
+  // is the COWS scale itself; the second is the validated objective scale (OOWS)
+  // that anchors which grades we mark as objective signs; the third supports
+  // grading COWS item-by-item rather than as one construct.
+  references: [
+    {
+      citation:
+        'Wesson DR, Ling W. The Clinical Opiate Withdrawal Scale (COWS). J Psychoactive Drugs. 2003;35(2):253–259.',
+      note: 'The COWS scale, severity bands, and item wording.',
+      url: 'https://pubmed.ncbi.nlm.nih.gov/12924748/',
+    },
+    {
+      citation:
+        'Handelsman L, Cochrane KJ, Aronson MJ, Ness R, Rubinstein KJ, Kanof PD. Two new rating scales for opiate withdrawal. Am J Drug Alcohol Abuse. 1987;13(3):293–308.',
+      note: 'The Objective Opiate Withdrawal Scale (OOWS) — the 13 rater-observed signs used here to decide which answer grades count as objective.',
+      url: 'https://pubmed.ncbi.nlm.nih.gov/3687892/',
+    },
+    {
+      citation:
+        'Barbosa-Leiker C, McPherson S, Mamey MR, Burns GL, Layton ME, Roll J, Ling W. Examining the factor structure of the Clinical Opiate Withdrawal Scale: a secondary data analysis from the National Drug Abuse Treatment Clinical Trials Network (CTN) 0003. Drug Alcohol Depend. 2015;152:218–223.',
+      note: 'The COWS is not unidimensional — support for grading objective vs. subjective signs item by item.',
+      url: 'https://pubmed.ncbi.nlm.nih.gov/25908321/',
+    },
+  ],
+
   // The bup tool's own branching condition (distinct from the severity bands):
   startCondition: 'The Quick Start protocols use COWS ≥ 8 with ≥ 2 objective signs as the start threshold.',
 

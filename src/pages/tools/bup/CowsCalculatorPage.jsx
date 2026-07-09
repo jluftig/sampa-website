@@ -246,10 +246,33 @@ export default function CowsCalculatorPage() {
         </button>
       </div>
 
-      <p className="font-data text-xs text-text/40 mt-12">
-        {COWS.source.title}. {COWS.source.citation}. Scale content is in the public clinical domain;
-        severity bands per the original publication.
-      </p>
+      <footer className="border-t border-primary/10 mt-12 pt-6">
+        <h2 className="font-data text-xs uppercase tracking-wider text-text/50 mb-3">
+          References &amp; evidence
+        </h2>
+        <ol className="space-y-3">
+          {COWS.references.map((ref, i) => (
+            <li key={ref.url} className="text-xs text-text/60 flex gap-2">
+              <span className="font-data text-text/40 shrink-0">{i + 1}.</span>
+              <span>
+                <a
+                  href={ref.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  {ref.citation}
+                </a>
+                {ref.note && <span className="block text-text/50 mt-0.5">{ref.note}</span>}
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="text-xs text-text/40 mt-4">
+          COWS scale content is in the public clinical domain; severity bands per the original
+          publication. Objective-sign flags are a SAMPA clinical-review judgment anchored to the OOWS.
+        </p>
+      </footer>
     </div>
   );
 }
