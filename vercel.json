@@ -1,4 +1,8 @@
 {
+  "redirects": [
+    { "source": "/store", "destination": "https://sampastore.printful.me", "permanent": false },
+    { "source": "/merch", "destination": "https://sampastore.printful.me", "permanent": false }
+  ],
   "rewrites": [
     {
       "source": "/news/:slug",
