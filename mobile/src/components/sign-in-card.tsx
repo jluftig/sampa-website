@@ -13,7 +13,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * Signed-out sign-in options: Apple (iOS), Google, and passwordless email.
- * Email flow: we send a 6-digit code (plus a sign-in link as fallback); the
+ * Email flow: we send a numeric code (length set by Supabase's email-OTP config,
+ * currently 8 digits; plus a sign-in link as fallback); the
  * user types the code here — no reliance on tappable links, which corporate
  * mail scanners often prefetch and invalidate.
  */
@@ -81,7 +82,7 @@ export function SignInCard() {
   const onVerify = async () => {
     setError(null);
     if (!sentTo || code.trim().length < 6) {
-      setError('Enter the 6-digit code from the email.');
+      setError('Enter the full code from the email.');
       return;
     }
     setBusy('verify');
@@ -104,17 +105,16 @@ export function SignInCard() {
           <Text style={[styles.sentTitle, { color: theme.text }]}>Check your email</Text>
         </View>
         <Text style={[styles.body, { color: theme.textSecondary }]}>
-          We emailed a 6-digit code to {sentTo}. Enter it below (or tap the link in the email on
+          We emailed a sign-in code to {sentTo}. Enter it below (or tap the link in the email on
           this device).
         </Text>
         <TextInput
           value={code}
           onChangeText={setCode}
-          placeholder="123456"
           placeholderTextColor={theme.textSecondary}
           keyboardType="number-pad"
           inputMode="numeric"
-          maxLength={6}
+          maxLength={10}
           autoFocus
           style={[
             styles.input,

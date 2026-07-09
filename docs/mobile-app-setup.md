@@ -54,21 +54,29 @@ the app shows the Apple button on iOS. To make it work:
 Identities auto-link by verified email, and Apple "Hide My Email" relays are harmless because
 the Stripe↔Supabase link is by user id, never email.
 
-## 5. Email sign-in (6-digit code + link fallback)
+## 5. Email sign-in (numeric code + link fallback) — ✅ CONFIGURED 2026-07-09
 
-The app asks users to **type a 6-digit code** from the email (more reliable on mobile than
-tappable links, which corporate mail scanners often prefetch and invalidate). The emailed
-link still works as a fallback on the same device (redirects to `sampa://auth-callback`
-from step 2).
+The app asks users to **type the numeric code** from the email (more reliable on mobile than
+tappable links, which corporate mail scanners often prefetch and invalidate). This project's
+Supabase email-OTP length is **8 digits** (the app accepts 6–10). The emailed link still works
+as a fallback on the same device (redirects to `sampa://auth-callback` from step 2).
 
-**Required template change:** Supabase → Auth → Emails → **Magic Link** template — make sure
-the body includes the code placeholder, e.g. add a line like:
+This is live and end-to-end verified (simulator, real account). How it was configured:
 
-```
-Your sign-in code: {{ .Token }}
-```
+- **Supabase templates require custom SMTP** (the built-in email service is default-templates
+  only and rate-limited to a few emails/hour — development only).
+- SMTP rides **Brevo** (SAMPA's likely member-email platform): domain `addictionpas.org`
+  authenticated in Brevo (DKIM CNAMEs `brevo1/brevo2._domainkey`, `brevo-code` TXT, and
+  `_dmarc` TXT — all at Porkbun DNS). Sender: **no-reply@addictionpas.org / SAMPA**.
+- Supabase → Auth → Emails → SMTP: host `smtp-relay.brevo.com`, port 587, username = the
+  Brevo SMTP login, password = a Brevo SMTP key named `supabase-auth` (no expiry).
+- The **Magic Link** template body includes: `<p>Your sign-in code: <strong>{{ .Token }}</strong></p>`
+  plus the original `{{ .ConfirmationURL }}` link as fallback.
 
-(Keep the existing `{{ .ConfirmationURL }}` link too — that's the fallback.)
+⚠️ **Gotcha to remember:** Brevo revokes SMTP keys after **90 days of inactivity** regardless
+of expiry. If sign-in emails ever mysteriously stop, first move: generate a new SMTP key in
+Brevo and paste it into the Supabase SMTP settings. Custom SMTP raised the auth-email rate
+limit to 30/hour (Supabase → Auth → Rate Limits to raise further at launch).
 
 ---
 
