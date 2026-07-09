@@ -4,7 +4,7 @@ _A plain-English guide to how the SAMPA website and its News/blog system are bui
 who runs what, how to do everyday tasks, and where it's all heading. If you're taking
 this over cold, start here._
 
-_Last updated: 2026-07-06_
+_Last updated: 2026-07-09_
 
 ---
 
@@ -178,6 +178,9 @@ In plain terms, Supabase holds these tables:
   name; the website calls them "keywords.")
 - **items** — the individual **Key Points**. Each belongs to a post.
 - **item_tags** — the links connecting each Key Point to its keywords.
+- **donations** — one row per gift (kept separate from membership dues): amount, whether
+  it's one-time or monthly, the donor's email/name, and a link to the signed-in member if
+  they had an account. Written automatically by Stripe; nobody edits it by hand.
 
 ---
 
@@ -266,6 +269,37 @@ Members (save button)    ──►     Supabase favorites ◄── /dashboard "
 Editors                  ──►     Supabase posts/keywords ──► Public News + keyword search
 ```
 Everything converges on the single Supabase database, keyed to each person's account.
+
+### Donations — separate from membership dues
+
+There's also a public **Donate** page (`/donate`) where **anyone** can give — no account
+or sign-in required. Donors choose one-time or monthly and pick any amount. It's handled
+by Stripe just like membership, but kept completely separate from dues.
+
+**"Why don't I see a Donation product in Stripe?"** You won't, and that's correct. Unlike
+membership tiers (which are fixed Stripe **Products** with set prices), a donation can be
+any dollar amount, so there's nothing fixed to pre-create. The website builds each gift on
+the spot when someone donates. Stripe quietly makes a throwaway "Donation to SAMPA" line
+for that one payment, but it will **not** show up in Stripe's **Products** list — don't go
+looking for it there.
+
+**Where donations actually show up:**
+- In **Stripe**: one-time gifts appear under **Payments**; monthly gifts appear under
+  **Subscriptions**; every donor gets a **Customer** record (so they get receipts). To
+  tell a donation apart from membership dues in Stripe, open the payment and look at its
+  **metadata** — donations are tagged `type = donation`.
+- In **Supabase**: the authoritative list of all gifts is the **donations** table
+  (see section 7). That — not Stripe's Products page — is the real donation ledger, and it
+  keeps gifts cleanly separated from membership payments.
+
+**Not tax-deductible yet.** SAMPA's 501(c)(3) status is pending, so the Donate page carries
+a disclosure saying gifts aren't deductible until the IRS approves it (with the expectation
+they'll be retroactively deductible once approved). Keep that disclosure until the
+determination letter arrives.
+
+> **Heads-up when checking Stripe:** the top-right **Test mode** toggle matters. If you
+> tested a donation in Test mode, it won't appear in Live mode, and vice-versa. Seeing "no
+> donations" is usually just the wrong mode selected.
 
 ### Still ahead
 - **CME content** for members — gate it with the `is_active_member()` database rule that
