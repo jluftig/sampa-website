@@ -55,6 +55,7 @@ const CSV_COLUMNS = [
   ['Status', (p) => p.membership_status],
   ['Renews/ends', (p) => (p.renews_on ? p.renews_on.slice(0, 10) : p.membership_status === 'active' ? 'lifetime' : '')],
   ['Won\'t renew', (p) => (p.cancel_at_period_end ? 'yes' : '')],
+  ['Donor', (p) => (p._isDonor ? 'yes' : 'no')],
   ['State', (p) => p.state],
   ['Credentials', (p) => p.credentials],
   ['Organization', (p) => p.organization],
@@ -87,6 +88,7 @@ export default function AdminMembers() {
 
   const [people, setPeople] = useState([]);
   const [pledges, setPledges] = useState([]);
+  const [donorKeys, setDonorKeys] = useState(() => new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -96,7 +98,7 @@ export default function AdminMembers() {
     let active = true;
     if (!accepted) return;
     (async () => {
-      const [profilesRes, pledgesRes] = await Promise.all([
+      const [profilesRes, pledgesRes, donationsRes] = await Promise.all([
         supabase
           .from('profiles')
           .select('id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at')
@@ -107,11 +109,25 @@ export default function AdminMembers() {
           .from('member_import')
           .select('email, first_name, last_name, membership_tier, membership_years, member_since, claimed_at')
           .order('member_since', { ascending: true }),
+        // Successful gifts, to flag donors in the roster. Admin/member-viewer can
+        // read donations via RLS; degrades to "no donors" if the query errors.
+        supabase
+          .from('donations')
+          .select('user_id, donor_email')
+          .eq('status', 'succeeded'),
       ]);
       if (!active) return;
       if (profilesRes.error) setError(profilesRes.error.message);
       else setPeople(profilesRes.data || []);
       setPledges(pledgesRes.data || []); // empty if the admin-read policy migration hasn't run
+      // Donor lookup keyed by account id AND the email Stripe collected, so a
+      // guest gift made with a member's email still flags that member.
+      const keys = new Set();
+      for (const d of donationsRes.data || []) {
+        if (d.user_id) keys.add(d.user_id);
+        if (d.donor_email) keys.add(d.donor_email.toLowerCase());
+      }
+      setDonorKeys(keys);
       setLoading(false);
     })();
     return () => { active = false; };
@@ -158,6 +174,11 @@ export default function AdminMembers() {
     invited: pledgeRows.filter((r) => r.status === 'invited').length,
   }), [pledgeRows]);
 
+  // A member counts as a donor if a successful gift matches their account id or
+  // the email Stripe collected on the gift.
+  const isDonor = (p) =>
+    donorKeys.has(p.id) || (!!p.email && donorKeys.has(p.email.toLowerCase()));
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return people.filter((p) => {
@@ -169,7 +190,8 @@ export default function AdminMembers() {
   }, [people, statusFilter, search]);
 
   const downloadCsv = () => {
-    const blob = new Blob([toCsv(filtered)], { type: 'text/csv;charset=utf-8' });
+    const rows = filtered.map((p) => ({ ...p, _isDonor: isDonor(p) }));
+    const blob = new Blob([toCsv(rows)], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -356,6 +378,7 @@ export default function AdminMembers() {
                     <th className="px-4 py-3">Tier</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Renewal</th>
+                    <th className="px-4 py-3">Donor</th>
                     <th className="px-4 py-3">State</th>
                     <th className="px-4 py-3">Role</th>
                   </tr>
@@ -376,13 +399,23 @@ export default function AdminMembers() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-text/60 whitespace-nowrap">{renewalLabel(p)}</td>
+                      <td className="px-4 py-3">
+                        {isDonor(p) ? (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            Yes
+                          </span>
+                        ) : (
+                          <span className="text-text/30">—</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-text/60 whitespace-nowrap">{p.state || '—'}</td>
                       <td className="px-4 py-3 text-text/60">{p.role}</td>
                     </tr>
                   ))}
                   {filtered.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="px-4 py-8 text-center text-text/40">
+                      <td colSpan={8} className="px-4 py-8 text-center text-text/40">
                         No accounts match this view.
                       </td>
                     </tr>
