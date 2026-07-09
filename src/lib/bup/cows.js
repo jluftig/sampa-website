@@ -2,16 +2,19 @@
 // Drugs 35(2), 2003. Pure data + scoring, zero React imports.
 //
 // `objective: true` marks the answer grades that count as OBJECTIVE signs of
-// withdrawal, following the Quick Start PDF's list (large pupils, yawning,
-// runny nose & tearing, sweating, vomiting, diarrhea, gooseflesh/piloerection,
-// tachycardia) and flagged only at the grade where the finding is observable
-// rather than subjective. Each flag is a clinical judgment reviewed by SAMPA —
-// tuning a threshold is a one-line data edit here.
-// (Restlessness, bone/joint aches, tremor, and anxiety/irritability carry no
-// flags: they are not on the source's objective-sign list.)
+// withdrawal. The reference is the validated Objective Opiate Withdrawal Scale
+// (OOWS; Handelsman et al. 1987), whose 13 rater-observed signs include
+// restlessness ("frequent changes of position"), tremor, muscle twitches, and
+// yawning (">1 yawn") — plus the CA Bridge Quick Start list (large pupils,
+// yawning, runny nose & tearing, sweating, vomiting, diarrhea,
+// gooseflesh/piloerection, tachycardia). A grade is flagged only where the
+// finding is observable to the rater rather than pure self-report. Each flag is
+// a SAMPA-reviewed clinical judgment — tuning a threshold is a one-line edit.
+// Bone/joint aches (arthralgia) stay unflagged: the pain itself is subjective
+// and is not an OOWS observable sign.
 
 export const COWS = {
-  version: '1.0.0',
+  version: '1.1.0', // 1.1.0: objective-sign flags aligned to OOWS (restlessness, tremor, yawning≥2, anxiety g4)
   source: {
     title: 'Wesson DR, Ling W. The Clinical Opiate Withdrawal Scale (COWS)',
     citation: 'J Psychoactive Drugs. 2003;35(2):253–259',
@@ -50,9 +53,11 @@ export const COWS = {
       help: 'Observation during assessment.',
       options: [
         { points: 0, label: 'Able to sit still' },
+        // Grade 1 is self-report ("reports difficulty… but is able"); grades 3
+        // and 5 are the observable OOWS "frequent changes of position".
         { points: 1, label: 'Reports difficulty sitting still, but is able to do so' },
-        { points: 3, label: 'Frequent shifting or extraneous movements of legs/arms' },
-        { points: 5, label: 'Unable to sit still for more than a few seconds' },
+        { points: 3, label: 'Frequent shifting or extraneous movements of legs/arms', objective: true },
+        { points: 5, label: 'Unable to sit still for more than a few seconds', objective: true },
       ],
     },
     {
@@ -105,9 +110,11 @@ export const COWS = {
       help: 'Observation of outstretched hands.',
       options: [
         { points: 0, label: 'No tremor' },
+        // Grade 1 is explicitly "felt, but not observed" — not objective.
+        // Grades 2 and 4 are observable tremor / muscle twitching (OOWS items 6 & 11).
         { points: 1, label: 'Tremor can be felt, but not observed' },
-        { points: 2, label: 'Slight tremor observable' },
-        { points: 4, label: 'Gross tremor or muscle twitching' },
+        { points: 2, label: 'Slight tremor observable', objective: true },
+        { points: 4, label: 'Gross tremor or muscle twitching', objective: true },
       ],
     },
     {
@@ -116,7 +123,8 @@ export const COWS = {
       help: 'Observation during assessment.',
       options: [
         { points: 0, label: 'No yawning' },
-        { points: 1, label: 'Yawning once or twice during assessment' },
+        // OOWS counts ">1 yawn" as an objective sign, so grade 1 (once or twice) is flagged.
+        { points: 1, label: 'Yawning once or twice during assessment', objective: true },
         { points: 2, label: 'Yawning three or more times during assessment', objective: true },
         { points: 4, label: 'Yawning several times per minute', objective: true },
       ],
@@ -128,7 +136,9 @@ export const COWS = {
         { points: 0, label: 'None' },
         { points: 1, label: 'Patient reports increasing irritability or anxiousness' },
         { points: 2, label: 'Patient obviously irritable or anxious' },
-        { points: 4, label: 'Patient so irritable or anxious that participation in the assessment is difficult' },
+        // Anxiety is an OOWS objective sign, but the softest and rater-dependent;
+        // only grade 4 (observable behavioral disruption of the assessment) is flagged.
+        { points: 4, label: 'Patient so irritable or anxious that participation in the assessment is difficult', objective: true },
       ],
     },
     {
