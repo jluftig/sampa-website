@@ -401,7 +401,8 @@ export default function AdminMembers() {
                       <td className="px-4 py-3 text-text/60 whitespace-nowrap">{renewalLabel(p)}</td>
                       <td className="px-4 py-3">
                         {isDonor(p) ? (
-                          <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                             Yes
                           </span>
                         ) : (
