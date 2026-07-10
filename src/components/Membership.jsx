@@ -1,20 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Check, Star, Heart } from 'lucide-react';
+import { Star, Heart } from 'lucide-react';
 import { MEMBERSHIP_TIERS } from '../lib/membership';
 
 export default function Membership() {
   const membershipTiers = MEMBERSHIP_TIERS;
-
-  const donationTiers = [
-    { name: 'Community Supporter', price: 'Free', desc: 'Newsletter access only' },
-    { name: 'Bronze', price: '$25', desc: 'Supporter', color: 'text-orange-700', bg: 'bg-orange-700/5', border: 'border-orange-700/20' },
-    { name: 'Silver', price: '$75', desc: 'Supporter', highlight: true },
-    { name: 'Gold', price: '$150', desc: 'Supporter', color: 'text-yellow-500', bg: 'bg-yellow-500/5', border: 'border-yellow-500/30' },
-    { name: 'Platinum', price: '$300', desc: 'Supporter', color: 'text-slate-800', bg: 'bg-slate-800/5', border: 'border-slate-800/20' },
-    { name: 'Patron', price: '$600+', desc: 'Supporter' },
-    { name: 'Organizational', price: '$1,500+', desc: 'Supporter' },
-  ];
 
   return (
     <section id="membership" className="py-24 px-4 max-w-7xl mx-auto">
@@ -70,7 +60,7 @@ export default function Membership() {
 
       {/* DONATION SECTION */}
       <div className="max-w-6xl mx-auto border-t border-text/10 pt-24">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <div className="inline-block px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary-text text-xs font-semibold mb-6 font-data uppercase tracking-wider flex items-center gap-2 mx-auto w-fit">
             <Heart className="w-4 h-4" /> Support Our Mission
           </div>
@@ -82,31 +72,10 @@ export default function Membership() {
           </p>
         </div>
 
-        {/* Donation Frequency Alert */}
-        <div className="max-w-3xl mx-auto bg-text/5 border border-text/10 rounded-2xl p-6 mb-12 text-center shadow-sm">
-          <p className="text-text/80 text-sm md:text-base">
-            <strong>Pledge your ongoing support:</strong> Choose a One-time gift, Annual recurring, or setup a <strong>2-Year Pledge (10% savings)</strong> or <strong>3-Year Pledge (15% savings)</strong>.
-          </p>
-        </div>
-
-        {/* Donation Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-12">
-          {donationTiers.map((tier, idx) => (
-            <div key={idx} className={`${tier.highlight ? 'bg-text text-white border-accent shadow-xl transform md:-translate-y-1 relative overflow-hidden' : `bg-white ${tier.bg || ''} ${tier.border || 'border-text/10'} text-text`} p-6 rounded-3xl border ${idx === donationTiers.length - 1 ? 'col-span-2 md:col-span-4 lg:col-span-2' : ''} shadow-sm flex flex-col items-center text-center hover:shadow-md transition-all`}>
-              {tier.highlight && (
-                <div className="absolute top-5 -right-12 w-40 text-center bg-accent rotate-45 py-1 text-[10px] font-bold font-data tracking-wider uppercase shadow-sm text-white">Featured</div>
-              )}
-              <div className={`text-2xl font-bold mb-1 relative z-10 ${tier.highlight ? 'text-white' : 'text-text'}`}>{tier.price}</div>
-              <div className={`font-semibold text-sm mb-2 relative z-10 ${tier.highlight ? 'text-accent' : (tier.color || 'text-primary-text')}`}>{tier.name}</div>
-              <div className={`text-xs relative z-10 ${tier.highlight ? 'text-white/60' : 'text-text/50'}`}>{tier.desc}</div>
-            </div>
-          ))}
-        </div>
-
         <div className="flex justify-center">
-          <a href="https://forms.gle/vfSJS9LTPwT9TMT59" target="_blank" rel="noopener noreferrer" className="btn-magnetic bg-gradient-to-r from-primary-text to-accent text-white text-lg px-10 py-4 rounded-full shadow-xl font-bold flex items-center justify-center hover:shadow-2xl transition-all">
+          <Link to="/donate" className="btn-magnetic bg-gradient-to-r from-primary-text to-accent text-white text-lg px-10 py-4 rounded-full shadow-xl font-bold flex items-center justify-center hover:shadow-2xl transition-all">
             Donate Now
-          </a>
+          </Link>
         </div>
       </div>
 
