@@ -165,15 +165,17 @@ redirect to `/login?next=...` so users return where they were headed.
 ## Data model (see supabase/schema.sql for exact DDL)
 
 - `profiles` — PK `id` → `auth.users(id)`. `email, full_name, phone, role`; professional
-  profile (self-editable, dashboard onboarding form): personal fields
-  `credentials, npi, state` (home/membership state — often pre-filled from
-  member_import, not Google/Stripe); `organizations` jsonb array of
-  `{name, role, city, state, practice_setting, website}` (multi-employer;
-  org.role = job title at that employer, not profiles.role; default one row +
-  "Add additional organization"); denormalized primary org columns
+  profile (self-editable, dashboard onboarding form): account contact for SAMPA
+  (`phone`, `newsletter_opt_in`, `sms_opt_in`; `email` is sign-in identity);
+  directory professional fields `credentials, npi, state` (home/membership
+  state — often pre-filled from member_import) + `organizations` jsonb
+  `{name, role, city, state, practice_setting, website}`; denormalized
   `organization, practice_setting, city` from `organizations[0]` for admin
-  roster/CSV — personal `state` is never overwritten from an org;
-  `newsletter_opt_in, sms_opt_in, onboarded_at`;
+  roster/CSV — personal `state` never overwritten from an org;
+  directory privacy/contact: `directory_visible`, `share_email`, `share_phone`,
+  `directory_use_account_contact` (default true), `directory_email`,
+  `directory_phone` (overrides when not using account contact — e.g. work
+  inbox for peers); `onboarded_at`;
   membership/billing (webhook-written, guarded): `stripe_customer_id, membership_tier
   (tier key from src/lib/membership.js), membership_status
   ('active'|'past_due'|'canceled'), renews_on` (null renews_on + active = lifetime),
@@ -290,10 +292,18 @@ DOMPurify-sanitized and only editor-writable.
 8. **Post pages filter to published** even for editors (PostView returns notfound for drafts).
 9. Route-level `React.lazy` keeps TipTap/DOMPurify out of the public homepage bundle.
 10. DB migrations: edit `supabase/schema.sql` (idempotent — `create ... if not exists`,
-    `create or replace`, `add column if not exists`) AND give the user the exact snippet to
-    run in the Supabase SQL editor. There is ONE shared Supabase DB across prod+preview.
-    Do NOT tell the user to re-run the whole `schema.sql` casually — its tag seed is an
-    upsert that would overwrite admin-customized keyword labels.
+    `create or replace`, `add column if not exists`) AND write a standalone file under
+    `supabase/migrations/` for the operator to run. There is ONE shared Supabase DB
+    across prod+preview. Do NOT tell the user to re-run the whole `schema.sql`
+    casually — its tag seed is an upsert that would overwrite admin-customized
+    keyword labels.
+    **Clipboard handoff (required):** whenever you create or update a migration the
+    user may need to run, **immediately copy it to the system clipboard** on macOS
+    with `pbcopy < supabase/migrations/<file>.sql` (or `pbcopy < path`), then tell
+    them it is on the clipboard and ready to paste into the Supabase SQL Editor.
+    Do this proactively — do not wait for them to ask `pbcopy …`. If several
+    migrations must run in order, copy the **next** one they should run (or say so
+    when multiple remain) and name the file(s) clearly.
 11. **Membership tier keys AND term durations** live in three places that must stay in
     sync: `src/lib/membership.js` (UI: prices grid + lifetime), `api/_lib/tiers.js`
     (TIER_DURATIONS + env mapping — this copy authorizes checkouts), and the
@@ -392,6 +402,8 @@ themes agents may be asked to implement:
 
 - DO enforce authorization in SQL/RLS; treat client code as untrusted.
 - DO keep `supabase/schema.sql` the single source of truth and idempotent.
+- DO `pbcopy` new/updated migration SQL onto the clipboard and tell the user it is
+  ready for the Supabase SQL Editor (gotcha 10).
 - DO verify observable changes via the preview workflow before claiming done.
 - DO update `docs/STATUS.md` when finishing significant work — it is the living
   status doc humans and agents rely on across handoffs.

@@ -18,3 +18,7 @@ rely on across handoffs. If you change how operators use the site, update
 **docs/HANDOFF.md** too.
 
 Human-oriented operations guide: [docs/HANDOFF.md](docs/HANDOFF.md).
+
+**DB migrations:** after writing/updating a file under `supabase/migrations/`, copy
+it to the clipboard (`pbcopy < path`) and tell the user it is ready to paste into
+the Supabase SQL Editor — see gotcha 10 in `CLAUDE.md`.

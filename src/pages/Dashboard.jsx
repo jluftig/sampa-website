@@ -22,15 +22,14 @@ const STATUS_BADGES = {
   canceled: { label: 'Canceled',          cls: 'bg-red-500/10 text-red-600 border-red-500/20' },
 };
 
-// Personal identity fields (separate from per-organization employers).
-// profiles.state is the member's home/membership state — often pre-filled from
-// the pre-Stripe Google Form import, not Google OAuth or Stripe.
-const PROFILE_FIELDS = [
+// Directory professional fields (shown to peers when listed). Separate from
+// account contact (email/phone for SAMPA) and from per-organization employers.
+// profiles.state is home/membership state — often pre-filled from member_import.
+const DIRECTORY_IDENTITY_FIELDS = [
   { key: 'full_name',   label: 'Full name',    placeholder: 'Jane Doe, PA-C' },
   { key: 'credentials', label: 'Credentials',  placeholder: 'PA-C, CAQ-Psychiatry' },
   { key: 'npi',         label: 'NPI number',   placeholder: '10 digits (optional)' },
   { key: 'state',       label: 'State',        type: 'select', options: US_STATES },
-  { key: 'phone',       label: 'Mobile phone', placeholder: 'For text updates (optional)' },
 ];
 
 export default function Dashboard() {
@@ -109,19 +108,21 @@ export default function Dashboard() {
   useEffect(() => {
     if (profile && form === null) {
       setForm({
+        // Account contact (SAMPA) — email is sign-in identity, not editable here.
+        phone: profile.phone || '',
+        newsletter_opt_in: profile.newsletter_opt_in ?? true,
+        sms_opt_in: profile.sms_opt_in ?? false,
+        // Directory professional identity
         full_name: profile.full_name || '',
         credentials: profile.credentials || '',
         npi: profile.npi || '',
-        // Personal/home state (profiles.state) — independent of org locations.
         state: profile.state || '',
-        phone: profile.phone || '',
-        // Always ≥1 blank-ready org row; legacy single columns hydrate via helper.
         organizations: organizationsFromProfile(profile),
-        newsletter_opt_in: profile.newsletter_opt_in ?? true,
-        sms_opt_in: profile.sms_opt_in ?? false,
-        // Directory defaults match DB (opt-out listing; email on; phone off).
-        // Coalesce so a pre-migration profile still has sensible form values.
+        // Directory listing + contact (may differ from account email/phone)
         directory_visible: profile.directory_visible ?? true,
+        directory_use_account_contact: profile.directory_use_account_contact ?? true,
+        directory_email: profile.directory_email || '',
+        directory_phone: profile.directory_phone || '',
         share_email: profile.share_email ?? true,
         share_phone: profile.share_phone ?? false,
       });
@@ -163,13 +164,24 @@ export default function Dashboard() {
       setSaveState('needsPhone');
       return;
     }
+    if (
+      form.directory_visible
+      && form.share_email
+      && !form.directory_use_account_contact
+      && !form.directory_email.trim()
+    ) {
+      setSaveState('needsDirectoryEmail');
+      return;
+    }
     setSaveState('saving');
     const organizations = sanitizeOrganizations(form.organizations);
     const { organizations: _drop, ...rest } = form;
-    // rest includes personal state; primaryOrgFields must not overwrite it.
     const payload = {
       ...rest,
       state: form.state || null,
+      phone: form.phone || null,
+      directory_email: form.directory_email.trim() || null,
+      directory_phone: form.directory_phone.trim() || null,
       organizations,
       ...primaryOrgFields(organizations),
       onboarded_at: profile.onboarded_at || new Date().toISOString(),
@@ -179,30 +191,57 @@ export default function Dashboard() {
       .update(payload)
       .eq('id', user.id);
     if (error) {
-      // Pre-migration DB may not have organizations/city yet — retry with
-      // legacy columns only so the form still works until the SQL is applied.
-      if (error.message?.includes('organizations') || error.message?.includes('city') || error.code === 'PGRST204') {
+      // Strip newer columns and retry so older DBs still accept the form.
+      const msg = error.message || '';
+      const missingCol =
+        error.code === 'PGRST204'
+        || /organizations|city|directory_use_account_contact|directory_email|directory_phone/i.test(msg);
+      if (missingCol) {
         const primary = primaryOrgFields(organizations);
-        const { error: legacyError } = await supabase
-          .from('profiles')
-          .update({
-            full_name: form.full_name,
-            credentials: form.credentials,
-            npi: form.npi,
-            state: form.state || null,
-            phone: form.phone,
-            newsletter_opt_in: form.newsletter_opt_in,
-            sms_opt_in: form.sms_opt_in,
-            directory_visible: form.directory_visible,
-            share_email: form.share_email,
-            share_phone: form.share_phone,
-            // No city/organizations — those columns may not exist yet.
-            organization: primary.organization,
-            practice_setting: primary.practice_setting,
-            onboarded_at: profile.onboarded_at || new Date().toISOString(),
-          })
-          .eq('id', user.id);
-        if (legacyError) {
+        const base = {
+          full_name: form.full_name,
+          credentials: form.credentials,
+          npi: form.npi,
+          state: form.state || null,
+          phone: form.phone || null,
+          newsletter_opt_in: form.newsletter_opt_in,
+          sms_opt_in: form.sms_opt_in,
+          directory_visible: form.directory_visible,
+          share_email: form.share_email,
+          share_phone: form.share_phone,
+          organization: primary.organization,
+          practice_setting: primary.practice_setting,
+          onboarded_at: profile.onboarded_at || new Date().toISOString(),
+        };
+        // Try with multi-org + directory contact, then progressively fewer columns.
+        const attempts = [
+          {
+            ...base,
+            city: primary.city,
+            organizations,
+            directory_use_account_contact: form.directory_use_account_contact,
+            directory_email: form.directory_email.trim() || null,
+            directory_phone: form.directory_phone.trim() || null,
+          },
+          {
+            ...base,
+            city: primary.city,
+            organizations,
+          },
+          base,
+        ];
+        let ok = false;
+        for (const attempt of attempts) {
+          const { error: retryError } = await supabase
+            .from('profiles')
+            .update(attempt)
+            .eq('id', user.id);
+          if (!retryError) {
+            ok = true;
+            break;
+          }
+        }
+        if (!ok) {
           setSaveState('error');
           return;
         }
@@ -211,7 +250,6 @@ export default function Dashboard() {
         return;
       }
     }
-    // Keep form in sync with what we saved (trim empty extra rows).
     setForm((prev) => ({
       ...prev,
       organizations: organizations.length ? organizations.map((o) => ({
@@ -227,6 +265,8 @@ export default function Dashboard() {
     setSaveState('saved');
     setTimeout(() => setSaveState('idle'), 2500);
   };
+
+  const accountEmail = profile?.email || user?.email || '';
 
   const badge = STATUS_BADGES[profile?.membership_status] || null;
   const tier = tierByKey(profile?.membership_tier);
@@ -370,60 +410,149 @@ export default function Dashboard() {
           )}
         </section>
 
-        {/* Profile */}
+        {/* Profile — account contact (SAMPA) + directory profile (peers) */}
         <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
           <h2 className="text-xl font-bold mb-2">Your profile</h2>
           {needsOnboarding && (
             <div className="bg-accent/5 border border-accent/20 rounded-2xl p-4 mb-6 text-sm text-text/80">
-              <strong>Complete your profile</strong> — this replaces the old
-              sign-up form and helps SAMPA understand its membership. Takes about
-              a minute; everything except your name is optional.
+              <strong>Complete your profile</strong> — account contact is for
+              SAMPA only; the directory section is what other members see when
+              you choose to be listed. Everything except your name is optional.
             </div>
           )}
 
           {form && (
             <form onSubmit={saveProfile}>
-              <div className="grid md:grid-cols-2 gap-5">
-                {PROFILE_FIELDS.map((f) => (
-                  <div key={f.key}>
-                    <label htmlFor={`pf-${f.key}`} className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
-                      {f.label}
+              {/* ---- 1. Account contact (SAMPA ops only) ---- */}
+              <div className="mb-10">
+                <h3 className="text-sm font-bold mb-1">Account contact</h3>
+                <p className="text-text/50 text-xs mb-4 max-w-xl">
+                  How SAMPA reaches you about your membership or account — not
+                  shown to other members unless you choose to share it in the
+                  directory below.
+                </p>
+                <div className="grid md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
+                      Email (sign-in)
                     </label>
-                    {f.type === 'select' ? (
-                      <select
-                        id={`pf-${f.key}`}
-                        value={form[f.key]}
-                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
-                      >
-                        <option value="">Select…</option>
-                        {f.options.map((opt) => (
-                          <option key={opt} value={opt}>{opt}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input
-                        id={`pf-${f.key}`}
-                        type="text"
-                        value={form[f.key]}
-                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        placeholder={f.placeholder}
-                        className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm"
-                      />
-                    )}
+                    <div className="w-full px-4 py-2.5 rounded-2xl border border-primary/10 bg-primary/[0.03] text-sm text-text/80">
+                      {accountEmail || '—'}
+                    </div>
+                    <p className="text-text/40 text-xs mt-1.5">
+                      From your Google or magic-link sign-in. Contact us if you
+                      need to change the account email.
+                    </p>
                   </div>
-                ))}
+                  <div>
+                    <label htmlFor="pf-phone" className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
+                      Mobile phone
+                    </label>
+                    <input
+                      id="pf-phone"
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      placeholder="For text updates (optional)"
+                      className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm"
+                    />
+                  </div>
+                </div>
+
+                <label className="flex items-center gap-3 mt-5 text-sm text-text/70 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.newsletter_opt_in}
+                    onChange={(e) => setForm({ ...form, newsletter_opt_in: e.target.checked })}
+                    className="w-4 h-4 accent-primary"
+                  />
+                  Send me the SAMPA newsletter and member updates
+                </label>
+
+                <label className="flex items-start gap-3 mt-4 text-sm text-text/70 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.sms_opt_in}
+                    onChange={(e) => setForm({ ...form, sms_opt_in: e.target.checked })}
+                    className="w-4 h-4 accent-primary mt-0.5"
+                  />
+                  <span>
+                    Send me SAMPA text updates at this mobile number.
+                    <span className="block text-xs text-text/40 mt-0.5">
+                      Message and data rates may apply. Reply STOP at any time to opt out.
+                    </span>
+                  </span>
+                </label>
               </div>
+
+              {/* ---- 2. Directory profile (peer networking) ---- */}
+              <div className="pt-8 border-t border-primary/10">
+                <h3 className="text-sm font-bold mb-1">Directory profile</h3>
+                <p className="text-text/50 text-xs mb-4 max-w-xl">
+                  What other active SAMPA members see when you appear in the
+                  networking directory — not the public website. You can use your
+                  account contact above, or enter a different email/phone for
+                  peers (for example a work inbox).
+                </p>
+
+                <label className="flex items-start gap-3 text-sm text-text/70 cursor-pointer mb-6">
+                  <input
+                    type="checkbox"
+                    checked={form.directory_visible}
+                    onChange={(e) => setForm({ ...form, directory_visible: e.target.checked })}
+                    className="w-4 h-4 accent-primary mt-0.5"
+                  />
+                  <span>
+                    Show me in the member directory
+                    <span className="block text-xs text-text/40 mt-0.5">
+                      Uncheck to hide your listing entirely. You can change this anytime.
+                    </span>
+                  </span>
+                </label>
+
+                <div className={form.directory_visible ? '' : 'opacity-40 pointer-events-none'}>
+                  <div className="grid md:grid-cols-2 gap-5">
+                    {DIRECTORY_IDENTITY_FIELDS.map((f) => (
+                      <div key={f.key}>
+                        <label htmlFor={`pf-${f.key}`} className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
+                          {f.label}
+                        </label>
+                        {f.type === 'select' ? (
+                          <select
+                            id={`pf-${f.key}`}
+                            value={form[f.key]}
+                            disabled={!form.directory_visible}
+                            onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          >
+                            <option value="">Select…</option>
+                            {f.options.map((opt) => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            id={`pf-${f.key}`}
+                            type="text"
+                            value={form[f.key]}
+                            disabled={!form.directory_visible}
+                            onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                            placeholder={f.placeholder}
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
 
               {/* Organizations / employers — default one; add more as needed */}
               <div className="mt-8">
                 <div className="mb-4">
                   <h3 className="text-sm font-bold">Organizations / employers</h3>
                   <p className="text-text/50 text-xs mt-1 max-w-xl">
-                    List each place you work or hold a role. Each entry has its
-                    own organization name, your role/title there, practice
-                    setting, city, state, and optional website — separate from
-                    your personal state above.
+                    Listed on your directory profile. Each entry has its own
+                    organization name, role/title, practice setting, city, state,
+                    and optional website.
                   </p>
                 </div>
 
@@ -562,62 +691,87 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={addOrganization}
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-text hover:underline"
+                  disabled={!form.directory_visible}
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-text hover:underline disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" />
                   Add additional organization
                 </button>
               </div>
 
-              <label className="flex items-center gap-3 mt-6 text-sm text-text/70 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={form.newsletter_opt_in}
-                  onChange={(e) => setForm({ ...form, newsletter_opt_in: e.target.checked })}
-                  className="w-4 h-4 accent-primary"
-                />
-                Send me the SAMPA newsletter and member updates
-              </label>
-
-              <label className="flex items-start gap-3 mt-4 text-sm text-text/70 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={form.sms_opt_in}
-                  onChange={(e) => setForm({ ...form, sms_opt_in: e.target.checked })}
-                  className="w-4 h-4 accent-primary mt-0.5"
-                />
-                <span>
-                  Send me SAMPA text updates at the mobile number above.
-                  <span className="block text-xs text-text/40 mt-0.5">
-                    Message and data rates may apply. Reply STOP at any time to opt out.
-                  </span>
-                </span>
-              </label>
-
-              {/* Member directory privacy — opt-out listing; nested contact shares */}
+              {/* Directory contact: account info or custom */}
               <div className="mt-8 pt-6 border-t border-primary/10">
-                <h3 className="text-sm font-bold mb-1">Member directory</h3>
+                <h4 className="text-sm font-bold mb-1">Contact for other members</h4>
                 <p className="text-text/50 text-xs mb-4 max-w-xl">
-                  Visible only to other active SAMPA members — not the public website.
-                  Uncheck to hide your listing entirely. You can change this anytime.
+                  Peers use this to network with you. You can reuse your account
+                  email and phone, or enter different ones (for example a work
+                  email if you sign in with a personal Gmail).
                 </p>
-                <label className="flex items-start gap-3 text-sm text-text/70 cursor-pointer">
+
+                <label className="flex items-start gap-3 text-sm text-text/70 cursor-pointer mb-4">
                   <input
                     type="checkbox"
-                    checked={form.directory_visible}
-                    onChange={(e) => setForm({ ...form, directory_visible: e.target.checked })}
+                    checked={form.directory_use_account_contact}
+                    disabled={!form.directory_visible}
+                    onChange={(e) => setForm({
+                      ...form,
+                      directory_use_account_contact: e.target.checked,
+                    })}
                     className="w-4 h-4 accent-primary mt-0.5"
                   />
                   <span>
-                    Show me in the member directory
+                    Use my account contact info in the directory
                     <span className="block text-xs text-text/40 mt-0.5">
-                      Name, credentials, personal state, and organizations
-                      (name, role, practice setting, city, state, website) are
-                      included when you are listed.
+                      {accountEmail || 'Account email'}
+                      {form.phone ? ` · ${form.phone}` : ' · no mobile number yet'}
                     </span>
                   </span>
                 </label>
-                <div className={`mt-4 ml-7 space-y-3 ${form.directory_visible ? '' : 'opacity-40 pointer-events-none'}`}>
+
+                {!form.directory_use_account_contact && (
+                  <div className="grid md:grid-cols-2 gap-5 mb-5 ml-0 sm:ml-7">
+                    <div>
+                      <label
+                        htmlFor="pf-directory-email"
+                        className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                      >
+                        Directory email
+                      </label>
+                      <input
+                        id="pf-directory-email"
+                        type="email"
+                        autoComplete="email"
+                        value={form.directory_email}
+                        disabled={!form.directory_visible}
+                        onChange={(e) => setForm({ ...form, directory_email: e.target.value })}
+                        placeholder="you@work.org"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                      />
+                      <p className="text-text/40 text-xs mt-1.5">
+                        Shown to members instead of your sign-in email.
+                      </p>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="pf-directory-phone"
+                        className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                      >
+                        Directory phone <span className="normal-case font-normal tracking-normal">(optional)</span>
+                      </label>
+                      <input
+                        id="pf-directory-phone"
+                        type="tel"
+                        value={form.directory_phone}
+                        disabled={!form.directory_visible}
+                        onChange={(e) => setForm({ ...form, directory_phone: e.target.value })}
+                        placeholder="Work or preferred mobile"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-3 ml-0 sm:ml-7">
                   <label className="flex items-start gap-3 text-sm text-text/70 cursor-pointer">
                     <input
                       type="checkbox"
@@ -629,7 +783,9 @@ export default function Dashboard() {
                     <span>
                       Share my email with other members
                       <span className="block text-xs text-text/40 mt-0.5">
-                        {profile?.email || user?.email || 'Your account email'}
+                        {form.directory_use_account_contact
+                          ? (accountEmail || 'Your account email')
+                          : (form.directory_email.trim() || 'Enter a directory email above')}
                       </span>
                     </span>
                   </label>
@@ -644,14 +800,18 @@ export default function Dashboard() {
                     <span>
                       Share my phone with other members
                       <span className="block text-xs text-text/40 mt-0.5">
-                        Uses the mobile number above{form.phone ? ` (${form.phone})` : ' (add a phone first)'}.
+                        {form.directory_use_account_contact
+                          ? (form.phone ? form.phone : 'Add a mobile number under account contact first')
+                          : (form.directory_phone.trim() || 'Optional — add a directory phone above')}
                       </span>
                     </span>
                   </label>
                 </div>
               </div>
+                </div>
+              </div>
 
-              <div className="flex items-center gap-4 mt-6">
+              <div className="flex items-center gap-4 mt-8">
                 <button
                   type="submit"
                   disabled={saveState === 'saving'}
@@ -662,11 +822,16 @@ export default function Dashboard() {
                 {saveState === 'saved' && <span className="text-green-700 text-sm font-semibold">Saved ✓</span>}
                 {saveState === 'error' && <span className="text-red-500 text-sm">Couldn't save — try again.</span>}
                 {saveState === 'needsPhone' && <span className="text-red-500 text-sm">Add a mobile phone number to receive text updates.</span>}
+                {saveState === 'needsDirectoryEmail' && (
+                  <span className="text-red-500 text-sm">
+                    Add a directory email, or turn on “Use my account contact info”.
+                  </span>
+                )}
               </div>
             </form>
           )}
           <p className="text-text/40 text-xs mt-4">
-            Signed in as {profile?.email || user?.email}. Your role and membership
+            Signed in as {accountEmail || '…'}. Your role and membership
             status can only be changed by SAMPA administrators.
           </p>
         </section>

@@ -49,18 +49,22 @@ Apply these in the **Supabase SQL Editor** if not already run (order matters):
 2. `supabase/migrations/2026-07-10-profile-organizations.sql` — multi-employer profile
    + city; updates directory RPCs. Run **after** (1), once multi-org code is on `main`
    (or on a preview that includes that PR).
+3. `supabase/migrations/2026-07-10-directory-contact.sql` — separate directory
+   email/phone from account contact (`directory_use_account_contact`,
+   `directory_email`, `directory_phone`). Run after (1)–(2).
 
 Confirm after run: directory loads for an active member; Board checkbox appears in
-People & permissions; dashboard can save multiple organizations with city/state.
+People & permissions; dashboard can save multiple organizations with city/state;
+directory can show a work email while sign-in stays personal.
 
 ---
 
 ## In flight (branches / local work)
 
-- **Multi-organization profile + city** — personal fields (name, credentials, NPI,
-  state) separate from one-or-more employers (name, practice setting, city, state
-  each). Directory/roster updated. **Needs** `2026-07-10-profile-organizations.sql`
-  after the member-directory migration.
+- **Multi-organization profile + directory contact** — multi-employer orgs; account
+  contact (SAMPA) vs directory profile (peers); optional directory email/phone
+  override. **Needs** profile-organizations + directory-contact migrations after
+  member-directory SQL.
 - **`feature/mobile-app`** — Expo/React Native app (`mobile/` worktree). Phases 1–3:
   news, Key Points, keywords, search, saved articles, member area (profile editing,
   account deletion, CME slot), email OTP sign-in verified end-to-end. **Not merged.**

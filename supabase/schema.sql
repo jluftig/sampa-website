@@ -98,6 +98,11 @@ alter table public.profiles add column if not exists is_board         boolean no
 alter table public.profiles add column if not exists directory_visible boolean not null default true;
 alter table public.profiles add column if not exists share_email       boolean not null default true;
 alter table public.profiles add column if not exists share_phone       boolean not null default false;
+-- Directory contact can reuse account email/phone (default) or use separate
+-- directory_email / directory_phone (e.g. work inbox for peers, personal Gmail for sign-in).
+alter table public.profiles add column if not exists directory_use_account_contact boolean not null default true;
+alter table public.profiles add column if not exists directory_email text;
+alter table public.profiles add column if not exists directory_phone text;
 
 -- When this person click-accepted the Confidentiality & Acceptable Use
 -- Agreement for privileged access to member data. The members page refuses to
@@ -750,8 +755,16 @@ begin
     p.state,
     p.organizations,
     p.is_board,
-    case when p.share_email then p.email else null end,
-    case when p.share_phone then p.phone else null end
+    case
+      when not p.share_email then null
+      when coalesce(p.directory_use_account_contact, true) then p.email
+      else nullif(btrim(p.directory_email), '')
+    end,
+    case
+      when not p.share_phone then null
+      when coalesce(p.directory_use_account_contact, true) then p.phone
+      else nullif(btrim(p.directory_phone), '')
+    end
   from public.profiles p
   where p.directory_visible
     and p.membership_status = 'active'
@@ -772,7 +785,15 @@ begin
            or o->>'practice_setting' ilike '%' || q || '%'
            or o->>'website' ilike '%' || q || '%'
       )
-      or (p.share_email and p.email ilike '%' || q || '%')
+      or (
+        p.share_email
+        and (
+          case
+            when coalesce(p.directory_use_account_contact, true) then p.email
+            else nullif(btrim(p.directory_email), '')
+          end
+        ) ilike '%' || q || '%'
+      )
     )
     and (
       st is null
@@ -818,8 +839,16 @@ begin
     p.state,
     p.organizations,
     p.is_board,
-    case when p.share_email then p.email else null end,
-    case when p.share_phone then p.phone else null end
+    case
+      when not p.share_email then null
+      when coalesce(p.directory_use_account_contact, true) then p.email
+      else nullif(btrim(p.directory_email), '')
+    end,
+    case
+      when not p.share_phone then null
+      when coalesce(p.directory_use_account_contact, true) then p.phone
+      else nullif(btrim(p.directory_phone), '')
+    end
   from public.profiles p
   where p.id = member_id
     and p.directory_visible
