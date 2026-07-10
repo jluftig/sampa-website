@@ -27,7 +27,7 @@ const PROFILE_FIELDS = [
 ];
 
 export default function Dashboard() {
-  const { user, profile, isEditor, canViewMembers, refreshProfile, signOut } = useAuth();
+  const { user, profile, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
 
@@ -111,6 +111,11 @@ export default function Dashboard() {
         phone: profile.phone || '',
         newsletter_opt_in: profile.newsletter_opt_in ?? true,
         sms_opt_in: profile.sms_opt_in ?? false,
+        // Directory defaults match DB (opt-out listing; email on; phone off).
+        // Coalesce so a pre-migration profile still has sensible form values.
+        directory_visible: profile.directory_visible ?? true,
+        share_email: profile.share_email ?? true,
+        share_phone: profile.share_phone ?? false,
       });
     }
   }, [profile, form]);
@@ -164,9 +169,14 @@ export default function Dashboard() {
                 <PenSquare className="w-4 h-4" /> Editor dashboard
               </Link>
             )}
+            {canAccessMemberDirectory && (
+              <Link to="/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
+                <Users className="w-4 h-4" /> Directory
+              </Link>
+            )}
             {canViewMembers && (
               <Link to="/editor/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
-                <Users className="w-4 h-4" /> Members
+                <Users className="w-4 h-4" /> Roster
               </Link>
             )}
             <button onClick={signOut} className="text-text/50 hover:text-text font-semibold">
@@ -344,6 +354,62 @@ export default function Dashboard() {
                   </span>
                 </span>
               </label>
+
+              {/* Member directory privacy — opt-out listing; nested contact shares */}
+              <div className="mt-8 pt-6 border-t border-primary/10">
+                <h3 className="text-sm font-bold mb-1">Member directory</h3>
+                <p className="text-text/50 text-xs mb-4 max-w-xl">
+                  Visible only to other active SAMPA members — not the public website.
+                  Uncheck to hide your listing entirely. You can change this anytime.
+                </p>
+                <label className="flex items-start gap-3 text-sm text-text/70 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.directory_visible}
+                    onChange={(e) => setForm({ ...form, directory_visible: e.target.checked })}
+                    className="w-4 h-4 accent-primary mt-0.5"
+                  />
+                  <span>
+                    Show me in the member directory
+                    <span className="block text-xs text-text/40 mt-0.5">
+                      Name, credentials, organization, practice setting, and state
+                      are included when you are listed.
+                    </span>
+                  </span>
+                </label>
+                <div className={`mt-4 ml-7 space-y-3 ${form.directory_visible ? '' : 'opacity-40 pointer-events-none'}`}>
+                  <label className="flex items-start gap-3 text-sm text-text/70 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.share_email}
+                      disabled={!form.directory_visible}
+                      onChange={(e) => setForm({ ...form, share_email: e.target.checked })}
+                      className="w-4 h-4 accent-primary mt-0.5"
+                    />
+                    <span>
+                      Share my email with other members
+                      <span className="block text-xs text-text/40 mt-0.5">
+                        {profile?.email || user?.email || 'Your account email'}
+                      </span>
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-3 text-sm text-text/70 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.share_phone}
+                      disabled={!form.directory_visible}
+                      onChange={(e) => setForm({ ...form, share_phone: e.target.checked })}
+                      className="w-4 h-4 accent-primary mt-0.5"
+                    />
+                    <span>
+                      Share my phone with other members
+                      <span className="block text-xs text-text/40 mt-0.5">
+                        Uses the mobile number above{form.phone ? ` (${form.phone})` : ' (add a phone first)'}.
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
 
               <div className="flex items-center gap-4 mt-6">
                 <button

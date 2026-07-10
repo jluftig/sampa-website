@@ -84,7 +84,7 @@ src/
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
   lib/
     supabaseClient.js       single shared Supabase client
-    AuthContext.jsx         session + profile; useAuth() -> {user, profile, role, isEditor, isAdmin, isActiveMember, loading, signInWithGoogle(next), signInWithEmail(email,next), signOut, refreshProfile}
+    AuthContext.jsx         session + profile; useAuth() -> {user, profile, role, isEditor, isAdmin, isBoard, isActiveMember, canAccessMemberDirectory, canViewMembers, loading, signInWithGoogle(next), signInWithEmail(email,next), signOut, refreshProfile}
     membership.js           MEMBERSHIP_TIERS (tier keys/names/prices) — keep in sync with api/_lib/tiers.js
     api.js                  apiPost(path, body) — calls /api/* with the Supabase JWT
     useFavorites.js         saved-post ids + optimistic toggle for the signed-in user
@@ -96,6 +96,7 @@ src/
   components/
     RequireEditor.jsx       route guard; prop adminOnly restricts to admins
     RequireAuth.jsx         route guard: any signed-in user (member area)
+    RequireActiveMember.jsx route guard: active membership or staff (directory / future CME)
     RequireMemberViewer.jsx route guard: can_view_members capability or admin
     Navbar.jsx Footer.jsx   nav; section links are /#anchor so they work off-home
     RichTextEditor.jsx      TipTap wrapper (bold/italic/H2/H3/lists/quote/link)
@@ -116,13 +117,17 @@ src/
     Join.jsx                /join — tier picker -> Stripe Checkout (sign-in-first)
     Donate.jsx              /donate — PUBLIC donation page (one-time/monthly, preset+custom
                             amounts) -> Stripe Checkout; pending-501(c)(3) deductibility disclosure
-    Dashboard.jsx           /dashboard — membership status/billing, profile form, saved articles
+    Dashboard.jsx           /dashboard — membership status/billing, profile form, directory
+                            privacy toggles, saved articles
+    MemberDirectory.jsx     /members — peer networking directory (active members only)
+    MemberProfile.jsx       /members/:id — one member's shared networking profile
     Privacy.jsx Terms.jsx   /privacy, /terms — static legal pages (drafts, pending counsel review)
     EditorDashboard.jsx     /editor — post list + admin links
     PostEditor.jsx          /editor/new, /editor/:id — post + Key Points editor
     AdminTags.jsx           /editor/keywords (adminOnly) — manage keyword vocabulary
     AdminPeople.jsx         /editor/people (adminOnly) — checkbox permissions per person
-    AdminMembers.jsx        /editor/members (RequireMemberViewer) — roster, pledge tracker, counts, CSV
+    AdminMembers.jsx        /editor/members (RequireMemberViewer) — staff roster, pledge tracker,
+                            counts, CSV (NOT the peer directory)
     NotFound.jsx            catch-all 404
 supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
@@ -141,6 +146,8 @@ Point), `/keywords`, `/keywords/:slug` (`?and=slug2,slug3` = keyword intersectio
 `/search?q=`, `/login`, `/join`, `/donate` (public donation page — no sign-in required),
 `/privacy`, `/terms` (static legal pages, LegalPage shell).
 Member (RequireAuth — any signed-in user): `/dashboard`.
+Active member (RequireActiveMember — paid active or staff): `/members`, `/members/:id`
+(peer networking directory; separate from the staff roster).
 Editor (RequireEditor): `/editor`, `/editor/new`, `/editor/:id`.
 Admin (RequireEditor adminOnly): `/editor/keywords`, `/editor/people`.
 Member-viewer (RequireMemberViewer — can_view_members capability or admin): `/editor/members`.
@@ -163,7 +170,14 @@ redirect to `/login?next=...` so users return where they were headed.
   `role` is enum `user_role` = member|editor|admin (default member; 'editor' is a LEGACY
   value — the People & permissions UI normalizes it to member + flag on first edit).
   Capability flags (admin-set, guarded, combinable): `can_edit_news` (news writing),
-  `can_view_members` (read-only roster/pledges). Admin role implies all capabilities.
+  `can_view_members` (read-only staff roster/pledges), `is_board` (board member —
+  directory badge; further privileges TBD). Admin role implies news + member-viewer
+  operational access; **Board is independent** (admin ≠ board unless checked).
+  Directory privacy (self-editable, opt-out model): `directory_visible` (default true),
+  `share_email` (default true), `share_phone` (default false). Peer contact data is
+  **never** exposed by broadening profiles SELECT RLS — only via
+  `member_directory` / `member_directory_profile` SECURITY DEFINER RPCs (column
+  allowlist; viewer must be `is_active_member()`; targets must be active + visible).
   `privileged_terms_accepted_at` — click-accept timestamp for the Confidentiality &
   Acceptable Use Agreement (PrivilegedAccessAgreement.jsx); /editor/members refuses to
   render until set. Deliberately self-settable (accepting grants nothing by itself).
@@ -192,7 +206,10 @@ redirect to `/login?next=...` so users return where they were headed.
   future mobile apps — put cross-client read logic here, not in React):
   `search_key_points(q)`, `search_posts(q)` (websearch_to_tsquery + ts_rank),
   `key_points_for_tags(tag_slugs text[])` (AND semantics), `related_posts(for_post_id,
-  max_results)` (ranked by shared keywords), `keyword_counts()`.
+  max_results)` (ranked by shared keywords), `keyword_counts()`,
+  `member_directory(search, state_filter)` and `member_directory_profile(member_id)`
+  (SECURITY DEFINER peer directory; allowlisted columns only; null email/phone when
+  not shared).
 - Storage bucket `post-images` (public read) for cover images.
 
 ## Security model (RLS) — INVARIANTS, do not weaken
@@ -208,8 +225,10 @@ OR editors/admins).
   (incl. drafts). items/item_tags gate on their parent post being published.
 - **posts/items/item_tags write (INS/UPD/DEL):** `is_editor()` only.
 - **tags SELECT:** public. **tags write:** `is_admin()` only.
-- **profiles SELECT:** own row, admin, or member-viewer (read-only roster access).
-  **profiles UPDATE:** own row or admin — member-viewers cannot write.
+- **profiles SELECT:** own row, admin, or member-viewer (read-only staff roster access).
+  Do **not** open SELECT to all active members for networking — use
+  `member_directory*` RPCs instead. **profiles UPDATE:** own row or admin —
+  member-viewers cannot write; members may self-edit directory privacy columns.
 - **favorites:** SELECT/DELETE own rows only; INSERT own rows AND only for published posts.
 - **member_import:** SELECT `is_admin()` or `is_member_viewer()` (pledge tracking on
   /editor/members); NO write policies — writes happen server-side only (SQL editor /

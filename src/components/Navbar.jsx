@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Navbar() {
   const navRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { canAccessMemberDirectory } = useAuth();
 
   useEffect(() => {
     gsap.fromTo(navRef.current,
@@ -32,6 +34,9 @@ export default function Navbar() {
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
           <Link to="/donate" className="hover:text-primary-text transition-colors">Donate</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Contact Us</a>
+          {canAccessMemberDirectory && (
+            <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
+          )}
           <Link to="/dashboard" className="hover:text-primary-text transition-colors">Member Login</Link>
         </div>
 
@@ -68,6 +73,9 @@ export default function Navbar() {
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
           <Link to="/donate" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
+          {canAccessMemberDirectory && (
+            <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
+          )}
           <Link to="/dashboard" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Member Login</Link>
           <div className="mt-2 pt-4 border-t border-primary/10 flex justify-center">
              <Link to="/join" className="bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full" onClick={() => setIsMobileMenuOpen(false)}>

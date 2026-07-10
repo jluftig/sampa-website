@@ -74,10 +74,22 @@ alter table public.profiles add column if not exists onboarded_at      timestamp
 -- can_edit_news = write news posts (the old 'editor' role, which is kept as a
 -- legacy value and honored by is_editor()); can_view_members = READ-ONLY
 -- access to the member roster + pledge tracker (/editor/members) for the
--- membership committee, treasurer, etc. Admins implicitly have everything.
--- Both are admin-set only (guarded by guard_profile_role).
+-- membership committee, treasurer, etc. is_board = SAMPA board member (badge
+-- in the member directory; future board privileges TBD). Admins implicitly have
+-- news + member-viewer capabilities; Board is independent (admin ≠ board).
+-- Flags are admin-set only (guarded by guard_profile_role).
 alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
 alter table public.profiles add column if not exists can_view_members boolean not null default false;
+alter table public.profiles add column if not exists is_board         boolean not null default false;
+
+-- Member networking directory privacy (self-editable). Opt-out model:
+-- directory_visible defaults true so active members appear unless they hide.
+-- share_email defaults true (reachable for networking); share_phone defaults
+-- false (more sensitive). Never broaden profiles SELECT RLS for this — peer
+-- data is exposed only via member_directory* SECURITY DEFINER RPCs.
+alter table public.profiles add column if not exists directory_visible boolean not null default true;
+alter table public.profiles add column if not exists share_email       boolean not null default true;
+alter table public.profiles add column if not exists share_phone       boolean not null default false;
 
 -- When this person click-accepted the Confidentiality & Acceptable Use
 -- Agreement for privileged access to member data. The members page refuses to
@@ -303,6 +315,9 @@ begin
   if new.can_view_members is distinct from old.can_view_members then
     changes := changes || jsonb_build_object('can_view_members', jsonb_build_array(old.can_view_members, new.can_view_members));
   end if;
+  if new.is_board is distinct from old.is_board then
+    changes := changes || jsonb_build_object('is_board', jsonb_build_array(old.is_board, new.is_board));
+  end if;
   if changes <> '{}'::jsonb then
     insert into public.audit_log (actor_id, actor_email, action, target_email, detail)
     values (
@@ -339,6 +354,7 @@ begin
     or new.membership_years   is distinct from old.membership_years
     or new.can_edit_news      is distinct from old.can_edit_news
     or new.can_view_members   is distinct from old.can_view_members
+    or new.is_board           is distinct from old.is_board
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;
@@ -675,4 +691,99 @@ language sql stable set search_path = public as $$
     join public.posts p      on p.id = i.post_id and p.status = 'published'
    group by t.id, t.name, t.short_label, t.slug
    order by count(it.item_id) desc, t.name;
+$$;
+
+-- ----- Member networking directory ------------------------------------------
+-- Peer profiles for active members. SECURITY DEFINER so results bypass the
+-- tight profiles SELECT RLS (own / admin / member-viewer only) while still
+-- returning a hard allowlist of columns. NEVER expand profiles SELECT RLS to
+-- "all active members" — that would leak billing, NPI, flags, etc.
+-- Viewer: is_active_member(). Targets: membership_status='active' AND
+-- directory_visible. Email/phone null when the owner did not share them.
+
+create or replace function public.member_directory(
+  search text default null,
+  state_filter text default null
+)
+returns table (
+  id uuid,
+  full_name text,
+  credentials text,
+  organization text,
+  practice_setting text,
+  state text,
+  is_board boolean,
+  email text,
+  phone text
+)
+language plpgsql stable security definer set search_path = public as $$
+declare
+  q text := nullif(btrim(coalesce(search, '')), '');
+  st text := nullif(btrim(coalesce(state_filter, '')), '');
+begin
+  if not public.is_active_member() then
+    return;
+  end if;
+
+  return query
+  select
+    p.id,
+    p.full_name,
+    p.credentials,
+    p.organization,
+    p.practice_setting,
+    p.state,
+    p.is_board,
+    case when p.share_email then p.email else null end,
+    case when p.share_phone then p.phone else null end
+  from public.profiles p
+  where p.directory_visible
+    and p.membership_status = 'active'
+    and (
+      q is null
+      or p.full_name ilike '%' || q || '%'
+      or p.organization ilike '%' || q || '%'
+      or p.credentials ilike '%' || q || '%'
+      or p.state ilike '%' || q || '%'
+      or (p.share_email and p.email ilike '%' || q || '%')
+    )
+    and (st is null or p.state = st)
+  order by p.full_name nulls last, p.email nulls last;
+end;
+$$;
+
+create or replace function public.member_directory_profile(member_id uuid)
+returns table (
+  id uuid,
+  full_name text,
+  credentials text,
+  organization text,
+  practice_setting text,
+  state text,
+  is_board boolean,
+  email text,
+  phone text
+)
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.is_active_member() then
+    return;
+  end if;
+
+  return query
+  select
+    p.id,
+    p.full_name,
+    p.credentials,
+    p.organization,
+    p.practice_setting,
+    p.state,
+    p.is_board,
+    case when p.share_email then p.email else null end,
+    case when p.share_phone then p.phone else null end
+  from public.profiles p
+  where p.id = member_id
+    and p.directory_visible
+    and p.membership_status = 'active';
+end;
 $$;
