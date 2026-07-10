@@ -12,7 +12,7 @@ export default function LegalPage({ label, title, effectiveDate, children }) {
 
       <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
         <header className="mb-12">
-          <div className="text-primary font-bold font-data tracking-widest text-xs mb-4 uppercase">
+          <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-4 uppercase">
             {label}
           </div>
           <h1 className="text-3xl md:text-5xl font-drama font-bold leading-tight mb-4">
@@ -21,7 +21,7 @@ export default function LegalPage({ label, title, effectiveDate, children }) {
           <p className="text-text/50 text-sm font-data">Effective {effectiveDate}</p>
         </header>
 
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-p:text-text/80 prose-li:text-text/80">
+        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary-text prose-p:text-text/80 prose-li:text-text/80">
           {children}
         </div>
       </main>

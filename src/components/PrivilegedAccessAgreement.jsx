@@ -32,7 +32,7 @@ export default function PrivilegedAccessAgreement() {
     <div className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 md:p-10 max-w-3xl">
       <div className="flex items-center gap-3 mb-2">
         <ShieldCheck className="w-6 h-6 text-primary" />
-        <div className="text-primary font-bold font-data tracking-widest text-xs uppercase">
+        <div className="text-primary-text font-bold font-data tracking-widest text-xs uppercase">
           Before you continue
         </div>
       </div>
@@ -104,7 +104,7 @@ export default function PrivilegedAccessAgreement() {
       <button
         onClick={accept}
         disabled={busy}
-        className="px-6 py-3 rounded-full bg-primary text-white font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+        className="px-6 py-3 rounded-full bg-primary-text text-white font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
       >
         {busy ? 'Recording…' : 'I agree — continue to member data'}
       </button>

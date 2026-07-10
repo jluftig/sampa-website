@@ -213,7 +213,7 @@ export default function AdminMembers() {
       <Navbar />
 
       <main className="max-w-6xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
 
@@ -234,7 +234,7 @@ export default function AdminMembers() {
           <button
             onClick={downloadCsv}
             disabled={loading || filtered.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             <Download className="w-4 h-4" />
             Download CSV ({filtered.length})
@@ -428,7 +428,7 @@ export default function AdminMembers() {
               The CSV export includes additional columns: credentials,
               organization, practice setting, phone, and newsletter/SMS
               preferences. Permissions are managed by administrators on{' '}
-              <Link to="/editor/people" className="underline hover:text-primary">People & permissions</Link>.
+              <Link to="/editor/people" className="underline hover:text-primary-text">People & permissions</Link>.
             </p>
           </>
         )}

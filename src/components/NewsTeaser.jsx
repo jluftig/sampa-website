@@ -55,7 +55,7 @@ export default function NewsTeaser() {
 
         <Link
           to="/news"
-          className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary hover:text-white font-semibold transition-colors"
+          className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary-text hover:text-white font-semibold transition-colors"
         >
           View all news
         </Link>

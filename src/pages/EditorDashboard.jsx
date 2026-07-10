@@ -57,12 +57,12 @@ export default function EditorDashboard() {
       <main className="max-w-5xl mx-auto px-4 pt-40 pb-24">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
-            <div className="text-primary font-bold font-data tracking-widest text-xs mb-2 uppercase">
+            <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-2 uppercase">
               Editor Dashboard
             </div>
             <h1 className="text-3xl font-drama font-bold">Your posts</h1>
             <p className="text-text/50 text-sm mt-1">
-              Signed in as {profile?.email} · <span className="font-data text-primary">{profile?.role}</span>
+              Signed in as {profile?.email} · <span className="font-data text-primary-text">{profile?.role}</span>
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -75,7 +75,7 @@ export default function EditorDashboard() {
             {isAdmin && (
               <Link
                 to="/editor/keywords"
-                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
               >
                 Manage keywords
               </Link>
@@ -83,7 +83,7 @@ export default function EditorDashboard() {
             {isAdmin && (
               <Link
                 to="/editor/people"
-                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
               >
                 People & permissions
               </Link>
@@ -91,14 +91,14 @@ export default function EditorDashboard() {
             {canViewMembers && (
               <Link
                 to="/editor/members"
-                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
               >
                 Members
               </Link>
             )}
             <button
               onClick={signOut}
-              className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
+              className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
             >
               Sign out
             </button>
@@ -112,7 +112,7 @@ export default function EditorDashboard() {
           <div className="bg-white rounded-4xl border border-primary/10 p-12 text-center">
             <h2 className="text-xl font-bold mb-2">No posts yet</h2>
             <p className="text-text/60 mb-6">Create your first news post to get started.</p>
-            <Link to="/editor/new" className="text-primary font-semibold hover:underline">
+            <Link to="/editor/new" className="text-primary-text font-semibold hover:underline">
               + New Post
             </Link>
           </div>
@@ -127,7 +127,7 @@ export default function EditorDashboard() {
                     <span
                       className={`text-xs font-data font-semibold px-2 py-0.5 rounded-full ${
                         post.status === 'published'
-                          ? 'bg-primary/10 text-primary'
+                          ? 'bg-primary/10 text-primary-text'
                           : 'bg-text/10 text-text/60'
                       }`}
                     >
@@ -146,21 +146,21 @@ export default function EditorDashboard() {
                   {post.status === 'published' && (
                     <Link
                       to={`/news/${post.slug}`}
-                      className="text-sm font-semibold text-text/60 hover:text-primary px-3 py-1.5"
+                      className="text-sm font-semibold text-text/60 hover:text-primary-text px-3 py-1.5"
                     >
                       View
                     </Link>
                   )}
                   <Link
                     to={`/editor/${post.id}`}
-                    className="text-sm font-semibold text-primary hover:underline px-3 py-1.5"
+                    className="text-sm font-semibold text-primary-text hover:underline px-3 py-1.5"
                   >
                     Edit
                   </Link>
                   <button
                     disabled={busyId === post.id}
                     onClick={() => togglePublish(post)}
-                    className="text-sm font-semibold px-3 py-1.5 rounded-full border border-primary/20 hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
+                    className="text-sm font-semibold px-3 py-1.5 rounded-full border border-primary/20 hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50"
                   >
                     {post.status === 'published' ? 'Unpublish' : 'Publish'}
                   </button>

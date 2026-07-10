@@ -77,12 +77,12 @@ export default function Donate() {
               with substance use disorder. A receipt is on its way by email.
               {user ? (
                 <> You can see your giving history on your{' '}
-                  <Link to="/dashboard" className="text-primary font-semibold hover:underline">dashboard</Link>.</>
+                  <Link to="/dashboard" className="text-primary-text font-semibold hover:underline">dashboard</Link>.</>
               ) : null}
             </p>
             <button
               onClick={() => setSearchParams({}, { replace: true })}
-              className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-primary to-accent text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
+              className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-primary-text to-accent text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
             >
               Give again
             </button>
@@ -116,7 +116,7 @@ export default function Donate() {
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                   <Link
                     to="/login?next=/donate"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity"
                   >
                     <LogIn className="w-4 h-4" /> Sign in
                   </Link>
@@ -138,7 +138,7 @@ export default function Donate() {
                   onClick={() => setFrequency(opt.key)}
                   className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-colors ${
                     frequency === opt.key
-                      ? 'bg-white text-primary shadow-sm'
+                      ? 'bg-white text-primary-text shadow-sm'
                       : 'text-text/60 hover:text-text'
                   }`}
                 >
@@ -158,7 +158,7 @@ export default function Donate() {
                   onClick={() => { setPreset(val); setError(null); }}
                   className={`py-3 rounded-2xl border text-lg font-bold font-sans transition-colors ${
                     preset === val
-                      ? 'bg-primary border-primary text-white'
+                      ? 'bg-primary-text border-primary-text text-white'
                       : 'border-primary/20 text-text hover:border-primary'
                   }`}
                 >
@@ -192,7 +192,7 @@ export default function Donate() {
             <button
               onClick={donate}
               disabled={busy || !amountValid}
-              className="block w-full mt-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+              className="block w-full mt-6 py-4 rounded-full bg-gradient-to-r from-primary-text to-accent text-white font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
             >
               {busy
                 ? 'Opening checkout…'

@@ -354,7 +354,7 @@ export default function PostEditor() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
 
@@ -474,7 +474,7 @@ export default function PostEditor() {
                 </div>
               )}
               <input type="file" accept="image/*" onChange={onCoverSelected} disabled={uploading}
-                className="block text-sm text-text/70 file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-primary/10 file:text-primary file:font-semibold hover:file:bg-primary/20" />
+                className="block text-sm text-text/70 file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-primary/10 file:text-primary-text file:font-semibold hover:file:bg-primary/20" />
               {uploading && <p className="text-text/50 text-sm mt-2 font-data">Uploading…</p>}
 
               {coverImageUrl && (
@@ -535,7 +535,7 @@ export default function PostEditor() {
                           <button type="button" key={tag.id} title={tag.name}
                             onClick={() => toggleTag(kp.localId, tag.id)}
                             className={`px-2.5 py-0.5 rounded-full text-xs font-data font-semibold transition-colors ${
-                              selected ? 'bg-primary text-white' : 'bg-primary/10 text-primary hover:bg-primary/20'
+                              selected ? 'bg-primary-text text-white' : 'bg-primary/10 text-primary-text hover:bg-primary/20'
                             }`}>
                             {tag.short_label || tag.name}
                           </button>
@@ -547,7 +547,7 @@ export default function PostEditor() {
               </div>
 
               <button type="button" onClick={addKeyPoint}
-                className="mt-4 text-primary font-semibold hover:underline">
+                className="mt-4 text-primary-text font-semibold hover:underline">
                 + Add Key Point
               </button>
             </div>
@@ -567,7 +567,7 @@ export default function PostEditor() {
                     {saving ? 'Saving…' : 'Save changes'}
                   </button>
                   <button onClick={() => save('draft')} disabled={saving}
-                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary hover:text-white transition-colors disabled:opacity-50">
+                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50">
                     Unpublish
                   </button>
                 </>
@@ -578,7 +578,7 @@ export default function PostEditor() {
                     {saving ? 'Saving…' : 'Publish'}
                   </button>
                   <button onClick={() => save('draft')} disabled={saving}
-                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary hover:text-white transition-colors disabled:opacity-50">
+                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50">
                     Save draft
                   </button>
                 </>

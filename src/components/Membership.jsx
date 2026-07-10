@@ -38,7 +38,7 @@ export default function Membership() {
           <Star className="w-8 h-8 fill-primary/10" />
         </div>
         <div>
-          <h3 className="font-bold text-xl text-primary mb-2">Multi-Year Discounts Available!</h3>
+          <h3 className="font-bold text-xl text-primary-text mb-2">Multi-Year Discounts Available!</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
             Commit to the future of SAMPA and save: get <strong>~10% off for 2 years</strong>, or <strong>up to ~20% off for 3 years</strong> — pick your term at checkout.
             <span className="block mt-1 text-xs opacity-70 italic">(Student and Pre-PA memberships: up to 2 years. Legacy members can choose a $125 lifetime membership.)</span>
@@ -56,11 +56,11 @@ export default function Membership() {
             <div className="relative z-10">
               <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
               <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-6 h-10`}>{tier.desc}</p>
-              <div className={`text-4xl font-bold font-sans mb-8 ${tier.highlight ? 'text-white' : 'text-primary'}`}>
+              <div className={`text-4xl font-bold font-sans mb-8 ${tier.highlight ? 'text-white' : 'text-primary-text'}`}>
                 ${tier.prices[1]}<span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>/yr</span>
               </div>
             </div>
-            <Link to={`/join?tier=${tier.key}`} className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 ${tier.highlight ? 'bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg hover:scale-[1.02]' : 'border-2 border-primary text-primary hover:bg-primary/5'}`}>
+            <Link to={`/join?tier=${tier.key}`} className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 ${tier.highlight ? 'bg-gradient-to-r from-primary-text to-accent text-white hover:shadow-lg hover:scale-[1.02]' : 'border-2 border-primary-text text-primary-text hover:bg-primary-text/5'}`}>
               Select Tier
             </Link>
           </div>
@@ -71,7 +71,7 @@ export default function Membership() {
       {/* DONATION SECTION */}
       <div className="max-w-6xl mx-auto border-t border-text/10 pt-24">
         <div className="text-center mb-16">
-          <div className="inline-block px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold mb-6 font-data uppercase tracking-wider flex items-center gap-2 mx-auto w-fit">
+          <div className="inline-block px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary-text text-xs font-semibold mb-6 font-data uppercase tracking-wider flex items-center gap-2 mx-auto w-fit">
             <Heart className="w-4 h-4" /> Support Our Mission
           </div>
           <h2 className="text-3xl md:text-5xl font-drama font-bold text-text mb-6">
@@ -97,14 +97,14 @@ export default function Membership() {
                 <div className="absolute top-5 -right-12 w-40 text-center bg-accent rotate-45 py-1 text-[10px] font-bold font-data tracking-wider uppercase shadow-sm text-white">Featured</div>
               )}
               <div className={`text-2xl font-bold mb-1 relative z-10 ${tier.highlight ? 'text-white' : 'text-text'}`}>{tier.price}</div>
-              <div className={`font-semibold text-sm mb-2 relative z-10 ${tier.highlight ? 'text-accent' : (tier.color || 'text-primary')}`}>{tier.name}</div>
+              <div className={`font-semibold text-sm mb-2 relative z-10 ${tier.highlight ? 'text-accent' : (tier.color || 'text-primary-text')}`}>{tier.name}</div>
               <div className={`text-xs relative z-10 ${tier.highlight ? 'text-white/60' : 'text-text/50'}`}>{tier.desc}</div>
             </div>
           ))}
         </div>
 
         <div className="flex justify-center">
-          <a href="https://forms.gle/vfSJS9LTPwT9TMT59" target="_blank" rel="noopener noreferrer" className="btn-magnetic bg-gradient-to-r from-primary to-accent text-white text-lg px-10 py-4 rounded-full shadow-xl font-bold flex items-center justify-center hover:shadow-2xl transition-all">
+          <a href="https://forms.gle/vfSJS9LTPwT9TMT59" target="_blank" rel="noopener noreferrer" className="btn-magnetic bg-gradient-to-r from-primary-text to-accent text-white text-lg px-10 py-4 rounded-full shadow-xl font-bold flex items-center justify-center hover:shadow-2xl transition-all">
             Donate Now
           </a>
         </div>

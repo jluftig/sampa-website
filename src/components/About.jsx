@@ -34,7 +34,7 @@ export default function About() {
             </div>
           </div>
           <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-3xl shadow-xl border border-primary/5 animate-bounce" style={{ animationDuration: '4s' }}>
-            <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-tight">
+            <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-text to-accent bg-clip-text text-transparent leading-tight">
               Advancing <br />
               Addiction Medicine
             </div>

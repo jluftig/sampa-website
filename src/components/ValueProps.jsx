@@ -39,7 +39,7 @@ export default function ValueProps() {
               <div className="w-16 h-16 bg-primary/10 group-hover:bg-primary/20 transition-colors rounded-2xl flex items-center justify-center mb-8">
                 {p.icon}
               </div>
-              <h3 className="text-2xl font-bold font-sans tracking-tight mb-4 text-text/90 group-hover:text-primary transition-colors leading-snug">
+              <h3 className="text-2xl font-bold font-sans tracking-tight mb-4 text-text/90 group-hover:text-primary-text transition-colors leading-snug">
                 {p.title}
               </h3>
               <p className="text-text/70 leading-relaxed text-lg">

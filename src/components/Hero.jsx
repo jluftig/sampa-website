@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="absolute bottom-1/4 right-1/4 w-[28rem] h-[28rem] bg-accent/5 rounded-full blur-[100px] -z-0"></div>
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
-        <div className="inline-block px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold mb-8 font-data tracking-wider uppercase">
+        <div className="inline-block px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary-text text-xs font-semibold mb-8 font-data tracking-wider uppercase">
           A nonprofit pending 501(c)(3) status
         </div>
 
@@ -39,11 +39,11 @@ export default function Hero() {
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 justify-center">
-          <a href="#membership" className="btn-magnetic bg-primary text-white text-lg px-8 py-4 rounded-full shadow-xl shadow-primary/20 group flex items-center justify-center">
+          <a href="#membership" className="btn-magnetic bg-primary-text text-white text-lg px-8 py-4 rounded-full shadow-xl shadow-primary/20 group flex items-center justify-center">
             <span>Join as a Founding Member</span>
             <ArrowRight className="ml-2 w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
           </a>
-          <a href="#about" className="px-8 py-4 rounded-full text-text/80 hover:text-primary font-semibold transition-colors">
+          <a href="#about" className="px-8 py-4 rounded-full text-text/80 hover:text-primary-text font-semibold transition-colors">
             Our Mission
           </a>
         </div>

@@ -62,7 +62,7 @@ export default function AdminPeople() {
       <Navbar />
 
       <main className="max-w-4xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
         <h1 className="text-3xl font-drama font-bold mt-4 mb-2">People & permissions</h1>
@@ -98,7 +98,7 @@ export default function AdminPeople() {
 
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
                     {p.admin ? (
-                      <span className="text-primary font-semibold text-xs font-data uppercase tracking-wider">
+                      <span className="text-primary-text font-semibold text-xs font-data uppercase tracking-wider">
                         All permissions
                       </span>
                     ) : (
