@@ -4,7 +4,11 @@ _A plain-English guide to how the SAMPA website and its News/blog system are bui
 who runs what, how to do everyday tasks, and where it's all heading. If you're taking
 this over cold, start here._
 
-_Last updated: 2026-07-09_
+**Current priorities and what's in flight:** see [STATUS.md](STATUS.md) — living project
+status (live / blocked / next). This guide explains *how* the system works; STATUS
+tracks *where things stand right now*.
+
+_Last updated: 2026-07-10_
 
 ---
 
