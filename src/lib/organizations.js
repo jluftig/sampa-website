@@ -1,15 +1,23 @@
 // Profile organizations: members may list one or more employers, each with
-// name, practice setting, city, state, and optional website. Stored as
-// profiles.organizations (jsonb array).
+// name, role (title at that org), practice setting, city, state, and optional
+// website. Stored as profiles.organizations (jsonb array).
 //
 // Personal profile fields are separate: full_name, credentials, npi, state
 // (profiles.state — home/membership state; often pre-filled from member_import).
 // Denormalized org columns for admin roster/CSV:
 //   organization, city, practice_setting  ← from organizations[0]
 // profiles.state is NEVER overwritten from an org entry.
+// Note: org.role is the job title at that employer — not profiles.role (admin flag).
 
 export function emptyOrganization() {
-  return { name: '', city: '', state: '', practice_setting: '', website: '' };
+  return {
+    name: '',
+    role: '',
+    city: '',
+    state: '',
+    practice_setting: '',
+    website: '',
+  };
 }
 
 /** Normalize a typed website to an absolute URL (adds https:// if bare). */
@@ -39,6 +47,7 @@ export function organizationsFromProfile(profile) {
   if (Array.isArray(raw) && raw.length > 0) {
     return raw.map((o) => ({
       name: o?.name || '',
+      role: o?.role || '',
       city: o?.city || '',
       state: o?.state || '',
       practice_setting: o?.practice_setting || '',
@@ -51,6 +60,7 @@ export function organizationsFromProfile(profile) {
     return [
       {
         name: profile.organization || '',
+        role: '',
         city: profile.city || '',
         state: '',
         practice_setting: profile.practice_setting || '',
@@ -66,14 +76,19 @@ export function sanitizeOrganizations(list) {
   return (list || [])
     .map((o) => ({
       name: (o.name || '').trim(),
+      role: (o.role || '').trim() || null,
       city: (o.city || '').trim() || null,
       state: (o.state || '').trim() || null,
       practice_setting: (o.practice_setting || '').trim() || null,
       website: normalizeWebsite(o.website),
     }))
-    .filter((o) => o.name || o.city || o.state || o.practice_setting || o.website)
+    .filter(
+      (o) =>
+        o.name || o.role || o.city || o.state || o.practice_setting || o.website
+    )
     .map((o) => ({
       name: o.name || '',
+      role: o.role,
       city: o.city,
       state: o.state,
       practice_setting: o.practice_setting,
@@ -106,7 +121,8 @@ export function formatOrgLocation(org) {
  */
 export function displayOrganizations(person) {
   const orgs = organizationsFromProfile(person).filter(
-    (o) => o.name || o.city || o.state || o.practice_setting || o.website
+    (o) =>
+      o.name || o.role || o.city || o.state || o.practice_setting || o.website
   );
   return orgs;
 }

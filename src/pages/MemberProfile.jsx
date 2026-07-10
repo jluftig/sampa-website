@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Building2, ExternalLink, Globe, Mail, MapPin, Phone, Stethoscope } from 'lucide-react';
+import { ArrowLeft, Briefcase, Building2, ExternalLink, Globe, Mail, MapPin, Phone, Stethoscope } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import {
   displayOrganizations,
@@ -125,6 +125,12 @@ export default function MemberProfile() {
                             <div className="min-w-0 space-y-2">
                               {org.name && (
                                 <div className="font-semibold text-text/90">{org.name}</div>
+                              )}
+                              {org.role && (
+                                <div className="flex items-start gap-2 text-sm text-text/70">
+                                  <Briefcase className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
+                                  <span>{org.role}</span>
+                                </div>
                               )}
                               {org.practice_setting && (
                                 <div className="flex items-start gap-2 text-sm text-text/70">

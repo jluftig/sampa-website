@@ -7,8 +7,8 @@
 --
 --   1. profiles.city (denormalized primary city, from organizations[0])
 --   2. profiles.organizations jsonb — array of
---        { name, city, state, practice_setting, website }
---      (website is optional client-side; no extra columns required)
+--        { name, role, city, state, practice_setting, website }
+--      (role = title at that org; website optional; no extra columns required)
 --   3. Backfill organizations from legacy organization/city/practice_setting
 --      (does NOT copy personal profiles.state into org entries — that field is
 --      home/membership state, often from member_import)
@@ -95,6 +95,7 @@ begin
         select 1
         from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
         where o->>'name' ilike '%' || q || '%'
+           or o->>'role' ilike '%' || q || '%'
            or o->>'city' ilike '%' || q || '%'
            or o->>'state' ilike '%' || q || '%'
            or o->>'practice_setting' ilike '%' || q || '%'

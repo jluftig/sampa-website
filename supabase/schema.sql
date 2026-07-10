@@ -67,7 +67,8 @@ alter table public.profiles add column if not exists organization      text;
 alter table public.profiles add column if not exists practice_setting  text;
 alter table public.profiles add column if not exists city              text;
 alter table public.profiles add column if not exists state             text;
--- Multi-employer list: [{name, city, state, practice_setting, website}, ...].
+-- Multi-employer list: [{name, role, city, state, practice_setting, website},
+-- ...]. org.role = job title at that employer (not profiles.role).
 -- organization / city / practice_setting stay denormalized from
 -- organizations[0] for admin roster/CSV. profiles.state is PERSONAL
 -- (home/membership — often from member_import), never overwritten from an org.
@@ -765,6 +766,7 @@ begin
         select 1
         from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
         where o->>'name' ilike '%' || q || '%'
+           or o->>'role' ilike '%' || q || '%'
            or o->>'city' ilike '%' || q || '%'
            or o->>'state' ilike '%' || q || '%'
            or o->>'practice_setting' ilike '%' || q || '%'

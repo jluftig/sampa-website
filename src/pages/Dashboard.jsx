@@ -216,6 +216,7 @@ export default function Dashboard() {
       ...prev,
       organizations: organizations.length ? organizations.map((o) => ({
         name: o.name || '',
+        role: o.role || '',
         city: o.city || '',
         state: o.state || '',
         practice_setting: o.practice_setting || '',
@@ -420,8 +421,9 @@ export default function Dashboard() {
                   <h3 className="text-sm font-bold">Organizations / employers</h3>
                   <p className="text-text/50 text-xs mt-1 max-w-xl">
                     List each place you work or hold a role. Each entry has its
-                    own organization name, practice setting, city, state, and
-                    optional website — separate from your personal state above.
+                    own organization name, your role/title there, practice
+                    setting, city, state, and optional website — separate from
+                    your personal state above.
                   </p>
                 </div>
 
@@ -464,6 +466,22 @@ export default function Dashboard() {
                             value={org.name}
                             onChange={(e) => updateOrganization(index, 'name', e.target.value)}
                             placeholder="e.g. Highland Hospital, Bridge, SAMPA"
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label
+                            htmlFor={`pf-org-role-${index}`}
+                            className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                          >
+                            Your role / title
+                          </label>
+                          <input
+                            id={`pf-org-role-${index}`}
+                            type="text"
+                            value={org.role}
+                            onChange={(e) => updateOrganization(index, 'role', e.target.value)}
+                            placeholder="e.g. Co-Founder and Director of Clinical Innovation"
                             className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
                           />
                         </div>
@@ -594,7 +612,7 @@ export default function Dashboard() {
                     Show me in the member directory
                     <span className="block text-xs text-text/40 mt-0.5">
                       Name, credentials, personal state, and organizations
-                      (name, practice setting, city, state, website) are
+                      (name, role, practice setting, city, state, website) are
                       included when you are listed.
                     </span>
                   </span>

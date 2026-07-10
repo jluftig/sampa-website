@@ -65,8 +65,14 @@ const CSV_COLUMNS = [
         .map((o) => {
           const loc = [o.city, o.state].filter(Boolean).join(', ');
           const name = o.name || '';
+          const role = o.role || '';
           const site = o.website || '';
-          const bits = [name, loc && `(${loc})`, site].filter(Boolean);
+          const bits = [
+            name,
+            role && `— ${role}`,
+            loc && `(${loc})`,
+            site,
+          ].filter(Boolean);
           return bits.join(' ');
         })
         .filter(Boolean)
@@ -213,7 +219,7 @@ export default function AdminMembers() {
       if (statusFilter !== 'all' && (p.membership_status || 'none') !== statusFilter) return false;
       if (!q) return true;
       const orgBlob = Array.isArray(p.organizations)
-        ? p.organizations.map((o) => [o.name, o.city, o.state].filter(Boolean).join(' ')).join(' ')
+        ? p.organizations.map((o) => [o.name, o.role, o.city, o.state].filter(Boolean).join(' ')).join(' ')
         : '';
       return [p.full_name, p.email, p.organization, p.city, p.state, orgBlob]
         .some((v) => v && v.toLowerCase().includes(q));

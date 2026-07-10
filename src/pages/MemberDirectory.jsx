@@ -45,6 +45,9 @@ function MemberCard({ person }) {
             )}
           </div>
         )}
+        {primary?.role && (
+          <div className="text-text/55">{primary.role}</div>
+        )}
         {primary?.practice_setting && (
           <div className="text-text/45">{primary.practice_setting}</div>
         )}
