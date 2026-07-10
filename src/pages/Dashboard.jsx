@@ -219,6 +219,7 @@ export default function Dashboard() {
         city: o.city || '',
         state: o.state || '',
         practice_setting: o.practice_setting || '',
+        website: o.website || '',
       })) : [emptyOrganization()],
     }));
     await refreshProfile();
@@ -419,8 +420,8 @@ export default function Dashboard() {
                   <h3 className="text-sm font-bold">Organizations / employers</h3>
                   <p className="text-text/50 text-xs mt-1 max-w-xl">
                     List each place you work or hold a role. Each entry has its
-                    own organization name, practice setting, city, and state —
-                    separate from your personal state above.
+                    own organization name, practice setting, city, state, and
+                    optional website — separate from your personal state above.
                   </p>
                 </div>
 
@@ -479,6 +480,24 @@ export default function Dashboard() {
                             value={org.practice_setting}
                             onChange={(e) => updateOrganization(index, 'practice_setting', e.target.value)}
                             placeholder="e.g. OTP, FQHC, hospital, private practice"
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label
+                            htmlFor={`pf-org-website-${index}`}
+                            className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                          >
+                            Website <span className="normal-case font-normal tracking-normal">(optional)</span>
+                          </label>
+                          <input
+                            id={`pf-org-website-${index}`}
+                            type="url"
+                            inputMode="url"
+                            autoComplete="url"
+                            value={org.website}
+                            onChange={(e) => updateOrganization(index, 'website', e.target.value)}
+                            placeholder="https://example.org"
                             className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
                           />
                         </div>
@@ -575,8 +594,8 @@ export default function Dashboard() {
                     Show me in the member directory
                     <span className="block text-xs text-text/40 mt-0.5">
                       Name, credentials, personal state, and organizations
-                      (name, practice setting, city, and state) are included
-                      when you are listed.
+                      (name, practice setting, city, state, website) are
+                      included when you are listed.
                     </span>
                   </span>
                 </label>

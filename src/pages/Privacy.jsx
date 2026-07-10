@@ -47,8 +47,9 @@ export default function Privacy() {
       <h3>Member profile (provided by you)</h3>
       <p>
         On your dashboard you may add professional details: credentials, NPI
-        number, one or more organizations/employers (each with city, state, and
-        practice setting), phone number, and your newsletter preference. These
+        number, one or more organizations/employers (each with city, state,
+        practice setting, and optional website), phone number, and your
+        newsletter preference. These
         are optional and editable by you at any time. They are professional
         details about you as a clinician — never information about patients.
       </p>

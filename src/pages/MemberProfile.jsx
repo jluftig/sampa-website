@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Building2, Mail, MapPin, Phone, Stethoscope } from 'lucide-react';
+import { ArrowLeft, Building2, ExternalLink, Globe, Mail, MapPin, Phone, Stethoscope } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
-import { displayOrganizations, formatOrgLocation } from '../lib/organizations';
+import {
+  displayOrganizations,
+  formatOrgLocation,
+  formatWebsiteLabel,
+  normalizeWebsite,
+} from '../lib/organizations';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -109,6 +114,7 @@ export default function MemberProfile() {
                   <ul className="space-y-4">
                     {orgs.map((org, i) => {
                       const location = formatOrgLocation(org);
+                      const websiteHref = normalizeWebsite(org.website);
                       return (
                         <li
                           key={i}
@@ -130,6 +136,20 @@ export default function MemberProfile() {
                                 <div className="flex items-start gap-2 text-sm text-text/70">
                                   <MapPin className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
                                   <span>{location}</span>
+                                </div>
+                              )}
+                              {websiteHref && (
+                                <div className="flex items-start gap-2 text-sm">
+                                  <Globe className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
+                                  <a
+                                    href={websiteHref}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary-text font-semibold hover:underline inline-flex items-center gap-1 break-all"
+                                  >
+                                    {formatWebsiteLabel(websiteHref)}
+                                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                                  </a>
                                 </div>
                               )}
                             </div>

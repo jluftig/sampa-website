@@ -168,8 +168,8 @@ redirect to `/login?next=...` so users return where they were headed.
   profile (self-editable, dashboard onboarding form): personal fields
   `credentials, npi, state` (home/membership state — often pre-filled from
   member_import, not Google/Stripe); `organizations` jsonb array of
-  `{name, city, state, practice_setting}` (multi-employer; default one row +
-  "Add additional organization"); denormalized primary org columns
+  `{name, city, state, practice_setting, website}` (multi-employer; default one
+  row + "Add additional organization"); denormalized primary org columns
   `organization, practice_setting, city` from `organizations[0]` for admin
   roster/CSV — personal `state` is never overwritten from an org;
   `newsletter_opt_in, sms_opt_in, onboarded_at`;

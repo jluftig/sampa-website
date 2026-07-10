@@ -7,7 +7,8 @@
 --
 --   1. profiles.city (denormalized primary city, from organizations[0])
 --   2. profiles.organizations jsonb — array of
---        { name, city, state, practice_setting }
+--        { name, city, state, practice_setting, website }
+--      (website is optional client-side; no extra columns required)
 --   3. Backfill organizations from legacy organization/city/practice_setting
 --      (does NOT copy personal profiles.state into org entries — that field is
 --      home/membership state, often from member_import)
@@ -97,6 +98,7 @@ begin
            or o->>'city' ilike '%' || q || '%'
            or o->>'state' ilike '%' || q || '%'
            or o->>'practice_setting' ilike '%' || q || '%'
+           or o->>'website' ilike '%' || q || '%'
       )
       or (p.share_email and p.email ilike '%' || q || '%')
     )

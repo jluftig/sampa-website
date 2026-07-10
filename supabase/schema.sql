@@ -67,7 +67,7 @@ alter table public.profiles add column if not exists organization      text;
 alter table public.profiles add column if not exists practice_setting  text;
 alter table public.profiles add column if not exists city              text;
 alter table public.profiles add column if not exists state             text;
--- Multi-employer list: [{name, city, state, practice_setting}, ...].
+-- Multi-employer list: [{name, city, state, practice_setting, website}, ...].
 -- organization / city / practice_setting stay denormalized from
 -- organizations[0] for admin roster/CSV. profiles.state is PERSONAL
 -- (home/membership — often from member_import), never overwritten from an org.
@@ -768,6 +768,7 @@ begin
            or o->>'city' ilike '%' || q || '%'
            or o->>'state' ilike '%' || q || '%'
            or o->>'practice_setting' ilike '%' || q || '%'
+           or o->>'website' ilike '%' || q || '%'
       )
       or (p.share_email and p.email ilike '%' || q || '%')
     )

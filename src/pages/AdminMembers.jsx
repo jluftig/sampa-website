@@ -65,8 +65,9 @@ const CSV_COLUMNS = [
         .map((o) => {
           const loc = [o.city, o.state].filter(Boolean).join(', ');
           const name = o.name || '';
-          if (name && loc) return `${name} (${loc})`;
-          return name || loc;
+          const site = o.website || '';
+          const bits = [name, loc && `(${loc})`, site].filter(Boolean);
+          return bits.join(' ');
         })
         .filter(Boolean)
         .join('; ');

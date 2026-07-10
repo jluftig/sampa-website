@@ -1,6 +1,6 @@
 // Profile organizations: members may list one or more employers, each with
-// name, practice setting, city, and state. Stored as profiles.organizations
-// (jsonb array).
+// name, practice setting, city, state, and optional website. Stored as
+// profiles.organizations (jsonb array).
 //
 // Personal profile fields are separate: full_name, credentials, npi, state
 // (profiles.state — home/membership state; often pre-filled from member_import).
@@ -9,7 +9,28 @@
 // profiles.state is NEVER overwritten from an org entry.
 
 export function emptyOrganization() {
-  return { name: '', city: '', state: '', practice_setting: '' };
+  return { name: '', city: '', state: '', practice_setting: '', website: '' };
+}
+
+/** Normalize a typed website to an absolute URL (adds https:// if bare). */
+export function normalizeWebsite(raw) {
+  const s = (raw || '').trim();
+  if (!s) return null;
+  if (/^https?:\/\//i.test(s)) return s;
+  // Reject anything that looks like a scheme we don't want (javascript:, data:, …).
+  if (/^[a-z][a-z0-9+.-]*:/i.test(s)) return null;
+  return `https://${s}`;
+}
+
+/** Host-ish label for display links (drops protocol and trailing slash). */
+export function formatWebsiteLabel(url) {
+  if (!url) return '';
+  try {
+    const u = new URL(normalizeWebsite(url) || url);
+    return (u.host + u.pathname).replace(/\/$/, '') || u.host;
+  } catch {
+    return String(url).replace(/^https?:\/\//i, '').replace(/\/$/, '');
+  }
 }
 
 /** Normalize a profile (or directory row) into a form-ready org list. Always ≥1. */
@@ -21,6 +42,7 @@ export function organizationsFromProfile(profile) {
       city: o?.city || '',
       state: o?.state || '',
       practice_setting: o?.practice_setting || '',
+      website: o?.website || '',
     }));
   }
   // Legacy single-org columns. Do NOT copy personal profiles.state into the org
@@ -32,6 +54,7 @@ export function organizationsFromProfile(profile) {
         city: profile.city || '',
         state: '',
         practice_setting: profile.practice_setting || '',
+        website: '',
       },
     ];
   }
@@ -46,13 +69,15 @@ export function sanitizeOrganizations(list) {
       city: (o.city || '').trim() || null,
       state: (o.state || '').trim() || null,
       practice_setting: (o.practice_setting || '').trim() || null,
+      website: normalizeWebsite(o.website),
     }))
-    .filter((o) => o.name || o.city || o.state || o.practice_setting)
+    .filter((o) => o.name || o.city || o.state || o.practice_setting || o.website)
     .map((o) => ({
       name: o.name || '',
       city: o.city,
       state: o.state,
       practice_setting: o.practice_setting,
+      website: o.website,
     }));
 }
 
@@ -81,7 +106,7 @@ export function formatOrgLocation(org) {
  */
 export function displayOrganizations(person) {
   const orgs = organizationsFromProfile(person).filter(
-    (o) => o.name || o.city || o.state || o.practice_setting
+    (o) => o.name || o.city || o.state || o.practice_setting || o.website
   );
   return orgs;
 }
