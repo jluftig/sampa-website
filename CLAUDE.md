@@ -2,9 +2,12 @@
 
 Machine-oriented reference for working on the SAMPA website. Optimized for an agent
 picking up this repo cold. Human-oriented operations guide: `docs/HANDOFF.md`.
-Original build plan/decisions: `docs/news-blog-plan.md`. Original design brief: `GEMINI.md`.
+Living project status (what's live / in flight / blocked / next): `docs/STATUS.md` —
+**update it when you finish significant work** (feature merged, config milestone,
+decision made). Original build plan/decisions: `docs/news-blog-plan.md`. Original
+design brief: `GEMINI.md`. `AGENTS.md` is a pointer here for non-Claude agents.
 
-Last updated: 2026-07-07.
+Last updated: 2026-07-10.
 
 ## What this project is
 
@@ -125,7 +128,8 @@ supabase/
   schema.sql                SOURCE OF TRUTH for tables, RLS, functions, triggers, seed
   migrations/               standalone per-change snippets (already folded into schema.sql)
   sample-post.sql           optional demo fixture
-docs/                       HANDOFF.md (humans), member-area-setup.md (one-time config), news-blog-plan.md
+docs/                       HANDOFF.md (humans), STATUS.md (living status — keep updated),
+                            member-area-setup.md (one-time config), news-blog-plan.md
 vercel.json                 SPA rewrite: all non-/api paths -> /index.html; crawler UAs on
                             /news/:slug -> /api/share (per-article social previews)
 ```
@@ -340,6 +344,8 @@ Supabase redirect allowlist) + test plan: **`docs/member-area-setup.md`**.
 - DO enforce authorization in SQL/RLS; treat client code as untrusted.
 - DO keep `supabase/schema.sql` the single source of truth and idempotent.
 - DO verify observable changes via the preview workflow before claiming done.
+- DO update `docs/STATUS.md` when finishing significant work — it is the living
+  status doc humans and agents rely on across handoffs.
 - DON'T expose the service_role key client-side. DON'T weaken RLS to "make a query work."
 - DON'T rely on RLS alone for public-facing aggregates (editors can read drafts).
 - DON'T rename DB `tags`→`keywords` (UI-only term); DON'T make tag slugs editable.
