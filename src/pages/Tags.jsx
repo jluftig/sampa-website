@@ -58,7 +58,7 @@ export default function Tags() {
 
       <main className="max-w-4xl mx-auto px-4 pt-32 pb-24">
         <header className="text-center mb-14">
-          <div className="text-primary font-bold font-data tracking-widest text-sm mb-4 uppercase">
+          <div className="text-primary-text font-bold font-data tracking-widest text-sm mb-4 uppercase">
             Browse by Keyword
           </div>
           <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Explore by keyword</h1>
@@ -69,7 +69,7 @@ export default function Tags() {
           <div className="max-w-md mx-auto mt-8">
             <SearchBox placeholder="Or search all news and key points…" />
           </div>
-          <Link to="/news" className="inline-block mt-6 text-primary font-semibold hover:underline">
+          <Link to="/news" className="inline-block mt-6 text-primary-text font-semibold hover:underline">
             ← Back to all news
           </Link>
         </header>
@@ -91,10 +91,10 @@ export default function Tags() {
                 key={tag.slug}
                 to={`/keywords/${tag.slug}`}
                 title={tag.name}
-                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-white hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-white hover:bg-primary-text hover:text-white hover:border-primary-text transition-colors"
               >
                 <span className="font-semibold">{tag.name}</span>
-                <span className="text-xs font-data px-1.5 py-0.5 rounded-full bg-primary/10 text-primary group-hover:bg-white/20 group-hover:text-white">
+                <span className="text-xs font-data px-1.5 py-0.5 rounded-full bg-primary/10 text-primary-text group-hover:bg-white/20 group-hover:text-white">
                   {tag.count}
                 </span>
               </Link>

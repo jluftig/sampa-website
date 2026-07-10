@@ -38,7 +38,7 @@ export default function Login() {
 
       <main className="max-w-md mx-auto px-4 pt-40 pb-24">
         <div className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 md:p-10 text-center">
-          <div className="text-primary font-bold font-data tracking-widest text-xs mb-4 uppercase">
+          <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-4 uppercase">
             Member Access
           </div>
           <h1 className="text-2xl md:text-3xl font-drama font-bold mb-3">Sign in</h1>
@@ -50,7 +50,7 @@ export default function Login() {
           <button
             onClick={() => signInWithGoogle(next)}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary hover:text-white transition-colors disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -92,7 +92,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={linkState === 'sending'}
-                  className="px-5 py-3 rounded-full bg-primary text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
+                  className="px-5 py-3 rounded-full bg-primary-text text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
                 >
                   {linkState === 'sending' ? 'Sending…' : 'Send link'}
                 </button>
@@ -108,8 +108,8 @@ export default function Login() {
           <p className="text-text/40 text-xs mt-6">
             No password needed — use your Google account or a one-time email link.
             By signing in you agree to our{' '}
-            <Link to="/terms" className="underline hover:text-primary">Terms of Service</Link> and{' '}
-            <Link to="/privacy" className="underline hover:text-primary">Privacy Policy</Link>.
+            <Link to="/terms" className="underline hover:text-primary-text">Terms of Service</Link> and{' '}
+            <Link to="/privacy" className="underline hover:text-primary-text">Privacy Policy</Link>.
           </p>
         </div>
       </main>

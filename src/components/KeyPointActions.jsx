@@ -17,7 +17,7 @@ export default function KeyPointActions({ point, post }) {
 
   const url = pointUrl(post.slug, point.id);
   const btn =
-    'inline-flex items-center gap-1 text-xs font-data font-semibold text-text/40 hover:text-primary transition-colors';
+    'inline-flex items-center gap-1 text-xs font-data font-semibold text-text/70 hover:text-primary-text transition-colors';
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3">

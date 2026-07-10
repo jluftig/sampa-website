@@ -129,7 +129,7 @@ export default function TagView() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
-        <Link to="/keywords" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/keywords" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← All keywords
         </Link>
 
@@ -146,7 +146,7 @@ export default function TagView() {
         {status === 'ready' && tags.length > 0 && (
           <>
             <header className="mt-6 mb-10">
-              <div className="text-primary font-bold font-data tracking-widest text-xs mb-3 uppercase">
+              <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-3 uppercase">
                 {tags.length > 1 ? 'Keyword intersection' : 'Keyword'}
               </div>
               <h1 className="text-3xl md:text-5xl font-drama font-bold">
@@ -160,7 +160,7 @@ export default function TagView() {
                       type="button"
                       onClick={() => removeKeyword(t.slug)}
                       title={`Remove ${t.name}`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-primary text-white hover:opacity-80 transition-opacity"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-primary-text text-white hover:opacity-80 transition-opacity"
                     >
                       {t.name}
                       <X className="w-3.5 h-3.5" />
@@ -186,10 +186,10 @@ export default function TagView() {
                       type="button"
                       onClick={() => addKeyword(tag.slug)}
                       title={`Only key points also tagged ${tag.name}`}
-                      className="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border border-primary/20 bg-white font-semibold hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                      className="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border border-primary/20 bg-white font-semibold hover:bg-primary-text hover:text-white hover:border-primary-text transition-colors"
                     >
                       {tag.name}
-                      <span className="text-xs font-data px-1.5 py-0.5 rounded-full bg-primary/10 text-primary group-hover:bg-white/20 group-hover:text-white">
+                      <span className="text-xs font-data px-1.5 py-0.5 rounded-full bg-primary/10 text-primary-text group-hover:bg-white/20 group-hover:text-white">
                         {count}
                       </span>
                     </button>
@@ -220,7 +220,7 @@ export default function TagView() {
                     )}
                     <Link
                       to={`/news/${point.post.slug}#point-${point.id}`}
-                      className="inline-block mt-3 text-sm text-primary font-semibold hover:underline"
+                      className="inline-block mt-3 text-sm text-primary-text font-semibold hover:underline"
                     >
                       from “{point.post.title}” · {formatDate(point.post.published_at)}
                     </Link>

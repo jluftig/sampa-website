@@ -20,11 +20,11 @@ export default function EventsTeaser() {
 
         <div className="bg-white p-8 md:p-12 rounded-4xl shadow-sm border border-primary/10 w-full max-w-4xl flex flex-col md:flex-row items-center justify-between gap-8 text-left group hover:shadow-lg transition-all">
           <div className="flex-1">
-            <div className="text-primary font-bold font-data tracking-widest text-sm mb-2 uppercase">Fall 2026</div>
-            <h3 className="text-2xl font-bold tracking-tight mb-2 group-hover:text-primary transition-colors">SAMPA Inaugural Member Summit</h3>
+            <div className="text-primary-text font-bold font-data tracking-widest text-sm mb-2 uppercase">Fall 2026</div>
+            <h3 className="text-2xl font-bold tracking-tight mb-2 group-hover:text-primary-text transition-colors">SAMPA Inaugural Member Summit</h3>
             <p className="text-text/60">An exclusive multi-day gathering for founding members to set the agenda for the future of addiction medicine PAs.</p>
           </div>
-          <button className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary hover:text-white font-semibold transition-colors">
+          <button className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary-text hover:text-white font-semibold transition-colors">
             Get Notified
           </button>
         </div>

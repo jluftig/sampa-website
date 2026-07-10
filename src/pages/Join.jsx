@@ -64,7 +64,7 @@ export default function Join() {
             <p className="text-text/40 text-xs mt-4 max-w-xl mx-auto">
               You're signed in as <strong className="text-text/60">{user.email}</strong>.
               Already a member under a different email? Sign out from your{' '}
-              <Link to="/dashboard" className="underline hover:text-primary">dashboard</Link>{' '}
+              <Link to="/dashboard" className="underline hover:text-primary-text">dashboard</Link>{' '}
               and sign back in with that address instead of paying again.
             </p>
           )}
@@ -92,12 +92,12 @@ export default function Join() {
 
         {isActiveMember && (
           <div className="max-w-2xl mx-auto bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-10 text-center">
-            <p className="font-semibold text-primary mb-1">
+            <p className="font-semibold text-primary-text mb-1">
               You're already an active member{currentTier ? ` (${currentTier.name})` : ''}. 🎉
             </p>
             <p className="text-sm text-text/70">
               To change tiers, update your card, or cancel, use the billing portal on your{' '}
-              <Link to="/dashboard" className="text-primary font-semibold hover:underline">dashboard</Link>{' '}
+              <Link to="/dashboard" className="text-primary-text font-semibold hover:underline">dashboard</Link>{' '}
               — starting a second checkout here would create a duplicate subscription.
             </p>
           </div>
@@ -150,7 +150,7 @@ export default function Join() {
                             active
                               ? tier.highlight
                                 ? 'bg-accent border-accent text-white'
-                                : 'bg-primary border-primary text-white'
+                                : 'bg-primary-text border-primary-text text-white'
                               : tier.highlight
                                 ? 'border-white/30 text-white/70 hover:border-white'
                                 : 'border-primary/20 text-text/60 hover:border-primary'
@@ -163,7 +163,7 @@ export default function Join() {
                     })}
                   </div>
 
-                  <div className={`text-4xl font-bold font-sans mb-2 ${tier.highlight ? 'text-white' : 'text-primary'}`}>
+                  <div className={`text-4xl font-bold font-sans mb-2 ${tier.highlight ? 'text-white' : 'text-primary-text'}`}>
                     ${price}
                     <span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>
                       {isLifetime ? ' once' : duration === 1 ? '/yr' : ` / ${duration} yrs`}
@@ -180,7 +180,7 @@ export default function Join() {
                 <button
                   onClick={() => selectTier(tier.key)}
                   disabled={loading || busyTier !== null || isActiveMember}
-                  className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 disabled:opacity-50 ${tier.highlight ? 'bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg' : 'border-2 border-primary text-primary hover:bg-primary/5'}`}
+                  className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 disabled:opacity-50 ${tier.highlight ? 'bg-gradient-to-r from-primary-text to-accent text-white hover:shadow-lg' : 'border-2 border-primary-text text-primary-text hover:bg-primary-text/5'}`}
                 >
                   {busyTier === tier.key
                     ? 'Opening checkout…'
@@ -198,8 +198,8 @@ export default function Join() {
           details. You'll get a receipt by email, and you can manage billing anytime
           from your dashboard. Multi-year terms renew at the end of the term until
           canceled. By joining you agree to our{' '}
-          <Link to="/terms" className="underline hover:text-primary">Terms of Service</Link> and{' '}
-          <Link to="/privacy" className="underline hover:text-primary">Privacy Policy</Link>.
+          <Link to="/terms" className="underline hover:text-primary-text">Terms of Service</Link> and{' '}
+          <Link to="/privacy" className="underline hover:text-primary-text">Privacy Policy</Link>.
         </p>
       </main>
 

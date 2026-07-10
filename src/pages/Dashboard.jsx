@@ -151,7 +151,7 @@ export default function Dashboard() {
       <main className="max-w-4xl mx-auto px-4 pt-32 pb-24">
         <header className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="text-primary font-bold font-data tracking-widest text-xs mb-3 uppercase">
+            <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-3 uppercase">
               Member Dashboard
             </div>
             <h1 className="text-3xl md:text-5xl font-drama font-bold">
@@ -160,12 +160,12 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             {isEditor && (
-              <Link to="/editor" className="flex items-center gap-1.5 text-primary font-semibold hover:underline">
+              <Link to="/editor" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
                 <PenSquare className="w-4 h-4" /> Editor dashboard
               </Link>
             )}
             {canViewMembers && (
-              <Link to="/editor/members" className="flex items-center gap-1.5 text-primary font-semibold hover:underline">
+              <Link to="/editor/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
                 <Users className="w-4 h-4" /> Members
               </Link>
             )}
@@ -221,7 +221,7 @@ export default function Dashboard() {
                   <button
                     onClick={openBillingPortal}
                     disabled={portalBusy}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                   >
                     <CreditCard className="w-4 h-4" />
                     {portalBusy ? 'Opening…' : 'Manage billing'}
@@ -230,7 +230,7 @@ export default function Dashboard() {
                 {profile.membership_status === 'canceled' && (
                   <Link
                     to="/join"
-                    className="px-5 py-2.5 rounded-full border-2 border-primary text-primary text-sm font-bold hover:bg-primary/5 transition-colors"
+                    className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-bold hover:bg-primary-text/5 transition-colors"
                   >
                     Rejoin
                   </Link>
@@ -252,7 +252,7 @@ export default function Dashboard() {
               </p>
               <Link
                 to="/join"
-                className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-primary to-accent text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
+                className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-primary-text to-accent text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
               >
                 Become a member
               </Link>
@@ -265,7 +265,7 @@ export default function Dashboard() {
                   href="https://forms.gle/YqYYRVE9z2nCYdNz5"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-primary"
+                  className="underline hover:text-primary-text"
                 >
                   contact us
                 </a>{' '}
@@ -349,7 +349,7 @@ export default function Dashboard() {
                 <button
                   type="submit"
                   disabled={saveState === 'saving'}
-                  className="px-6 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {saveState === 'saving' ? 'Saving…' : 'Save profile'}
                 </button>
@@ -374,7 +374,7 @@ export default function Dashboard() {
           {saved?.length === 0 && (
             <p className="text-text/60 text-sm">
               Nothing saved yet. Look for the <strong>Save</strong> button on any{' '}
-              <Link to="/news" className="text-primary font-semibold hover:underline">news article</Link>{' '}
+              <Link to="/news" className="text-primary-text font-semibold hover:underline">news article</Link>{' '}
               to keep it here for later.
             </p>
           )}
@@ -386,7 +386,7 @@ export default function Dashboard() {
                   <div className="min-w-0">
                     <Link
                       to={`/news/${fav.posts.slug}`}
-                      className="font-semibold hover:text-primary transition-colors"
+                      className="font-semibold hover:text-primary-text transition-colors"
                     >
                       {fav.posts.title}
                     </Link>
@@ -413,7 +413,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold">Your donations</h2>
             <Link
               to="/donate"
-              className="flex items-center gap-1.5 text-primary font-semibold text-sm hover:underline"
+              className="flex items-center gap-1.5 text-primary-text font-semibold text-sm hover:underline"
             >
               <Heart className="w-4 h-4" /> Make a donation
             </Link>
@@ -424,7 +424,7 @@ export default function Dashboard() {
           {donations?.length === 0 && (
             <p className="text-text/60 text-sm">
               No donations yet. Gifts are separate from your membership dues —{' '}
-              <Link to="/donate" className="text-primary font-semibold hover:underline">donate here</Link>{' '}
+              <Link to="/donate" className="text-primary-text font-semibold hover:underline">donate here</Link>{' '}
               to support SAMPA's mission.
             </p>
           )}

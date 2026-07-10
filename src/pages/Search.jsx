@@ -74,7 +74,7 @@ export default function Search() {
 
       <main className="max-w-4xl mx-auto px-4 pt-32 pb-24">
         <header className="text-center mb-12">
-          <div className="text-primary font-bold font-data tracking-widest text-sm mb-4 uppercase">
+          <div className="text-primary-text font-bold font-data tracking-widest text-sm mb-4 uppercase">
             Search
           </div>
           <h1 className="text-4xl md:text-6xl font-drama font-bold mb-8">Search the news database</h1>
@@ -82,7 +82,7 @@ export default function Search() {
             <SearchBox key={q} initial={q} autoFocus />
           </div>
           <div className="mt-6">
-            <Link to="/keywords" className="text-primary font-semibold hover:underline">
+            <Link to="/keywords" className="text-primary-text font-semibold hover:underline">
               Browse by keyword instead →
             </Link>
           </div>
@@ -100,7 +100,7 @@ export default function Search() {
           <div className="text-center bg-white rounded-4xl border border-primary/10 p-12 max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold mb-3">Search isn’t available yet</h2>
             <p className="text-text/60">
-              Please try again soon, or <Link to="/keywords" className="text-primary font-semibold hover:underline">browse by keyword</Link>.
+              Please try again soon, or <Link to="/keywords" className="text-primary-text font-semibold hover:underline">browse by keyword</Link>.
             </p>
           </div>
         )}
@@ -109,7 +109,7 @@ export default function Search() {
           <div className="text-center bg-white rounded-4xl border border-primary/10 p-12 max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold mb-3">No matches for “{q}”</h2>
             <p className="text-text/60">
-              Try a different phrasing, or <Link to="/keywords" className="text-primary font-semibold hover:underline">browse by keyword</Link>.
+              Try a different phrasing, or <Link to="/keywords" className="text-primary-text font-semibold hover:underline">browse by keyword</Link>.
             </p>
           </div>
         )}
@@ -125,7 +125,7 @@ export default function Search() {
                   key={t.slug}
                   to={`/keywords/${t.slug}`}
                   title={t.name}
-                  className="inline-flex items-center px-4 py-2 rounded-full border border-primary/20 bg-white font-semibold hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                  className="inline-flex items-center px-4 py-2 rounded-full border border-primary/20 bg-white font-semibold hover:bg-primary-text hover:text-white hover:border-primary-text transition-colors"
                 >
                   {t.name}
                 </Link>
@@ -145,7 +145,7 @@ export default function Search() {
                   <p className="text-text/90">{point.content}</p>
                   <Link
                     to={`/news/${point.post.slug}#point-${point.id}`}
-                    className="inline-block mt-3 text-sm text-primary font-semibold hover:underline"
+                    className="inline-block mt-3 text-sm text-primary-text font-semibold hover:underline"
                   >
                     from “{point.post.title}” · {formatDate(point.post.published_at)}
                   </Link>
