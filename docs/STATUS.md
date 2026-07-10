@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-10 (initial version, written by Claude)
+**Last updated:** 2026-07-10 (member networking directory + Board capability)
 
 ## Live in production — www.addictionpas.org
 
@@ -29,6 +29,12 @@
 
 ## In flight (work on unmerged branches)
 
+- **Member networking directory + Board flag** — `/members` peer directory (opt-out
+  listing, share email/phone controls on dashboard), `is_board` capability (badge +
+  AdminPeople checkbox; privileges TBD). Code ready; **requires running**
+  `supabase/migrations/2026-07-10-member-directory.sql` in the Supabase SQL editor
+  before the directory works in prod/preview. Separate from staff roster
+  (`/editor/members`).
 - **`feature/mobile-app`** — Expo/React Native app (lives in `mobile/` on that
   branch, shares web `src/lib` code). Phases 1–3 done: news, Key Points, keywords,
   search, saved articles, member area (profile editing, account deletion, CME slot),
@@ -49,15 +55,24 @@
 
 ## Next up
 
+- **Apply member-directory migration** — run
+  `supabase/migrations/2026-07-10-member-directory.sql` once in Supabase SQL
+  editor (shared DB for prod + preview).
 - **Email platform** — recommend Brevo + Supabase sync to the board (July 2026);
   interim consumer Google Group until the 501(c)(3) letter unlocks Google for
   Nonprofits.
 - **CME content for members** — gate on the existing `is_active_member()` rule.
+- **Board privileges** — `is_board` flag is in place; decide what board-only
+  surfaces need (beyond the directory badge).
 - **iOS/Android launch** — merge `feature/mobile-app`, then app-store work
   (Sign in with Apple, no in-app membership sales — see CLAUDE.md mobile section).
+  Directory RPCs are mobile-ready once the app adds `/members` screens.
 
 ## Recently shipped (newest first)
 
+- 2026-07-10 · Member networking directory (`/members`, privacy toggles, directory
+  RPCs) + Board capability flag (`is_board`) — code complete; DB migration must
+  be applied before go-live.
 - 2026-07-10 · WCAG AA text contrast: new `primary-text` teal token swept across all
   functional text/buttons/chips (PR #34). Project docs layer added: this file,
   `AGENTS.md`, `README.md`.

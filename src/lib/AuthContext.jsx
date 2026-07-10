@@ -85,6 +85,12 @@ export function AuthProvider({ children }) {
   const signOut = () => supabase.auth.signOut();
 
   const role = profile?.role ?? null;
+  const isAdmin = role === 'admin';
+  const isEditor = role === 'editor' || isAdmin || !!profile?.can_edit_news;
+  // Paid membership only — used by /join to block duplicate checkouts.
+  const isActiveMember = profile?.membership_status === 'active';
+  // Matches SQL is_active_member(): paid members + staff (editors/admins).
+  const canAccessMemberDirectory = isActiveMember || role === 'editor' || isAdmin;
   const value = {
     session,
     user: session?.user ?? null,
@@ -92,10 +98,13 @@ export function AuthProvider({ children }) {
     role,
     // Capabilities are checkboxes, not a ladder — people can hold several.
     // The legacy 'editor' role still implies news editing; admins imply all.
-    isEditor: role === 'editor' || role === 'admin' || !!profile?.can_edit_news,
-    canViewMembers: role === 'admin' || !!profile?.can_view_members,
-    isAdmin: role === 'admin',
-    isActiveMember: profile?.membership_status === 'active',
+    // is_board is explicit only (admin ≠ board unless checked).
+    isEditor,
+    canViewMembers: isAdmin || !!profile?.can_view_members,
+    isAdmin,
+    isBoard: !!profile?.is_board,
+    isActiveMember,
+    canAccessMemberDirectory,
     // True until we know both the session and (if signed in) the profile.
     loading: !authReady || (!!session?.user && !profileReady),
     signInWithGoogle,
