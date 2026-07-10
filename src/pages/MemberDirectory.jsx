@@ -3,11 +3,19 @@ import { Link } from 'react-router-dom';
 import { Mail, MapPin, Phone, Search, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { US_STATES } from '../lib/usStates';
+import { displayOrganizations, formatOrgLocation } from '../lib/organizations';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 function MemberCard({ person }) {
   const name = person.full_name || 'SAMPA member';
+  const orgs = displayOrganizations(person);
+  const primary = orgs[0];
+  const extraCount = Math.max(0, orgs.length - 1);
+  const orgLocation = primary ? formatOrgLocation(primary) : '';
+  // Prefer employer location on the card; fall back to personal/home state.
+  const location = orgLocation || person.state || '';
+
   return (
     <Link
       to={`/members/${person.id}`}
@@ -27,12 +35,23 @@ function MemberCard({ person }) {
         )}
       </div>
       <div className="space-y-1 text-sm text-text/60">
-        {person.organization && <div>{person.organization}</div>}
-        {person.practice_setting && <div className="text-text/45">{person.practice_setting}</div>}
-        {person.state && (
+        {primary?.name && (
+          <div>
+            {primary.name}
+            {extraCount > 0 && (
+              <span className="text-text/40">
+                {' '}· +{extraCount} more
+              </span>
+            )}
+          </div>
+        )}
+        {primary?.practice_setting && (
+          <div className="text-text/45">{primary.practice_setting}</div>
+        )}
+        {location && (
           <div className="flex items-center gap-1.5 text-text/50 pt-1">
             <MapPin className="w-3.5 h-3.5" />
-            {person.state}
+            {location}
           </div>
         )}
       </div>

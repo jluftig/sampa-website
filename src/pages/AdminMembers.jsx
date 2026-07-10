@@ -56,9 +56,23 @@ const CSV_COLUMNS = [
   ['Renews/ends', (p) => (p.renews_on ? p.renews_on.slice(0, 10) : p.membership_status === 'active' ? 'lifetime' : '')],
   ['Won\'t renew', (p) => (p.cancel_at_period_end ? 'yes' : '')],
   ['Donor', (p) => (p._isDonor ? 'yes' : 'no')],
+  ['City', (p) => p.city],
   ['State', (p) => p.state],
   ['Credentials', (p) => p.credentials],
-  ['Organization', (p) => p.organization],
+  ['Organizations', (p) => {
+    if (Array.isArray(p.organizations) && p.organizations.length > 0) {
+      return p.organizations
+        .map((o) => {
+          const loc = [o.city, o.state].filter(Boolean).join(', ');
+          const name = o.name || '';
+          if (name && loc) return `${name} (${loc})`;
+          return name || loc;
+        })
+        .filter(Boolean)
+        .join('; ');
+    }
+    return p.organization || '';
+  }],
   ['Practice setting', (p) => p.practice_setting],
   ['Phone', (p) => p.phone],
   ['Newsletter', (p) => (p.newsletter_opt_in ? 'yes' : 'no')],
@@ -98,11 +112,24 @@ export default function AdminMembers() {
     let active = true;
     if (!accepted) return;
     (async () => {
-      const [profilesRes, pledgesRes, donationsRes] = await Promise.all([
-        supabase
+      // Prefer multi-org columns; fall back if the migration hasn't been applied.
+      const profileSelect =
+        'id, full_name, email, role, credentials, organization, practice_setting, city, state, organizations, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
+      const profileSelectLegacy =
+        'id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
+
+      let profilesRes = await supabase
+        .from('profiles')
+        .select(profileSelect)
+        .order('full_name', { ascending: true, nullsFirst: false });
+      if (profilesRes.error && (profilesRes.error.code === 'PGRST204' || /city|organizations/i.test(profilesRes.error.message || ''))) {
+        profilesRes = await supabase
           .from('profiles')
-          .select('id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at')
-          .order('full_name', { ascending: true, nullsFirst: false }),
+          .select(profileSelectLegacy)
+          .order('full_name', { ascending: true, nullsFirst: false });
+      }
+
+      const [pledgesRes, donationsRes] = await Promise.all([
         // Pre-Stripe sign-up-form pledges (admin-readable via RLS). Rows stay
         // after claiming, so this doubles as the invitation-conversion tracker.
         supabase
@@ -184,7 +211,10 @@ export default function AdminMembers() {
     return people.filter((p) => {
       if (statusFilter !== 'all' && (p.membership_status || 'none') !== statusFilter) return false;
       if (!q) return true;
-      return [p.full_name, p.email, p.organization, p.state]
+      const orgBlob = Array.isArray(p.organizations)
+        ? p.organizations.map((o) => [o.name, o.city, o.state].filter(Boolean).join(' ')).join(' ')
+        : '';
+      return [p.full_name, p.email, p.organization, p.city, p.state, orgBlob]
         .some((v) => v && v.toLowerCase().includes(q));
     });
   }, [people, statusFilter, search]);
@@ -355,7 +385,7 @@ export default function AdminMembers() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search name, email, organization, state…"
+                placeholder="Search name, email, organization, city, state…"
                 className="flex-1 min-w-[220px] px-4 py-2.5 rounded-full border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
               />
               <select
@@ -409,7 +439,9 @@ export default function AdminMembers() {
                           <span className="text-text/30">—</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-text/60 whitespace-nowrap">{p.state || '—'}</td>
+                      <td className="px-4 py-3 text-text/60 whitespace-nowrap">
+                        {p.state || '—'}
+                      </td>
                       <td className="px-4 py-3 text-text/60">{p.role}</td>
                     </tr>
                   ))}
@@ -426,7 +458,7 @@ export default function AdminMembers() {
 
             <p className="text-text/40 text-xs mt-4">
               The CSV export includes additional columns: credentials,
-              organization, practice setting, phone, and newsletter/SMS
+              organizations (city/state), practice setting, phone, and newsletter/SMS
               preferences. Permissions are managed by administrators on{' '}
               <Link to="/editor/people" className="underline hover:text-primary-text">People & permissions</Link>.
             </p>

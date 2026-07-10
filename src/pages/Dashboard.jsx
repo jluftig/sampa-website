@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { BookmarkX, CreditCard, Heart, PenSquare, Users } from 'lucide-react';
+import { BookmarkX, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { tierByKey } from '../lib/membership';
 import { US_STATES } from '../lib/usStates';
+import {
+  emptyOrganization,
+  organizationsFromProfile,
+  primaryOrgFields,
+  sanitizeOrganizations,
+} from '../lib/organizations';
 import { apiPost } from '../lib/api';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
@@ -16,14 +22,15 @@ const STATUS_BADGES = {
   canceled: { label: 'Canceled',          cls: 'bg-red-500/10 text-red-600 border-red-500/20' },
 };
 
+// Personal identity fields (separate from per-organization employers).
+// profiles.state is the member's home/membership state — often pre-filled from
+// the pre-Stripe Google Form import, not Google OAuth or Stripe.
 const PROFILE_FIELDS = [
-  { key: 'full_name',        label: 'Full name',        placeholder: 'Jane Doe, PA-C' },
-  { key: 'credentials',      label: 'Credentials',      placeholder: 'PA-C, CAQ-Psychiatry' },
-  { key: 'npi',              label: 'NPI number',       placeholder: '10 digits (optional)' },
-  { key: 'organization',     label: 'Organization / employer', placeholder: 'Where you practice' },
-  { key: 'practice_setting', label: 'Practice setting', placeholder: 'e.g. OTP, FQHC, hospital, private practice' },
-  { key: 'state',            label: 'State',            type: 'select', options: US_STATES },
-  { key: 'phone',            label: 'Mobile phone',     placeholder: 'For text updates (optional)' },
+  { key: 'full_name',   label: 'Full name',    placeholder: 'Jane Doe, PA-C' },
+  { key: 'credentials', label: 'Credentials',  placeholder: 'PA-C, CAQ-Psychiatry' },
+  { key: 'npi',         label: 'NPI number',   placeholder: '10 digits (optional)' },
+  { key: 'state',       label: 'State',        type: 'select', options: US_STATES },
+  { key: 'phone',       label: 'Mobile phone', placeholder: 'For text updates (optional)' },
 ];
 
 export default function Dashboard() {
@@ -105,10 +112,11 @@ export default function Dashboard() {
         full_name: profile.full_name || '',
         credentials: profile.credentials || '',
         npi: profile.npi || '',
-        organization: profile.organization || '',
-        practice_setting: profile.practice_setting || '',
+        // Personal/home state (profiles.state) — independent of org locations.
         state: profile.state || '',
         phone: profile.phone || '',
+        // Always ≥1 blank-ready org row; legacy single columns hydrate via helper.
+        organizations: organizationsFromProfile(profile),
         newsletter_opt_in: profile.newsletter_opt_in ?? true,
         sms_opt_in: profile.sms_opt_in ?? false,
         // Directory defaults match DB (opt-out listing; email on; phone off).
@@ -120,6 +128,35 @@ export default function Dashboard() {
     }
   }, [profile, form]);
 
+  const updateOrganization = (index, field, value) => {
+    setForm((prev) => {
+      const organizations = prev.organizations.map((org, i) =>
+        i === index ? { ...org, [field]: value } : org
+      );
+      return { ...prev, organizations };
+    });
+  };
+
+  const addOrganization = () => {
+    setForm((prev) => ({
+      ...prev,
+      organizations: [...prev.organizations, emptyOrganization()],
+    }));
+  };
+
+  const removeOrganization = (index) => {
+    setForm((prev) => {
+      // Keep at least one row so the form always shows an org block.
+      if (prev.organizations.length <= 1) {
+        return { ...prev, organizations: [emptyOrganization()] };
+      }
+      return {
+        ...prev,
+        organizations: prev.organizations.filter((_, i) => i !== index),
+      };
+    });
+  };
+
   const saveProfile = async (e) => {
     e.preventDefault();
     if (form.sms_opt_in && !form.phone.trim()) {
@@ -127,17 +164,63 @@ export default function Dashboard() {
       return;
     }
     setSaveState('saving');
+    const organizations = sanitizeOrganizations(form.organizations);
+    const { organizations: _drop, ...rest } = form;
+    // rest includes personal state; primaryOrgFields must not overwrite it.
+    const payload = {
+      ...rest,
+      state: form.state || null,
+      organizations,
+      ...primaryOrgFields(organizations),
+      onboarded_at: profile.onboarded_at || new Date().toISOString(),
+    };
     const { error } = await supabase
       .from('profiles')
-      .update({
-        ...form,
-        onboarded_at: profile.onboarded_at || new Date().toISOString(),
-      })
+      .update(payload)
       .eq('id', user.id);
     if (error) {
-      setSaveState('error');
-      return;
+      // Pre-migration DB may not have organizations/city yet — retry with
+      // legacy columns only so the form still works until the SQL is applied.
+      if (error.message?.includes('organizations') || error.message?.includes('city') || error.code === 'PGRST204') {
+        const primary = primaryOrgFields(organizations);
+        const { error: legacyError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: form.full_name,
+            credentials: form.credentials,
+            npi: form.npi,
+            state: form.state || null,
+            phone: form.phone,
+            newsletter_opt_in: form.newsletter_opt_in,
+            sms_opt_in: form.sms_opt_in,
+            directory_visible: form.directory_visible,
+            share_email: form.share_email,
+            share_phone: form.share_phone,
+            // No city/organizations — those columns may not exist yet.
+            organization: primary.organization,
+            practice_setting: primary.practice_setting,
+            onboarded_at: profile.onboarded_at || new Date().toISOString(),
+          })
+          .eq('id', user.id);
+        if (legacyError) {
+          setSaveState('error');
+          return;
+        }
+      } else {
+        setSaveState('error');
+        return;
+      }
     }
+    // Keep form in sync with what we saved (trim empty extra rows).
+    setForm((prev) => ({
+      ...prev,
+      organizations: organizations.length ? organizations.map((o) => ({
+        name: o.name || '',
+        city: o.city || '',
+        state: o.state || '',
+        practice_setting: o.practice_setting || '',
+      })) : [emptyOrganization()],
+    }));
     await refreshProfile();
     setSaveState('saved');
     setTimeout(() => setSaveState('idle'), 2500);
@@ -330,6 +413,125 @@ export default function Dashboard() {
                 ))}
               </div>
 
+              {/* Organizations / employers — default one; add more as needed */}
+              <div className="mt-8">
+                <div className="mb-4">
+                  <h3 className="text-sm font-bold">Organizations / employers</h3>
+                  <p className="text-text/50 text-xs mt-1 max-w-xl">
+                    List each place you work or hold a role. Each entry has its
+                    own organization name, practice setting, city, and state —
+                    separate from your personal state above.
+                  </p>
+                </div>
+
+                <div className="space-y-5">
+                  {form.organizations.map((org, index) => (
+                    <div
+                      key={index}
+                      className="rounded-2xl border border-primary/15 bg-primary/[0.02] p-5"
+                    >
+                      <div className="flex items-center justify-between gap-3 mb-4">
+                        <span className="text-xs font-data font-semibold uppercase tracking-wider text-text/45">
+                          {form.organizations.length === 1
+                            ? 'Organization'
+                            : `Organization ${index + 1}`}
+                        </span>
+                        {form.organizations.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeOrganization(index)}
+                            className="flex items-center gap-1 text-xs text-text/40 hover:text-red-500 transition-colors font-semibold"
+                            aria-label={`Remove organization ${index + 1}`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            Remove
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <label
+                            htmlFor={`pf-org-name-${index}`}
+                            className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                          >
+                            Organization / employer
+                          </label>
+                          <input
+                            id={`pf-org-name-${index}`}
+                            type="text"
+                            value={org.name}
+                            onChange={(e) => updateOrganization(index, 'name', e.target.value)}
+                            placeholder="e.g. Highland Hospital, Bridge, SAMPA"
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label
+                            htmlFor={`pf-org-setting-${index}`}
+                            className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                          >
+                            Practice setting
+                          </label>
+                          <input
+                            id={`pf-org-setting-${index}`}
+                            type="text"
+                            value={org.practice_setting}
+                            onChange={(e) => updateOrganization(index, 'practice_setting', e.target.value)}
+                            placeholder="e.g. OTP, FQHC, hospital, private practice"
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label
+                            htmlFor={`pf-org-city-${index}`}
+                            className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                          >
+                            City
+                          </label>
+                          <input
+                            id={`pf-org-city-${index}`}
+                            type="text"
+                            value={org.city}
+                            onChange={(e) => updateOrganization(index, 'city', e.target.value)}
+                            placeholder="City"
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label
+                            htmlFor={`pf-org-state-${index}`}
+                            className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
+                          >
+                            State
+                          </label>
+                          <select
+                            id={`pf-org-state-${index}`}
+                            value={org.state}
+                            onChange={(e) => updateOrganization(index, 'state', e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          >
+                            <option value="">Select…</option>
+                            {US_STATES.map((opt) => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={addOrganization}
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-text hover:underline"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add additional organization
+                </button>
+              </div>
+
               <label className="flex items-center gap-3 mt-6 text-sm text-text/70 cursor-pointer">
                 <input
                   type="checkbox"
@@ -372,8 +574,9 @@ export default function Dashboard() {
                   <span>
                     Show me in the member directory
                     <span className="block text-xs text-text/40 mt-0.5">
-                      Name, credentials, organization, practice setting, and state
-                      are included when you are listed.
+                      Name, credentials, personal state, and organizations
+                      (name, practice setting, city, and state) are included
+                      when you are listed.
                     </span>
                   </span>
                 </label>

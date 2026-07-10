@@ -4,7 +4,8 @@ Website and member platform for **SAMPA — the Society of Addiction Medicine
 Physician Associates**: [www.addictionpas.org](https://www.addictionpas.org)
 
 A single-page React app with a News/blog + research-grade "Key Points" database,
-a member area with Stripe membership payments, and a public donations page.
+a member area with Stripe membership payments, a member networking directory,
+and a public donations page.
 
 **Stack:** Vite + React 18 + Tailwind · Supabase (Postgres/Auth/Storage) ·
 Stripe via Vercel serverless functions (`api/`) · hosted on Vercel
@@ -16,8 +17,13 @@ Stripe via Vercel serverless functions (`api/`) · hosted on Vercel
 | --- | --- |
 | A human running or maintaining the site | [docs/HANDOFF.md](docs/HANDOFF.md) |
 | An AI agent working on the code | [CLAUDE.md](CLAUDE.md) (via [AGENTS.md](AGENTS.md)) |
-| Checking what's happening right now | [docs/STATUS.md](docs/STATUS.md) |
+| Checking what's live / blocked / next (incl. backlog) | [docs/STATUS.md](docs/STATUS.md) |
 | Doing one-time Stripe/auth configuration | [docs/member-area-setup.md](docs/member-area-setup.md) |
+
+**After code deploys that add SQL:** run the matching file under
+`supabase/migrations/` in the Supabase SQL Editor before expecting the feature
+to work (shared DB for prod + preview). See STATUS for the current migration
+checklist.
 
 ## Local development
 

@@ -65,7 +65,14 @@ alter table public.profiles add column if not exists credentials       text;
 alter table public.profiles add column if not exists npi               text;
 alter table public.profiles add column if not exists organization      text;
 alter table public.profiles add column if not exists practice_setting  text;
+alter table public.profiles add column if not exists city              text;
 alter table public.profiles add column if not exists state             text;
+-- Multi-employer list: [{name, city, state, practice_setting}, ...].
+-- organization / city / practice_setting stay denormalized from
+-- organizations[0] for admin roster/CSV. profiles.state is PERSONAL
+-- (home/membership — often from member_import), never overwritten from an org.
+-- Dashboard is the writer; see src/lib/organizations.js.
+alter table public.profiles add column if not exists organizations     jsonb not null default '[]'::jsonb;
 alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
 alter table public.profiles add column if not exists sms_opt_in        boolean not null default false;
 alter table public.profiles add column if not exists onboarded_at      timestamptz;
@@ -701,6 +708,10 @@ $$;
 -- Viewer: is_active_member(). Targets: membership_status='active' AND
 -- directory_visible. Email/phone null when the owner did not share them.
 
+-- Drop first when return shape changes (create or replace cannot alter OUT cols).
+drop function if exists public.member_directory(text, text);
+drop function if exists public.member_directory_profile(uuid);
+
 create or replace function public.member_directory(
   search text default null,
   state_filter text default null
@@ -711,7 +722,9 @@ returns table (
   credentials text,
   organization text,
   practice_setting text,
+  city text,
   state text,
+  organizations jsonb,
   is_board boolean,
   email text,
   phone text
@@ -732,7 +745,9 @@ begin
     p.credentials,
     p.organization,
     p.practice_setting,
+    p.city,
     p.state,
+    p.organizations,
     p.is_board,
     case when p.share_email then p.email else null end,
     case when p.share_phone then p.phone else null end
@@ -744,10 +759,27 @@ begin
       or p.full_name ilike '%' || q || '%'
       or p.organization ilike '%' || q || '%'
       or p.credentials ilike '%' || q || '%'
+      or p.city ilike '%' || q || '%'
       or p.state ilike '%' || q || '%'
+      or exists (
+        select 1
+        from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
+        where o->>'name' ilike '%' || q || '%'
+           or o->>'city' ilike '%' || q || '%'
+           or o->>'state' ilike '%' || q || '%'
+           or o->>'practice_setting' ilike '%' || q || '%'
+      )
       or (p.share_email and p.email ilike '%' || q || '%')
     )
-    and (st is null or p.state = st)
+    and (
+      st is null
+      or p.state = st
+      or exists (
+        select 1
+        from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
+        where o->>'state' = st
+      )
+    )
   order by p.full_name nulls last, p.email nulls last;
 end;
 $$;
@@ -759,7 +791,9 @@ returns table (
   credentials text,
   organization text,
   practice_setting text,
+  city text,
   state text,
+  organizations jsonb,
   is_board boolean,
   email text,
   phone text
@@ -777,7 +811,9 @@ begin
     p.credentials,
     p.organization,
     p.practice_setting,
+    p.city,
     p.state,
+    p.organizations,
     p.is_board,
     case when p.share_email then p.email else null end,
     case when p.share_phone then p.phone else null end

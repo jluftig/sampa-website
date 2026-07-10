@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Building2, Mail, MapPin, Phone, Stethoscope } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import { displayOrganizations, formatOrgLocation } from '../lib/organizations';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -83,6 +84,12 @@ export default function MemberProfile() {
                 {person.credentials && (
                   <p className="text-text/50 mt-1">{person.credentials}</p>
                 )}
+                {person.state && (
+                  <p className="flex items-center gap-1.5 text-sm text-text/55 mt-2">
+                    <MapPin className="w-4 h-4 text-primary-text shrink-0" />
+                    {person.state}
+                  </p>
+                )}
               </div>
               {person.is_board && (
                 <span className="px-3 py-1 rounded-full bg-primary-text/10 text-primary-text text-xs font-data font-semibold uppercase tracking-wider">
@@ -91,41 +98,49 @@ export default function MemberProfile() {
               )}
             </div>
 
-            <dl className="space-y-4 mb-8">
-              {person.organization && (
-                <div className="flex gap-3">
-                  <Building2 className="w-5 h-5 text-primary-text shrink-0 mt-0.5" />
-                  <div>
-                    <dt className="text-xs font-data font-semibold uppercase tracking-wider text-text/40 mb-0.5">
-                      Organization
-                    </dt>
-                    <dd className="text-text/80">{person.organization}</dd>
-                  </div>
+            {(() => {
+              const orgs = displayOrganizations(person);
+              if (orgs.length === 0) return null;
+              return (
+                <div className="mb-8">
+                  <h2 className="text-xs font-data font-semibold uppercase tracking-wider text-text/40 mb-3">
+                    {orgs.length === 1 ? 'Organization' : 'Organizations'}
+                  </h2>
+                  <ul className="space-y-4">
+                    {orgs.map((org, i) => {
+                      const location = formatOrgLocation(org);
+                      return (
+                        <li
+                          key={i}
+                          className="rounded-2xl border border-primary/10 bg-primary/[0.02] p-4"
+                        >
+                          <div className="flex gap-3">
+                            <Building2 className="w-5 h-5 text-primary-text shrink-0 mt-0.5" />
+                            <div className="min-w-0 space-y-2">
+                              {org.name && (
+                                <div className="font-semibold text-text/90">{org.name}</div>
+                              )}
+                              {org.practice_setting && (
+                                <div className="flex items-start gap-2 text-sm text-text/70">
+                                  <Stethoscope className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
+                                  <span>{org.practice_setting}</span>
+                                </div>
+                              )}
+                              {location && (
+                                <div className="flex items-start gap-2 text-sm text-text/70">
+                                  <MapPin className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
+                                  <span>{location}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
-              )}
-              {person.practice_setting && (
-                <div className="flex gap-3">
-                  <Stethoscope className="w-5 h-5 text-primary-text shrink-0 mt-0.5" />
-                  <div>
-                    <dt className="text-xs font-data font-semibold uppercase tracking-wider text-text/40 mb-0.5">
-                      Practice setting
-                    </dt>
-                    <dd className="text-text/80">{person.practice_setting}</dd>
-                  </div>
-                </div>
-              )}
-              {person.state && (
-                <div className="flex gap-3">
-                  <MapPin className="w-5 h-5 text-primary-text shrink-0 mt-0.5" />
-                  <div>
-                    <dt className="text-xs font-data font-semibold uppercase tracking-wider text-text/40 mb-0.5">
-                      State
-                    </dt>
-                    <dd className="text-text/80">{person.state}</dd>
-                  </div>
-                </div>
-              )}
-            </dl>
+              );
+            })()}
 
             {(person.email || person.phone) ? (
               <div className="border-t border-primary/10 pt-6">
