@@ -19,6 +19,7 @@ export default function Membership() {
         </h2>
         <p className="text-lg text-text/70 max-w-2xl mx-auto">
           Help shape the future of PA addiction medicine. Choose the membership level that best fits your career stage.
+          Active members can connect through our peer networking directory (private to members; you control listing and contact details).
         </p>
       </div>
 
