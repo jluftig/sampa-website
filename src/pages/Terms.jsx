@@ -47,7 +47,7 @@ export default function Terms() {
 
       <h2>Member networking directory</h2>
       <p>
-        Active members may access a <strong>member networking directory</strong>
+        Active members may access a <strong>member networking directory</strong>{' '}
         on the site so peers can find one another. The directory is for{' '}
         <strong>professional networking among SAMPA members only</strong>. It is
         not a public people search, not a marketing list, and not a commercial
