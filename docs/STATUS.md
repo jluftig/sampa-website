@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-10 (PR #39 multi-org + directory contact merged)
+**Last updated:** 2026-07-11 (privacy/terms updated for member directory)
 
 ---
 
@@ -20,8 +20,8 @@
 Code is on `main` and auto-deploys via Vercel. **Some features still need a one-time
 Supabase SQL migration** before they work end-to-end (see *Action required* below).
 
-- **Marketing site** — homepage, about/sections, privacy & terms (⚠️ legal pages are
-  drafts pending counsel review).
+- **Marketing site** — homepage, about/sections, privacy & terms (updated 2026-07-11
+  for the member directory; self-published best-effort for a small nonprofit).
 - **News/blog + Key Points research database** — editor dashboard, keyword browse and
   intersections, full-text search, per-claim share links and citations, social-preview
   cards. Posts are drafted via the `/sampa-post` skill.
@@ -80,8 +80,8 @@ directory can show a work email while sign-in stays personal.
 - **Google OAuth consent screen is in Testing mode** — only whitelisted test users
   can sign in with Google. Must be published before opening membership broadly
   (steps in `docs/member-area-setup.md`).
-- **Legal pages** (`/privacy`, `/terms`) + privileged-access agreement — drafts
-  awaiting attorney review / formal board adoption.
+- **Privileged-access agreement** (staff roster) — still informal; formal board
+  adoption optional when the board wants a signed policy track.
 
 ---
 
@@ -94,8 +94,7 @@ directory can show a work email while sign-in stays personal.
 - [ ] Publish Google OAuth consent screen when ready for open membership.
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
   interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
-- [ ] Counsel review of privacy/terms + directory sharing defaults (opt-out listing,
-  email shared by default when listed).
+- [ ] Optional: board skim of privacy/terms after directory ship (no outside counsel required).
 
 ### Product — member directory / networking (v2 ideas)
 
@@ -128,6 +127,9 @@ These were explicitly deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-07-11 · Privacy Policy + Terms of Service updated for member networking
+  directory (peer visibility, defaults, acceptable use); join/homepage mention
+  directory as a member benefit.
 - 2026-07-10 · **Multi-organization profile + directory contact** — PR #39: multiple
   employers (role, city, state, website); account contact vs directory profile;
   optional work email for peers. Migrations: `profile-organizations` +

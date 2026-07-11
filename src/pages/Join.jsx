@@ -57,8 +57,8 @@ export default function Join() {
           <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Join SAMPA</h1>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">
             {user
-              ? 'Pick the membership level that fits your career stage — payment is handled securely by Stripe.'
-              : 'Two quick steps: sign in (one click, no password), then pick your membership level.'}
+              ? 'Pick the membership level that fits your career stage — payment is handled securely by Stripe. Active members can use the peer networking directory (not public; you control what you share).'
+              : 'Two quick steps: sign in (one click, no password), then pick your membership level. Active membership includes access to our member networking directory.'}
           </p>
           {user && !isActiveMember && (
             <p className="text-text/40 text-xs mt-4 max-w-xl mx-auto">
