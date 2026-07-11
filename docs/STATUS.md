@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-10 (multi-org profile + city; docs refresh)
+**Last updated:** 2026-07-10 (PR #39 multi-org + directory contact merged)
 
 ---
 
@@ -26,13 +26,15 @@ Supabase SQL migration** before they work end-to-end (see *Action required* belo
   intersections, full-text search, per-claim share links and citations, social-preview
   cards. Posts are drafted via the `/sampa-post` skill.
 - **Member area + Stripe memberships** — Google/magic-link sign-in, `/join` checkout,
-  `/dashboard` (billing portal, profile onboarding, saved articles, directory privacy),
-  tiered multi-year pricing, admin roster with pledge tracking and CSV export.
+  `/dashboard` (billing portal, profile onboarding, multi-org directory profile,
+  account vs directory contact, saved articles), tiered multi-year pricing, admin
+  roster with pledge tracking and CSV export. **Needs org + directory-contact SQL**
+  (below) for full multi-org / alternate work email.
 - **Member networking directory** — `/members` list + `/members/:id` profiles for
   **active members** (staff can browse too). Opt-out listing; share email/phone
-  controls on the dashboard. Peer data only via `member_directory*` RPCs (profiles
-  SELECT RLS is **not** opened to all members). Separate from the staff roster at
-  `/editor/members`. **Needs DB migration** (below).
+  (account or directory-specific). Peer data only via `member_directory*` RPCs
+  (profiles SELECT RLS is **not** opened to all members). Separate from the staff
+  roster at `/editor/members`. **Needs DB migrations** (below).
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
   badge). Further board-only privileges not built yet.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
@@ -47,8 +49,7 @@ Apply these in the **Supabase SQL Editor** if not already run (order matters):
    `is_board` guard/audit. Without this, `/members` degrades to “not available yet”
    and directory privacy toggles may fail to save.
 2. `supabase/migrations/2026-07-10-profile-organizations.sql` — multi-employer profile
-   + city; updates directory RPCs. Run **after** (1), once multi-org code is on `main`
-   (or on a preview that includes that PR).
+   + city; updates directory RPCs. Run **after** (1). Code is on `main` (PR #39).
 3. `supabase/migrations/2026-07-10-directory-contact.sql` — separate directory
    email/phone from account contact (`directory_use_account_contact`,
    `directory_email`, `directory_phone`). Run after (1)–(2).
@@ -61,10 +62,6 @@ directory can show a work email while sign-in stays personal.
 
 ## In flight (branches / local work)
 
-- **Multi-organization profile + directory contact** — multi-employer orgs; account
-  contact (SAMPA) vs directory profile (peers); optional directory email/phone
-  override. **Needs** profile-organizations + directory-contact migrations after
-  member-directory SQL.
 - **`feature/mobile-app`** — Expo/React Native app (`mobile/` worktree). Phases 1–3:
   news, Key Points, keywords, search, saved articles, member area (profile editing,
   account deletion, CME slot), email OTP sign-in verified end-to-end. **Not merged.**
@@ -93,7 +90,7 @@ directory can show a work email while sign-in stays personal.
 ### Config / ops (do soon)
 
 - [ ] Apply **member-directory** migration in Supabase (if not done).
-- [ ] Merge multi-org profile PR (if open); apply **profile-organizations** migration.
+- [ ] Apply **profile-organizations** + **directory-contact** migrations (PR #39 code is merged).
 - [ ] Publish Google OAuth consent screen when ready for open membership.
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
   interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
@@ -131,9 +128,10 @@ These were explicitly deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
-- 2026-07-10 · **Multi-organization profile** — multiple employers with city/state
-  each; personal state kept separate (often from member_import). Code + migration
-  `2026-07-10-profile-organizations.sql` (apply after member-directory SQL).
+- 2026-07-10 · **Multi-organization profile + directory contact** — PR #39: multiple
+  employers (role, city, state, website); account contact vs directory profile;
+  optional work email for peers. Migrations: `profile-organizations` +
+  `directory-contact` (after member-directory SQL).
 - 2026-07-10 · **Member networking directory** (`/members`, privacy toggles,
   `member_directory*` RPCs) + **Board** capability (`is_board`) — PR #37. DB
   migration must be applied for full function.
