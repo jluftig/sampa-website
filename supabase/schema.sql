@@ -65,7 +65,15 @@ alter table public.profiles add column if not exists credentials       text;
 alter table public.profiles add column if not exists npi               text;
 alter table public.profiles add column if not exists organization      text;
 alter table public.profiles add column if not exists practice_setting  text;
+alter table public.profiles add column if not exists city              text;
 alter table public.profiles add column if not exists state             text;
+-- Multi-employer list: [{name, role, city, state, practice_setting, website},
+-- ...]. org.role = job title at that employer (not profiles.role).
+-- organization / city / practice_setting stay denormalized from
+-- organizations[0] for admin roster/CSV. profiles.state is PERSONAL
+-- (home/membership — often from member_import), never overwritten from an org.
+-- Dashboard is the writer; see src/lib/organizations.js.
+alter table public.profiles add column if not exists organizations     jsonb not null default '[]'::jsonb;
 alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
 alter table public.profiles add column if not exists sms_opt_in        boolean not null default false;
 alter table public.profiles add column if not exists onboarded_at      timestamptz;
@@ -90,6 +98,11 @@ alter table public.profiles add column if not exists is_board         boolean no
 alter table public.profiles add column if not exists directory_visible boolean not null default true;
 alter table public.profiles add column if not exists share_email       boolean not null default true;
 alter table public.profiles add column if not exists share_phone       boolean not null default false;
+-- Directory contact can reuse account email/phone (default) or use separate
+-- directory_email / directory_phone (e.g. work inbox for peers, personal Gmail for sign-in).
+alter table public.profiles add column if not exists directory_use_account_contact boolean not null default true;
+alter table public.profiles add column if not exists directory_email text;
+alter table public.profiles add column if not exists directory_phone text;
 
 -- When this person click-accepted the Confidentiality & Acceptable Use
 -- Agreement for privileged access to member data. The members page refuses to
@@ -701,6 +714,10 @@ $$;
 -- Viewer: is_active_member(). Targets: membership_status='active' AND
 -- directory_visible. Email/phone null when the owner did not share them.
 
+-- Drop first when return shape changes (create or replace cannot alter OUT cols).
+drop function if exists public.member_directory(text, text);
+drop function if exists public.member_directory_profile(uuid);
+
 create or replace function public.member_directory(
   search text default null,
   state_filter text default null
@@ -711,7 +728,9 @@ returns table (
   credentials text,
   organization text,
   practice_setting text,
+  city text,
   state text,
+  organizations jsonb,
   is_board boolean,
   email text,
   phone text
@@ -732,10 +751,20 @@ begin
     p.credentials,
     p.organization,
     p.practice_setting,
+    p.city,
     p.state,
+    p.organizations,
     p.is_board,
-    case when p.share_email then p.email else null end,
-    case when p.share_phone then p.phone else null end
+    case
+      when not p.share_email then null
+      when coalesce(p.directory_use_account_contact, true) then p.email
+      else nullif(btrim(p.directory_email), '')
+    end,
+    case
+      when not p.share_phone then null
+      when coalesce(p.directory_use_account_contact, true) then p.phone
+      else nullif(btrim(p.directory_phone), '')
+    end
   from public.profiles p
   where p.directory_visible
     and p.membership_status = 'active'
@@ -744,10 +773,37 @@ begin
       or p.full_name ilike '%' || q || '%'
       or p.organization ilike '%' || q || '%'
       or p.credentials ilike '%' || q || '%'
+      or p.city ilike '%' || q || '%'
       or p.state ilike '%' || q || '%'
-      or (p.share_email and p.email ilike '%' || q || '%')
+      or exists (
+        select 1
+        from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
+        where o->>'name' ilike '%' || q || '%'
+           or o->>'role' ilike '%' || q || '%'
+           or o->>'city' ilike '%' || q || '%'
+           or o->>'state' ilike '%' || q || '%'
+           or o->>'practice_setting' ilike '%' || q || '%'
+           or o->>'website' ilike '%' || q || '%'
+      )
+      or (
+        p.share_email
+        and (
+          case
+            when coalesce(p.directory_use_account_contact, true) then p.email
+            else nullif(btrim(p.directory_email), '')
+          end
+        ) ilike '%' || q || '%'
+      )
     )
-    and (st is null or p.state = st)
+    and (
+      st is null
+      or p.state = st
+      or exists (
+        select 1
+        from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
+        where o->>'state' = st
+      )
+    )
   order by p.full_name nulls last, p.email nulls last;
 end;
 $$;
@@ -759,7 +815,9 @@ returns table (
   credentials text,
   organization text,
   practice_setting text,
+  city text,
   state text,
+  organizations jsonb,
   is_board boolean,
   email text,
   phone text
@@ -777,10 +835,20 @@ begin
     p.credentials,
     p.organization,
     p.practice_setting,
+    p.city,
     p.state,
+    p.organizations,
     p.is_board,
-    case when p.share_email then p.email else null end,
-    case when p.share_phone then p.phone else null end
+    case
+      when not p.share_email then null
+      when coalesce(p.directory_use_account_contact, true) then p.email
+      else nullif(btrim(p.directory_email), '')
+    end,
+    case
+      when not p.share_phone then null
+      when coalesce(p.directory_use_account_contact, true) then p.phone
+      else nullif(btrim(p.directory_phone), '')
+    end
   from public.profiles p
   where p.id = member_id
     and p.directory_visible

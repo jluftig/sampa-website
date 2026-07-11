@@ -7,18 +7,24 @@ Living project status (what's live / in flight / blocked / next): `docs/STATUS.m
 decision made). Original build plan/decisions: `docs/news-blog-plan.md`. Original
 design brief: `GEMINI.md`. `AGENTS.md` is a pointer here for non-Claude agents.
 
-Last updated: 2026-07-10.
+Last updated: 2026-07-10 (member directory live on main; STATUS/HANDOFF refreshed).
 
 ## What this project is
 
 Marketing site for SAMPA (Society of Addiction Medicine Physician Associates — say
-"physician associates", never "physician assistants", in all user-facing copy) **plus** a News/blog
-subsystem with editor authentication and a research-grade "Key Points" database
-(keyword browse + intersections, Postgres full-text search, per-claim share links and
-copyable citations, original-source provenance), **plus** a member area (dashboard,
-saved articles, profile onboarding) with Stripe membership payments. Single-page React
-app; DB/auth/storage are Supabase; Stripe + social-preview rendering run through Vercel
-serverless functions in `api/`.
+"physician associates", never "physician assistants", in all user-facing copy)
+**plus** a News/blog subsystem with editor authentication and a research-grade
+"Key Points" database (keyword browse + intersections, Postgres full-text search,
+per-claim share links and copyable citations, original-source provenance),
+**plus** a member area (dashboard, saved articles, profile onboarding, directory
+privacy) with Stripe membership payments, **plus** a peer **member networking
+directory** (`/members`, active members only; opt-out listing; Board badge via
+`is_board`). Single-page React app; DB/auth/storage are Supabase; Stripe +
+social-preview rendering run through Vercel serverless functions in `api/`.
+
+**Where things stand right now** (live / blocked / backlog including avatars, CME,
+board tools, mobile): always read and update `docs/STATUS.md`. Do not invent a
+second roadmap.
 
 ## Stack & hosting
 
@@ -159,8 +165,17 @@ redirect to `/login?next=...` so users return where they were headed.
 ## Data model (see supabase/schema.sql for exact DDL)
 
 - `profiles` — PK `id` → `auth.users(id)`. `email, full_name, phone, role`; professional
-  profile (self-editable, dashboard onboarding form): `credentials, npi, organization,
-  practice_setting, state, newsletter_opt_in, sms_opt_in, onboarded_at`;
+  profile (self-editable, dashboard onboarding form): account contact for SAMPA
+  (`phone`, `newsletter_opt_in`, `sms_opt_in`; `email` is sign-in identity);
+  directory professional fields `credentials, npi, state` (home/membership
+  state — often pre-filled from member_import) + `organizations` jsonb
+  `{name, role, city, state, practice_setting, website}`; denormalized
+  `organization, practice_setting, city` from `organizations[0]` for admin
+  roster/CSV — personal `state` never overwritten from an org;
+  directory privacy/contact: `directory_visible`, `share_email`, `share_phone`,
+  `directory_use_account_contact` (default true), `directory_email`,
+  `directory_phone` (overrides when not using account contact — e.g. work
+  inbox for peers); `onboarded_at`;
   membership/billing (webhook-written, guarded): `stripe_customer_id, membership_tier
   (tier key from src/lib/membership.js), membership_status
   ('active'|'past_due'|'canceled'), renews_on` (null renews_on + active = lifetime),
@@ -277,10 +292,18 @@ DOMPurify-sanitized and only editor-writable.
 8. **Post pages filter to published** even for editors (PostView returns notfound for drafts).
 9. Route-level `React.lazy` keeps TipTap/DOMPurify out of the public homepage bundle.
 10. DB migrations: edit `supabase/schema.sql` (idempotent — `create ... if not exists`,
-    `create or replace`, `add column if not exists`) AND give the user the exact snippet to
-    run in the Supabase SQL editor. There is ONE shared Supabase DB across prod+preview.
-    Do NOT tell the user to re-run the whole `schema.sql` casually — its tag seed is an
-    upsert that would overwrite admin-customized keyword labels.
+    `create or replace`, `add column if not exists`) AND write a standalone file under
+    `supabase/migrations/` for the operator to run. There is ONE shared Supabase DB
+    across prod+preview. Do NOT tell the user to re-run the whole `schema.sql`
+    casually — its tag seed is an upsert that would overwrite admin-customized
+    keyword labels.
+    **Clipboard handoff (required):** whenever you create or update a migration the
+    user may need to run, **immediately copy it to the system clipboard** on macOS
+    with `pbcopy < supabase/migrations/<file>.sql` (or `pbcopy < path`), then tell
+    them it is on the clipboard and ready to paste into the Supabase SQL Editor.
+    Do this proactively — do not wait for them to ask `pbcopy …`. If several
+    migrations must run in order, copy the **next** one they should run (or say so
+    when multiple remain) and name the file(s) clearly.
 11. **Membership tier keys AND term durations** live in three places that must stay in
     sync: `src/lib/membership.js` (UI: prices grid + lifetime), `api/_lib/tiers.js`
     (TIER_DURATIONS + env mapping — this copy authorizes checkouts), and the
@@ -339,6 +362,19 @@ profile onboarding form + saved articles), Google + magic-link login, favorites,
 Remaining config (Stripe products/prices, webhook, Vercel env vars, consent-screen publish,
 Supabase redirect allowlist) + test plan: **`docs/member-area-setup.md`**.
 
+## Future work (pointer — details in docs/STATUS.md)
+
+Do not treat this section as the living backlog; **`docs/STATUS.md`** is. High-level
+themes agents may be asked to implement:
+
+- **Directory v2:** avatars (Storage), short bio, LinkedIn/website, richer filters;
+  keep peer data on allowlisted RPCs — never open `profiles` SELECT to all members.
+- **Board privileges:** `is_board` is badge-only today; future gates should use the
+  flag (and/or admin), not a new exclusive role ladder.
+- **CME / member-only content:** gate on `is_active_member()`.
+- **Mobile (`feature/mobile-app`):** same Supabase + `/api`; reuse `member_directory*`.
+- **Ops:** OAuth consent publish, 501(c)(3), email platform (Brevo), legal review.
+
 ## Future: iOS/Android apps (planned — architecture already accounts for this)
 
 - Mobile apps talk to the SAME Supabase project (RLS is the boundary — that's why client
@@ -351,17 +387,23 @@ Supabase redirect allowlist) + test plan: **`docs/member-area-setup.md`**.
   4.8). Enable the Apple provider in Supabase then; identities auto-link by verified email.
   Apple "Hide My Email" relays are harmless because Stripe↔Supabase links by user id.
 - OAuth deep-link/custom-scheme redirect config happens in Supabase when the app ships.
+- Member directory: call `member_directory` / `member_directory_profile` (do not select
+  peer rows from `profiles` directly).
 
 ### Extension checklist
 - Any new user-writable table/column: add RLS + extend `guard_profile_role` (or equivalent)
   if it must not be self-set.
 - New member-only content (CME): gate SELECT policies on `is_active_member()`.
+- New peer-visible profile fields: extend directory RPCs allowlist + privacy toggles;
+  never broaden profiles SELECT RLS for networking.
 - Keep the "public pages filter published explicitly" and "keyword=tag terminology" rules.
 
 ## Do / Don't
 
 - DO enforce authorization in SQL/RLS; treat client code as untrusted.
 - DO keep `supabase/schema.sql` the single source of truth and idempotent.
+- DO `pbcopy` new/updated migration SQL onto the clipboard and tell the user it is
+  ready for the Supabase SQL Editor (gotcha 10).
 - DO verify observable changes via the preview workflow before claiming done.
 - DO update `docs/STATUS.md` when finishing significant work — it is the living
   status doc humans and agents rely on across handoffs.
