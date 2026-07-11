@@ -13,6 +13,7 @@ import QuickStartPage from './bup/QuickStartPage';
 import LowDosePage from './bup/LowDosePage';
 import DtiPage from './bup/DtiPage';
 import OdReversalPage from './bup/OdReversalPage';
+import MicroMacroPage from './bup/MicroMacroPage';
 import SelfStartPage from './bup/SelfStartPage';
 
 // Single lazy entry for the whole bup tool: App.jsx code-splits at
@@ -39,6 +40,7 @@ export default function BupTool() {
               <Route path="low-dose" element={<LowDosePage />} />
               <Route path="dti" element={<DtiPage />} />
               <Route path="od-reversal" element={<OdReversalPage />} />
+              <Route path="micro-macro" element={<MicroMacroPage />} />
               <Route path="self-start" element={<SelfStartPage />} />
               <Route path="*" element={<Navigate to="/tools/bup" replace />} />
             </Routes>

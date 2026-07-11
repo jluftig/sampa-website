@@ -77,7 +77,7 @@ export default function LowDosePage() {
                 <p className="text-sm text-text/70">{item.action}</p>
                 {item.escalateTo && (
                   <Link
-                    to={`/tools/bup/${item.escalateTo.protocol}`}
+                    to={item.escalateTo.to || `/tools/bup/${item.escalateTo.protocol}`}
                     className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline mt-1.5"
                   >
                     {item.escalateTo.label}

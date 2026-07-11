@@ -154,8 +154,8 @@ Point), `/keywords`, `/keywords/:slug` (`?and=slug2,slug3` = keyword intersectio
 `/search?q=`, `/login`, `/join`, `/donate` (public donation page — no sign-in required),
 `/privacy`, `/terms` (static legal pages, LegalPage shell), `/tools` (→ `/tools/bup`),
 `/tools/bup/*` (bup dosing tool — one lazy chunk owning a nested route subtree: chooser
-at index + `cows` (optional COWS calculator) + `quick-start`, `low-dose`, `dti`,
-`od-reversal`, `self-start`; every route gated behind a one-time per-device clinician
+at index + `cows` (optional COWS calculator) + `quick-start`, `low-dose`, `micro-macro`,
+`dti`, `od-reversal`, `self-start`; every route gated behind a one-time per-device clinician
 disclaimer; slugs are permanent). COWS scores are recorded per browser tab
 (sessionStorage via CowsProvider) and surface as a floating chip + question-card hints
 across the tool; never auto-answers the chooser (bands embed judgment conditions).
