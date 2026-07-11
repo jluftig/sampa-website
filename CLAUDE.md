@@ -101,7 +101,9 @@ src/
                             edit + version bump, never a JSX change; doses transcribed from the CA Bridge PDFs),
                             cows.js (Wesson & Ling scale — per-answer `objective: true` flags mark the grades
                             counting toward the "≥ 2 objective signs" condition, SAMPA-reviewed, tune in data) +
-                            cowsSession.js (per-tab recorded score series, sessionStorage)
+                            cowsSession.js (per-tab recorded score series, sessionStorage);
+                            chooserSession.js + protocolSession.js (per-tab in-progress answers so
+                            leaving the tool and returning restores progress; "Start over" clears)
   components/
     RequireEditor.jsx       route guard; prop adminOnly restricts to admins
     RequireAuth.jsx         route guard: any signed-in user (member area)

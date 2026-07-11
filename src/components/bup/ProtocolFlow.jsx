@@ -1,7 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { evaluateSequence, isInteractiveStep } from '../../lib/bup/flow';
 import { protocolSummaryText } from '../../lib/bup/summary';
+import {
+  readProtocolAnswers,
+  writeProtocolAnswers,
+  clearProtocolAnswers,
+} from '../../lib/bup/protocolSession';
 import QuestionCard from './QuestionCard';
 import StepRenderer from './StepRenderer';
 import CopySummaryButton from './CopySummaryButton';
@@ -18,11 +23,18 @@ function hintFor(step) {
 // sequence (protocol flows can loop — the same reassess step may be visited
 // several times, each visit its own card). Re-answering an earlier card
 // truncates the sequence there, so everything downstream re-derives.
-// No timers, no timestamps, no persistence — nothing patient-related is stored.
+// Progress persists per tab (keyed by protocol slug) so leaving — e.g. to
+// score COWS — and coming back restores it; "Start over" clears it. No timers,
+// timestamps, or patient identifiers are stored.
 export default function ProtocolFlow({ flow, protocol }) {
-  const [answerSeq, setAnswerSeq] = useState([]);
+  const slug = protocol?.slug;
+  const [answerSeq, setAnswerSeq] = useState(() => readProtocolAnswers(slug));
   const result = useMemo(() => evaluateSequence(flow, answerSeq), [flow, answerSeq]);
   const { entries: cowsEntries } = useCows();
+
+  useEffect(() => {
+    writeProtocolAnswers(slug, answerSeq);
+  }, [slug, answerSeq]);
 
   const currentStep = result.currentStepId ? flow.steps[result.currentStepId] : null;
 
@@ -69,7 +81,10 @@ export default function ProtocolFlow({ flow, protocol }) {
           )}
           <button
             type="button"
-            onClick={() => setAnswerSeq([])}
+            onClick={() => {
+              clearProtocolAnswers(slug);
+              setAnswerSeq([]);
+            }}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-text/60 hover:text-primary transition-colors px-2 py-1"
           >
             <RotateCcw className="w-4 h-4" />
