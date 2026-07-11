@@ -4,7 +4,7 @@ Machine-oriented reference for working on the SAMPA website. Optimized for an ag
 picking up this repo cold. Human-oriented operations guide: `docs/HANDOFF.md`.
 Original build plan/decisions: `docs/news-blog-plan.md`. Original design brief: `GEMINI.md`.
 
-Last updated: 2026-07-07.
+Last updated: 2026-07-11 (bup tool + STATUS living doc — see docs/STATUS.md).
 
 ## What this project is
 

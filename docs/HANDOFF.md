@@ -4,19 +4,23 @@ _A plain-English guide to how the SAMPA website and its News/blog system are bui
 who runs what, how to do everyday tasks, and where it's all heading. If you're taking
 this over cold, start here._
 
-_Last updated: 2026-07-06_
+**Current priorities and what's in flight:** see [STATUS.md](STATUS.md) — living project
+status (live / blocked / next / backlog). This guide explains *how* the system works;
+STATUS tracks *where things stand right now* and suggested future features.
+
+_Last updated: 2026-07-11_
 
 ---
 
 ## 1. What this is, in one paragraph
 
 The SAMPA website is a React web app hosted on **Vercel**, live at
-**www.addictionpas.org**. Most of it is a normal marketing site (home, about,
-membership, events). The part that's "alive" is the **News blog**: approved editors
-log in with their Google account and publish addiction-medicine news posts. Each post
-has a normal article plus a set of tagged **Key Points** — and readers can browse
-those points by **keyword** across every post, like a searchable clinical database.
-The login, database, and file storage are all handled by a service called **Supabase**.
+**www.addictionpas.org**. It is a marketing site (home, about, membership, events,
+donate, merch) **plus** a **News blog** with a research-style **Key Points** database,
+a **member area** (join via Stripe, dashboard, saved articles), and a **member
+networking directory** so active members can find each other. Approved editors publish
+news; admins manage keywords and permissions. Login, database, and image storage are
+handled by **Supabase**; payments by **Stripe**.
 
 ---
 
@@ -50,17 +54,28 @@ can see or change what.
 
 ## 3. Who can do what (permissions)
 
-Everyone who signs in is a **member** account. On top of that, admins can grant
-**independent checkbox permissions** — people can hold several at once (board
-members wear multiple hats):
+Everyone who signs in gets a **member** account row. On top of that, admins grant
+**independent checkbox permissions** — people can hold several at once:
 
 - **Publish news** — create, edit, publish, and delete news posts and Key Points.
-- **View members** — **read-only** access to the member roster, counts, pledge
-  tracker, and CSV export (for the membership committee, treasurer, and board).
-  They cannot change anyone's record — the database enforces this, not just the UI.
-- **Admin** — everything, plus managing keywords, permissions, and member records.
+- **View members** — **read-only** access to the **staff roster** at
+  `/editor/members` (counts, pledge tracker, CSV export) for the membership
+  committee, treasurer, etc. They cannot change anyone's record — the database
+  enforces this, not just the UI. This is **not** the same as the peer networking
+  directory (see §10a).
+- **Board** — marks someone as a SAMPA board member. Today: a badge on the member
+  directory. Future board-only tools are not built yet. **Board is independent of
+  Admin** — check both if someone needs both hats.
+- **Admin** — operational access (keywords, People & permissions, full roster
+  access, etc.). Does **not** automatically mean “Board” unless Board is checked.
 
-The public (people who never log in) can only **read published** posts.
+**Active paid members** (membership status = active) can use member benefits such as
+the **networking directory**. Editors/admins can browse it too (staff). Non-paying
+signed-in users see the dashboard but not the directory.
+
+The public (people who never log in) can only **read published** posts — never the
+member directory or staff roster.
+
 Note for the **treasurer/accountant**: financial reports live in Stripe, which
 has its own team roles — invite them at Stripe → Settings → Team (view-only or
 Analyst) rather than granting anything here.
@@ -117,15 +132,28 @@ Analyst) rather than granting anything here.
 - On any Key Point, **Copy citation** gives you the claim, the original source with its
   date and link, and the SAMPA link — ready to paste into slides or notes.
 
-### Grant someone permissions (editor, membership committee, admin)
+### Grant someone permissions (news, roster, board, admin)
 1. **They sign in once** via Member Login (Google or email link) — that creates
    their account.
 2. **You check their boxes:** on the editor dashboard click **People &
    permissions**, find them, and check **Publish news**, **View members**,
-   and/or **Admin** as their hats require.
+   **Board**, and/or **Admin** as their hats require.
 
 > You can't change your own permissions in the UI (a safety measure). If you
 > ever must, another admin can, or it can be done directly in Supabase.
+
+### Browse the member networking directory
+1. Sign in as an **active member** (or as staff).
+2. Open **Directory** in the navbar (or from the dashboard).
+3. Search or filter by state; open a person to see professional details and any
+   contact info they chose to share.
+4. Control your own listing under **Dashboard → Your profile → Member directory**
+   (show/hide listing; share email; share phone). Listing is **on by default**
+   (opt-out); phone sharing is **off by default**.
+
+> The directory is only for professional networking among members — not public,
+> not for commercial solicitation. It is **not** the staff roster used for
+> pledges and membership ops.
 
 ### Manage the keyword list (admins)
 Dashboard → **Manage keywords**. You can add keywords, rename them, tweak the short
@@ -166,10 +194,12 @@ label (the compact chip like "OUD"), or delete them. The web address part of a k
 
 In plain terms, Supabase holds these tables:
 
-- **profiles** — one row per person who has ever signed in: their name, email, phone,
-  their role, their professional details (credentials, NPI, organization, practice
-  setting — filled in by the member on their dashboard), and their membership info
-  (tier, status, renewal date — written automatically by Stripe).
+- **profiles** — one row per person who has ever signed in: name, email, phone, role,
+  capability flags (publish news, view staff roster, board), professional details
+  (credentials, NPI, organization, practice setting — filled in on the dashboard),
+  **directory privacy** (listed or not; share email/phone), and membership/billing
+  (tier, status, renewal — written by Stripe). Members cannot change their own role
+  or billing fields.
 - **favorites** — which news articles each member has saved ("Saved articles" on the
   dashboard).
 - **posts** — the news articles (title, summary, article text, cover image + caption,
@@ -178,6 +208,10 @@ In plain terms, Supabase holds these tables:
   name; the website calls them "keywords.")
 - **items** — the individual **Key Points**. Each belongs to a post.
 - **item_tags** — the links connecting each Key Point to its keywords.
+- **donations** — one row per gift (kept separate from membership dues): amount, whether
+  it's one-time or monthly, the donor's email/name, and a link to the signed-in member if
+  they had an account. Written automatically by Stripe; nobody edits it by hand.
+- **audit_log** — permission changes and staff-roster CSV exports (governance trail).
 
 ---
 
@@ -187,8 +221,10 @@ In plain terms, Supabase holds these tables:
 |---|---|---|
 | Whole site is a blank white page | The Supabase environment variables are missing/renamed in Vercel | Re-check `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` in Vercel, then redeploy |
 | A direct link like `/news/…` shows a Vercel 404 | The `vercel.json` "SPA rewrite" file is missing | Ensure `vercel.json` is present (it tells Vercel to serve the app for all routes) |
-| An editor can't sign in | They're not on the Google **Test users** list | Add their email in Google Cloud Console |
+| An editor can't sign in | They're not on the Google **Test users** list | Add their email in Google Cloud Console (consent screen still in Testing mode) |
 | Someone signed in but can't publish | They don't have the news permission | Check **Publish news** for them in People & permissions |
+| Member directory says “not available yet” or is empty for everyone | Directory SQL migration not applied | Run `supabase/migrations/2026-07-10-member-directory.sql` in Supabase SQL Editor |
+| Active member can't open Directory | Membership not `active` on their profile | Check dashboard / Stripe; staff (editor/admin) can still browse |
 | A new post won't save | A database column is missing (rare, only after code changes) | Check the latest migration notes; the master schema is `supabase/schema.sql` |
 
 ---
@@ -251,9 +287,12 @@ publishing the Google sign-in screen. The exact click-by-click checklist and tes
    never do.** The website only ever reads from Supabase.
 4. They land on **/dashboard**: membership status, a short professional-profile form
    (name, credentials, NPI, organization, practice setting — this replaces the Google
-   Form), and their saved news articles.
+   Form), **member directory privacy** (whether other members can see them and which
+   contact fields are shared), and their saved news articles.
 5. Card updates, tier changes, receipts, and cancellation all happen in **Stripe's own
    hosted billing portal** ("Manage billing" button) — we build no payment screens.
+6. Active members can open **/members** (Directory) to network with peers who have not
+   opted out of the listing.
 
 Because the payment is tagged with the member's account ID (not matched by email),
 someone paying with a work card/email still gets the right membership on the right login.
@@ -261,20 +300,84 @@ someone paying with a work card/email still gets the right membership on the rig
 ### The big picture
 ```
 Stripe (payments)  ──webhook──►  Supabase profiles  ◄── /dashboard reads status
-Member (dashboard form)  ──►     Supabase profiles  (professional details)
+Member (dashboard form)  ──►     Supabase profiles  (professional details + directory privacy)
 Members (save button)    ──►     Supabase favorites ◄── /dashboard "Saved articles"
+Active members           ──►     member_directory RPCs  ──► /members (peer networking)
+Staff (view members)     ──►     profiles (full roster) ──► /editor/members + agreement
 Editors                  ──►     Supabase posts/keywords ──► Public News + keyword search
 ```
 Everything converges on the single Supabase database, keyed to each person's account.
 
-### Still ahead
-- **CME content** for members — gate it with the `is_active_member()` database rule that
-  already exists.
-- **Multi-year discount pricing** in checkout (extra Stripe prices billed every 2–3 years).
-- **iPhone/Android apps** — they'll read the same database and call the same `/api`
-  endpoints. Two rules already baked in: memberships stay purchased on the website (Apple
-  would otherwise take 30% via In-App Purchase), and "Sign in with Apple" gets enabled in
-  Supabase when the iOS app ships (Apple requires it alongside Google sign-in).
+### 10a. Member networking directory vs staff roster
+
+| | **Member directory** (`/members`) | **Staff roster** (`/editor/members`) |
+|---|---|---|
+| Who can open it | Active paid members (+ staff) | Admins + “View members” permission |
+| Purpose | Peer networking | Membership ops, pledges, CSV |
+| Data shown | Name, credentials, org, practice, state; email/phone only if shared | Full profile + billing/status + donor flag |
+| Extra gate | None beyond active membership | Confidentiality agreement click-accept |
+| How data is loaded | Special database functions (safe column list) | Direct profile read (privileged) |
+
+Members control their directory presence on the dashboard (opt-out of listing; share
+email; share phone). Defaults: listed **on**, email shared **on**, phone shared **off**.
+
+### Donations — separate from membership dues
+
+There's also a public **Donate** page (`/donate`) where **anyone** can give — no account
+or sign-in required. Donors choose one-time or monthly and pick any amount. It's handled
+by Stripe just like membership, but kept completely separate from dues.
+
+**"Why don't I see a Donation product in Stripe?"** You won't, and that's correct. Unlike
+membership tiers (which are fixed Stripe **Products** with set prices), a donation can be
+any dollar amount, so there's nothing fixed to pre-create. The website builds each gift on
+the spot when someone donates. Stripe quietly makes a throwaway "Donation to SAMPA" line
+for that one payment, but it will **not** show up in Stripe's **Products** list — don't go
+looking for it there.
+
+**Where donations actually show up:**
+- In **Stripe**: one-time gifts appear under **Payments**; monthly gifts appear under
+  **Subscriptions**; every donor gets a **Customer** record (so they get receipts). To
+  tell a donation apart from membership dues in Stripe, open the payment and look at its
+  **metadata** — donations are tagged `type = donation`.
+- In **Supabase**: the authoritative list of all gifts is the **donations** table
+  (see section 7). That — not Stripe's Products page — is the real donation ledger, and it
+  keeps gifts cleanly separated from membership payments.
+
+**Not tax-deductible yet.** SAMPA's 501(c)(3) status is pending, so the Donate page carries
+a disclosure saying gifts aren't deductible until the IRS approves it (with the expectation
+they'll be retroactively deductible once approved). Keep that disclosure until the
+determination letter arrives.
+
+> **Heads-up when checking Stripe:** the top-right **Test mode** toggle matters. If you
+> tested a donation in Test mode, it won't appear in Live mode, and vice-versa. Seeing "no
+> donations" is usually just the wrong mode selected.
+
+### Still ahead (summary — full backlog in STATUS.md)
+
+**Ops / blocked**
+- Publish Google OAuth consent screen when membership opens broadly.
+- 501(c)(3) letter → update donate disclosure; Google for Nonprofits; email platform
+  (Brevo + Supabase sync recommended to the board).
+- Counsel review of privacy/terms and directory sharing defaults.
+
+**Product ideas already planned or suggested**
+- Directory v2: **avatars/photos**, short bio, LinkedIn/website, richer filters.
+- **Board-only tools** (beyond the Board badge).
+- **CME content** for members (gate with existing `is_active_member()` rule).
+- **iPhone/Android apps** — same Supabase DB and `/api` endpoints; memberships stay
+  purchased on the website (no Apple IAP); enable Sign in with Apple when iOS ships.
+- Clinical **buprenorphine dosing / COWS** tool — **built on feature branches**
+  (`feature/bup-dosing-tool` / `feature/bup-micro-macro`, same tip; not on
+  production). Includes protocol chooser, Quick Start, Low Dose, Micro–Macro,
+  DTI, OD Reversal, Self-Start, COWS calculator, copy/print summaries. **Launch
+  hold** for CA Bridge permission/attribution. **Next planned polish:** prominent
+  links from each algorithm page to the Bridge source on bridgetotreatment.org
+  (details in [STATUS.md](STATUS.md)).
+
+Multi-year membership terms in checkout are **already built** (1/2/3-year prices per
+tier; Legacy lifetime where configured).
+
+Living checklist and priorities: **[STATUS.md](STATUS.md)**.
 
 ---
 
