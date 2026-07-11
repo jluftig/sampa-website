@@ -639,14 +639,17 @@ export default function Dashboard() {
                           </label>
                           <input
                             id={`pf-org-website-${index}`}
-                            type="url"
+                            type="text"
                             inputMode="url"
                             autoComplete="url"
                             value={org.website}
                             onChange={(e) => updateOrganization(index, 'website', e.target.value)}
-                            placeholder="https://example.org"
+                            placeholder="bridgetotreatment.org or https://…"
                             className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
                           />
+                          <p className="text-text/40 text-xs mt-1.5">
+                            Domain only is fine — we add https:// when you save.
+                          </p>
                         </div>
                         <div>
                           <label
