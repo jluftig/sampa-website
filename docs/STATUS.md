@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-11 (directory SQL applied; footer social links on backlog)
+**Last updated:** 2026-07-11 (policy/research content area added to backlog)
 
 ---
 
@@ -108,6 +108,17 @@ Deferred from the first directory ship:
 
 ### Product — membership & content
 
+- **Policy page (and possibly Research)** — public area similar in spirit to News
+  for SAMPA policy work: positions we’re taking, issues we’re advocating for,
+  published documents, white papers, and related materials. Open design choices:
+  - **One combined “Policy & research” hub** vs **separate `/policy` and
+    `/research` routes** (decide when first content is ready).
+  - Content model: re-use the posts stack with a type/channel (e.g. `policy` /
+    `research`) vs a dedicated table; PDF/file attachments for formal docs.
+  - Editor workflow (who can publish policy vs news), nav/footer links, and
+    optional social-preview cards for shareable policy pieces.
+  - Keep distinct from News/Key Points (news is clinical/industry updates;
+    policy is organizational positions and formal documents).
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
 - **Board privileges** — `is_board` is badge-only today; decide board-only surfaces.
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
