@@ -10,7 +10,7 @@
 import { evaluateFlow } from './flow';
 
 export const CHOOSER = {
-  version: '1.1.1', // 1.1.1: setting = ED vs inpatient only (disposition is the next question)
+  version: '1.1.2', // 1.1.2: COWS < 4 + prefers SL uses same dual as COWS 4–7
   revisedDate: '2026-07',
   entry: 'Patient with opioid use disorder, candidate for and interested in buprenorphine.',
   start: 'odReversed',
@@ -82,7 +82,9 @@ export const CHOOSER = {
       prompt: 'Does the patient want a long-acting injectable?',
       options: [
         { value: 'yes', label: 'Yes — wants injectable', next: 'out_dti8' },
-        { value: 'no', label: 'No — prefers SL / declines injection', next: 'out_microMacro' },
+        // Same dual as COWS 4–7: adjuncts→Quick Start when severe OR Micro–Macro.
+        // Minimal withdrawal does not rule out waiting for Quick Start if time allows.
+        { value: 'no', label: 'No — prefers SL / declines injection', next: 'out_edModDual' },
       ],
     },
 
@@ -172,9 +174,11 @@ export const CHOOSER = {
       notes: ['No SL lead-in.'],
     },
 
+    // Shared by ED + discharge + COWS 4–7 OR COWS < 4, when patient declines
+    // long-acting injectable. Both arms remain valid at minimal withdrawal too.
     out_edModDual: {
       kind: 'outcome',
-      outcomeKey: 'ed-cows4-7-both-valid',
+      outcomeKey: 'ed-sl-both-valid',
       variant: 'dual',
       badge: 'Both options are appropriate',
       title: 'Decide with the patient',
@@ -201,25 +205,6 @@ export const CHOOSER = {
       badge: 'Use algorithm — emerging practice',
       title: 'DTI Buprenorphine — Emerging Practice (first dose in no/low withdrawal)',
       headline: 'XR bup 8 mg weekly',
-    },
-
-    out_microMacro: {
-      kind: 'outcome',
-      outcomeKey: 'ed-micro-macro',
-      protocol: 'micro-macro',
-      badge: '1-Day Micro–Macro Start',
-      title: '1-Day Micro–Macro Start',
-      headline: 'Micro lead-in now → 16 mg SL when moderate–severe withdrawal',
-      checklist: [
-        'Preferred: 2 × 20 mcg/hr TD patches (do not wait for withdrawal); Rx 8 mg SL PRN',
-        'If no patches: stop full opioids, micro SL 0.5 mg q3h or swallow 2 mg q3h',
-        'Wait until COWS ≥ 8 or patient severity ≥ 7/10, then 16 mg SL in one dose',
-        'Adjunct Rx + bup discharge Rx + Self-Start patient handout',
-      ],
-      notes: [
-        'Primary path for ED discharge when withdrawal is minimal and the patient prefers SL over long-acting injectable.',
-        'Also the conversion path if Low Dose was started for admission and the plan changes to discharge.',
-      ],
     },
 
     out_quickStartInpt: {

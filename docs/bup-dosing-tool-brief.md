@@ -78,10 +78,10 @@ Entry: patient with OUD, candidate for and interested in buprenorphine.
            discharge, OR discharge on the micro-dose + Self-Start plan (below).
        - **COWS < 4 (no/minimal withdrawal):**
          - Wants injectable → **DTI Emerging Practice** (XR bup 8 mg weekly).
-         - Declines injectable → **1-Day Micro–Macro Start**: micro lead-in in the ED
-           (preferred 2×20 mcg/hr TD patches; else micro SL without waiting for withdrawal)
-           → when COWS ≥ 8 or severity ≥ 7/10, **16 mg SL in one dose** (in ED if still
-           there, or at home) + adjunct Rx + bup discharge Rx + **Self-Start** handout.
+         - Declines injectable → both options valid (same dual as COWS 4–7): treat
+           symptoms with adjuncts and use **Quick Start** if COWS reaches ≥ 8 before
+           discharge, **OR** **1-Day Micro–Macro Start** (micro lead-in now → 16 mg SL
+           when moderate–severe withdrawal develops + Self-Start handout).
    - **Inpatient / being admitted:**
      - **Default for most admitted patients** (especially with acute pain / full-agonist
        analgesic needs): **Low Dose with Opioid Continuation (Inpatient)**.
