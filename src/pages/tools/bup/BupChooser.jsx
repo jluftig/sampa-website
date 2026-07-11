@@ -8,10 +8,21 @@ import ResultPanel from '../../../components/bup/ResultPanel';
 import PrintSummary from '../../../components/bup/PrintSummary';
 import CowsHint from '../../../components/bup/CowsHint';
 import { logToolEvent } from '../../../lib/toolAnalytics';
+import {
+  readChooserAnswers,
+  writeChooserAnswers,
+  clearChooserAnswers,
+} from '../../../lib/bup/chooserSession';
 
 export default function BupChooser() {
-  const [answers, setAnswers] = useState({});
+  // Answers persist per tab so leaving (e.g., to score COWS) and returning
+  // restores progress; "Start over" clears the store.
+  const [answers, setAnswers] = useState(readChooserAnswers);
   const result = useMemo(() => evaluateChooser(answers), [answers]);
+
+  useEffect(() => {
+    writeChooserAnswers(answers);
+  }, [answers]);
 
   // Which pathways clinicians actually reach — logged once per outcome per
   // visit (rewind + re-answer to a different outcome logs the new one too).
@@ -64,7 +75,10 @@ export default function BupChooser() {
           {Object.keys(answers).length > 0 && (
             <button
               type="button"
-              onClick={() => setAnswers({})}
+              onClick={() => {
+                clearChooserAnswers();
+                setAnswers({});
+              }}
               className="inline-flex items-center gap-1.5 text-sm font-medium text-text/60 hover:text-primary transition-colors px-2 py-1"
             >
               <RotateCcw className="w-4 h-4" />
@@ -73,7 +87,9 @@ export default function BupChooser() {
           )}
         </div>
 
-        <div className="lg:col-span-2">
+        {/* self-stretch lets the sticky result panel travel the full height of
+            the questions column instead of collapsing under `items-start`. */}
+        <div className="lg:col-span-2 lg:self-stretch">
           <ResultPanel result={result} />
         </div>
       </div>
