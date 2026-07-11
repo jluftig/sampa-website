@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-11 (policy/research content area added to backlog)
+**Last updated:** 2026-07-11 (newsletter signup without membership on backlog)
 
 ---
 
@@ -93,6 +93,16 @@ No further directory migrations pending.
   the site footer so visitors can find SAMPA’s social accounts. Need final
   profile URLs when ready; X can wait until the account exists. Touch
   `src/components/Footer.jsx` (and optionally nav).
+- [ ] **Newsletter signup without membership** — public way to subscribe (footer
+  and/or homepage/donate-adjacent) for people who are not SAMPA members and
+  need not create a full account. Today newsletter opt-in is only on the
+  member dashboard after sign-in. Design notes when building:
+  - Email capture form → store list (likely Brevo or whatever email platform
+    the board picks; see ops backlog) with double opt-in if required.
+  - Privacy: disclose what the newsletter is; link to `/privacy`; do not
+    create a paid membership or force Google login.
+  - Optional: if they later join, merge/link the same email to their profile
+    `newsletter_opt_in` without double-subscribing.
 
 ### Product — member directory / networking (v2 ideas)
 
