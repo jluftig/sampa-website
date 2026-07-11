@@ -10,7 +10,7 @@
 import { evaluateFlow } from './flow';
 
 export const CHOOSER = {
-  version: '1.1.0', // 1.1.0: Micro–Macro is a real protocol destination (not Self-Start stub)
+  version: '1.1.1', // 1.1.1: setting = ED vs inpatient only (disposition is the next question)
   revisedDate: '2026-07',
   entry: 'Patient with opioid use disorder, candidate for and interested in buprenorphine.',
   start: 'odReversed',
@@ -24,12 +24,15 @@ export const CHOOSER = {
       ],
     },
 
+    // Setting is location only. Disposition (admit vs discharge from the ED)
+    // is the following question — do not bake "anticipated discharge" into
+    // the ED label (that made Q2 and Q3 contradict each other).
     setting: {
       kind: 'question',
       prompt: 'What setting is the patient in?',
       options: [
-        { value: 'ed', label: 'Emergency department — anticipated discharge', next: 'edAdmitted' },
-        { value: 'inpatient', label: 'Inpatient / being admitted', next: 'inptBackup' },
+        { value: 'ed', label: 'Emergency department', next: 'edAdmitted' },
+        { value: 'inpatient', label: 'Inpatient', next: 'inptBackup' },
       ],
     },
 
