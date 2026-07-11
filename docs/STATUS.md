@@ -11,30 +11,32 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-11 (privacy/terms updated for member directory)
+**Last updated:** 2026-07-11 (directory stack + privacy/terms on main; confirm SQL applied)
 
 ---
 
 ## Live in production — www.addictionpas.org
 
-Code is on `main` and auto-deploys via Vercel. **Some features still need a one-time
-Supabase SQL migration** before they work end-to-end (see *Action required* below).
+Code is on `main` and auto-deploys via Vercel. **Directory / multi-org / alternate
+directory email need the Supabase migrations below** if not already run on the
+shared DB (prod + preview share one project).
 
-- **Marketing site** — homepage, about/sections, privacy & terms (updated 2026-07-11
-  for the member directory; self-published best-effort for a small nonprofit).
+- **Marketing site** — homepage, about/sections, privacy & terms (effective
+  **July 11, 2026**; member directory fully disclosed; self-published for a small
+  nonprofit — no outside counsel).
 - **News/blog + Key Points research database** — editor dashboard, keyword browse and
   intersections, full-text search, per-claim share links and citations, social-preview
   cards. Posts are drafted via the `/sampa-post` skill.
 - **Member area + Stripe memberships** — Google/magic-link sign-in, `/join` checkout,
-  `/dashboard` (billing portal, profile onboarding, multi-org directory profile,
-  account vs directory contact, saved articles), tiered multi-year pricing, admin
-  roster with pledge tracking and CSV export. **Needs org + directory-contact SQL**
-  (below) for full multi-org / alternate work email.
-- **Member networking directory** — `/members` list + `/members/:id` profiles for
-  **active members** (staff can browse too). Opt-out listing; share email/phone
-  (account or directory-specific). Peer data only via `member_directory*` RPCs
-  (profiles SELECT RLS is **not** opened to all members). Separate from the staff
-  roster at `/editor/members`. **Needs DB migrations** (below).
+  `/dashboard` (billing portal; **account contact** for SAMPA vs **directory profile**
+  for peers; multi-org employers with role/city/state/website; optional directory
+  email/phone; saved articles), tiered multi-year pricing, admin roster with pledge
+  tracking and CSV export.
+- **Member networking directory** — `/members` list + `/members/:id` for **active
+  members** (staff can browse too). Opt-out listing; email share default on / phone
+  off; account or directory-specific contact. Peer data only via `member_directory*`
+  RPCs (profiles SELECT RLS is **not** opened to all members). Separate from the
+  staff roster at `/editor/members`.
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
   badge). Further board-only privileges not built yet.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
@@ -43,32 +45,29 @@ Supabase SQL migration** before they work end-to-end (see *Action required* belo
 
 ### Action required (shared Supabase DB — prod + preview)
 
-Apply these in the **Supabase SQL Editor** if not already run (order matters):
+Confirm these have been run in the **Supabase SQL Editor** (order matters; safe to
+re-run if unsure — migrations are additive/idempotent):
 
 1. `supabase/migrations/2026-07-10-member-directory.sql` — directory columns + RPCs +
-   `is_board` guard/audit. Without this, `/members` degrades to “not available yet”
-   and directory privacy toggles may fail to save.
-2. `supabase/migrations/2026-07-10-profile-organizations.sql` — multi-employer profile
-   + city; updates directory RPCs. Run **after** (1). Code is on `main` (PR #39).
-3. `supabase/migrations/2026-07-10-directory-contact.sql` — separate directory
-   email/phone from account contact (`directory_use_account_contact`,
-   `directory_email`, `directory_phone`). Run after (1)–(2).
+   `is_board` guard/audit. Without this, `/members` degrades to “not available yet”.
+2. `supabase/migrations/2026-07-10-profile-organizations.sql` — multi-employer
+   `organizations` jsonb + city; directory RPC shape. Code on `main` (PR #39).
+3. `supabase/migrations/2026-07-10-directory-contact.sql` — `directory_use_account_contact`,
+   `directory_email`, `directory_phone` + RPC contact resolution.
 
-Confirm after run: directory loads for an active member; Board checkbox appears in
-People & permissions; dashboard can save multiple organizations with city/state;
-directory can show a work email while sign-in stays personal.
+**Smoke check after SQL:** active member opens Directory; can save 2+ orgs with role
+and bare domain website; can uncheck “use account contact” and set a work email;
+Privacy/Terms pages load with July 11 effective date.
 
 ---
 
 ## In flight (branches / local work)
 
-- **`feature/mobile-app`** — Expo/React Native app (`mobile/` worktree). Phases 1–3:
-  news, Key Points, keywords, search, saved articles, member area (profile editing,
-  account deletion, CME slot), email OTP sign-in verified end-to-end. **Not merged.**
-  Directory screens not built yet (web RPCs are reusable).
-- **`feature/bup-dosing-tool`** — buprenorphine dosing tool + COWS calculator with
-  anonymous usage analytics (`tool_events`). Built but **on launch hold** (clinical
-  content — see that branch’s notes before touching).
+- **`feature/mobile-app`** — Expo/React Native (`mobile/` worktree). Phases 1–3: news,
+  Key Points, keywords, search, saved articles, member area, email OTP. **Draft PR
+  #22 — not merged.** Directory screens not built yet (web RPCs are reusable).
+- **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
+  usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
 
 ---
 
@@ -89,32 +88,28 @@ directory can show a work email while sign-in stays personal.
 
 ### Config / ops (do soon)
 
-- [ ] Apply **member-directory** migration in Supabase (if not done).
-- [ ] Apply **profile-organizations** + **directory-contact** migrations (PR #39 code is merged).
+- [ ] Confirm all three directory-related Supabase migrations applied (see above).
 - [ ] Publish Google OAuth consent screen when ready for open membership.
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
   interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
-- [ ] Optional: board skim of privacy/terms after directory ship (no outside counsel required).
+- [ ] Optional: board skim of privacy/terms (already emailed informally about the directory).
 
 ### Product — member directory / networking (v2 ideas)
 
-These were explicitly deferred from the first directory ship:
+Deferred from the first directory ship:
 
-- **Profile photos / avatars** — upload to Supabase Storage; show on directory cards
-  and detail pages (opt-in; not public).
-- **Short bio** — free-text “about me” for networking context.
-- **LinkedIn / website URLs** — optional fields; same privacy model as contact.
-- **Richer filters** — practice setting, credentials, board-only filter, keyword
-  interests if we add specialty tags later.
-- **Rate limits / anti-scrape** if email harvest becomes a problem (no CSV for
-  ordinary members; Terms should forbid commercial use of directory data).
+- **Profile photos / avatars** — Storage upload; opt-in; not public.
+- **Short bio** — free-text “about me.”
+- **LinkedIn / personal website URLs** (org websites already ship on multi-org profile).
+- **Richer filters** — practice setting, credentials, board-only, specialty keywords.
+- **Rate limits / anti-scrape** if harvest becomes a problem (Terms already forbid
+  commercial use / bulk export of directory data).
 - **Mobile directory** — screens on `feature/mobile-app` calling existing RPCs.
 
 ### Product — membership & content
 
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
-- **Board privileges** — `is_board` is only a badge today; decide board-only
-  surfaces (documents, votes, private pages, etc.).
+- **Board privileges** — `is_board` is badge-only today; decide board-only surfaces.
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
 
 ### Product — platforms
@@ -127,27 +122,20 @@ These were explicitly deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
-- 2026-07-11 · Privacy Policy + Terms of Service updated for member networking
-  directory (peer visibility, defaults, acceptable use); join/homepage mention
-  directory as a member benefit.
-- 2026-07-10 · **Multi-organization profile + directory contact** — PR #39: multiple
-  employers (role, city, state, website); account contact vs directory profile;
+- 2026-07-11 · Privacy + Terms for member directory (PR #40); Terms spacing fix;
+  join/homepage mention directory as a member benefit. Effective date July 11, 2026.
+- 2026-07-10 · **Multi-org profile + directory contact** (PR #39): multiple employers
+  (role, city, state, website; bare domains OK); account vs directory contact;
   optional work email for peers. Migrations: `profile-organizations` +
   `directory-contact` (after member-directory SQL).
-- 2026-07-10 · **Member networking directory** (`/members`, privacy toggles,
-  `member_directory*` RPCs) + **Board** capability (`is_board`) — PR #37. DB
-  migration must be applied for full function.
-- 2026-07-10 · Nav CTA shortened to “Join” (PR #38); homepage donate section
-  simplified (PR #36).
-- 2026-07-10 · WCAG AA text contrast: `primary-text` teal token (PR #34). Project
-  docs layer: this file, `AGENTS.md`, `README.md`.
-- 2026-07-09 · Donor column on the members roster (PR #33) + donations in handoff
-  (PR #32).
-- 2026-07-08 · Merch store links to Printful (PR #31); source citations hyperlink
-  only the DOI (PR #30).
-- 2026-07-07 · Purchased-term tracking on roster/pledges; privileged-access
-  agreement + audit log; checkbox permissions; `/sampa-post` skill improvements.
-- 2026-07-06 · Member area + Stripe memberships built; donations built.
+- 2026-07-10 · **Member networking directory** + Board capability (PR #37).
+- 2026-07-10 · Nav CTA “Join” (PR #38); homepage donate simplified (PR #36).
+- 2026-07-10 · WCAG AA `primary-text` teal (PR #34); project docs layer.
+- 2026-07-09 · Donor column on roster (PR #33); donations in handoff (PR #32).
+- 2026-07-08 · Merch store (PR #31); DOI-only source links (PR #30).
+- 2026-07-07 · Purchased-term tracking; privileged-access agreement + audit log;
+  checkbox permissions; `/sampa-post` skill improvements.
+- 2026-07-06 · Member area + Stripe memberships; donations.
 
 ---
 
