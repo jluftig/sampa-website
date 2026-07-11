@@ -11,15 +11,13 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-11 (directory stack + privacy/terms on main; confirm SQL applied)
+**Last updated:** 2026-07-11 (directory SQL applied; footer social links on backlog)
 
 ---
 
 ## Live in production — www.addictionpas.org
 
-Code is on `main` and auto-deploys via Vercel. **Directory / multi-org / alternate
-directory email need the Supabase migrations below** if not already run on the
-shared DB (prod + preview share one project).
+Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + preview).
 
 - **Marketing site** — homepage, about/sections, privacy & terms (effective
   **July 11, 2026**; member directory fully disclosed; self-published for a small
@@ -43,21 +41,16 @@ shared DB (prod + preview share one project).
   ledger in Supabase, donor column on the admin roster.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
 
-### Action required (shared Supabase DB — prod + preview)
+### DB migrations applied (2026-07-11)
 
-Confirm these have been run in the **Supabase SQL Editor** (order matters; safe to
-re-run if unsure — migrations are additive/idempotent):
+Operator confirmed the directory stack SQL was run in Supabase (shared DB). For
+reference, these three files were applied (safe to re-run if a future env is blank):
 
-1. `supabase/migrations/2026-07-10-member-directory.sql` — directory columns + RPCs +
-   `is_board` guard/audit. Without this, `/members` degrades to “not available yet”.
-2. `supabase/migrations/2026-07-10-profile-organizations.sql` — multi-employer
-   `organizations` jsonb + city; directory RPC shape. Code on `main` (PR #39).
-3. `supabase/migrations/2026-07-10-directory-contact.sql` — `directory_use_account_contact`,
-   `directory_email`, `directory_phone` + RPC contact resolution.
+1. `supabase/migrations/2026-07-10-member-directory.sql`
+2. `supabase/migrations/2026-07-10-profile-organizations.sql`
+3. `supabase/migrations/2026-07-10-directory-contact.sql`
 
-**Smoke check after SQL:** active member opens Directory; can save 2+ orgs with role
-and bare domain website; can uncheck “use account contact” and set a work email;
-Privacy/Terms pages load with July 11 effective date.
+No further directory migrations pending.
 
 ---
 
@@ -88,11 +81,18 @@ Privacy/Terms pages load with July 11 effective date.
 
 ### Config / ops (do soon)
 
-- [ ] Confirm all three directory-related Supabase migrations applied (see above).
+- [x] Directory-related Supabase migrations applied (member-directory, profile-organizations, directory-contact) — 2026-07-11.
 - [ ] Publish Google OAuth consent screen when ready for open membership.
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
   interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
 - [ ] Optional: board skim of privacy/terms (already emailed informally about the directory).
+
+### Product — site polish / marketing
+
+- [ ] **Footer social links** — Instagram (and eventually Twitter/X) icons/links in
+  the site footer so visitors can find SAMPA’s social accounts. Need final
+  profile URLs when ready; X can wait until the account exists. Touch
+  `src/components/Footer.jsx` (and optionally nav).
 
 ### Product — member directory / networking (v2 ideas)
 
