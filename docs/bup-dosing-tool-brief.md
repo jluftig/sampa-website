@@ -45,6 +45,12 @@ All in Google Drive:
 - `DTI.pdf` (May 2026, 4 pages incl. emerging practice + XR formulation table)
 - `Bup-After-OD-Reversal.pdf` (Jan 2026, incl. explainer pages)
 - `CA-Bridge_PATIENT-MATERIAL_Buprenorphine_Self-Start.pdf` (patient handout)
+- Microdosing / Micro–Macro (site example, June 2025):  
+  https://bridgetotreatment.org/resource/starting-buprenorphine-with-microdosing-and-cross-tapering/  
+  PDF: `CA_BRIDGE_SITE-EXAMPLE_Starting-Buprenorphine-with-Microdosing-and-Cross-Tapering_June_2025.pdf`  
+  **Tool encodes only the 1-Day Micro–Macro arm** as a discharge-safe pathway. The PDF’s
+  3-/7-day full-agonist cross-tapers are not outpatient paths in this tool (see guardrail 1;
+  inpatient full-agonist ramps stay on Low Dose).
 
 Planned title updates (use these names in the tool):
 - "Buprenorphine (Bup) Quick Start" — "Emergency Department" is being **removed** from
@@ -72,13 +78,17 @@ Entry: patient with OUD, candidate for and interested in buprenorphine.
            discharge, OR discharge on the micro-dose + Self-Start plan (below).
        - **COWS < 4 (no/minimal withdrawal):**
          - Wants injectable → **DTI Emerging Practice** (XR bup 8 mg weekly).
-         - Declines injectable → **"micro–macro"**: micro-dose bup in the ED + adjunct
-           Rx (clonidine etc.) + bup discharge Rx + **Buprenorphine Self-Start** patient
-           handout; patient does their own quick start at home once in severe withdrawal
-           (typically next morning).
+         - Declines injectable → **1-Day Micro–Macro Start**: micro lead-in in the ED
+           (preferred 2×20 mcg/hr TD patches; else micro SL without waiting for withdrawal)
+           → when COWS ≥ 8 or severity ≥ 7/10, **16 mg SL in one dose** (in ED if still
+           there, or at home) + adjunct Rx + bup discharge Rx + **Self-Start** handout.
    - **Inpatient / being admitted:**
      - **Default for most admitted patients** (especially with acute pain / full-agonist
        analgesic needs): **Low Dose with Opioid Continuation (Inpatient)**.
+     - **Escape hatch if disposition flips to discharge** after Low Dose was chosen or
+       started (admission cancelled): convert to **1-Day Micro–Macro** — never send home
+       on full-agonist continuation. Stop outpatient full agonists; keep/start micro;
+       macro 16 mg when sick enough.
      - **Backup = Quick Start**, when any of:
        1. Bup-precipitated withdrawal develops during the low-dose ramp → go directly
           to Quick Start.
@@ -133,6 +143,16 @@ illness; methadone use; not a bup-maintenance candidate. If awake with withdrawa
 (COWS > 4) and agreeable → 16 mg SL bup (single or divided over 1–2 h; 0.3 mg IV if
 can't tolerate SL). Observe ~2 h until no excessive sedation or withdrawal; additional
 bup up to 32 mg OK; link to ongoing care.
+
+**1-Day Micro–Macro Start** (ED / discharge; CA Bridge site example June 2025): for low
+or no withdrawal when discharge is expected. Preferred: place 2×20 mcg/hr TD patches
+(do not wait for withdrawal) + prescribe 8 mg SL PRN. If patches unavailable: stop full
+opioids, do not wait for withdrawal, micro SL 0.5 mg q3h (~4 mg/day) OR swallow 2 mg
+q3h (~6 mg/day). Wait until moderate–severe withdrawal (COWS ≥ 8 or ≥7/10 by patient);
+often 6–12 h, sometimes 24–72 h — keep microdosing until then. Macro: **16 mg SL in one
+dose**. Also the **conversion path** when Low Dose for planned admission is aborted by
+discharge. Not a substitute for Low Dose inpatient full-agonist continuation. Patient
+leaf: Self-Start handout.
 
 **Self-Start (patient handout)**: patient-facing; take a day off → wait for bad
 withdrawal (≥12 h, longer for fentanyl) → 8–16 mg SL → repeat in 1 h → next day

@@ -19,7 +19,7 @@ export const LOW_DOSE = {
   shortTitle: 'Low Dose',
   audience: 'Inpatient (may start in ED when admission is planned)',
   blurb: 'Three-day low-dose bup ramp with full-agonist opioids continued throughout.',
-  version: '1.0.0',
+  version: '1.1.0', // 1.1.0: disposition-flip escape hatch → Micro–Macro
   source: {
     title:
       'CA Bridge — Buprenorphine (Bup) Hospital Start: Low-Dose Bup Initiation with Opioid Continuation',
@@ -138,6 +138,15 @@ export const LOW_DOSE = {
         action:
           'When severe and/or precipitated withdrawal develops, consider transition to high-dose bup.',
         escalateTo: { protocol: 'quick-start', label: 'Open Bup Quick Start' },
+      },
+      {
+        problem: 'Is admission no longer planned — patient will be discharged instead?',
+        action:
+          'You cannot continue Low Dose with Opioid Continuation as an outpatient plan. Stop full-agonist continuation for home use and convert to 1-Day Micro–Macro Start (micro lead-in now; 16 mg SL when moderate–severe withdrawal develops). Chart the disposition change.',
+        escalateTo: {
+          to: '/tools/bup/micro-macro?from=low-dose',
+          label: 'Open Micro–Macro conversion',
+        },
       },
     ],
   },

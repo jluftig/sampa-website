@@ -7,7 +7,7 @@ export const TOOL = {
   key: 'bup',
   name: 'SAMPA Buprenorphine Dosing Tool',
   shortName: 'Bup Tool',
-  version: '1.1.0', // 1.1.0: COWS calculator + timestamped score series
+  version: '1.2.0', // 1.2.0: 1-Day Micro–Macro protocol + Low Dose→discharge conversion
 
   // National Clinician Consultation Center substance use warmline — appears on
   // the source CA Bridge algorithms.

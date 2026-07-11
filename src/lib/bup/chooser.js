@@ -10,7 +10,7 @@
 import { evaluateFlow } from './flow';
 
 export const CHOOSER = {
-  version: '1.0.0',
+  version: '1.1.0', // 1.1.0: Micro–Macro is a real protocol destination (not Self-Start stub)
   revisedDate: '2026-07',
   entry: 'Patient with opioid use disorder, candidate for and interested in buprenorphine.',
   start: 'odReversed',
@@ -143,6 +143,7 @@ export const CHOOSER = {
       notes: [
         'Begin the protocol in the ED and hand off to the admitting team.',
         'This is an inpatient-only pathway — never a discharge plan. Full-agonist opioids cannot be prescribed for outpatient use in OUD.',
+        'If the admission plan is cancelled and the patient will be discharged instead, convert to 1-Day Micro–Macro Start (escape hatch on the Low Dose page).',
       ],
     },
 
@@ -182,10 +183,10 @@ export const CHOOSER = {
             'Treat symptoms with adjuncts (e.g., clonidine) and use Quick Start if COWS reaches ≥ 8 before discharge.',
         },
         {
-          protocol: 'self-start',
-          title: 'Micro-dose + Self-Start discharge plan',
+          protocol: 'micro-macro',
+          title: '1-Day Micro–Macro Start',
           summary:
-            'Micro-dose bup in the ED, prescribe adjuncts + bup, and discharge with the Buprenorphine Self-Start patient handout.',
+            'Micro lead-in now (patches preferred), discharge with a plan to take 16 mg SL once moderate–severe withdrawal develops; give the Self-Start handout.',
         },
       ],
     },
@@ -202,17 +203,19 @@ export const CHOOSER = {
     out_microMacro: {
       kind: 'outcome',
       outcomeKey: 'ed-micro-macro',
-      protocol: 'self-start',
-      badge: 'Micro-dose + Self-Start',
-      title: 'Micro-dose bup in the ED → home Quick Start',
+      protocol: 'micro-macro',
+      badge: '1-Day Micro–Macro Start',
+      title: '1-Day Micro–Macro Start',
+      headline: 'Micro lead-in now → 16 mg SL when moderate–severe withdrawal',
       checklist: [
-        'Micro-dose bup in the ED',
-        'Adjunct Rx (e.g., clonidine)',
-        'Bup discharge Rx',
-        'Buprenorphine Self-Start patient handout',
+        'Preferred: 2 × 20 mcg/hr TD patches (do not wait for withdrawal); Rx 8 mg SL PRN',
+        'If no patches: stop full opioids, micro SL 0.5 mg q3h or swallow 2 mg q3h',
+        'Wait until COWS ≥ 8 or patient severity ≥ 7/10, then 16 mg SL in one dose',
+        'Adjunct Rx + bup discharge Rx + Self-Start patient handout',
       ],
       notes: [
-        'The patient does their own quick start at home once in severe withdrawal (typically the next morning).',
+        'Primary path for ED discharge when withdrawal is minimal and the patient prefers SL over long-acting injectable.',
+        'Also the conversion path if Low Dose was started for admission and the plan changes to discharge.',
       ],
     },
 
