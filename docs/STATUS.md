@@ -11,7 +11,13 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-11 (newsletter signup without membership on backlog)
+**Last updated:** 2026-07-12 (docs cleanup: news scout/pipeline parked under one board; agent resume stubs)
+
+**Doc roles (keep simple):**
+- **This file (`STATUS.md`)** — only product board (live / in flight / blocked / backlog).
+- **Specs** (e.g. `docs/sampa-news-scout-prompt.md`) — how a thing should work; not a second roadmap.
+- **`docs/PARK-*.md`** — thin agent resume checklists only; must point here, never duplicate the backlog.
+- **GitHub `main`** — source of truth across laptop + Mac Studio; pull → work → push.
 
 ---
 
@@ -61,6 +67,14 @@ No further directory migrations pending.
   #22 — not merged.** Directory screens not built yet (web RPCs are reusable).
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
   usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
+- **News scout → auto-draft pipeline (Hermes / Egg)** — **Parked 2026-07-12** (design
+  done; not shipping yet). Goal: scheduled scout → sampa-post rules → Supabase
+  **`status=draft` under Josh** → Telegram notify → human Publish in `/editor` (**never
+  auto-publish**). Scout spec: [`sampa-news-scout-prompt.md`](sampa-news-scout-prompt.md)
+  (21-day primary window; up to ~60 days if high SAMPA value; digest + post candidates).
+  Thin resume checklist: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
+  **Next:** (1) service role + author UUID on Mac Studio Hermes host only (not git),
+  (2) draft-only insert path, (3) dry-run, (4) cron. Resume phrase: *Resume SAMPA news pipeline*.
 
 ---
 
