@@ -16,13 +16,15 @@ Scout → sampa-post → Supabase **draft** under Josh → he Publishes. Never a
 
 ## Next (ordered)
 
-1. ~~Hermes host secrets~~ — ✅ set (`SAMPA_SUPABASE_SECRET_KEY` sb_secret + author UUID)
-2. ~~Draft-only insert script~~ — ✅ `scripts/insert-sampa-draft.mjs`
-3. ~~Smoke-test insert~~ — ✅ 2026-07-12 draft `2c264b56-4b31-40ac-89b2-61cf7ed09194`  
-   (`pipeline-smoke-test-delete-me-2026-07`) — **Josh: open in editor, confirm, then delete**
-4. Wire scout → sampa-post → insert (Hermes skill) + Telegram notify
-5. Cron after one real article dry-run
-6. Update STATUS when pipeline is operational  
+1. ~~Hermes host secrets~~ — ✅  
+2. ~~Draft-only insert script~~ — ✅ `scripts/insert-sampa-draft.mjs` + `scripts/run-insert-draft.sh`  
+3. ~~Smoke-test insert~~ — ✅ (delete smoke test if still present)  
+4. ~~Hermes skill~~ — ✅ profile skill `sampa-news-pipeline`  
+5. ~~First real draft via pipeline~~ — ✅ 2026-07-12 DEA 7-OH post  
+   - Draft: https://www.addictionpas.org/editor/5799bb1f-eee5-4491-b67a-c630d1ad9893  
+   - **Josh: review, edit, Publish or delete**  
+6. Cron (Mon/Thu or daily, max 1 draft) after you’re happy with review quality  
+7. Update STATUS “in flight” → note operational when cron is live  
 
 ---
 
