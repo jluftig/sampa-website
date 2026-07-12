@@ -136,11 +136,23 @@ SAMPA news is **not** “journals only.” Policy and agency actions are first-c
 
 For every finalist, determine by opening the primary full-text/publisher URL:
 
-- **Fully open access** — free full text/PDF/HTML (PMC, CC-BY, free to read)  
-- **Paywalled** — abstract only or login/purchase required  
+- **Fully open access** — free full text/PDF/HTML (PMC, CC-BY, free to read)
+- **Paywalled** — abstract only or login/purchase required
 - **Hybrid / partial** — e.g. abstract free, PDF not; or news free but paper paywalled (state both URLs if useful)
 
 Never invent access status.
+
+### Open-access preference (pipeline / daily drafts)
+
+When selecting **`draft_post` candidates for automated drafts**, **prefer fully open-access primaries** so Josh and readers can verify without a subscription.
+
+| Priority | Sources |
+|----------|---------|
+| **1 — Prefer** | Federal/agency pages (DEA, FDA, SAMHSA, HHS, NIH, CDC), PMC full text, CC-BY journals, free news with primary links |
+| **2 — Accept** | Hybrid (free abstract + paywalled PDF) if the free material is enough to write accurately without inventing |
+| **3 — Avoid for auto-draft** | Paywalled-only papers unless (a) no OA alternative covers the same news and (b) the free abstract + official press release support a complete, honest post — flag **Access: Paywalled** in notify |
+
+In a daily multi-draft run, **do not fill the quota with paywalled items** if OA candidates exist. Different drafts should be **different topics** (not three angles on the same study).
 
 ---
 

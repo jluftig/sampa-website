@@ -24,8 +24,8 @@ Scout → sampa-post → Supabase **draft** under Josh → he Publishes. Never a
 5. ~~First real draft via pipeline~~ — ✅ 2026-07-12 DEA 7-OH post  
    - Draft: https://www.addictionpas.org/editor/5799bb1f-eee5-4491-b67a-c630d1ad9893  
    - **Josh: review, edit, Publish or delete**  
-6. Cron (Mon/Thu or daily, max 1 draft) after you’re happy with review quality  
-7. Update STATUS “in flight” → note operational when cron is live  
+6. Cron: **daily ~3 draft menu** (OA-preferred, distinct topics); Josh selects what to publish  
+7. Update STATUS when cron is live and stable  
 
 ---
 
