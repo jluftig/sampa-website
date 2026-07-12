@@ -1,0 +1,19 @@
+{
+  "title": "Pipeline smoke test — delete me",
+  "slug": "pipeline-smoke-test-delete-me-2026-07",
+  "excerpt": "Internal dry-run draft to verify Hermes can insert SAMPA news drafts. Safe to delete.",
+  "body_html": "<p>This is an automated <strong>draft-only</strong> smoke test for the SAMPA news pipeline. It should never be published.</p><p>Source: internal test.</p>",
+  "source_name": null,
+  "source_url": null,
+  "source_published_at": null,
+  "key_points": [
+    {
+      "content": "SAMPA draft pipeline smoke tests insert posts with status draft only and must not auto-publish.",
+      "tag_slugs": ["sampa"]
+    },
+    {
+      "content": "Editors should delete pipeline smoke-test drafts after verifying they appear under Josh in the editor list.",
+      "tag_slugs": ["sampa"]
+    }
+  ]
+}

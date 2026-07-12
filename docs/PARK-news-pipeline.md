@@ -16,11 +16,13 @@ Scout → sampa-post → Supabase **draft** under Josh → he Publishes. Never a
 
 ## Next (ordered)
 
-1. Hermes host secrets (not git): service role + Josh `author_id` UUID  
-2. Draft-only insert (`posts` + `items` + `item_tags`)  
-3. Dry-run → review in `/editor`  
-4. Cron + Telegram notify  
-5. Update STATUS when live  
+1. ~~Hermes host secrets~~ — ✅ set (`SAMPA_SUPABASE_SECRET_KEY` sb_secret + author UUID)
+2. ~~Draft-only insert script~~ — ✅ `scripts/insert-sampa-draft.mjs`
+3. ~~Smoke-test insert~~ — ✅ 2026-07-12 draft `2c264b56-4b31-40ac-89b2-61cf7ed09194`  
+   (`pipeline-smoke-test-delete-me-2026-07`) — **Josh: open in editor, confirm, then delete**
+4. Wire scout → sampa-post → insert (Hermes skill) + Telegram notify
+5. Cron after one real article dry-run
+6. Update STATUS when pipeline is operational  
 
 ---
 
