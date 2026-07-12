@@ -2,6 +2,7 @@
 
 **Resume phrase:** `Resume SAMPA news pipeline`  
 **Board of record:** [`STATUS.md`](STATUS.md) (in flight — do not maintain a second backlog here)  
+**Agency cover style:** [`cover-style-agency-announcements.md`](cover-style-agency-announcements.md)  
 **Scout spec:** [`sampa-news-scout-prompt.md`](sampa-news-scout-prompt.md)  
 **Post skill:** `../.claude/skills/sampa-post/SKILL.md`  
 **Clone (Studio):** `~/Projects/sampa-website` · **Remote:** `jluftig/sampa-website`
