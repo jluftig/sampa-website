@@ -1,10 +1,47 @@
 # SAMPA cover images — official agency / policy announcements
 
 **Purpose:** Produce consistent, publishable cover art for news posts about **DEA, FDA, SAMHSA, HHS, NIH, CDC, ASAM policy, Federal Register**, and similar institutional sources.  
-**House reference (target look):** polished editorial digital illustration — dual-talon federal-style emblem (left) + short topic lockup (right), as used on the July 2026 7-OH draft.  
+**House reference (target look):** the canonical example below — polished editorial digital illustration, dual-talon federal-style emblem (left) + short topic lockup (right).  
 **Not for:** pure clinical trials, street/clinical scenes, or pop-art one-offs (use other cover recipes).
 
 **Last updated:** 2026-07-12
+
+---
+
+## Canonical visual reference
+
+**Use this image as the gold standard.** New agency/policy covers should match its layout, polish, emblem grammar, and restraint (not a pixel-perfect clone of the eagle, but the same system).
+
+![Canonical agency cover reference: dual-talon emblem left, 7-OH lockup right](assets/cover-agency-reference-dual-talon-7oh.png)
+
+| Field | Value |
+|-------|--------|
+| **File in repo** | [`docs/assets/cover-agency-reference-dual-talon-7oh.png`](assets/cover-agency-reference-dual-talon-7oh.png) |
+| **Size** | 1600 × 900 (16:9) |
+| **Origin** | Approved cover for draft `dea-temporary-schedule-7-oh-kratom-alkaloids-2026-07` (2026-07-12) |
+| **Also on storage** | `post-images/caf94722-567a-4ce7-9c07-4dd8033cc129.png` (do not rely on this alone — prefer the repo file) |
+
+### What to match from the reference
+
+1. **Polish** — smooth digital illustration, not rough pen sketch  
+2. **Split layout** — emblem mass on the **left**, topic lockup on the **right**  
+3. **Emblem grammar** — circular badge, eagle, **both talons occupied** (olive + arrows), shield, stars; **no lettering inside the badge**  
+4. **Lockup** — short, bold, only the topic string (here: `7-OH`)  
+5. **Palette** — navy / charcoal / cream / soft gold accents  
+6. **Mood** — calm, institutional, clinical-adjacent  
+
+### For image generators that accept a reference image
+
+Pass the repo file (or its public URL after clone) as a **style/composition reference**, with instructions:
+
+- Match layout, finish, and emblem rules from the reference  
+- Replace the right-side lockup with the new `{{LOCKUP}}`  
+- Do **not** copy any official seal; keep emblem text-free  
+- Output 16:9  
+
+If the tool only accepts a URL, use the raw GitHub URL after push, e.g.  
+`https://raw.githubusercontent.com/jluftig/sampa-website/main/docs/assets/cover-agency-reference-dual-talon-7oh.png`  
+(or the storage URL above as fallback).
 
 ---
 
@@ -96,10 +133,27 @@ Legal note: unauthorized use of real federal seals can be unlawful; stylized ins
 
 ## 6. Master image prompt (copy / adapt)
 
+**Prefer image-to-image / reference mode** when available: attach  
+`docs/assets/cover-agency-reference-dual-talon-7oh.png` and instruct the model to match that system while changing only the lockup/subject.
+
 Replace `{{LOCKUP}}` and optional `{{SUBJECT_HINT}}`.
 
 ```
-Polished professional editorial digital illustration for a medical nonprofit news website (SAMPA), 16:9 landscape, high-quality clean illustration (smooth shading, refined linework — NOT rough pen sketch, NOT photo, NOT comic pop-art).
+Use the provided reference image as the visual system for a SAMPA medical nonprofit news cover. Match its polished editorial digital illustration style, left emblem / right lockup layout, dual-talon eagle grammar, navy-charcoal-cream-gold palette, and calm institutional mood. Do NOT copy any real agency seal.
+
+Change only what is needed for this story:
+- Keep LEFT: text-free circular federal-energy emblem; eagle with BOTH talons occupied (olive branch + arrows); shield and stars OK; ZERO letters or mottos inside the emblem.
+- RIGHT: large bold clean lettering reading exactly: {{LOCKUP}}
+  No em dash, no hyphen tail, no other words on the image.
+
+16:9 landscape, publishable quality. {{SUBJECT_HINT}}
+No people, no watermarks, no gibberish text, no agency logos.
+```
+
+**Text-only fallback** (no reference attachment):
+
+```
+Polished professional editorial digital illustration for a medical nonprofit news website (SAMPA), 16:9 landscape, high-quality clean illustration (smooth shading, refined linework — NOT rough pen sketch, NOT photo, NOT comic pop-art). Match the SAMPA agency-cover system: LEFT dual-talon text-free emblem, RIGHT short lockup.
 
 Layout: LEFT 35–40% — refined circular federal-style emblem with heraldic eagle; BOTH talons occupied in classical fashion: one talon gripping an olive branch, the other gripping a bundle of arrows; optional simple shield on chest and stars in an arc; clean geometric ring border. ZERO text, letters, numbers, mottos, or fake Latin anywhere inside the emblem — completely text-free. Inspired by US federal seal energy but NOT a copy of the DEA seal or any real government seal.
 
@@ -115,7 +169,7 @@ No people, no watermarks, no gibberish text, no agency logos. Centered vertical 
 
 | Story | LOCKUP | SUBJECT_HINT (optional) |
 |-------|--------|-------------------------|
-| DEA 7-OH scheduling | `7-OH` | Subtle botanical curve in gold accent only if it doesn’t crowd |
+| DEA 7-OH scheduling | `7-OH` | (reference image already uses this lockup) |
 | Methadone / OTP policy | `OTP` | — |
 | Buprenorphine telehealth rule | `MOUD` | — |
 | Contingency management | `CM` | — |
