@@ -180,4 +180,6 @@ Deferred from the first directory ship:
 | --- | --- | --- |
 | Human operator | [HANDOFF.md](HANDOFF.md) | This file for “what’s happening now”; [member-area-setup.md](member-area-setup.md) for Stripe/OAuth |
 | AI agent | [CLAUDE.md](../CLAUDE.md) (via [AGENTS.md](../AGENTS.md)) | This file before planning work; update this file when finishing significant work |
+| Parked agent work (resume) | This file → In flight | Thin [PARK-*.md](PARK-news-pipeline.md) checklist + linked specs only |
+| News scout / draft pipeline spec | [sampa-news-scout-prompt.md](sampa-news-scout-prompt.md) | [PARK-news-pipeline.md](PARK-news-pipeline.md) next steps; never a second backlog |
 | Product history / original plan | [news-blog-plan.md](news-blog-plan.md) | Historical; STATUS supersedes “what’s next” |
