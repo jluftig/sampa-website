@@ -126,9 +126,21 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
   from a TipTap editor. Use ONLY these HTML elements (the editor supports nothing else),
   written with normal angle-bracket tags in your output: paragraph (p), headings h2 and h3,
   bold (strong), italic (em), unordered and ordered lists (ul, ol, li), blockquote, and
-  links (an "a" element with an href). Open with what happened and why it matters to
-  addiction-medicine PAs. Use h2/h3 only if long enough to warrant them; lists for findings;
-  at most one blockquote. End with a paragraph starting with "Source:". For academic sources,
+  links (an "a" element with an href).
+
+  **Structure (house style — required):** See `docs/news-article-structure.md`.
+  - Open with a **lede** of 1–2 short paragraphs (what happened + why it matters to
+    addiction-medicine PAs). **No heading above the lede.**
+  - Then break the article with **`<h2>` section headings** (major sections only; use
+    `<h3>` rarely). Do **not** write the body as one long run of paragraphs.
+  - **Agency/policy** posts should usually include H2s in this spirit (adapt labels):
+    *What [Agency] is targeting* / *What is not covered* / *Process, timing, and prior
+    actions* / *Why this matters for addiction-medicine PAs*.
+  - **Clinical/study** posts should usually include: *Key findings* / *Study design and
+    limits* / *Practice implications for PAs*.
+  - Aim for **3–4 H2s** on agency posts; **at least 2 H2s** on any post over ~200 words.
+  - Lists for enumerated findings or substance lists; at most one blockquote.
+  - End with a paragraph starting with "Source:". For academic sources,
   write the full AMA-style citation as plain text and hyperlink ONLY the DOI at the end — wrap
   just the DOI (e.g. `doi:10.1001/jamanetworkopen.2026.18698`) in the `<a href="https://doi.org/<doi>">`,
   NOT the whole citation. For non-academic sources (news, press releases), link only the article

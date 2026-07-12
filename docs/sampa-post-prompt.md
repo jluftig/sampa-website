@@ -44,14 +44,25 @@ Everything you create is a **draft** — a human still reviews and hits Publish 
 > 2. **Slug** — lowercase, words separated by hyphens, 3–6 words, descriptive; add the year and month when
 >    possible. Example: `xr-buprenorphine-pregnancy-trial-2026-02`.
 > 3. **Excerpt** — one or two sentences (~25–45 words) summarizing the post for the news list.
-> 4. **Article body** — about 250–500 words. Open with what happened and why it matters to
->    addiction-medicine PAs. Use short paragraphs; use a heading or two only if it's long enough to need
->    them; use a bullet list for findings; end with a final line starting with "Source:". For academic
->    articles, write the full AMA-style citation as plain text and make **only the DOI** at the very end a
->    clickable link (linking to `https://doi.org/<doi>`) — do NOT turn the whole citation into one big
->    link. For non-academic sources (news, press releases), link just the article title or publication
->    name, not the entire line. **Put any directly quoted words in italics** (keep the quotation marks). **Show this body as normal formatted text — real bold,
->    headings, bullets, and a clickable link — NOT as code and NOT with any angle-bracket tags visible.**
+> 4. **Article body** — about 250–500 words. **Structure (required house style):**
+>    - Start with a short **lede** (1–2 paragraphs): what happened and why it matters to
+>      addiction-medicine physician associates. No heading above the lede.
+>    - Then use **Heading 2** section titles to break the article (in HTML these are `<h2>`).
+>      Do not write one long wall of paragraphs. Aim for **3–4 H2 sections** on policy/agency
+>      posts and **at least 2 H2s** if the body is over ~200 words.
+>    - **Agency/policy** H2s (adapt labels): What [Agency] is targeting; What is not covered;
+>      Process, timing, and prior actions; Why this matters for addiction-medicine PAs.
+>    - **Study/clinical** H2s (adapt labels): Key findings; Study design and limits; Practice
+>      implications for PAs.
+>    - Use bullet lists for findings or substance lists; end with a final line starting with
+>      "Source:". For academic articles, write the full AMA-style citation as plain text and make
+>      **only the DOI** at the very end a clickable link (linking to `https://doi.org/<doi>`) — do NOT
+>      turn the whole citation into one big link. For non-academic sources (news, press releases),
+>      link just the article title or publication name, not the entire line. **Put any directly
+>      quoted words in italics** (keep the quotation marks). **Show this body as normal formatted
+>      text — real bold, H2 headings, bullets, and a clickable link — NOT as code and NOT with any
+>      angle-bracket tags visible.**
+>    - Full structure guide: `docs/news-article-structure.md` in the SAMPA repo.
 > 5. **Key Points** — exactly **2 or 3** of them. Each must be a single standalone sentence that makes sense
 >    on its own in a keyword search (name the actual subject — never "this study"). After each Key Point,
 >    list its keywords on a separate line (this is a **suggestion only** — the human uses their judgment and
