@@ -1,7 +1,8 @@
 # PARK — SAMPA news scout + auto-draft pipeline
 
+**Status:** Parked 2026-07-12 evening — pipeline **operational** (cron daily 6am PT).  
 **Resume phrase:** `Resume SAMPA news pipeline`  
-**Board of record:** [`STATUS.md`](STATUS.md) (in flight — do not maintain a second backlog here)  
+**Active next track:** Website security review pre-membership recruitment  
 **Agency cover style:** [`cover-style-agency-announcements.md`](cover-style-agency-announcements.md)  
 **Scout spec:** [`sampa-news-scout-prompt.md`](sampa-news-scout-prompt.md)  
 **Post skill:** `../.claude/skills/sampa-post/SKILL.md`  
