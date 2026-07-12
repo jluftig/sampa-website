@@ -1,46 +1,43 @@
 # PARK — SAMPA news scout + auto-draft pipeline
 
-**Status:** Parked 2026-07-12 evening — pipeline **operational** (cron daily 6am PT).  
+**Status:** Parked 2026-07-12 evening — pipeline **operational** (cron daily **6:00 AM PT**, 7 days/week).  
 **Resume phrase:** `Resume SAMPA news pipeline`  
-**Active next track:** Website security review pre-membership recruitment  
-**Agency cover style:** [`cover-style-agency-announcements.md`](cover-style-agency-announcements.md)  
-**Scout spec:** [`sampa-news-scout-prompt.md`](sampa-news-scout-prompt.md)  
+**Board of record:** [`STATUS.md`](STATUS.md)  
+**Security track (separate session):** [`PARK-security-review.md`](PARK-security-review.md)  
+
+**Specs:** scout [`sampa-news-scout-prompt.md`](sampa-news-scout-prompt.md) · structure [`news-article-structure.md`](news-article-structure.md) · prior art [`news-prior-art-and-updates.md`](news-prior-art-and-updates.md) · agency covers [`cover-style-agency-announcements.md`](cover-style-agency-announcements.md) · stock `docs/assets/stock/`  
 **Post skill:** `../.claude/skills/sampa-post/SKILL.md`  
-**Clone (Studio):** `~/Projects/sampa-website` · **Remote:** `jluftig/sampa-website`
+**Hermes skill:** profile `sampa-news-pipeline`  
+**Clone (Studio):** `~/Projects/sampa-website` · **Remote:** `jluftig/sampa-website`  
+**Cron job id:** `1f55242ea122` (SAMPA daily news draft menu)
 
 ---
 
 ## Goal (one line)
 
-Scout → sampa-post → Supabase **draft** under Josh → he Publishes. Never auto-publish.
+Scout → sampa-post → Supabase **draft** under Josh → Telegram **editor briefing + menu** → he Publishes. Never auto-publish.
 
 ---
 
-## Next (ordered)
+## Next (when resumed — tuning only)
 
-1. ~~Hermes host secrets~~ — ✅  
-2. ~~Draft-only insert script~~ — ✅ `scripts/insert-sampa-draft.mjs` + `scripts/run-insert-draft.sh`  
-3. ~~Smoke-test insert~~ — ✅ (delete smoke test if still present)  
-4. ~~Hermes skill~~ — ✅ profile skill `sampa-news-pipeline`  
-5. ~~First real draft via pipeline~~ — ✅ 2026-07-12 DEA 7-OH post  
-   - Draft: https://www.addictionpas.org/editor/5799bb1f-eee5-4491-b67a-c630d1ad9893  
-   - **Josh: review, edit, Publish or delete**  
-6. Cron: **daily ~3 draft menu** (OA-preferred, distinct topics); Josh selects what to publish  
-7. Update STATUS when cron is live and stable  
-
----
-
-## Done (pointer)
-
-Design + improved scout prompt + local Studio clone/env/dev verified — details were captured 2026-07-11/12; product status lives in **STATUS.md**.
+1. ~~Secrets + insert + skill + first draft + cron~~ — ✅ 2026-07-12  
+2. Monitor first few cron runs (quality, OA preference, 3-draft cap, briefing tone)  
+3. Optional: pause/change schedule; cover automation polish  
+4. Keep STATUS in sync if cron is paused or redesigned  
 
 ---
 
 ## Blockers
 
-- Service role not on Hermes host yet (anon key cannot insert posts)  
-- Author UUID not stored in host env yet  
+None for daily operation. Studio must stay awake enough for Hermes gateway (display sleep OK).
 
 ---
 
-*Thin resume stub only. If this file grows into a roadmap, fold it back into STATUS.md.*
+## Hard rules (don’t regress)
+
+- `status=draft` only; never auto-publish  
+- Prefer open-access primaries for auto-drafts  
+- Prior art: new / update / duplicate  
+- H2 body structure; agency dual-talon covers (no real seals)  
+- “physician associates” not “physician assistants”  
