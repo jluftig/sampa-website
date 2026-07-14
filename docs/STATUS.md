@@ -35,7 +35,9 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 
 - **Marketing site** — homepage, about/sections, privacy & terms (effective
   **July 11, 2026**; member directory fully disclosed; self-published for a small
-  nonprofit — no outside counsel).
+  nonprofit — no outside counsel). **Homepage copy (2026-07-14):** outcomes for
+  individuals/communities first; daily news + member networking as live offers;
+  education/CME not the front pitch.
 - **News/blog + Key Points research database** — editor dashboard, keyword browse and
   intersections, full-text search, per-claim share links and citations, social-preview
   cards. Posts are drafted via the `/sampa-post` skill.
@@ -70,10 +72,6 @@ No further directory migrations pending.
 
 ## In flight (branches / local work)
 
-- **Homepage mission copy (local, not pushed)** — Outcome-led framing for individuals
-  and communities impacted by SUD; live offers = **daily news** + **member networking**;
-  education/training/CME as building-toward, not current focus. Touched: `Hero`,
-  `About`, `ValueProps`, `Membership`, `NewsTeaser`, `EventsTeaser`, `Footer`.
 - **`feature/mobile-app`** — Expo/React Native (`mobile/` worktree). Phases 1–3: news,
   Key Points, keywords, search, saved articles, member area, email OTP. **Draft PR
   #22 — not merged.** Directory screens not built yet (web RPCs are reusable).
