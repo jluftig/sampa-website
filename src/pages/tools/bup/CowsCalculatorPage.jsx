@@ -109,9 +109,9 @@ function ScorePanelBody({ result, entries, canRecord, onRecord, onRescore, onCle
         </button>
         <Link
           to="/tools/bup"
-          className="inline-flex items-center justify-center gap-1.5 w-full text-sm font-medium text-text/60 hover:text-primary transition-colors py-1"
+          className="inline-flex items-center justify-center gap-2 border-2 border-primary/40 text-primary rounded-full px-5 py-2.5 text-sm font-semibold hover:border-primary hover:bg-primary/5 transition-colors w-full"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="w-4 h-4" />
           Back to protocol chooser
         </Link>
         {hasSelections && entries.length > 0 && (
