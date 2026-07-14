@@ -7,7 +7,7 @@ import PrintButton from './PrintButton';
 import HoldPeekChip from './HoldPeekChip';
 
 // Shared frame for the five protocol pages: back link, header, optional
-// guardrail banner, eligibility card (with hold-to-peek support chips for
+// guardrail banner, eligibility card (with tap-to-toggle support chips for
 // adjuncts / dosing tips), the page's own content (flow + protocol-specific
 // extras), remaining info sections, methadone note, and the version/source
 // footer. Pages stay thin; content lives in the protocol data modules.
@@ -30,7 +30,7 @@ function EligibilityCard({ eligibility, adjuncts, supportSections = [] }) {
       {hasSupport && (
         <div className="mt-5 pt-4 border-t border-primary/10">
           <p className="font-data text-[11px] uppercase tracking-wider text-text/45 mb-2.5">
-            Optional support — press and hold to peek
+            Optional support — tap to open, tap again to close
           </p>
           <div className="flex flex-wrap gap-2">
             {adjuncts && (
@@ -101,7 +101,7 @@ export default function ProtocolShell({ protocol, guardrail, children }) {
     });
   }, [protocol.slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Support content lives as hold-to-peek chips on the eligibility card when
+  // Support content lives as tap-to-toggle chips on the eligibility card when
   // that card exists (Quick Start path). Remaining info sections stay below.
   const supportSections =
     protocol.infoSections?.filter((s) => s.supportChip) ?? [];
