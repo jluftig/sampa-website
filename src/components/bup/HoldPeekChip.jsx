@@ -117,7 +117,7 @@ export default function HoldPeekChip({ label, title, children }) {
             </p>
             <div className="text-sm text-text/80 space-y-2">{children}</div>
             <p className="mt-3 text-[11px] text-text/45 font-data">
-              Tap chip again, outside, or Esc to close
+              Tap button again, outside, or Esc to close
             </p>
           </div>,
           document.body
