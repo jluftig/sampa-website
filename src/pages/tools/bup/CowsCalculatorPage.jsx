@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Check, ChevronDown, ChevronUp, Eye, RotateCcw, TriangleAlert, Trash2 } from 'lucide-react';
 import { COWS, scoreCows, cowsBand, cowsSeriesText } from '../../../lib/bup/cows';
+import { readCowsReturnTo, cowsReturnLabel } from '../../../lib/bup/cowsNav';
 import { useCows } from '../../../components/bup/CowsContext';
 import CopySummaryButton from '../../../components/bup/CopySummaryButton';
 
@@ -64,7 +65,17 @@ function CowsItemCard({ item, index, selectedIdx, onSelect }) {
   );
 }
 
-function ScorePanelBody({ result, entries, canRecord, onRecord, onRescore, onClear, hasSelections }) {
+function ScorePanelBody({
+  result,
+  entries,
+  canRecord,
+  onRecord,
+  onRescore,
+  onClear,
+  hasSelections,
+  returnTo,
+  returnLabel,
+}) {
   const [confirmClear, setConfirmClear] = useState(false);
 
   return (
@@ -108,11 +119,11 @@ function ScorePanelBody({ result, entries, canRecord, onRecord, onRescore, onCle
           <span>Record score — {timeLabel(Date.now())}</span>
         </button>
         <Link
-          to="/tools/bup"
+          to={returnTo}
           className="inline-flex items-center justify-center gap-2 border-2 border-primary/40 text-primary rounded-full px-5 py-2.5 text-sm font-semibold hover:border-primary hover:bg-primary/5 transition-colors w-full"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to protocol chooser
+          {returnLabel}
         </Link>
         {hasSelections && entries.length > 0 && (
           <button
@@ -170,6 +181,9 @@ function ScorePanelBody({ result, entries, canRecord, onRecord, onRescore, onCle
 
 export default function CowsCalculatorPage() {
   const { entries, record, clear } = useCows();
+  const location = useLocation();
+  const returnTo = readCowsReturnTo(location.state);
+  const returnLabel = cowsReturnLabel(returnTo);
   const [selections, setSelections] = useState({});
   const [expanded, setExpanded] = useState(false);
   const result = useMemo(() => scoreCows(selections), [selections]);
@@ -184,16 +198,18 @@ export default function CowsCalculatorPage() {
     onRecord: () => record(selections),
     onRescore: () => setSelections({}),
     onClear: clear,
+    returnTo,
+    returnLabel,
   };
 
   return (
     <div>
       <Link
-        to="/tools/bup"
+        to={returnTo}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-text/60 hover:text-primary transition-colors mb-8 print:hidden"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to protocol chooser
+        {returnLabel}
       </Link>
 
       <header className="mb-10 max-w-3xl">

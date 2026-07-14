@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Activity, ArrowRight } from 'lucide-react';
 import { cowsBand } from '../../lib/bup/cows';
+import { cowsLinkProps } from '../../lib/bup/cowsNav';
 import { useCows } from './CowsContext';
 
 // Small row shown on COWS-relevant question cards: surfaces the latest
@@ -10,6 +11,8 @@ import { useCows } from './CowsContext';
 // calculator when no score exists. Never required.
 export default function CowsHint() {
   const { latest } = useCows();
+  const location = useLocation();
+  const cowsLink = cowsLinkProps(location.pathname);
 
   return (
     <div className="bg-accent/5 border border-accent/20 rounded-2xl px-4 py-2.5 mb-4 flex items-center gap-2.5 text-sm">
@@ -30,7 +33,7 @@ export default function CowsHint() {
         <span className="text-text/70">Not sure? Score it with the COWS calculator.</span>
       )}
       <Link
-        to="/tools/bup/cows"
+        {...cowsLink}
         className="ml-auto inline-flex items-center gap-1 font-semibold text-accent hover:underline shrink-0"
       >
         {latest ? 'Re-score' : 'Open'}

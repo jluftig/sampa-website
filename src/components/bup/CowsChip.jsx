@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Activity, ChevronDown, Trash2, RotateCcw } from 'lucide-react';
 import { cowsBand, cowsSeriesText } from '../../lib/bup/cows';
+import { cowsLinkProps } from '../../lib/bup/cowsNav';
 import { useCows } from './CowsContext';
 import CopySummaryButton from './CopySummaryButton';
 
@@ -15,6 +16,7 @@ function timeLabel(epochMs) {
 export default function CowsChip() {
   const { entries, latest, clear } = useCows();
   const location = useLocation();
+  const cowsLink = cowsLinkProps(location.pathname);
   const [open, setOpen] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
 
@@ -41,8 +43,11 @@ export default function CowsChip() {
           </ol>
           <div className="flex flex-wrap gap-2">
             <Link
-              to="/tools/bup/cows"
-              onClick={() => setOpen(false)}
+              {...cowsLink}
+              onClick={() => {
+                cowsLink.onClick?.();
+                setOpen(false);
+              }}
               className="inline-flex items-center gap-1.5 border-2 border-primary text-primary rounded-full px-4 py-2 text-sm font-semibold hover:bg-primary/5 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, RotateCcw } from 'lucide-react';
 import { CHOOSER, evaluateChooser } from '../../../lib/bup/chooser';
 import { PROTOCOLS } from '../../../lib/bup/protocols';
+import { cowsLinkProps } from '../../../lib/bup/cowsNav';
 import QuestionCard from '../../../components/bup/QuestionCard';
 import ResultPanel from '../../../components/bup/ResultPanel';
 import PrintSummary from '../../../components/bup/PrintSummary';
@@ -116,7 +117,7 @@ export default function BupChooser() {
             </Link>
           ))}
           <Link
-            to="/tools/bup/cows"
+            {...cowsLinkProps('/tools/bup')}
             className="bg-white rounded-2xl shadow-sm border border-accent/20 p-5 flex items-center justify-between gap-4 hover:border-accent/50 transition-colors"
           >
             <span>
