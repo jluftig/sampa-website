@@ -219,6 +219,8 @@ export const QUICK_START = {
   infoSections: [
     {
       heading: 'Bup dosing tips',
+      // Hold-to-peek chip on the eligibility card (not a permanent footer block).
+      supportChip: true,
       items: [
         'Respect patient preference. Shared decision making, flexibility, and collaboration are essential.',
         'Heavy dependence/tolerance (e.g., fentanyl) may need higher doses of bup.',

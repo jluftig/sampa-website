@@ -4,14 +4,17 @@ import { ArrowLeft, ShieldAlert, ExternalLink } from 'lucide-react';
 import { TOOL } from '../../lib/bup/meta';
 import { logToolEvent } from '../../lib/toolAnalytics';
 import PrintButton from './PrintButton';
+import HoldPeekChip from './HoldPeekChip';
 
 // Shared frame for the five protocol pages: back link, header, optional
-// guardrail banner, eligibility card, the page's own content (flow +
-// protocol-specific extras), generic info sections + adjuncts, methadone
-// note, and the version/source footer. Pages stay thin; content lives in
-// the protocol data modules.
+// guardrail banner, eligibility card (with hold-to-peek support chips for
+// adjuncts / dosing tips), the page's own content (flow + protocol-specific
+// extras), remaining info sections, methadone note, and the version/source
+// footer. Pages stay thin; content lives in the protocol data modules.
 
-function EligibilityCard({ eligibility }) {
+function EligibilityCard({ eligibility, adjuncts, supportSections = [] }) {
+  const hasSupport = Boolean(adjuncts) || supportSections.length > 0;
+
   return (
     <section className="bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7 mb-8">
       <h2 className="font-bold text-lg mb-3">{eligibility.heading}</h2>
@@ -23,23 +26,48 @@ function EligibilityCard({ eligibility }) {
           </li>
         ))}
       </ul>
-    </section>
-  );
-}
 
-function AdjunctsCard({ adjuncts }) {
-  return (
-    <section className="bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7">
-      <h2 className="font-bold text-lg mb-1">{adjuncts.heading}</h2>
-      {adjuncts.caveat && <p className="text-sm font-semibold text-accent mb-4">{adjuncts.caveat}</p>}
-      <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
-        {adjuncts.items.map((item) => (
-          <div key={item.drug} className="flex flex-col">
-            <dt className="font-data text-xs uppercase tracking-wider text-text/50">{item.group}</dt>
-            <dd className="text-sm font-medium">{item.drug}</dd>
+      {hasSupport && (
+        <div className="mt-5 pt-4 border-t border-primary/10">
+          <p className="font-data text-[11px] uppercase tracking-wider text-text/45 mb-2.5">
+            Optional support — press and hold to peek
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {adjuncts && (
+              <HoldPeekChip label={adjuncts.heading} title={adjuncts.heading}>
+                {adjuncts.caveat && (
+                  <p className="text-sm font-semibold text-accent mb-2">{adjuncts.caveat}</p>
+                )}
+                <dl className="grid gap-2.5">
+                  {adjuncts.items.map((item) => (
+                    <div key={item.drug}>
+                      <dt className="font-data text-[10px] uppercase tracking-wider text-text/50">
+                        {item.group}
+                      </dt>
+                      <dd className="text-sm font-medium text-text">{item.drug}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </HoldPeekChip>
+            )}
+            {supportSections.map((section) => (
+              <HoldPeekChip key={section.heading} label={section.heading} title={section.heading}>
+                <ul className="space-y-2">
+                  {section.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-text/80">
+                      <span
+                        className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0"
+                        aria-hidden="true"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </HoldPeekChip>
+            ))}
           </div>
-        ))}
-      </dl>
+        </div>
+      )}
     </section>
   );
 }
@@ -72,6 +100,14 @@ export default function ProtocolShell({ protocol, guardrail, children }) {
       answers: { referrer: location.state?.from === 'chooser' ? 'chooser' : 'direct' },
     });
   }, [protocol.slug]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Support content lives as hold-to-peek chips on the eligibility card when
+  // that card exists (Quick Start path). Remaining info sections stay below.
+  const supportSections =
+    protocol.infoSections?.filter((s) => s.supportChip) ?? [];
+  const footerSections =
+    protocol.infoSections?.filter((s) => !s.supportChip) ?? [];
+  const adjunctsInEligibility = Boolean(protocol.eligibility && protocol.adjuncts);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -108,16 +144,77 @@ export default function ProtocolShell({ protocol, guardrail, children }) {
         </div>
       )}
 
-      {protocol.eligibility && <EligibilityCard eligibility={protocol.eligibility} />}
+      {protocol.eligibility && (
+        <EligibilityCard
+          eligibility={protocol.eligibility}
+          adjuncts={adjunctsInEligibility ? protocol.adjuncts : null}
+          supportSections={supportSections}
+        />
+      )}
 
       {children}
 
-      <div className="mt-10 space-y-6">
-        {protocol.adjuncts && <AdjunctsCard adjuncts={protocol.adjuncts} />}
-        {protocol.infoSections?.map((section) => (
-          <InfoSection key={section.heading} section={section} />
-        ))}
-      </div>
+      {footerSections.length > 0 && (
+        <div className="mt-10 space-y-6">
+          {footerSections.map((section) => (
+            <InfoSection key={section.heading} section={section} />
+          ))}
+        </div>
+      )}
+
+      {/* Print still needs adjuncts/tips visible even when on-screen they're peek chips */}
+      {adjunctsInEligibility && protocol.adjuncts && (
+        <div className="hidden print:block mt-10">
+          <section className="border border-black/20 rounded-lg p-4">
+            <h2 className="font-bold text-base mb-1">{protocol.adjuncts.heading}</h2>
+            {protocol.adjuncts.caveat && (
+              <p className="text-sm font-semibold mb-3">{protocol.adjuncts.caveat}</p>
+            )}
+            <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+              {protocol.adjuncts.items.map((item) => (
+                <div key={item.drug}>
+                  <dt className="text-xs uppercase tracking-wider text-black/50">{item.group}</dt>
+                  <dd className="font-medium">{item.drug}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
+      )}
+      {supportSections.length > 0 && (
+        <div className="hidden print:block mt-6 space-y-4">
+          {supportSections.map((section) => (
+            <section key={section.heading} className="border border-black/20 rounded-lg p-4">
+              <h2 className="font-bold text-base mb-2">{section.heading}</h2>
+              <ul className="space-y-1.5 text-sm">
+                {section.items.map((item) => (
+                  <li key={item}>• {item}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
+
+      {/* Protocols without eligibility still show full adjuncts card on screen */}
+      {!adjunctsInEligibility && protocol.adjuncts && (
+        <div className="mt-10">
+          <section className="bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7">
+            <h2 className="font-bold text-lg mb-1">{protocol.adjuncts.heading}</h2>
+            {protocol.adjuncts.caveat && (
+              <p className="text-sm font-semibold text-accent mb-4">{protocol.adjuncts.caveat}</p>
+            )}
+            <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+              {protocol.adjuncts.items.map((item) => (
+                <div key={item.drug} className="flex flex-col">
+                  <dt className="font-data text-xs uppercase tracking-wider text-text/50">{item.group}</dt>
+                  <dd className="text-sm font-medium">{item.drug}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
+      )}
 
       <p className="text-xs text-text/50 border-t border-primary/10 mt-10 pt-5">{TOOL.methadoneNote}</p>
 
