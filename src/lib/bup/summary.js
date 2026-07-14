@@ -66,7 +66,15 @@ export function chooserSummaryText(result, now = new Date(), cowsEntries = []) {
 }
 
 // result = evaluateSequence() output over protocol.flow.
-export function protocolSummaryText(protocol, result, now = new Date(), cowsEntries = []) {
+// checklistChecks: optional { [stepId]: number[] } of ticked item indices on
+// checklist steps (e.g. discharge bundle). Reflected as [x]/[ ] in the note.
+export function protocolSummaryText(
+  protocol,
+  result,
+  now = new Date(),
+  cowsEntries = [],
+  checklistChecks = {}
+) {
   const lines = [...headerLines(now), '', `PROTOCOL: ${protocol.title}`, ''];
 
   result.path.forEach((entry) => {
@@ -75,7 +83,13 @@ export function protocolSummaryText(protocol, result, now = new Date(), cowsEntr
       lines.push(`- ${step.prompt} ${entry.answerLabel}`);
     } else if (step.kind === 'dose') {
       lines.push(`- ${step.label}: ${step.dose}${step.range ? ` (${step.range})` : ''}`);
-    } else if (step.kind === 'checklist' || step.kind === 'alert') {
+    } else if (step.kind === 'checklist') {
+      lines.push(`- ${step.title}:`);
+      const checked = new Set(checklistChecks[entry.stepId] || []);
+      step.items.forEach((item, i) => {
+        lines.push(`  ${checked.has(i) ? '[x]' : '[ ]'} ${item}`);
+      });
+    } else if (step.kind === 'alert') {
       lines.push(`- ${step.title}:`);
       step.items.forEach((item) => lines.push(`  - ${item}`));
     } else if (step.kind === 'note') {

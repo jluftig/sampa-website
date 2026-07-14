@@ -57,7 +57,10 @@ function NoteBlock({ step }) {
   );
 }
 
-function ChecklistBlock({ step }) {
+function ChecklistBlock({ step, stepId, checkedIndices = [], onToggle }) {
+  const checked = new Set(checkedIndices);
+  const interactive = typeof onToggle === 'function';
+
   return (
     <section className="bg-white rounded-3xl shadow-sm border border-primary/10 p-6 md:p-7">
       <div className="flex items-center gap-2 mb-3">
@@ -65,15 +68,37 @@ function ChecklistBlock({ step }) {
         <h3 className="font-bold text-lg">{step.title}</h3>
       </div>
       <ul className="space-y-2.5">
-        {step.items.map((item) => (
-          <li key={item} className="flex items-start gap-2.5 text-sm text-text/80">
-            <span
-              className="mt-0.5 inline-block w-4 h-4 rounded border-2 border-primary/40 shrink-0"
-              aria-hidden="true"
-            />
-            {item}
-          </li>
-        ))}
+        {step.items.map((item, i) => {
+          const isChecked = checked.has(i);
+          if (!interactive) {
+            return (
+              <li key={item} className="flex items-start gap-2.5 text-sm text-text/80">
+                <span
+                  className="mt-0.5 inline-block w-4 h-4 rounded border-2 border-primary/40 shrink-0"
+                  aria-hidden="true"
+                />
+                {item}
+              </li>
+            );
+          }
+          return (
+            <li key={item}>
+              <label
+                htmlFor={stepId ? `chk-${stepId}-${i}` : undefined}
+                className="flex items-start gap-2.5 text-sm text-text/80 cursor-pointer select-none group"
+              >
+                <input
+                  id={stepId ? `chk-${stepId}-${i}` : undefined}
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={() => onToggle(i)}
+                  className="mt-0.5 w-4 h-4 rounded border-2 border-primary/50 text-primary accent-primary shrink-0 cursor-pointer"
+                />
+                <span className={isChecked ? 'text-text font-medium' : 'group-hover:text-text'}>{item}</span>
+              </label>
+            </li>
+          );
+        })}
       </ul>
       {step.linkTo && (
         <Link
@@ -124,7 +149,7 @@ function TableBlock({ step }) {
   );
 }
 
-export default function StepRenderer({ step }) {
+export default function StepRenderer({ step, stepId, checkedIndices, onToggleCheck }) {
   switch (step.kind) {
     case 'dose':
       return <DoseStep step={step} />;
@@ -133,7 +158,14 @@ export default function StepRenderer({ step }) {
     case 'note':
       return <NoteBlock step={step} />;
     case 'checklist':
-      return <ChecklistBlock step={step} />;
+      return (
+        <ChecklistBlock
+          step={step}
+          stepId={stepId}
+          checkedIndices={checkedIndices}
+          onToggle={onToggleCheck}
+        />
+      );
     case 'table':
       return <TableBlock step={step} />;
     default:
