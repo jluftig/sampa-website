@@ -30,7 +30,7 @@ export default function Hero() {
         <h1 className="text-5xl md:text-7xl lg:text-8xl tracking-tight leading-tight mb-6">
           <span ref={text1Ref} className="block text-primary font-bold mb-4 xl:mb-6">SAMPA is</span>
           <span ref={text2Ref} className="block font-drama text-accent text-5xl md:text-7xl lg:text-8xl leading-tight pb-4">
-            improving care for people and communities impacted by substance use disorders.
+            improving care for people and communities impacted by SUD.
           </span>
         </h1>
 
