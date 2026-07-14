@@ -20,20 +20,23 @@ export default function Membership() {
         <p className="text-lg text-text/70 max-w-2xl mx-auto">
           Join a national community of physician associates improving care for people and communities impacted by substance use disorders.
           Members get daily news that keeps providers current and a private peer networking directory (you control listing and contact details).
-          Choose the level that fits your career stage.
+          Choose the level that fits your career stage — then confirm term and pay on the next step.
         </p>
       </div>
 
-      {/* Multi-Year Discount Alert */}
+      {/* Multi-year teaser — full term picker lives on /join */}
       <div className="max-w-4xl mx-auto bg-primary/5 border border-primary/20 rounded-3xl p-6 md:p-8 mb-16 flex flex-col md:flex-row items-center gap-6 shadow-sm">
         <div className="bg-white p-4 rounded-full text-primary shrink-0 shadow-sm">
           <Star className="w-8 h-8 fill-primary/10" />
         </div>
         <div>
-          <h3 className="font-bold text-xl text-primary-text mb-2">Multi-Year Discounts Available!</h3>
+          <h3 className="font-bold text-xl text-primary-text mb-2">Multi-year savings when you join</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
-            Commit to the future of SAMPA and save: get <strong>~10% off for 2 years</strong>, or <strong>up to ~20% off for 3 years</strong> — pick your term at checkout.
-            <span className="block mt-1 text-xs opacity-70 italic">(Student and Pre-PA memberships: up to 2 years. Legacy members can choose a $125 lifetime membership.)</span>
+            Annual prices shown below. On the next step you can choose a longer term and save{' '}
+            <strong>~10% for 2 years</strong> or <strong>up to ~20% for 3 years</strong>.
+            <span className="block mt-1 text-xs opacity-70 italic">
+              (Student and Pre-PA: up to 2 years. Legacy: optional $125 lifetime.)
+            </span>
           </p>
         </div>
       </div>
@@ -53,7 +56,7 @@ export default function Membership() {
               </div>
             </div>
             <Link to={`/join?tier=${tier.key}`} className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 ${tier.highlight ? 'bg-gradient-to-r from-primary-text to-accent text-white hover:shadow-lg hover:scale-[1.02]' : 'border-2 border-primary-text text-primary-text hover:bg-primary-text/5'}`}>
-              Select Tier
+              Continue with {tier.name}
             </Link>
           </div>
         ))}
