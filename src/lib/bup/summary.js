@@ -67,7 +67,8 @@ export function chooserSummaryText(result, now = new Date(), cowsEntries = []) {
 
 // result = evaluateSequence() output over protocol.flow.
 // checklistChecks: optional { [stepId]: number[] } of ticked item indices on
-// checklist steps (e.g. discharge bundle). Reflected as [x]/[ ] in the note.
+// checklist steps (e.g. discharge bundle). Only checked items appear in the note;
+// empty / unticked checklists are omitted.
 export function protocolSummaryText(
   protocol,
   result,
@@ -84,11 +85,13 @@ export function protocolSummaryText(
     } else if (step.kind === 'dose') {
       lines.push(`- ${step.label}: ${step.dose}${step.range ? ` (${step.range})` : ''}`);
     } else if (step.kind === 'checklist') {
-      lines.push(`- ${step.title}:`);
       const checked = new Set(checklistChecks[entry.stepId] || []);
-      step.items.forEach((item, i) => {
-        lines.push(`  ${checked.has(i) ? '[x]' : '[ ]'} ${item}`);
-      });
+      const done = step.items.filter((_, i) => checked.has(i));
+      // Only checked items go into the note; skip the section if nothing ticked.
+      if (done.length > 0) {
+        lines.push(`- ${step.title}:`);
+        done.forEach((item) => lines.push(`  - ${item}`));
+      }
     } else if (step.kind === 'alert') {
       lines.push(`- ${step.title}:`);
       step.items.forEach((item) => lines.push(`  - ${item}`));
