@@ -17,13 +17,13 @@ export default function About() {
             Our Mission
           </h2>
           <h3 className="text-3xl md:text-5xl font-drama text-text leading-tight mb-8">
-            Empowering PAs in Addiction Medicine.
+            Better outcomes for individuals and communities.
           </h3>
           <p className="text-lg text-text/80 leading-relaxed mb-6 font-medium">
-            The Society of Addiction Medicine Physician Associates is a nonprofit organization dedicated to improving the health and well-being of people with substance use disorders by advocating for, educating, and connecting physician associates practicing in addiction medicine across the nation.
+            SAMPA is a nonprofit dedicated to improving health outcomes in addiction medicine by advancing the education, training, clinical practice, and professional development of physician associates—so they may deliver high-quality, accessible, patient-centered, and evidence-based care to individuals and communities impacted by substance use disorders.
           </p>
           <p className="text-lg text-text/70 leading-relaxed">
-            As the trusted digital headquarters for SAMPA, we are building a supportive environment that recognizes the unique role of PAs in combating substance use disorders and improving patient outcomes.
+            Today that work lives in what members already use: daily news that keeps providers up to date on research, policy, and practice, and a private member network for peer connection. Education, training, and professional development pathways are growing with the society—always in service of better care for the people and communities we serve.
           </p>
         </div>
 
@@ -35,8 +35,8 @@ export default function About() {
           </div>
           <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-3xl shadow-xl border border-primary/5 animate-bounce" style={{ animationDuration: '4s' }}>
             <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-text to-accent bg-clip-text text-transparent leading-tight">
-              Advancing <br />
-              Addiction Medicine
+              Improving <br />
+              Outcomes
             </div>
           </div>
         </div>

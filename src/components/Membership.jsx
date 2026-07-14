@@ -18,8 +18,9 @@ export default function Membership() {
           Join SAMPA today.
         </h2>
         <p className="text-lg text-text/70 max-w-2xl mx-auto">
-          Help shape the future of PA addiction medicine. Choose the membership level that best fits your career stage.
-          Active members can connect through our peer networking directory (private to members; you control listing and contact details).
+          Join a national community of physician associates improving care for people and communities impacted by substance use disorders.
+          Members get daily news that keeps providers current and a private peer networking directory (you control listing and contact details).
+          Choose the level that fits your career stage.
         </p>
       </div>
 
@@ -69,7 +70,7 @@ export default function Membership() {
             Make a Donation
           </h2>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">
-            SAMPA is pending 501(c)(3) nonprofit status. Your generous contributions help us advocate, educate, and build our national network.
+            SAMPA is pending 501(c)(3) nonprofit status. Your gift sustains daily provider news, member networking, and the education and training we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
           </p>
         </div>
 

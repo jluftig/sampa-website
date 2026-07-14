@@ -30,12 +30,12 @@ export default function Hero() {
         <h1 className="text-5xl md:text-7xl lg:text-8xl tracking-tight leading-tight mb-6">
           <span ref={text1Ref} className="block text-primary font-bold mb-4 xl:mb-6">SAMPA is</span>
           <span ref={text2Ref} className="block font-drama text-accent text-5xl md:text-7xl lg:text-8xl leading-tight pb-4">
-            advancing addiction medicine for PAs.
+            improving care for people and communities impacted by substance use disorders.
           </span>
         </h1>
 
         <p className="mt-6 md:mt-8 max-w-2xl mx-auto text-lg md:text-xl text-text/70 leading-relaxed font-medium">
-          The Society of Addiction Medicine Physician Associates is building a supportive national network, elevating patient care, and increasing access to evidence-based education for physician associates.
+          We advance physician associates so they can deliver high-quality, accessible, patient-centered care—with daily news that keeps providers current and a national member network that connects PAs practicing in addiction medicine.
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 justify-center">

@@ -1,21 +1,21 @@
 import React from 'react';
-import { BookOpen, HeartPulse, Activity } from 'lucide-react';
+import { Newspaper, Users, HeartPulse } from 'lucide-react';
 
 const props = [
   {
-    icon: <BookOpen className="w-8 h-8 text-primary" />,
-    title: "High-quality, evidence-based education",
-    desc: "Delivering cutting-edge continuing medical education and training tailored for Physician Associates to master addiction medicine."
+    icon: <Newspaper className="w-8 h-8 text-primary" />,
+    title: "Daily news to keep providers current",
+    desc: "Research, policy, and practice updates so physician associates stay informed—and patients and communities benefit from care grounded in what is happening now."
   },
   {
-    icon: <HeartPulse className="w-8 h-8 text-accent" />,
-    title: "Improving patient care for substance use disorders",
-    desc: "Advancing compassionate, effective treatment strategies that reduce harm, save lives, and elevate outcomes for patients nationwide."
+    icon: <Users className="w-8 h-8 text-accent" />,
+    title: "Member networking that strengthens practice",
+    desc: "A private national peer directory and community for PAs in addiction medicine—share experience, find colleagues, and reduce isolation in the work."
   },
   {
-    icon: <Activity className="w-8 h-8 text-primary" />,
-    title: "Scientific advancement and public health impact",
-    desc: "Supporting research, stigma reduction, and community outreach to expand access to addiction medicine and improve population health."
+    icon: <HeartPulse className="w-8 h-8 text-primary" />,
+    title: "Care that reaches people who need it",
+    desc: "Everything we build—from news to networking, and education and training as we grow—exists so individuals and communities impacted by substance use disorders receive high-quality, accessible, patient-centered care."
   }
 ];
 
@@ -26,10 +26,10 @@ export default function ValueProps() {
         
         <div className="text-center mb-16 md:mb-24">
           <h2 className="text-4xl md:text-5xl font-sans tracking-tight font-bold text-text mb-6">
-            Our Key Pillars
+            What SAMPA offers now
           </h2>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Everything we do is guided by a commitment to quality, patient care, and systemic change.
+            Practical support for physician associates—so individuals and communities impacted by substance use disorders get better care.
           </p>
         </div>
 

@@ -11,13 +11,21 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-12 (news pipeline operational + security-review park; STATUS synced)
+**Last updated:** 2026-07-14 (homepage mission copy reframe: patients/communities first; daily news + member networking as live offers; CME not front-and-center)
 
-**Doc roles (keep simple):**
-- **This file (`STATUS.md`)** — only product board (live / in flight / blocked / backlog).
-- **Specs** (e.g. `docs/sampa-news-scout-prompt.md`) — how a thing should work; not a second roadmap.
-- **`docs/PARK-*.md`** — thin agent resume checklists only; must point here, never duplicate the backlog.
-- **GitHub `main`** — source of truth across laptop + Mac Studio; pull → work → push.
+**Doc roles (one board — not three sources of truth):**
+
+| Doc | Role |
+|-----|------|
+| **This file (`STATUS.md`)** | **Only product board** — live / in flight / blocked / next / backlog |
+| **`HANDOFF.md`** | Human **how-to** — not a second backlog |
+| **`PARK-*.md`** | Thin **agent sticky note** (resume phrase + next 1–4 steps + links here) |
+| **Specs / dated reviews** | How it works / findings snapshot — open work stays on this board |
+| **`CLAUDE.md` / `AGENTS.md`** | Architecture + this workflow for agents |
+
+**Write path:** state change → **STATUS first** → HANDOFF only if procedure changed → PARK only if track still mid-flight (slim) → specs only if design/findings changed.  
+If the same “what’s next” list appears in three files, **keep STATUS and delete the extras**.  
+**GitHub `main`** — source of truth across laptop + Mac Studio; pull → work → push.
 
 ---
 
@@ -62,16 +70,21 @@ No further directory migrations pending.
 
 ## In flight (branches / local work)
 
+- **Homepage mission copy (local, not pushed)** — Outcome-led framing for individuals
+  and communities impacted by SUD; live offers = **daily news** + **member networking**;
+  education/training/CME as building-toward, not current focus. Touched: `Hero`,
+  `About`, `ValueProps`, `Membership`, `NewsTeaser`, `EventsTeaser`, `Footer`.
 - **`feature/mobile-app`** — Expo/React Native (`mobile/` worktree). Phases 1–3: news,
   Key Points, keywords, search, saved articles, member area, email OTP. **Draft PR
   #22 — not merged.** Directory screens not built yet (web RPCs are reusable).
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
   usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
-- **Pre-membership security review** — **Active next human/agent track (2026-07-12).**
+- **Pre-membership security review** — **Parked mid-stream (2026-07-12 evening).**
   Code/schema health check written: [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md).
   Thin resume: [`PARK-security-review.md`](PARK-security-review.md).
-  **Next:** P0 ops — publish Google OAuth (or magic-link-only launch); verify Vercel
-  Production Stripe/webhook/Supabase elevated keys; E2E join → webhook → directory.
+  **Done this pass:** OAuth **published**; single-board STATUS/HANDOFF/PARK hygiene.
+  **Next P0 when resumed:** Vercel Production Stripe/webhook/Supabase elevated keys;
+  E2E join → webhook → directory; non-member blocked; no self-admin.
   Resume phrase: *Resume SAMPA security review*.
 - **News scout → auto-draft pipeline (Hermes / Egg)** — **Operational / park for
   monitoring (2026-07-12 evening).** Daily cron **6:00 AM PT, 7 days/week** (job
@@ -81,6 +94,8 @@ No further directory migrations pending.
   article H2 structure, agency covers + stock library, prior-art rules.
   Thin resume: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
   Resume phrase: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
+  **Agency covers:** prefer Hermes `image_gen.provider: xai` (SuperGrok / Grok Imagine
+  edit) with dual-talon gold PNG as reference — see backlog item marked done 2026-07-14.
 
 ---
 
@@ -89,9 +104,6 @@ No further directory migrations pending.
 - **501(c)(3) determination letter** (IRS, pending). Until it arrives: keep the
   “not yet tax-deductible” disclosure on `/donate`; Google for Nonprofits can’t
   be applied for.
-- **Google OAuth consent screen is in Testing mode** — only whitelisted test users
-  can sign in with Google. Must be published before opening membership broadly
-  (steps in `docs/member-area-setup.md`).
 - **Privileged-access agreement** (staff roster) — still informal; formal board
   adoption optional when the board wants a signed policy track.
 
@@ -103,11 +115,28 @@ No further directory migrations pending.
 
 - [x] Directory-related Supabase migrations applied (member-directory, profile-organizations, directory-contact) — 2026-07-11.
 - [x] News draft pipeline secrets + insert script + daily cron (6am PT 7d) on Hermes Egg profile — 2026-07-12.
-- [ ] **Pre-membership security P0** — see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) / [`PARK-security-review.md`](PARK-security-review.md).
-- [ ] Publish Google OAuth consent screen when ready for open membership.
+- [ ] **Pre-membership security P0** (remaining) — Vercel Production env + Stripe
+  live webhook + E2E membership path; see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md)
+  / [`PARK-security-review.md`](PARK-security-review.md).
+- [x] Publish Google OAuth consent screen — operator-confirmed **2026-07-12** (not Testing).
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
   interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
 - [ ] Optional: board skim of privacy/terms (already emailed informally about the directory).
+
+### Product — news pipeline
+
+- [x] **Agency cover image-to-image / reference pathway** — **done 2026-07-14.**
+  Hermes Egg `image_gen.provider: xai` (Grok Imagine / SuperGrok OAuth) supports
+  edit via `grok-imagine-image-quality` with the dual-talon gold PNG as
+  `image_url` (`docs/assets/cover-agency-reference-dual-talon-7oh.png`). Proven
+  with lockup **MOUD** → resized 1600×900 → Supabase `post-images` → draft
+  `cover_image_url` on DEA final-rule post
+  (`a6bde566-7040-440e-a33b-168bf44b2fb2`). **Not FAL_KEY / SuperGrok:** FAL is a
+  separate account; Nous FAL proxy still 403s `…/klein/9b/edit` — leave FAL as
+  optional later. **Default for agency covers:** xAI img2img + house master
+  prompt; QA (no emblem text, both talons, exact lockup); text-to-image fallback
+  if xAI edit fails. Caption pattern: *Editorial illustration: stylized dual-talon
+  emblem and [LOCKUP]; not an official seal.*
 
 ### Product — site polish / marketing
 
@@ -165,6 +194,8 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-07-12 · **Single-board doc hygiene** — STATUS = only product board; HANDOFF how-to; PARK sticky notes; workflow in AGENTS.md + CLAUDE.md.
+- 2026-07-12 · **Google OAuth consent published** (operator-confirmed; docs/STATUS/security review updated off Testing).
 - 2026-07-12 · **Security review doc** pre-membership (`SECURITY-REVIEW-2026-07-12.md`);
   news pipeline operational (Hermes cron, insert scripts, H2 + agency cover + stock + prior-art docs).
 - 2026-07-11 · Privacy + Terms for member directory (PR #40); Terms spacing fix;
@@ -188,9 +219,9 @@ Deferred from the first directory ship:
 
 | Audience | Start here | Then |
 | --- | --- | --- |
-| Human operator | [HANDOFF.md](HANDOFF.md) | This file for “what’s happening now”; [member-area-setup.md](member-area-setup.md) for Stripe/OAuth |
-| AI agent | [CLAUDE.md](../CLAUDE.md) (via [AGENTS.md](../AGENTS.md)) | This file before planning work; update this file when finishing significant work |
-| Parked agent work (resume) | This file → In flight | Thin [PARK-*.md](.) checklists + linked specs only |
-| Pre-membership security | [SECURITY-REVIEW-2026-07-12.md](SECURITY-REVIEW-2026-07-12.md) | [PARK-security-review.md](PARK-security-review.md) — *Resume SAMPA security review* |
-| News scout / draft pipeline | [sampa-news-scout-prompt.md](sampa-news-scout-prompt.md) | [PARK-news-pipeline.md](PARK-news-pipeline.md) — *Resume SAMPA news pipeline* (ops/tuning; cron already live) |
-| Product history / original plan | [news-blog-plan.md](news-blog-plan.md) | Historical; STATUS supersedes “what’s next” |
+| Human operator | [HANDOFF.md](HANDOFF.md) (how) | **This file** for “what’s happening now”; [member-area-setup.md](member-area-setup.md) for one-time Stripe/OAuth config |
+| AI agent | [CLAUDE.md](../CLAUDE.md) via [AGENTS.md](../AGENTS.md) | **This file** before planning; update **this file** on state change (single board) |
+| Mid-flight agent track | This file → In flight | Thin [PARK-*.md](.) sticky note + linked specs — **not** a second backlog |
+| Pre-membership security (deep) | [SECURITY-REVIEW-2026-07-12.md](SECURITY-REVIEW-2026-07-12.md) | Open P0 on **this board**; resume sticky [PARK-security-review.md](PARK-security-review.md) |
+| News scout / draft pipeline | Specs + cron (see In flight) | Sticky [PARK-news-pipeline.md](PARK-news-pipeline.md); *Resume SAMPA news pipeline* |
+| Product history / original plan | [news-blog-plan.md](news-blog-plan.md) | Historical; **STATUS** supersedes “what’s next” |

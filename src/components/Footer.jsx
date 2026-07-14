@@ -13,7 +13,7 @@ export default function Footer() {
             </div>
           </div>
           <p className="text-white/60 max-w-sm text-sm">
-            Advancing addiction medicine nationally for Physician Associates.
+            Improving health outcomes in addiction medicine by advancing physician associates—so individuals and communities impacted by substance use disorders get better care.
           </p>
         </div>
 

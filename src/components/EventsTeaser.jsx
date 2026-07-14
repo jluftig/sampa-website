@@ -15,14 +15,14 @@ export default function EventsTeaser() {
         </h2>
         
         <p className="text-xl text-text/70 max-w-2xl mb-12">
-          Connect with peers, earn CME, and lead the conversation in addiction medicine at our upcoming national gatherings.
+          Connect with peers and help set the agenda for how PAs improve addiction care for patients and communities.
         </p>
 
         <div className="bg-white p-8 md:p-12 rounded-4xl shadow-sm border border-primary/10 w-full max-w-4xl flex flex-col md:flex-row items-center justify-between gap-8 text-left group hover:shadow-lg transition-all">
           <div className="flex-1">
             <div className="text-primary-text font-bold font-data tracking-widest text-sm mb-2 uppercase">Fall 2026</div>
             <h3 className="text-2xl font-bold tracking-tight mb-2 group-hover:text-primary-text transition-colors">SAMPA Inaugural Member Summit</h3>
-            <p className="text-text/60">An exclusive multi-day gathering for founding members to set the agenda for the future of addiction medicine PAs.</p>
+            <p className="text-text/60">A multi-day gathering for founding members to shape SAMPA's next chapter—stronger peer connection, better-informed practice, and care that reaches the people and communities who need it.</p>
           </div>
           <button className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary-text hover:text-white font-semibold transition-colors">
             Get Notified
