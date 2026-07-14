@@ -107,6 +107,13 @@ function ScorePanelBody({ result, entries, canRecord, onRecord, onRescore, onCle
         >
           <span>Record score — {timeLabel(Date.now())}</span>
         </button>
+        <Link
+          to="/tools/bup"
+          className="inline-flex items-center justify-center gap-1.5 w-full text-sm font-medium text-text/60 hover:text-primary transition-colors py-1"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to protocol chooser
+        </Link>
         {hasSelections && entries.length > 0 && (
           <button
             type="button"
