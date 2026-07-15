@@ -5,6 +5,7 @@
 
 import * as Linking from 'expo-linking';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 
 import {
   createSessionFromUrl,
@@ -100,6 +101,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
     setProfile(data);
   }, [userId]);
+
+  // Refetch the profile whenever the app returns to the foreground, so changes
+  // made OUTSIDE the app land without a restart — the big one being membership:
+  // "Join on the website" bounces members to the browser to pay, and this makes
+  // their new status show the moment they switch back. Cheap (one row read),
+  // no-ops when signed out, and never flips `loading` (no route-guard remounts).
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') refreshProfile();
+    });
+    return () => sub.remove();
+  }, [refreshProfile]);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
