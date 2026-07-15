@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Bookmark, Newspaper, Tags, User } from 'lucide-react-native';
+import { Bookmark, Newspaper, Tags, User, Users } from 'lucide-react-native';
 
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -38,6 +38,13 @@ export default function TabsLayout() {
         options={{
           title: 'Saved',
           tabBarIcon: ({ color, size }) => <Bookmark color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="members"
+        options={{
+          title: 'Members',
+          tabBarIcon: ({ color, size }) => <Users color={color} size={size} />,
         }}
       />
       <Tabs.Screen

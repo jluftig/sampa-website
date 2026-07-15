@@ -1,21 +1,66 @@
-import { StyleSheet, Text, View } from 'react-native';
+// The SAMPA logo (vector, from the website's public/SAMPA_no_bg.svg), rendered
+// theme-aware:
+// - The A/P counter shapes are off-white in the source file (invisible on the
+//   website's light background); here they take the CURRENT background color so
+//   they stay "holes" in dark mode instead of glowing.
+// - Letter colors are logo-exact in light mode and brightened in dark mode for
+//   contrast (matching the theme's dark-mode tint/accent approach).
+// Inline styles from the export were converted to SVG attributes (SvgXml parses
+// attributes reliably; inline CSS support is spotty).
 
-import { Fonts } from '@/constants/theme';
+import { SvgXml } from 'react-native-svg';
+
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTheme } from '@/hooks/use-theme';
 
-/** SAMPA wordmark: Playfair "SAMPA" with a teal accent dot. */
-export function Wordmark({ size = 22 }: { size?: number }) {
-  const theme = useTheme();
-  return (
-    <View style={styles.row}>
-      <Text style={[styles.word, { color: theme.text, fontSize: size }]}>SAMPA</Text>
-      <View style={[styles.dot, { backgroundColor: theme.tint }]} />
-    </View>
-  );
-}
+const VIEWBOX_RATIO = 713 / 223;
 
-const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'flex-end', gap: 4 },
-  word: { fontFamily: Fonts.serifBold, letterSpacing: 0.5 },
-  dot: { width: 6, height: 6, borderRadius: 3, marginBottom: 6 },
-});
+const LOGO_TEMPLATE = `<svg viewBox="0 0 713 223" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1,0,0,1,-3064,-2999)">
+    <g transform="matrix(0.728522,0,0,0.658263,3030.38,2770.63)">
+      <g transform="matrix(1.37264,0,0,1.51915,-167.727,-264.613)">
+        <g transform="matrix(0.5,0,0,0.5,0.0859455,0.237322)">
+          <path fill="__TEAL__" d="M368.175,1040.16C400.428,1068.32 432.797,1083.33 476.774,1083.12C504.829,1082.98 517.48,1055.64 494.071,1041.98C472.367,1029.31 438.839,1024.77 414.218,1015.59C373.701,1000.49 339.02,976.586 335.505,929.91C330.615,864.471 382.816,820.646 444.902,816.596C497.755,813.148 546.018,826.454 586.827,861.054C571.359,882.653 558.114,905.413 541.859,927.138C523.799,911.672 502.232,898.338 478.881,893.026C461.94,888.749 429.414,888.31 426.151,911.241C422.56,936.48 473.528,943.401 491.025,948.878C530.774,961.321 561.876,971.666 585.759,1007.37C591.031,1017.66 594.966,1026.67 596.607,1038.29C597.65,1042.37 597.414,1058.78 597.23,1063.49C612.692,1030.53 626.394,994.175 640.024,960.328L696.659,821.464C723.511,821.518 750.363,821.418 777.214,821.164C786.771,846.78 797.751,872.729 807.951,898.232L873.233,1062.42C885.425,1092.95 899.016,1124.96 910.465,1155.55C884.593,1157 843.939,1155.5 816.747,1155.48C809.764,1140.66 800.524,1115 794.122,1098.86C763.255,1097.61 727.022,1098.55 695.856,1098.74C706.295,1073.23 716.556,1047.64 726.636,1021.99L766.985,1022.06C758.053,996.629 746.338,967.425 736.137,942.43C707.414,1013.22 680.884,1084.51 653.019,1155.63C623.929,1155.56 588.853,1156.77 560.52,1155.4C566.601,1141.35 573.178,1126.79 578.35,1112.44C576.231,1115.03 574.012,1117.53 571.698,1119.94C545.366,1147.47 508.028,1158.12 470.999,1158.53C410.322,1159.2 363.707,1142.47 320.136,1100.6C334.169,1081.5 353.186,1058.96 368.175,1040.16Z"/>
+        </g>
+        <g transform="matrix(0.5,0,0,0.5,0.0859455,0.237322)">
+          <path fill="__TEAL__" d="M1137.37,821.471L1227.42,821.273L1227.51,1155.34C1199.53,1156.08 1168.33,1155.37 1140.08,1155.36C1140.68,1123.25 1140.22,1089.73 1140.2,1057.5C1140.42,1028.16 1140.35,998.82 1139.97,969.482C1113.59,1009.59 1085.67,1052.43 1058.43,1091.63L975.356,969.821C974.19,1030.11 975.438,1094.98 975.481,1155.58L933.685,1155.78C924.708,1138.08 915.84,1111.76 907.248,1093.2C904.931,1088.19 888.675,1050.53 888.42,1047.48C886.692,1026.85 887.077,993.776 887.422,972.442C888.226,922.655 886.083,870.623 887.527,821.223C918.183,821.384 948.841,821.371 979.497,821.184C1005.8,859.419 1033,902.087 1058.99,941.071C1062.11,935.649 1065.71,930.493 1069.12,925.251C1091.71,890.551 1115.33,856.529 1137.37,821.471Z"/>
+        </g>
+        <g transform="matrix(0.5,0,0,0.5,0.0859455,0.237322)">
+          <path fill="__PURPLE__" d="M1680.95,821.5L1706.98,821.293C1710.28,898.056 1716.78,975.687 1720.18,1052.54C1721.66,1085.95 1724.79,1121.97 1725.11,1155.15C1696.45,1155.03 1667.8,1155.12 1639.14,1155.39L1635.89,1098.7C1604.58,1097.4 1550.83,1097.71 1519.29,1098.8C1506.12,1116.66 1490.37,1139.01 1476.13,1155.44L1467.25,1155.72C1432.51,1155.51 1397.76,1155.59 1363.02,1155.95L1410.86,1095.11C1419.06,1084.6 1428.47,1071.54 1437.55,1061.92C1442.25,1057.98 1449.8,1056.31 1455.26,1053.76C1485.98,1040.09 1516.29,1005.75 1521.8,971.975C1525.95,946.543 1526.26,948.698 1542.28,928.179L1567.24,895.813C1584.49,873.344 1605.98,842.573 1623.36,821.707C1642.04,821.265 1662.11,821.562 1680.95,821.5Z"/>
+        </g>
+        <g transform="matrix(0.5,0,0,0.5,0.0859455,0.237322)">
+          <path fill="__COUNTER__" d="M1628.6,953.895C1630.85,976.043 1631.79,1000.22 1633.07,1022.58L1583.25,1022.59C1581.38,1022.4 1580.95,1022.23 1579.13,1021.77C1579.92,1018.58 1623.9,960.244 1628.6,953.895Z"/>
+        </g>
+        <g transform="matrix(0.5,0,0,0.5,0.0859455,0.237322)">
+          <path fill="__PURPLE__" d="M1261.94,821.493L1338.62,821.237C1387.37,821.185 1435.7,818.585 1474.74,853.394C1496.77,873.023 1506.4,899.694 1508.16,928.552C1512.46,999.163 1461.36,1047.87 1392.25,1051.04C1374.3,1052.01 1354.97,1051.79 1336.89,1051.9L1336.82,1155.45C1307.87,1155.95 1277.43,1155.44 1248.39,1155.38C1248.88,1045.21 1249.4,931.732 1248.11,821.656L1261.94,821.493Z"/>
+        </g>
+        <g transform="matrix(0.5,0,0,0.5,0.0859455,0.237322)">
+          <path fill="__COUNTER__" d="M1336.99,897.385C1352.93,897.443 1370.95,896.611 1386.52,899.01C1421.78,904.447 1428.09,945.077 1407.45,969.211C1390.88,984 1359.15,980.167 1336.84,979.997C1336.58,952.46 1336.64,924.921 1336.99,897.385Z"/>
+        </g>
+      </g>
+      <g transform="matrix(1.24555,0,0,1.38782,-165.625,-237.016)">
+        <text x="180.476" y="658.858" font-family="Avenir-Black, Avenir, sans-serif" font-weight="800" font-size="39.628" fill="__PURPLE__">SOCIETY OF ADDICTION MEDICINE P<tspan x="902.347 931.712" y="658.858 658.858">As</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>`;
+
+// Logo-exact colors (light) / brightened for dark-mode contrast.
+const TEAL_LIGHT = '#36A79C';
+const TEAL_DARK = '#3FC9BC';
+const PURPLE_LIGHT = '#8513C1';
+const PURPLE_DARK = '#C56BDA';
+
+/** The SAMPA logo. `size` preserves the old text-wordmark scale (height ≈ size × 1.6). */
+export function Wordmark({ size = 20 }: { size?: number }) {
+  const theme = useTheme();
+  const scheme = useColorScheme();
+  const dark = scheme === 'dark';
+
+  const xml = LOGO_TEMPLATE.replace(/__TEAL__/g, dark ? TEAL_DARK : TEAL_LIGHT)
+    .replace(/__PURPLE__/g, dark ? PURPLE_DARK : PURPLE_LIGHT)
+    .replace(/__COUNTER__/g, theme.background);
+
+  const height = size * 1.6;
+  return <SvgXml xml={xml} width={height * VIEWBOX_RATIO} height={height} />;
+}

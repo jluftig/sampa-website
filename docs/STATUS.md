@@ -197,6 +197,11 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-07-15 · **Mobile member directory + app identity** (PR #43): Members tab +
+  member profiles calling the self-gating `member_directory*` RPCs (search, state
+  filter, tappable shared contact); tab order News/Keywords/Saved/Members/Account;
+  real SAMPA logo in-app (theme-aware SVG); app icon + splash (light/dark) + Android
+  adaptive icons generated from the logo — TestFlight-ready identity.
 - 2026-07-15 · **Mobile app Phases 0–3 merged** (PR #22): Expo iOS/Android app in
   `mobile/` — news/Key Points/keywords/search/saved, auth (Apple + Google + email OTP
   via Brevo SMTP, Face ID lock, encrypted sessions), member area + in-app account

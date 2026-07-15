@@ -102,6 +102,10 @@ export default function RootLayout() {
                   name="profile"
                   options={{ headerShown: true, title: 'Edit profile', headerBackTitle: 'Back' }}
                 />
+                <Stack.Screen
+                  name="members/[id]"
+                  options={{ headerShown: true, title: '', headerBackTitle: 'Back' }}
+                />
               </Stack>
             </BiometricGate>
             <StatusBar style="auto" />

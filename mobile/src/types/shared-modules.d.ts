@@ -28,6 +28,21 @@ declare module 'sampa-shared/usStates' {
   export const US_STATES: string[];
 }
 
+declare module 'sampa-shared/organizations' {
+  export type Organization = {
+    name?: string;
+    role?: string;
+    practice_setting?: string;
+    city?: string;
+    state?: string;
+    website?: string;
+  };
+  export function displayOrganizations(person: any): Organization[];
+  export function formatOrgLocation(org: Organization): string;
+  export function normalizeWebsite(raw: string): string;
+  export function formatWebsiteLabel(url: string): string;
+}
+
 declare module 'sampa-shared/tags' {
   export type SharedTag = { id?: string; name: string; short_label: string | null; slug: string };
   export function collectPostTags(post: any): SharedTag[];
