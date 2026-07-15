@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-14 (homepage mission copy reframe: patients/communities first; daily news + member networking as live offers; CME not front-and-center)
+**Last updated:** 2026-07-15 (park: member comments track + session sticky)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -77,6 +77,7 @@ No further directory migrations pending.
   #22 — not merged.** Directory screens not built yet (web RPCs are reusable).
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
   usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
+- **Member comments on news** — **Not started (parked 2026-07-15).** Members comment on articles; design TBD (RLS, visibility, moderation). Thin resume: [`PARK-member-comments.md`](PARK-member-comments.md). Resume phrase: *Resume SAMPA member comments*.
 - **Pre-membership security review** — **Parked mid-stream (2026-07-12 evening).**
   Code/schema health check written: [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md).
   Thin resume: [`PARK-security-review.md`](PARK-security-review.md).
