@@ -72,9 +72,12 @@ No further directory migrations pending.
 
 ## In flight (branches / local work)
 
-- **`feature/mobile-app`** — Expo/React Native (`mobile/` worktree). Phases 1–3: news,
-  Key Points, keywords, search, saved articles, member area, email OTP. **Draft PR
-  #22 — not merged.** Directory screens not built yet (web RPCs are reusable).
+- **Mobile app — Phases 4–5 remaining** (`mobile/` on main since PR #22): push
+  notifications + crash reporting + offline polish (Phase 4), then icon/splash,
+  TestFlight, App Store (Phase 5). Also pending: SAMPA D-U-N-S → convert Apple
+  Developer account (Individual → org) before public launch; delete-account E2E test
+  (throwaway account, now that the endpoint is deployed). Directory screens not built
+  yet (web RPCs are reusable).
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
   usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
 - **Member comments on news** — **Not started (parked 2026-07-15).** Members comment on articles; design TBD (RLS, visibility, moderation). Thin resume: [`PARK-member-comments.md`](PARK-member-comments.md). Resume phrase: *Resume SAMPA member comments*.
@@ -185,14 +188,20 @@ Deferred from the first directory ship:
 
 ### Product — platforms
 
-- **iOS/Android launch** — merge `feature/mobile-app`, then app-store work (Sign in
-  with Apple; no in-app membership sales — see `CLAUDE.md` mobile section).
+- **iOS/Android launch** — `mobile/` merged & device-verified; remaining: Phase 4
+  (push/crash/offline) + Phase 5 app-store work (no in-app membership sales — see
+  `CLAUDE.md` mobile section).
 - **Bup dosing tool** — launch decision after clinical review hold is lifted.
 
 ---
 
 ## Recently shipped (newest first)
 
+- 2026-07-15 · **Mobile app Phases 0–3 merged** (PR #22): Expo iOS/Android app in
+  `mobile/` — news/Key Points/keywords/search/saved, auth (Apple + Google + email OTP
+  via Brevo SMTP, Face ID lock, encrypted sessions), member area + in-app account
+  deletion (`api/delete-account.js`, the sole website change). All device-verified on
+  a physical iPhone via EAS dev build.
 - 2026-07-12 · **Single-board doc hygiene** — STATUS = only product board; HANDOFF how-to; PARK sticky notes; workflow in AGENTS.md + CLAUDE.md.
 - 2026-07-12 · **Google OAuth consent published** (operator-confirmed; docs/STATUS/security review updated off Testing).
 - 2026-07-12 · **Security review doc** pre-membership (`SECURITY-REVIEW-2026-07-12.md`);

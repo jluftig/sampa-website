@@ -140,7 +140,10 @@ supabase/
   migrations/               standalone per-change snippets (already folded into schema.sql)
   sample-post.sql           optional demo fixture
 docs/                       HANDOFF.md (humans), STATUS.md (living status — keep updated),
-                            member-area-setup.md (one-time config), news-blog-plan.md
+                            member-area-setup.md (one-time config), news-blog-plan.md,
+                            mobile-app-setup.md (mobile auth config + dev builds)
+mobile/                     Expo (React Native) iOS/Android app — SEPARATE build, same Supabase.
+                            See "Mobile app" section below + mobile/AGENTS.md before editing.
 vercel.json                 SPA rewrite: all non-/api paths -> /index.html; crawler UAs on
                             /news/:slug -> /api/share (per-article social previews)
 ```
@@ -372,23 +375,43 @@ themes agents may be asked to implement:
 - **Board privileges:** `is_board` is badge-only today; future gates should use the
   flag (and/or admin), not a new exclusive role ladder.
 - **CME / member-only content:** gate on `is_active_member()`.
-- **Mobile (`feature/mobile-app`):** same Supabase + `/api`; reuse `member_directory*`.
+- **Mobile:** see the "Mobile app" section below; reuse `member_directory*` RPCs for any
+  in-app directory.
 - **Ops:** OAuth consent publish, 501(c)(3), email platform (Brevo), legal review.
 
-## Future: iOS/Android apps (planned — architecture already accounts for this)
+## Mobile app (mobile/)
 
-- Mobile apps talk to the SAME Supabase project (RLS is the boundary — that's why client
-  checks stay UX-only) and the SAME `/api` endpoints (JWT auth via `Authorization: Bearer`,
-  no cookies — deliberately mobile-friendly).
+Standalone Expo (React Native) iOS/Android app; NOT a webview. Separate build from the
+website (Vite/Vercel never touch `mobile/`), same Supabase project. Read `mobile/AGENTS.md`
+before editing app code. Status: Phases 0–3 (tab shell + brand theme, auth incl. Apple/
+Google/Face ID, News/Key Points/keywords/search/saved, member area + account deletion)
+built and **verified on a physical iPhone** (EAS dev build); remaining: push/offline polish
+(Phase 4) and store launch (Phase 5) — see docs/STATUS.md.
+
+- **Shared code:** the app imports the pure-JS modules in `src/lib/` (membership.js, tags.js,
+  slug.js, format.js, usStates.js) as the npm package **`sampa-shared`** — a `file:../src/lib`
+  dependency (marker: `src/lib/package.json`, inert for the web build). npm materializes it as
+  a symlink in `mobile/node_modules`; Metro follows it (`unstable_enableSymlinks` +
+  repo-root watchFolder in `mobile/metro.config.js`). Do NOT copy these modules into the app
+  (drift — see rule 11), do NOT delete `src/lib/package.json`, and keep those modules free of
+  DOM/Vite-specific code (`window`, `import.meta.env`).
+- Mobile talks to the SAME Supabase (RLS is the boundary — client checks stay UX-only) and,
+  later, the same `/api` endpoints (JWT via `Authorization: Bearer`, no cookies).
 - **Do NOT sell memberships inside the iOS app** (Apple IAP would take 30% and forbid our
   Stripe checkout in-app). The app reads `membership_status` from `profiles`
-  ("multiplatform services" rule) and sends people to the website to join/renew.
-- **Sign in with Apple is required** on iOS once Google login is offered there (guideline
-  4.8). Enable the Apple provider in Supabase then; identities auto-link by verified email.
-  Apple "Hide My Email" relays are harmless because Stripe↔Supabase links by user id.
-- OAuth deep-link/custom-scheme redirect config happens in Supabase when the app ships.
-- Member directory: call `member_directory` / `member_directory_profile` (do not select
-  peer rows from `profiles` directly).
+  ("multiplatform services" rule) and sends people to the website to join/renew
+  (system browser).
+- **Sign in with Apple is required** on iOS alongside Google (guideline 4.8) — built and
+  device-verified; identities auto-link by verified email. "Hide My Email" relays are
+  harmless because Stripe↔Supabase links by user id. Deep-link scheme `sampa://`
+  (allowlisted in Supabase); auth flows are PKCE.
+- **Public reads in the app must filter `status='published'` explicitly** (same rule 2 as
+  the website) — `mobile/src/lib/content.ts` mirrors the web queries/RPCs.
+- **In-app account deletion** (App Store 5.1.1(v)) is built: `api/delete-account.js`
+  (cancels Stripe subscriptions first, then deletes the auth user).
+- Any future in-app member directory: call `member_directory` / `member_directory_profile`
+  RPCs (do not select peer rows from `profiles` directly).
+- One-time auth/dashboard config + dev-build instructions: `docs/mobile-app-setup.md`.
 
 ### Extension checklist
 - Any new user-writable table/column: add RLS + extend `guard_profile_role` (or equivalent)

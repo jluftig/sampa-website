@@ -1,0 +1,6 @@
+{
+  "name": "sampa-shared",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Marker so the mobile app (mobile/) can depend on these shared pure-JS modules as `sampa-shared` via a file: dependency. Inert for the website build — Vite resolves src/ imports relatively and never reads this file."
+}
