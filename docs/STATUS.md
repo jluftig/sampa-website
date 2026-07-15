@@ -62,6 +62,9 @@ environment that should log `tool_events`. Not required for production until lau
 
 ### Buprenorphine dosing tool — **built on branch; not on `main`; launch hold**
 
+**Resume phrase (agent sticky):** *Resume SAMPA bup dosing tool* → [`PARK-bup-dosing-tool.md`](PARK-bup-dosing-tool.md)  
+**Worktree (Studio):** `~/Projects/sampa-website-bup`
+
 **Branches (unified tip — interchangeable names):**
 
 | Branch | Notes |
@@ -77,7 +80,7 @@ attribution wording for interactive adaptation of Bridge algorithms. Placeholder
 in `src/lib/bup/meta.js` (`TOOL.attribution`). Do **not** merge to `main` for public
 launch until that is confirmed. Clinical brief: `docs/bup-dosing-tool-brief.md`.
 
-#### What’s implemented (as of 2026-07-11)
+#### What’s implemented (as of 2026-07-11; UX polish 2026-07-14)
 
 - **Scaffold** — disclaimer gate, nav, nested routes, MD-Calc-style chooser + sticky
   result panel, print + copy-to-EHR summaries, warmline + attribution blocks.
@@ -97,9 +100,14 @@ launch until that is confirmed. Clinical brief: `docs/bup-dosing-tool-brief.md`.
   - **Low Dose → discharge conversion** when admission is cancelled (escape hatch +
     `?from=low-dose` banner)  
 - **COWS calculator** — optional scoring, per-tab series, objective-sign flags (OOWS-
-  aligned), references footnote; never auto-answers the chooser.  
+  aligned), references footnote; never auto-answers the chooser. **2026-07-14:** back
+  CTA under Record score returns to the **page that opened COWS** (protocol or chooser).  
 - **Per-tab persistence** — chooser progress + protocol in-progress answers
   (sessionStorage; no PHI).  
+- **Checklists / EHR (2026-07-14)** — checklist items (e.g. discharge bundle) are
+  clickable; **Copy for EHR** includes only **checked** items.  
+- **Quick Start support (2026-07-14)** — Adjuvant medications + Bup dosing tips as
+  **tap-to-toggle** buttons on the eligibility card (not permanent page-bottom cards).  
 - **Analytics** — anonymous `tool_events` + fire-and-forget logger.  
 - **Guardrails encoded** — Low Dose never outpatient; no acute methadone→bup pathway;
   “imminent discharge” wording (never the p-adverb clinicians confuse with precipitated
@@ -107,6 +115,7 @@ launch until that is confirmed. Clinical brief: `docs/bup-dosing-tool-brief.md`.
 
 #### Next on this tool (planned — next session)
 
+- [ ] Walk Vercel preview / local: full Quick Start + COWS return + EHR paste QA  
 - [ ] **Bridge source links on algorithm pages** — do **not** change the chooser or
   calculators for this. When the clinician opens a **protocol / algorithm page**
   (Quick Start, Low Dose, Micro–Macro, DTI, OD Reversal, Self-Start, etc.), show a
