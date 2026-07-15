@@ -10,8 +10,10 @@ import Footer from '../components/Footer';
 // Capabilities are independent (people wear multiple hats):
 //   Publish news  -> can_edit_news (news posts; the old 'editor' role)
 //   View members  -> can_view_members (READ-ONLY roster + pledge tracker)
-//   Administrator -> role 'admin' (everything, incl. this page)
+//   Board         -> is_board (directory badge; future board privileges TBD)
+//   Administrator -> role 'admin' (everything operational, incl. this page)
 // Saving normalizes the legacy 'editor' role value into the flag.
+// Board is independent of admin (admin ≠ board unless checked).
 export default function AdminPeople() {
   const { user } = useAuth();
   const [people, setPeople] = useState([]);
@@ -23,7 +25,7 @@ export default function AdminPeople() {
     setLoading(true);
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, email, full_name, role, can_edit_news, can_view_members, created_at')
+      .select('id, email, full_name, role, can_edit_news, can_view_members, is_board, created_at')
       .order('created_at', { ascending: true });
     if (error) setError(error.message);
     else setPeople(data || []);
@@ -36,6 +38,7 @@ export default function AdminPeople() {
   const perms = (p) => ({
     news: p.can_edit_news || p.role === 'editor',
     view: p.can_view_members,
+    board: !!p.is_board,
     admin: p.role === 'admin',
   });
 
@@ -46,6 +49,7 @@ export default function AdminPeople() {
       role: next.admin ? 'admin' : 'member', // legacy 'editor' normalizes to member + flag
       can_edit_news: next.news,
       can_view_members: next.view,
+      is_board: next.board,
     };
     const { error } = await supabase.from('profiles').update(patch).eq('id', person.id);
     if (error) setError(error.message);
@@ -62,18 +66,20 @@ export default function AdminPeople() {
       <Navbar />
 
       <main className="max-w-4xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
         <h1 className="text-3xl font-drama font-bold mt-4 mb-2">People & permissions</h1>
         <p className="text-text/60 mb-8">
           People appear here after their first sign-in. Permissions are
-          independent checkboxes — check as many as someone's hats require.
+          independent checkboxes — check as many as someone&apos;s hats require.
           <strong> Publish news</strong> lets them write and publish posts;
-          <strong> view members</strong> gives read-only access to the member
+          <strong> view members</strong> gives read-only access to the staff
           roster and pledge tracker (for the membership committee, treasurer,
-          and board); <strong>administrators</strong> have everything, including
-          this page and editing member records.
+          and board); <strong>Board</strong> marks a board member (badge in the
+          member directory; further privileges later);
+          <strong> administrators</strong> have operational access, including
+          this page and editing member records. Board is separate from Admin.
         </p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -91,6 +97,11 @@ export default function AdminPeople() {
                     <div className="font-semibold">
                       {person.full_name || '—'}
                       {isSelf && <span className="text-text/40 font-normal text-sm"> (you)</span>}
+                      {p.board && (
+                        <span className="ml-2 text-xs font-data font-semibold uppercase tracking-wider text-primary-text">
+                          Board
+                        </span>
+                      )}
                     </div>
                     <div className="text-text/50 text-sm">{person.email}</div>
                     <div className="text-text/30 text-xs font-data mt-0.5">joined {formatDate(person.created_at)}</div>
@@ -98,8 +109,8 @@ export default function AdminPeople() {
 
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
                     {p.admin ? (
-                      <span className="text-primary font-semibold text-xs font-data uppercase tracking-wider">
-                        All permissions
+                      <span className="text-primary-text font-semibold text-xs font-data uppercase tracking-wider">
+                        All operational permissions
                       </span>
                     ) : (
                       <>
@@ -125,6 +136,17 @@ export default function AdminPeople() {
                         </label>
                       </>
                     )}
+                    <label className={`flex items-center gap-2 ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
+                      <input
+                        type="checkbox"
+                        checked={p.board}
+                        disabled={disabled}
+                        title={isSelf ? "You can't change your own permissions" : 'Board member'}
+                        onChange={() => apply(person, { ...p, board: !p.board })}
+                        className={checkboxCls}
+                      />
+                      Board
+                    </label>
                     <label className={`flex items-center gap-2 font-semibold ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
                       <input
                         type="checkbox"
@@ -144,9 +166,9 @@ export default function AdminPeople() {
         )}
 
         <p className="text-text/40 text-xs mt-4">
-          You can't change your own permissions (a safety measure against
+          You can&apos;t change your own permissions (a safety measure against
           locking yourself out) — another admin can, or use the Supabase SQL
-          editor. "View members" is read-only by design: the database refuses
+          editor. &quot;View members&quot; is read-only by design: the database refuses
           member-record writes from non-admins regardless of what the browser
           asks for.
         </p>

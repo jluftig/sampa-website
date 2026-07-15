@@ -35,10 +35,10 @@ export default function NewsTeaser() {
         </div>
 
         <h2 className="text-3xl md:text-5xl font-drama font-bold text-text mb-6">
-          Latest News
+          Daily News
         </h2>
         <p className="text-xl text-text/70 max-w-2xl mb-12">
-          Updates on addiction medicine research, policy, and practice.
+          Keep providers current on addiction medicine research, policy, and practice—so care for individuals and communities stays evidence-informed.
         </p>
 
         {loaded && posts.length === 0 && (
@@ -55,7 +55,7 @@ export default function NewsTeaser() {
 
         <Link
           to="/news"
-          className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary hover:text-white font-semibold transition-colors"
+          className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary-text hover:text-white font-semibold transition-colors"
         >
           View all news
         </Link>

@@ -80,7 +80,7 @@ export default function AdminTags() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
         <h1 className="text-3xl font-drama font-bold mt-4 mb-2">Manage keywords</h1>
@@ -134,7 +134,7 @@ export default function AdminTags() {
                 </div>
                 <div className="text-text/40 text-xs font-data pb-2.5 w-full sm:w-auto">/{tag.slug}</div>
                 <button onClick={() => saveTag(tag)} disabled={busy}
-                  className="px-4 py-2 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary hover:text-white transition-colors disabled:opacity-50">
+                  className="px-4 py-2 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50">
                   Save
                 </button>
                 <button onClick={() => deleteTag(tag)} disabled={busy}

@@ -19,9 +19,11 @@ Everything you create is a **draft** — a human still reviews and hits Publish 
 ## The prompt (copy from here)
 
 > You are a content editor for **SAMPA (Society of Addiction Medicine Physician Associates)**, a national
-> specialty organization for physician associates (PAs) in addiction medicine. Turn the article
+> specialty organization for **PAs** in addiction medicine. Turn the article
 > I give you into a publish-ready news post. Audience: PAs, physicians, and other clinicians in addiction
 > and emergency medicine who want the clinical and policy significance quickly and accurately.
+> Prefer the abbreviation **PA/PAs** throughout the draft (this is a PA org — readers know what PA means).
+> Never write “physician assistants.” Spell out “physician associate(s)” only if essential.
 >
 > **If I did not include the article** (no text and no working link), STOP and ask me for the article URL,
 > the pasted article text, or the uploaded article PDF before doing anything else. Do not guess or make up
@@ -44,12 +46,30 @@ Everything you create is a **draft** — a human still reviews and hits Publish 
 > 2. **Slug** — lowercase, words separated by hyphens, 3–6 words, descriptive; add the year and month when
 >    possible. Example: `xr-buprenorphine-pregnancy-trial-2026-02`.
 > 3. **Excerpt** — one or two sentences (~25–45 words) summarizing the post for the news list.
-> 4. **Article body** — about 250–500 words. Open with what happened and why it matters to
->    addiction-medicine PAs. Use short paragraphs; use a heading or two only if it's long enough to need
->    them; use a bullet list for findings; end with a final line that says "Source:" followed by the article
->    link. For academic articles, use AMA-style citations and include the DOI. **Put any directly quoted
->    words in italics** (keep the quotation marks). **Show this body as normal formatted text — real bold,
->    headings, bullets, and a clickable link — NOT as code and NOT with any angle-bracket tags visible.**
+> 4. **Article body** — about 250–500 words. **Structure (required house style):**
+>    - Start with a short **lede** (1–2 paragraphs): what happened and why it matters to **PAs**.
+>      No heading above the lede. Prefer **PA/PAs** (not “physician associates”).
+>    - Then use **Heading 2** section titles to break the article (in HTML these are `<h2>`).
+>      Do not write one long wall of paragraphs. Aim for **3–4 H2 sections** on policy/agency
+>      posts and **at least 2 H2s** if the body is over ~200 words.
+>    - **Agency/policy** H2s (adapt labels): What [Agency] is targeting; What is not covered;
+>      Process, timing, and prior actions; **Why this matters for PAs** (use that exact short form).
+>    - **Study/clinical** H2s (adapt labels): Key findings; Study design and limits; Practice
+>      implications for PAs.
+>    - **Closing PA section must be deep and actionable** (not “PAs should stay informed”). Prefer:
+>      street/product context; **screening prompts**; **counseling bullets**; testing/UDT caveats;
+>      MOUD/naloxone/induction notes; documentation/polysubstance when relevant. Roughly 120–250
+>      words for high-impact substance or regulatory stories. Never invent doses or legal status.
+>      Gold standard: the tianeptine NPRM “Why this matters for PAs” section.
+>    - Use bullet lists for findings or substance lists; end with a final line starting with
+>      "Source:". For academic articles, write the full AMA-style citation as plain text and make
+>      **only the DOI** at the very end a clickable link (linking to `https://doi.org/<doi>`) — do NOT
+>      turn the whole citation into one big link. For non-academic sources (news, press releases),
+>      link just the article title or publication name, not the entire line. **Put any directly
+>      quoted words in italics** (keep the quotation marks). **Show this body as normal formatted
+>      text — real bold, H2 headings, bullets, and a clickable link — NOT as code and NOT with any
+>      angle-bracket tags visible.**
+>    - Full structure guide: `docs/news-article-structure.md` in the SAMPA repo.
 > 5. **Key Points** — exactly **2 or 3** of them. Each must be a single standalone sentence that makes sense
 >    on its own in a keyword search (name the actual subject — never "this study"). After each Key Point,
 >    list its keywords on a separate line (this is a **suggestion only** — the human uses their judgment and
@@ -59,9 +79,13 @@ Everything you create is a **draft** — a human still reviews and hits Publish 
 >    later.
 > 6. **Suggested new keywords** — any keywords the article clearly needed but the approved list doesn't have
 >    (write "none" if there aren't any).
-> 7. **Editor notes** — anything I should double-check before publishing, plus a one-line cover-image
->    suggestion, plus this reminder: cover images should be **16:9, about 1600×900 pixels** (the news card
->    crops to 16:9, so a 16:9 image won't get cut off; keep the main subject centered).
+> 7. **Editor notes** — anything I should double-check before publishing; a **ready-to-paste AI
+>    image-generation prompt** for the cover image (describe a specific scene from this article; if the
+>    image shows people, use a hand-drawn sketch style, otherwise a clean editorial illustration;
+>    neutral professional muted clinical palette; no text, logos, or identifiable real people; end by
+>    asking for a **16:9 widescreen** image); and this reminder: cover images should be **16:9, about
+>    1600×900 pixels** (the news card crops to 16:9, so a 16:9 image won't get cut off; keep the main
+>    subject centered).
 >
 > **Approved Keywords** — only use these. Output the **full name**; the abbreviation in parentheses is the
 > button label the editor clicks in `/editor`:
@@ -103,27 +127,72 @@ The Article box is a visual editor, so you need to paste the body **with its for
 
 ---
 
-## Generating a cover image with AI (optional)
+## Why this matters for PAs (required research every run)
 
-Most image generators can't output *exactly* 1600×900, so **generate at 16:9, then resize/crop** to
-1600×900:
+The closing PA section (**Why this matters for PAs** / **Practice implications for PAs** —
+depth bar in `docs/news-article-structure.md`) must be grounded in research, not guesswork:
 
-1. **Ask for a 16:9 (widescreen / landscape) image** and describe a neutral, professional subject.
-   Avoid words/text in the image (AI usually garbles them), logos, and realistic depictions of
-   identifiable real people.
-   - **ChatGPT / DALL·E:** say "widescreen 16:9" (it produces 1792×1024).
-   - **Gemini / Imagen:** ask for "16:9 aspect ratio."
-   - **Grok (xAI):** ask for a "16:9 widescreen image" in the prompt.
-   - **Midjourney:** add `--ar 16:9` to the prompt.
-2. **Resize to exactly 1600×900.** On a Mac: open the image in **Preview → Tools → Adjust Size**, set
-   Width `1600` and Height `900`, and export as JPG. (Any free online image resizer works too.) Keep the
-   main subject centered so nothing important is lost.
-3. **Upload** the 1600×900 image as the cover in `/editor`.
+1. Check whether the source/bill/rule **names or excludes** PAs (or only physicians).
+2. Prefer **primary text** (bill PDF, Federal Register) over press-release wording.
+3. Summarize the **current PA landscape** on the topic (federal + high-level state caveats).
+4. Give **practical takeaways** for addiction-medicine PAs (scope, settings, referrals).
+5. Optional: one Key Point capturing PA inclusion/exclusion when material.
 
-Example image prompt to adapt:
+**Terminology:**
+- Prefer **PA** / **PAs** — never "physician assistants."
+- Never **mid-level** / **mid-level provider**.
+- For PAs + NPs as a group: **PAs and NPs**, or **advanced practice providers** /
+  **advanced practice clinicians**.
 
-> A clean, professional 16:9 editorial illustration for a health-policy news article about **[topic]**.
-> Neutral, modern, muted clinical color palette. No text, no logos, no identifiable real people.
+## Advocacy opportunities (required — dual delivery)
+
+**In the article (when relevant):** short **Advocacy opportunities** subsection (~50–120
+words) after the closing PA section — informative tone ("worth watching," possible
+policy hooks), not a full campaign. Omit if there is no real angle.
+
+**Separately in chat (leadership brief):** fuller analysis, prioritized options, timing,
+and opt-in drafts (SAMPA advocacy note, comment-letter outline, member alert, social
+teaser). May be more explicit about recommended SAMPA asks than the in-article blurb.
+
+Example hook: HHS may later designate additional providers under MOTAA 2.0 — SAMPA could
+push for PAs and NPs in those standards.
+
+## Cover image (required) — SAMPA hand-drawn house style
+
+The `/sampa-post` skill **always generates three cover variations** with Grok Imagine in the site's
+editorial hand-drawn style (same look as the short-acting-opioids hospital-room and street-medicine
+city-walk covers). Files land in `drafts/`:
+
+- `drafts/<slug>-cover-a.jpg`
+- `drafts/<slug>-cover-b.jpg`
+- `drafts/<slug>-cover-c.jpg`
+
+Pick one and upload it in `/editor`. Style stays locked; only the **scene** differs (e.g. place /
+care moment / access still-life).
+
+**House style:** soft ink outlines, flat muted beige/gray/blue-gray watercolor fills, calm clinical
+scene, horizontal 16:9, centered subject. **Never** photoreal, pop-art, logos, or readable text.
+
+**Orientation:** always **horizontal landscape** (16:9). Enforced two ways: `aspect_ratio: "16:9"`
+on every Imagine call, plus “horizontal landscape” language in the prompt.
+
+**Prompt template** (style block stays fixed; only the scene changes per variation):
+
+> Horizontal landscape orientation, 16:9 widescreen only (not portrait, not square). Soft hand-drawn
+> ink editorial illustration. Clean black outlines with slightly organic, imperfect line work. Flat
+> muted watercolor-like fills: warm beige, soft gray, gentle blue-gray, subtle earth tones. Calm
+> professional clinical tone. Single centered scene composed for a wide horizontal frame. No text,
+> no letters, no numbers, no logos, no watermarks, no photorealism, no 3D, no pop-art, no cartoon
+> mascots. Scene: **[concrete place + objects that encode the story]**.
+
+**Drafting with a regular chatbot instead of the skill?** Use its Editor-notes image prompt (or the
+template above) in any generator, asking for 16:9: **ChatGPT / DALL·E** → "widescreen 16:9";
+**Gemini / Imagen** → "16:9 aspect ratio"; **Grok** → "16:9 widescreen image"; **Midjourney** →
+add `--ar 16:9`.
+
+**Sizing:** generate at **16:9 landscape**. Ideal upload is **1600 × 900** (min 1280 × 720). Cards
+use center-crop `object-cover`; keep the subject centered. If pixels aren't exact, resize in Preview
+→ Tools → Adjust Size, then upload the chosen file in `/editor` to `post-images`.
 
 ---
 

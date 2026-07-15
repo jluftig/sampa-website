@@ -65,7 +65,15 @@ alter table public.profiles add column if not exists credentials       text;
 alter table public.profiles add column if not exists npi               text;
 alter table public.profiles add column if not exists organization      text;
 alter table public.profiles add column if not exists practice_setting  text;
+alter table public.profiles add column if not exists city              text;
 alter table public.profiles add column if not exists state             text;
+-- Multi-employer list: [{name, role, city, state, practice_setting, website},
+-- ...]. org.role = job title at that employer (not profiles.role).
+-- organization / city / practice_setting stay denormalized from
+-- organizations[0] for admin roster/CSV. profiles.state is PERSONAL
+-- (home/membership — often from member_import), never overwritten from an org.
+-- Dashboard is the writer; see src/lib/organizations.js.
+alter table public.profiles add column if not exists organizations     jsonb not null default '[]'::jsonb;
 alter table public.profiles add column if not exists newsletter_opt_in boolean not null default true;
 alter table public.profiles add column if not exists sms_opt_in        boolean not null default false;
 alter table public.profiles add column if not exists onboarded_at      timestamptz;
@@ -74,16 +82,42 @@ alter table public.profiles add column if not exists onboarded_at      timestamp
 -- can_edit_news = write news posts (the old 'editor' role, which is kept as a
 -- legacy value and honored by is_editor()); can_view_members = READ-ONLY
 -- access to the member roster + pledge tracker (/editor/members) for the
--- membership committee, treasurer, etc. Admins implicitly have everything.
--- Both are admin-set only (guarded by guard_profile_role).
+-- membership committee, treasurer, etc. is_board = SAMPA board member (badge
+-- in the member directory; future board privileges TBD). Admins implicitly have
+-- news + member-viewer capabilities; Board is independent (admin ≠ board).
+-- Flags are admin-set only (guarded by guard_profile_role).
 alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
 alter table public.profiles add column if not exists can_view_members boolean not null default false;
+alter table public.profiles add column if not exists is_board         boolean not null default false;
+
+-- Member networking directory privacy (self-editable). Opt-out model:
+-- directory_visible defaults true so active members appear unless they hide.
+-- share_email defaults true (reachable for networking); share_phone defaults
+-- false (more sensitive). Never broaden profiles SELECT RLS for this — peer
+-- data is exposed only via member_directory* SECURITY DEFINER RPCs.
+alter table public.profiles add column if not exists directory_visible boolean not null default true;
+alter table public.profiles add column if not exists share_email       boolean not null default true;
+alter table public.profiles add column if not exists share_phone       boolean not null default false;
+-- Directory contact can reuse account email/phone (default) or use separate
+-- directory_email / directory_phone (e.g. work inbox for peers, personal Gmail for sign-in).
+alter table public.profiles add column if not exists directory_use_account_contact boolean not null default true;
+alter table public.profiles add column if not exists directory_email text;
+alter table public.profiles add column if not exists directory_phone text;
+
+-- When this person click-accepted the Confidentiality & Acceptable Use
+-- Agreement for privileged access to member data. The members page refuses to
+-- render until it's set; the timestamp IS the signature record. Deliberately
+-- self-settable (accepting grants nothing — access still requires a flag).
+alter table public.profiles add column if not exists privileged_terms_accepted_at timestamptz;
 
 -- One-time backfill: existing editors keep their news permission as a flag.
 update public.profiles set can_edit_news = true where role = 'editor' and not can_edit_news;
 -- True when a member canceled but their paid term hasn't ended yet: the
 -- membership stays active and renews_on becomes the END date, not a renewal.
 alter table public.profiles add column if not exists cancel_at_period_end boolean not null default false;
+-- Purchased term length in years (1/2/3; null = lifetime or pre-term data).
+-- Webhook-written from the subscription's price interval, shown on the roster.
+alter table public.profiles add column if not exists membership_years int;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
@@ -117,6 +151,35 @@ create table if not exists public.favorites (
   created_at timestamptz not null default now(),
   primary key (user_id, post_id)
 );
+
+-- Donations (separate from membership dues). PUBLIC can give — signed in or
+-- not — so user_id is nullable (null = anonymous/non-member gift). Written ONLY
+-- server-side by the Stripe webhook (service role); there are no client write
+-- policies, same as member_import. One row per successful gift: a one-time gift
+-- is keyed by stripe_session_id; each monthly cycle is keyed by its
+-- stripe_invoice_id (both unique → the webhook is safe to retry).
+create table if not exists public.donations (
+  id                       uuid primary key default gen_random_uuid(),
+  user_id                  uuid references public.profiles(id) on delete set null,
+  donor_email              text,
+  donor_name               text,
+  amount                   integer not null,            -- cents
+  currency                 text not null default 'usd',
+  frequency                text not null default 'once', -- 'once' | 'monthly'
+  status                   text not null default 'succeeded',
+  stripe_customer_id       text,
+  stripe_session_id        text,                         -- one-time gifts
+  stripe_subscription_id   text,                         -- recurring gifts
+  stripe_invoice_id        text,                         -- recurring gift cycles
+  stripe_payment_intent_id text,
+  created_at               timestamptz not null default now()
+);
+-- NULLs are distinct in a Postgres unique index, so many rows may leave the
+-- unused id column null while non-null Stripe ids stay unique (idempotency).
+create unique index if not exists donations_session_uidx on public.donations (stripe_session_id);
+create unique index if not exists donations_invoice_uidx on public.donations (stripe_invoice_id);
+create index if not exists donations_user_id_idx    on public.donations (user_id);
+create index if not exists donations_created_at_idx on public.donations (created_at desc);
 
 -- One-time staging for members who signed up via the pre-Stripe Google Form.
 -- Rows are matched by email at first login (see claim_member_import) to
@@ -238,6 +301,54 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
+-- Audit trail for member-data governance: permission changes (written by the
+-- trigger below) and roster CSV exports (written by the members page).
+create table if not exists public.audit_log (
+  id           bigint generated always as identity primary key,
+  at           timestamptz not null default now(),
+  actor_id     uuid,             -- who did it (null = SQL editor / service role)
+  actor_email  text,
+  action       text not null,    -- 'permissions_changed' | 'member_csv_export'
+  target_email text,             -- whose permissions changed (if applicable)
+  detail       jsonb             -- changed fields / export row count+filter
+);
+
+-- Log any change to the permission columns, with old -> new values.
+-- SECURITY DEFINER so the insert bypasses audit_log RLS.
+create or replace function public.log_permission_change()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare changes jsonb := '{}'::jsonb;
+begin
+  if new.role is distinct from old.role then
+    changes := changes || jsonb_build_object('role', jsonb_build_array(old.role, new.role));
+  end if;
+  if new.can_edit_news is distinct from old.can_edit_news then
+    changes := changes || jsonb_build_object('can_edit_news', jsonb_build_array(old.can_edit_news, new.can_edit_news));
+  end if;
+  if new.can_view_members is distinct from old.can_view_members then
+    changes := changes || jsonb_build_object('can_view_members', jsonb_build_array(old.can_view_members, new.can_view_members));
+  end if;
+  if new.is_board is distinct from old.is_board then
+    changes := changes || jsonb_build_object('is_board', jsonb_build_array(old.is_board, new.is_board));
+  end if;
+  if changes <> '{}'::jsonb then
+    insert into public.audit_log (actor_id, actor_email, action, target_email, detail)
+    values (
+      auth.uid(),
+      (select email from public.profiles where id = auth.uid()),
+      'permissions_changed',
+      new.email,
+      changes
+    );
+  end if;
+  return new;
+end; $$;
+
+drop trigger if exists profiles_log_permission_change on public.profiles;
+create trigger profiles_log_permission_change
+  after update on public.profiles
+  for each row execute function public.log_permission_change();
+
 -- Block non-admins from changing a profile's role OR its membership/billing
 -- fields (prevents self-promotion and self-granting a paid membership).
 -- Regular users can still edit their own name/phone. auth.uid() is null for the
@@ -253,8 +364,10 @@ begin
     or new.stripe_customer_id is distinct from old.stripe_customer_id
     or new.renews_on          is distinct from old.renews_on
     or new.cancel_at_period_end is distinct from old.cancel_at_period_end
+    or new.membership_years   is distinct from old.membership_years
     or new.can_edit_news      is distinct from old.can_edit_news
     or new.can_view_members   is distinct from old.can_view_members
+    or new.is_board           is distinct from old.is_board
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;
@@ -287,10 +400,32 @@ alter table public.favorites enable row level security;
 -- /editor/members); nobody writes via the API — only the SQL editor, service
 -- role, and SECURITY DEFINER functions.
 alter table public.member_import enable row level security;
+-- donations: a donor may read their OWN gifts (dashboard history); the donor-
+-- management group (can_view_members) and admins may read ALL for cultivation.
+-- No write policies — only the Stripe webhook (service role) inserts.
+alter table public.donations enable row level security;
+
+drop policy if exists donations_select on public.donations;
+create policy donations_select on public.donations
+  for select using (
+    auth.uid() = user_id or public.is_admin() or public.is_member_viewer()
+  );
 
 drop policy if exists member_import_select on public.member_import;
 create policy member_import_select on public.member_import
   for select using ( public.is_admin() or public.is_member_viewer() );
+
+-- audit_log: admins read; signed-in users may append rows about THEMSELVES
+-- (the members page logs its own CSV exports); no update/delete via the API.
+alter table public.audit_log enable row level security;
+
+drop policy if exists audit_log_select on public.audit_log;
+create policy audit_log_select on public.audit_log
+  for select using ( public.is_admin() );
+
+drop policy if exists audit_log_insert on public.audit_log;
+create policy audit_log_insert on public.audit_log
+  for insert with check ( actor_id = auth.uid() );
 
 -- profiles: read own row, or all rows for admins and member-viewers (roster);
 -- update stays own-or-admin (role/membership/permission columns guarded above)
@@ -569,4 +704,154 @@ language sql stable set search_path = public as $$
     join public.posts p      on p.id = i.post_id and p.status = 'published'
    group by t.id, t.name, t.short_label, t.slug
    order by count(it.item_id) desc, t.name;
+$$;
+
+-- ----- Member networking directory ------------------------------------------
+-- Peer profiles for active members. SECURITY DEFINER so results bypass the
+-- tight profiles SELECT RLS (own / admin / member-viewer only) while still
+-- returning a hard allowlist of columns. NEVER expand profiles SELECT RLS to
+-- "all active members" — that would leak billing, NPI, flags, etc.
+-- Viewer: is_active_member(). Targets: membership_status='active' AND
+-- directory_visible. Email/phone null when the owner did not share them.
+
+-- Drop first when return shape changes (create or replace cannot alter OUT cols).
+drop function if exists public.member_directory(text, text);
+drop function if exists public.member_directory_profile(uuid);
+
+create or replace function public.member_directory(
+  search text default null,
+  state_filter text default null
+)
+returns table (
+  id uuid,
+  full_name text,
+  credentials text,
+  organization text,
+  practice_setting text,
+  city text,
+  state text,
+  organizations jsonb,
+  is_board boolean,
+  email text,
+  phone text
+)
+language plpgsql stable security definer set search_path = public as $$
+declare
+  q text := nullif(btrim(coalesce(search, '')), '');
+  st text := nullif(btrim(coalesce(state_filter, '')), '');
+begin
+  if not public.is_active_member() then
+    return;
+  end if;
+
+  return query
+  select
+    p.id,
+    p.full_name,
+    p.credentials,
+    p.organization,
+    p.practice_setting,
+    p.city,
+    p.state,
+    p.organizations,
+    p.is_board,
+    case
+      when not p.share_email then null
+      when coalesce(p.directory_use_account_contact, true) then p.email
+      else nullif(btrim(p.directory_email), '')
+    end,
+    case
+      when not p.share_phone then null
+      when coalesce(p.directory_use_account_contact, true) then p.phone
+      else nullif(btrim(p.directory_phone), '')
+    end
+  from public.profiles p
+  where p.directory_visible
+    and p.membership_status = 'active'
+    and (
+      q is null
+      or p.full_name ilike '%' || q || '%'
+      or p.organization ilike '%' || q || '%'
+      or p.credentials ilike '%' || q || '%'
+      or p.city ilike '%' || q || '%'
+      or p.state ilike '%' || q || '%'
+      or exists (
+        select 1
+        from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
+        where o->>'name' ilike '%' || q || '%'
+           or o->>'role' ilike '%' || q || '%'
+           or o->>'city' ilike '%' || q || '%'
+           or o->>'state' ilike '%' || q || '%'
+           or o->>'practice_setting' ilike '%' || q || '%'
+           or o->>'website' ilike '%' || q || '%'
+      )
+      or (
+        p.share_email
+        and (
+          case
+            when coalesce(p.directory_use_account_contact, true) then p.email
+            else nullif(btrim(p.directory_email), '')
+          end
+        ) ilike '%' || q || '%'
+      )
+    )
+    and (
+      st is null
+      or p.state = st
+      or exists (
+        select 1
+        from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
+        where o->>'state' = st
+      )
+    )
+  order by p.full_name nulls last, p.email nulls last;
+end;
+$$;
+
+create or replace function public.member_directory_profile(member_id uuid)
+returns table (
+  id uuid,
+  full_name text,
+  credentials text,
+  organization text,
+  practice_setting text,
+  city text,
+  state text,
+  organizations jsonb,
+  is_board boolean,
+  email text,
+  phone text
+)
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.is_active_member() then
+    return;
+  end if;
+
+  return query
+  select
+    p.id,
+    p.full_name,
+    p.credentials,
+    p.organization,
+    p.practice_setting,
+    p.city,
+    p.state,
+    p.organizations,
+    p.is_board,
+    case
+      when not p.share_email then null
+      when coalesce(p.directory_use_account_contact, true) then p.email
+      else nullif(btrim(p.directory_email), '')
+    end,
+    case
+      when not p.share_phone then null
+      when coalesce(p.directory_use_account_contact, true) then p.phone
+      else nullif(btrim(p.directory_phone), '')
+    end
+  from public.profiles p
+  where p.id = member_id
+    and p.directory_visible
+    and p.membership_status = 'active';
+end;
 $$;

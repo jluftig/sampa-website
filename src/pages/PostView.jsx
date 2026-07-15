@@ -23,7 +23,7 @@ function SaveButton({ post }) {
     return (
       <Link
         to={`/login?next=${encodeURIComponent(`/news/${post.slug}`)}`}
-        className="flex items-center gap-1.5 text-sm font-semibold text-text/50 hover:text-primary transition-colors"
+        className="flex items-center gap-1.5 text-sm font-semibold text-text/50 hover:text-primary-text transition-colors"
       >
         <Bookmark className="w-4 h-4" /> Save
       </Link>
@@ -35,7 +35,7 @@ function SaveButton({ post }) {
     <button
       onClick={() => toggle(post.id)}
       disabled={!ready}
-      className={`flex items-center gap-1.5 text-sm font-semibold transition-colors disabled:opacity-50 ${saved ? 'text-primary' : 'text-text/50 hover:text-primary'}`}
+      className={`flex items-center gap-1.5 text-sm font-semibold transition-colors disabled:opacity-50 ${saved ? 'text-primary-text' : 'text-text/50 hover:text-primary-text'}`}
     >
       {saved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
       {saved ? 'Saved' : 'Save'}
@@ -62,7 +62,7 @@ function ShareButton({ post }) {
   return (
     <button
       onClick={onShare}
-      className="flex items-center gap-1.5 text-sm font-semibold text-text/50 hover:text-primary transition-colors"
+      className="flex items-center gap-1.5 text-sm font-semibold text-text/50 hover:text-primary-text transition-colors"
     >
       <Share2 className="w-4 h-4" />
       {copied ? 'Link copied!' : 'Share'}
@@ -160,7 +160,7 @@ export default function PostView() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
-        <Link to="/news" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/news" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← All news
         </Link>
 
@@ -183,7 +183,7 @@ export default function PostView() {
           <article className="mt-8">
             <header className="mb-10">
               <div className="flex items-center justify-between gap-4 mb-4">
-                <div className="text-primary font-bold font-data tracking-widest text-xs uppercase">
+                <div className="text-primary-text font-bold font-data tracking-widest text-xs uppercase">
                   {formatDate(post.published_at)}
                   {post.author_name ? ` · ${post.author_name}` : ''}
                 </div>
@@ -203,7 +203,7 @@ export default function PostView() {
                       href={post.source_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary font-semibold hover:underline"
+                      className="text-primary-text font-semibold hover:underline"
                     >
                       {post.source_name || sourceHost(post.source_url)} ↗
                     </a>
@@ -232,7 +232,7 @@ export default function PostView() {
 
             {post.body_html && (
               <div
-                className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary"
+                className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary-text"
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body_html) }}
               />
             )}
@@ -280,11 +280,11 @@ export default function PostView() {
                         to={`/news/${r.slug}`}
                         className="group block h-full bg-white rounded-2xl border border-primary/10 p-5 hover:border-primary/40 hover:shadow-md transition-all"
                       >
-                        <div className="text-primary font-bold font-data tracking-widest text-[10px] uppercase mb-2">
+                        <div className="text-primary-text font-bold font-data tracking-widest text-[10px] uppercase mb-2">
                           {formatDate(r.published_at)} · {r.shared_keywords} shared keyword
                           {Number(r.shared_keywords) === 1 ? '' : 's'}
                         </div>
-                        <div className="font-bold group-hover:text-primary transition-colors">
+                        <div className="font-bold group-hover:text-primary-text transition-colors">
                           {r.title}
                         </div>
                       </Link>

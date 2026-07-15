@@ -29,3 +29,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# session worktrees (other Claude sessions) — never commit
+/.claude/worktrees/

@@ -13,13 +13,15 @@ export default function Footer() {
             </div>
           </div>
           <p className="text-white/60 max-w-sm text-sm">
-            Advancing addiction medicine nationally for Physician Associates.
+            Improving health outcomes in addiction medicine by advancing physician associates—so individuals and communities impacted by substance use disorders get better care.
           </p>
         </div>
 
         <div className="flex gap-8 text-sm font-medium text-white/60">
           <a href="/#about" className="hover:text-white transition-colors">About</a>
           <a href="/#membership" className="hover:text-white transition-colors">Membership</a>
+          <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Store</a>
+          <Link to="/donate" className="hover:text-white transition-colors">Donate</Link>
           <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>

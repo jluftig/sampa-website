@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Navbar() {
   const navRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { canAccessMemberDirectory } = useAuth();
 
   useEffect(() => {
     gsap.fromTo(navRef.current,
@@ -24,25 +26,29 @@ export default function Navbar() {
         
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6 font-medium text-sm text-text/80">
-          <Link to="/news" className="hover:text-primary transition-colors">News</Link>
-          <a href="/#about" className="hover:text-primary transition-colors">About</a>
-          <a href="/#value-props" className="hover:text-primary transition-colors">CE & Resources</a>
-          <a href="/#membership" className="hover:text-primary transition-colors">Membership</a>
-          <a href="/#events" className="hover:text-primary transition-colors">Events</a>
-          <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Contact Us</a>
-          <Link to="/dashboard" className="hover:text-primary transition-colors">Member Login</Link>
+          <Link to="/news" className="hover:text-primary-text transition-colors">News</Link>
+          <a href="/#about" className="hover:text-primary-text transition-colors">About</a>
+          <a href="/#value-props" className="hover:text-primary-text transition-colors">CE & Resources</a>
+          <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
+          <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
+          <Link to="/donate" className="hover:text-primary-text transition-colors">Donate</Link>
+          <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Contact Us</a>
+          {canAccessMemberDirectory && (
+            <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
+          )}
+          <Link to="/dashboard" className="hover:text-primary-text transition-colors">Member Login</Link>
         </div>
 
         {/* Desktop CTA Button */}
         <div className="hidden lg:block">
           <Link to="/join" className="btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block">
-            <span>Join as a Founding Member</span>
+            <span>Join</span>
           </Link>
         </div>
 
         {/* Mobile/Tablet Hamburger Toggle */}
         <button 
-          className="lg:hidden p-2 text-primary focus:outline-none"
+          className="lg:hidden p-2 text-primary-text focus:outline-none"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,16 +64,20 @@ export default function Navbar() {
       {/* Mobile/Tablet Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
-          <Link to="/news" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>News</Link>
-          <a href="/#about" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-          <a href="/#value-props" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>CE & Resources</a>
-          <a href="/#membership" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
-          <a href="/#events" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Events</a>
-          <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
-          <Link to="/dashboard" className="font-medium text-text hover:text-primary px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Member Login</Link>
+          <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>News</Link>
+          <a href="/#about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</a>
+          <a href="/#value-props" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>CE & Resources</a>
+          <a href="/#membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
+          <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
+          <Link to="/donate" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</Link>
+          <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
+          {canAccessMemberDirectory && (
+            <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
+          )}
+          <Link to="/dashboard" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Member Login</Link>
           <div className="mt-2 pt-4 border-t border-primary/10 flex justify-center">
              <Link to="/join" className="bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full" onClick={() => setIsMobileMenuOpen(false)}>
-              Join as a Founding Member
+              Join
             </Link>
           </div>
         </div>

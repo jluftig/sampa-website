@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
+import RequireActiveMember from './components/RequireActiveMember';
 import RequireMemberViewer from './components/RequireMemberViewer';
 import Home from './pages/Home';
 
@@ -15,7 +16,10 @@ const TagView = lazy(() => import('./pages/TagView'));
 const Search = lazy(() => import('./pages/Search'));
 const Login = lazy(() => import('./pages/Login'));
 const Join = lazy(() => import('./pages/Join'));
+const Donate = lazy(() => import('./pages/Donate'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
+const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
@@ -39,6 +43,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/donate" element={<Donate />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route
@@ -47,6 +52,22 @@ function App() {
               <RequireAuth>
                 <Dashboard />
               </RequireAuth>
+            }
+          />
+          <Route
+            path="/members"
+            element={
+              <RequireActiveMember>
+                <MemberDirectory />
+              </RequireActiveMember>
+            }
+          />
+          <Route
+            path="/members/:id"
+            element={
+              <RequireActiveMember>
+                <MemberProfile />
+              </RequireActiveMember>
             }
           />
           <Route

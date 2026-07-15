@@ -35,7 +35,7 @@ export default function News() {
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-24">
         <header className="text-center mb-16">
-          <div className="text-primary font-bold font-data tracking-widest text-sm mb-4 uppercase">
+          <div className="text-primary-text font-bold font-data tracking-widest text-sm mb-4 uppercase">
             SAMPA News
           </div>
           <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">
@@ -47,7 +47,7 @@ export default function News() {
           <div className="max-w-md mx-auto mt-8">
             <SearchBox />
           </div>
-          <Link to="/keywords" className="inline-block mt-6 text-primary font-semibold hover:underline">
+          <Link to="/keywords" className="inline-block mt-6 text-primary-text font-semibold hover:underline">
             Browse by keyword →
           </Link>
         </header>

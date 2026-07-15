@@ -22,10 +22,10 @@ export default function PostCard({ post }) {
       )}
 
       <div className="p-6 md:p-8">
-        <div className="text-primary font-bold font-data tracking-widest text-xs mb-3 uppercase">
+        <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-3 uppercase">
           {formatDate(post.published_at)}
         </div>
-        <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-3 group-hover:text-primary transition-colors">
+        <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-3 group-hover:text-primary-text transition-colors">
           {post.title}
         </h3>
         {post.excerpt && (
@@ -38,7 +38,7 @@ export default function PostCard({ post }) {
               <span
                 key={tag.slug}
                 title={tag.name}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-data font-semibold bg-primary/10 text-primary"
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-data font-semibold bg-primary/10 text-primary-text"
               >
                 {tag.short_label || tag.name}
               </span>

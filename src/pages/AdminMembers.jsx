@@ -2,10 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Download } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../lib/AuthContext';
 import { tierByKey } from '../lib/membership';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import PrivilegedAccessAgreement from '../components/PrivilegedAccessAgreement';
 
 const STATUS_FILTERS = [
   { key: 'all', label: 'All accounts' },
@@ -20,6 +22,17 @@ const STATUS_BADGES = {
   past_due: 'bg-amber-500/10 text-amber-700',
   canceled: 'bg-red-500/10 text-red-600',
 };
+
+// "Fellow, 3 yr" | "Legacy Member, lifetime" | "Fellow" (term unknown) — same
+// format as the pledge table. Term is unknown only for memberships that
+// predate term tracking; their next Stripe event fills it in.
+function tierLabel(p) {
+  const name = tierByKey(p.membership_tier)?.name || p.membership_tier;
+  if (!name) return '—';
+  if (p.membership_years) return `${name}, ${p.membership_years} yr`;
+  if (p.membership_status === 'active' && !p.renews_on) return `${name}, lifetime`;
+  return name;
+}
 
 // Active: "Renews <date>" | "Ends <date>" (canceled at period end) | "Lifetime".
 // Past due: the date the failed renewal was due. Canceled/none: no date — the
@@ -38,12 +51,35 @@ const CSV_COLUMNS = [
   ['Email', (p) => p.email],
   ['Role', (p) => p.role],
   ['Membership tier', (p) => tierByKey(p.membership_tier)?.name || p.membership_tier],
+  ['Term (years)', (p) => p.membership_years || (p.membership_status === 'active' && !p.renews_on ? 'lifetime' : '')],
   ['Status', (p) => p.membership_status],
   ['Renews/ends', (p) => (p.renews_on ? p.renews_on.slice(0, 10) : p.membership_status === 'active' ? 'lifetime' : '')],
   ['Won\'t renew', (p) => (p.cancel_at_period_end ? 'yes' : '')],
+  ['Donor', (p) => (p._isDonor ? 'yes' : 'no')],
+  ['City', (p) => p.city],
   ['State', (p) => p.state],
   ['Credentials', (p) => p.credentials],
-  ['Organization', (p) => p.organization],
+  ['Organizations', (p) => {
+    if (Array.isArray(p.organizations) && p.organizations.length > 0) {
+      return p.organizations
+        .map((o) => {
+          const loc = [o.city, o.state].filter(Boolean).join(', ');
+          const name = o.name || '';
+          const role = o.role || '';
+          const site = o.website || '';
+          const bits = [
+            name,
+            role && `— ${role}`,
+            loc && `(${loc})`,
+            site,
+          ].filter(Boolean);
+          return bits.join(' ');
+        })
+        .filter(Boolean)
+        .join('; ');
+    }
+    return p.organization || '';
+  }],
   ['Practice setting', (p) => p.practice_setting],
   ['Phone', (p) => p.phone],
   ['Newsletter', (p) => (p.newsletter_opt_in ? 'yes' : 'no')],
@@ -66,8 +102,14 @@ function toCsv(rows) {
 // status, counts by tier/state, and a CSV export of the filtered view. Reads
 // are allowed by the profiles RLS policy (admins see all rows).
 export default function AdminMembers() {
+  const { user, profile } = useAuth();
+  // Confidentiality agreement gate: no member data is fetched or rendered
+  // until this person has click-accepted (timestamp on their profile).
+  const accepted = !!profile?.privileged_terms_accepted_at;
+
   const [people, setPeople] = useState([]);
   const [pledges, setPledges] = useState([]);
+  const [donorKeys, setDonorKeys] = useState(() => new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -75,27 +117,55 @@ export default function AdminMembers() {
 
   useEffect(() => {
     let active = true;
+    if (!accepted) return;
     (async () => {
-      const [profilesRes, pledgesRes] = await Promise.all([
-        supabase
+      // Prefer multi-org columns; fall back if the migration hasn't been applied.
+      const profileSelect =
+        'id, full_name, email, role, credentials, organization, practice_setting, city, state, organizations, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
+      const profileSelectLegacy =
+        'id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
+
+      let profilesRes = await supabase
+        .from('profiles')
+        .select(profileSelect)
+        .order('full_name', { ascending: true, nullsFirst: false });
+      if (profilesRes.error && (profilesRes.error.code === 'PGRST204' || /city|organizations/i.test(profilesRes.error.message || ''))) {
+        profilesRes = await supabase
           .from('profiles')
-          .select('id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_status, renews_on, cancel_at_period_end, created_at')
-          .order('full_name', { ascending: true, nullsFirst: false }),
+          .select(profileSelectLegacy)
+          .order('full_name', { ascending: true, nullsFirst: false });
+      }
+
+      const [pledgesRes, donationsRes] = await Promise.all([
         // Pre-Stripe sign-up-form pledges (admin-readable via RLS). Rows stay
         // after claiming, so this doubles as the invitation-conversion tracker.
         supabase
           .from('member_import')
           .select('email, first_name, last_name, membership_tier, membership_years, member_since, claimed_at')
           .order('member_since', { ascending: true }),
+        // Successful gifts, to flag donors in the roster. Admin/member-viewer can
+        // read donations via RLS; degrades to "no donors" if the query errors.
+        supabase
+          .from('donations')
+          .select('user_id, donor_email')
+          .eq('status', 'succeeded'),
       ]);
       if (!active) return;
       if (profilesRes.error) setError(profilesRes.error.message);
       else setPeople(profilesRes.data || []);
       setPledges(pledgesRes.data || []); // empty if the admin-read policy migration hasn't run
+      // Donor lookup keyed by account id AND the email Stripe collected, so a
+      // guest gift made with a member's email still flags that member.
+      const keys = new Set();
+      for (const d of donationsRes.data || []) {
+        if (d.user_id) keys.add(d.user_id);
+        if (d.donor_email) keys.add(d.donor_email.toLowerCase());
+      }
+      setDonorKeys(keys);
       setLoading(false);
     })();
     return () => { active = false; };
-  }, []);
+  }, [accepted]);
 
   const counts = useMemo(() => {
     const byStatus = { active: 0, past_due: 0, canceled: 0, none: 0 };
@@ -138,24 +208,40 @@ export default function AdminMembers() {
     invited: pledgeRows.filter((r) => r.status === 'invited').length,
   }), [pledgeRows]);
 
+  // A member counts as a donor if a successful gift matches their account id or
+  // the email Stripe collected on the gift.
+  const isDonor = (p) =>
+    donorKeys.has(p.id) || (!!p.email && donorKeys.has(p.email.toLowerCase()));
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return people.filter((p) => {
       if (statusFilter !== 'all' && (p.membership_status || 'none') !== statusFilter) return false;
       if (!q) return true;
-      return [p.full_name, p.email, p.organization, p.state]
+      const orgBlob = Array.isArray(p.organizations)
+        ? p.organizations.map((o) => [o.name, o.role, o.city, o.state].filter(Boolean).join(' ')).join(' ')
+        : '';
+      return [p.full_name, p.email, p.organization, p.city, p.state, orgBlob]
         .some((v) => v && v.toLowerCase().includes(q));
     });
   }, [people, statusFilter, search]);
 
   const downloadCsv = () => {
-    const blob = new Blob([toCsv(filtered)], { type: 'text/csv;charset=utf-8' });
+    const rows = filtered.map((p) => ({ ...p, _isDonor: isDonor(p) }));
+    const blob = new Blob([toCsv(rows)], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `sampa-members-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+    // Governance: exports are logged (fire-and-forget; visible to admins).
+    supabase.from('audit_log').insert({
+      actor_id: user.id,
+      actor_email: profile?.email || user.email,
+      action: 'member_csv_export',
+      detail: { rows: filtered.length, filter: statusFilter, search: search.trim() || null },
+    }).then(() => {});
   };
 
   return (
@@ -164,9 +250,16 @@ export default function AdminMembers() {
       <Navbar />
 
       <main className="max-w-6xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
+        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
+
+        {!accepted ? (
+          <div className="mt-8">
+            <PrivilegedAccessAgreement />
+          </div>
+        ) : (
+        <>
         <div className="flex flex-wrap items-end justify-between gap-4 mt-4 mb-8">
           <div>
             <h1 className="text-3xl font-drama font-bold mb-2">Members</h1>
@@ -178,7 +271,7 @@ export default function AdminMembers() {
           <button
             onClick={downloadCsv}
             disabled={loading || filtered.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             <Download className="w-4 h-4" />
             Download CSV ({filtered.length})
@@ -299,7 +392,7 @@ export default function AdminMembers() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search name, email, organization, state…"
+                placeholder="Search name, email, organization, city, state…"
                 className="flex-1 min-w-[220px] px-4 py-2.5 rounded-full border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
               />
               <select
@@ -322,6 +415,7 @@ export default function AdminMembers() {
                     <th className="px-4 py-3">Tier</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Renewal</th>
+                    <th className="px-4 py-3">Donor</th>
                     <th className="px-4 py-3">State</th>
                     <th className="px-4 py-3">Role</th>
                   </tr>
@@ -331,7 +425,7 @@ export default function AdminMembers() {
                     <tr key={p.id}>
                       <td className="px-4 py-3 font-semibold whitespace-nowrap">{p.full_name || '—'}</td>
                       <td className="px-4 py-3 text-text/60">{p.email}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{tierByKey(p.membership_tier)?.name || p.membership_tier || '—'}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{tierLabel(p)}</td>
                       <td className="px-4 py-3">
                         {p.membership_status ? (
                           <span className={`text-xs font-data font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGES[p.membership_status] || 'bg-text/10 text-text/60'}`}>
@@ -342,13 +436,25 @@ export default function AdminMembers() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-text/60 whitespace-nowrap">{renewalLabel(p)}</td>
-                      <td className="px-4 py-3 text-text/60 whitespace-nowrap">{p.state || '—'}</td>
+                      <td className="px-4 py-3">
+                        {isDonor(p) ? (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            Yes
+                          </span>
+                        ) : (
+                          <span className="text-text/30">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-text/60 whitespace-nowrap">
+                        {p.state || '—'}
+                      </td>
                       <td className="px-4 py-3 text-text/60">{p.role}</td>
                     </tr>
                   ))}
                   {filtered.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="px-4 py-8 text-center text-text/40">
+                      <td colSpan={8} className="px-4 py-8 text-center text-text/40">
                         No accounts match this view.
                       </td>
                     </tr>
@@ -359,11 +465,13 @@ export default function AdminMembers() {
 
             <p className="text-text/40 text-xs mt-4">
               The CSV export includes additional columns: credentials,
-              organization, practice setting, phone, and newsletter/SMS
+              organizations (city/state), practice setting, phone, and newsletter/SMS
               preferences. Permissions are managed by administrators on{' '}
-              <Link to="/editor/people" className="underline hover:text-primary">People & permissions</Link>.
+              <Link to="/editor/people" className="underline hover:text-primary-text">People & permissions</Link>.
             </p>
           </>
+        )}
+        </>
         )}
       </main>
 

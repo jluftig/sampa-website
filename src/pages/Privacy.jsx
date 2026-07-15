@@ -6,7 +6,7 @@ const CONTACT_FORM_URL = 'https://forms.gle/YqYYRVE9z2nCYdNz5';
 
 export default function Privacy() {
   return (
-    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="July 6, 2026">
+    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="July 11, 2026">
       <p>
         The Society of Addiction Medicine Physician Associates ("SAMPA," "we,"
         "us") operates <strong>www.addictionpas.org</strong>, a professional
@@ -20,6 +20,7 @@ export default function Privacy() {
       <ul>
         <li>You can read everything public on this site without an account, and we don't track who you are when you do.</li>
         <li>If you create an account, we collect your name and email, plus any professional details you choose to add.</li>
+        <li>Active members can use a <strong>member networking directory</strong> to find each other. That directory is not public. You control whether you appear and whether peers see your email or phone.</li>
         <li>Payments are handled by Stripe — <strong>we never see or store your card number</strong>.</li>
         <li>This is a site for clinicians. <strong>We do not collect patient information of any kind.</strong></li>
         <li>We don't sell your information, and we don't show ads.</li>
@@ -41,16 +42,31 @@ export default function Privacy() {
         When you sign in with Google, Google shares your name and email address
         with us. When you sign in with an email link, we collect your email
         address. That's what creates your account — there is no password for us
-        to store.
+        to store. Your sign-in email is how we identify your membership account
+        (for example after payment) and how we contact you about the account if
+        needed.
       </p>
 
-      <h3>Member profile (provided by you)</h3>
+      <h3>Account contact (for SAMPA)</h3>
       <p>
-        On your dashboard you may add professional details: credentials, NPI
-        number, organization/employer, practice setting, phone number, and your
-        newsletter preference. These are optional and editable by you at any
-        time. They are professional details about you as a clinician — never
-        information about patients.
+        On your dashboard you may add a mobile phone number and choose
+        newsletter or text-message preferences. We use this so SAMPA can reach
+        you about membership, the organization, and (if you opt in) updates. It
+        is not shown to other members unless you also choose to share that same
+        contact information in the member directory (see below).
+      </p>
+
+      <h3>Directory profile (for peer networking)</h3>
+      <p>
+        You may also complete a <strong>directory profile</strong>: name,
+        credentials, optional NPI, home/membership state, and one or more
+        organizations or employers (each with role/title, practice setting,
+        city, state, and optional website). You can share your account email
+        and phone with other members, or enter a different directory email
+        and/or phone (for example a work inbox if you sign in with a personal
+        Gmail). These are professional details about you as a clinician — never
+        information about patients. Everything is optional and editable on your
+        dashboard.
       </p>
 
       <h3>Membership and payments</h3>
@@ -71,6 +87,45 @@ export default function Privacy() {
         administrators) can see your saved list.
       </p>
 
+      <h2>Member networking directory</h2>
+      <p>
+        Active members can browse a <strong>member networking directory</strong>
+        so physician associates in addiction medicine can find and contact each
+        other for professional networking. The directory is{' '}
+        <strong>not part of the public website</strong> — only signed-in active
+        members (and authorized SAMPA staff) can open it.
+      </p>
+      <p>
+        <strong>What peers may see when you are listed:</strong> name,
+        credentials, organizations and roles, practice settings, locations
+        (city/state), optional organization websites, Board badge if applicable,
+        and email and/or phone only if you turn on those share options.
+      </p>
+      <p>
+        <strong>What peers do not see:</strong> your billing or payment data,
+        Stripe identifiers, newsletter/SMS preferences, NPI number, staff-only
+        permission flags, or other internal account fields. NPI, if you provide
+        it, is for SAMPA membership operations (for example the staff roster),
+        not for peer directory cards.
+      </p>
+      <p>
+        <strong>Default listing:</strong> when your membership is active, you
+        appear in the directory by default so members can find each other without
+        an extra step. You can uncheck "Show me in the member directory" on your
+        dashboard at any time and disappear from peer listings immediately.
+        Defaults for contact: email sharing is on when you are listed (so peers
+        have a way to reach you for networking); phone sharing is off. You can
+        change either anytime, or point the directory at a work email instead of
+        your sign-in address.
+      </p>
+      <p>
+        <strong>Staff roster (separate):</strong> a small set of authorized SAMPA
+        people (for example membership committee or admins) can access an
+        internal roster for membership operations — pledges, billing status, and
+        related admin work. That is not the same as the peer directory, uses
+        stricter access controls, and is not available to ordinary members.
+      </p>
+
       <h2>What we do NOT collect</h2>
       <p>
         SAMPA's website serves clinicians and students of the profession. We do
@@ -84,13 +139,15 @@ export default function Privacy() {
       <ul>
         <li>To operate your account, membership, and member benefits.</li>
         <li>To process dues and send receipts (via Stripe).</li>
+        <li>To run the member networking directory under the listing and contact choices you set.</li>
+        <li>To operate membership (staff roster) for people authorized to manage memberships.</li>
         <li>To send the SAMPA newsletter and member updates — only if you've opted in, and you can opt out on your dashboard at any time.</li>
         <li>To respond when you contact us.</li>
         <li>To keep the site secure and understand aggregate (not individual) usage.</li>
       </ul>
       <p>
         We do not sell personal information, and we do not share it with
-        advertisers. Ever.
+        advertisers. Ever. We also do not sell or rent the member directory.
       </p>
 
       <h2>Service providers</h2>
@@ -104,7 +161,9 @@ export default function Privacy() {
       <p>
         Beyond these providers, we disclose personal information only if
         required by law, or as part of a reorganization of SAMPA as a nonprofit
-        entity (in which case this policy would continue to apply).
+        entity (in which case this policy would continue to apply). Other members
+        see only the directory fields you allow (as described above) — that is
+        member-to-member visibility you control, not a sale of your data.
       </p>
 
       <h2>Cookies and local storage</h2>
@@ -124,7 +183,9 @@ export default function Privacy() {
 
       <h2>Your choices</h2>
       <ul>
-        <li>View and edit your profile details anytime on your <Link to="/dashboard">dashboard</Link>.</li>
+        <li>View and edit your profile and directory settings anytime on your <Link to="/dashboard">dashboard</Link>.</li>
+        <li>Hide yourself from the member directory, or share/unshare email and phone, with the checkboxes on that page.</li>
+        <li>Use a directory email or phone that differs from your sign-in / account contact.</li>
         <li>Opt out of the newsletter with one checkbox on the same page.</li>
         <li>Manage or cancel your membership through the billing portal on your dashboard.</li>
         <li>Request a copy or deletion of your information via the <a href={CONTACT_FORM_URL} target="_blank" rel="noopener noreferrer">contact form</a>.</li>
@@ -133,10 +194,11 @@ export default function Privacy() {
       <h2>Security</h2>
       <p>
         Data is encrypted in transit, access to member records is restricted by
-        database-level access rules, and payment credentials never touch our
-        systems. No method of storage or transmission is 100% secure, but we
-        design so that the most sensitive data (your card) is held by Stripe,
-        not us.
+        database-level rules, peer directory data is limited to an allowlisted
+        set of fields, and payment credentials never touch our systems. No
+        method of storage or transmission is 100% secure, but we design so that
+        the most sensitive data (your card) is held by Stripe, not us, and peer
+        networking never exposes billing details.
       </p>
 
       <h2>Children</h2>
@@ -149,7 +211,7 @@ export default function Privacy() {
       <p>
         If we change this policy, we'll post the new version here and update the
         effective date above. Material changes affecting members will be called
-        out in member communications.
+        out in member communications when practical.
       </p>
 
       <h2>Contact</h2>

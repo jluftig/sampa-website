@@ -27,6 +27,29 @@ function willCancel(subscription) {
   return subscription.cancel_at_period_end === true || Boolean(subscription.cancel_at);
 }
 
+// Purchased term length in years, read from the price the subscription is
+// actually on (interval_count of a yearly price) — robust to portal plan
+// switches, where checkout metadata would go stale.
+function termYears(subscription) {
+  const recurring = subscription.items?.data?.[0]?.price?.recurring;
+  return recurring?.interval === 'year' ? recurring.interval_count ?? 1 : null;
+}
+
+function idOf(v) {
+  return typeof v === 'string' ? v : v?.id ?? null;
+}
+
+// Insert a donation, ignoring duplicates so Stripe's event retries are safe.
+// One-time gifts conflict on stripe_session_id; recurring cycles on
+// stripe_invoice_id (both unique). Donations NEVER touch the membership columns.
+async function recordDonation(admin, row) {
+  const onConflict = row.stripe_invoice_id ? 'stripe_invoice_id' : 'stripe_session_id';
+  const { error } = await admin
+    .from('donations')
+    .upsert(row, { onConflict, ignoreDuplicates: true });
+  if (error) throw error;
+}
+
 export async function POST(request) {
   const stripe = stripeClient();
   const signature = request.headers.get('stripe-signature');
@@ -50,6 +73,28 @@ export async function POST(request) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
+
+        // Donations are a separate flow — record the gift, never membership.
+        // One-time gifts are captured here; recurring gifts are captured per
+        // cycle by invoice.paid (including the first), so skip subscription mode.
+        if (session.metadata?.type === 'donation') {
+          if (session.mode === 'payment') {
+            await recordDonation(admin, {
+              user_id: session.client_reference_id || session.metadata?.supabase_user_id || null,
+              donor_email: session.customer_details?.email || session.customer_email || null,
+              donor_name: session.customer_details?.name || null,
+              amount: session.amount_total,
+              currency: session.currency || 'usd',
+              frequency: 'once',
+              status: 'succeeded',
+              stripe_customer_id: idOf(session.customer),
+              stripe_session_id: session.id,
+              stripe_payment_intent_id: idOf(session.payment_intent),
+            });
+          }
+          break;
+        }
+
         const userId = session.client_reference_id || session.metadata?.supabase_user_id;
         if (!userId) break;
 
@@ -62,6 +107,7 @@ export async function POST(request) {
             membership_status: membershipStatus(subscription.status),
             renews_on: renewsOn(subscription),
             cancel_at_period_end: willCancel(subscription),
+            membership_years: termYears(subscription),
           };
         } else if (session.mode === 'payment' && session.metadata?.duration === 'lifetime') {
           // Lifetime membership (Legacy): one-time payment, never expires.
@@ -71,6 +117,7 @@ export async function POST(request) {
             membership_status: 'active',
             renews_on: null,
             cancel_at_period_end: false,
+            membership_years: null, // lifetime — no term
           };
         } else {
           break; // some other one-time payment (e.g. future donations) — not membership
@@ -85,6 +132,9 @@ export async function POST(request) {
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
         const subscription = event.data.object;
+        // Recurring donations are subscriptions too — never let their lifecycle
+        // events touch the membership columns.
+        if (subscription.metadata?.type === 'donation') break;
         const userId = subscription.metadata?.supabase_user_id;
         const matchCol = userId ? 'id' : 'stripe_customer_id';
         const matchVal = userId || subscription.customer;
@@ -105,6 +155,7 @@ export async function POST(request) {
           renews_on: renewsOn(subscription),
           cancel_at_period_end:
             event.type !== 'customer.subscription.deleted' && willCancel(subscription),
+          membership_years: termYears(subscription),
         };
         if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
 
@@ -118,6 +169,32 @@ export async function POST(request) {
         if (!updated?.length) {
           console.error(`stripe-webhook: ${event.type}: no profile matched ${matchCol}=${matchVal}`);
         }
+        break;
+      }
+
+      // Recurring donations: one row per successful monthly charge. Membership
+      // renewals also fire this, so act ONLY on donation subscriptions. In the
+      // dahlia API the subscription + its metadata snapshot live under
+      // invoice.parent.subscription_details (fallbacks cover older shapes).
+      case 'invoice.paid':
+      case 'invoice.payment_succeeded': {
+        const invoice = event.data.object;
+        const subDetails = invoice.parent?.subscription_details;
+        const meta = subDetails?.metadata || invoice.subscription_details?.metadata || {};
+        if (meta.type !== 'donation') break;
+
+        await recordDonation(admin, {
+          user_id: meta.supabase_user_id || null,
+          donor_email: invoice.customer_email || null,
+          donor_name: invoice.customer_name || null,
+          amount: invoice.amount_paid,
+          currency: invoice.currency || 'usd',
+          frequency: 'monthly',
+          status: 'succeeded',
+          stripe_customer_id: idOf(invoice.customer),
+          stripe_subscription_id: idOf(subDetails?.subscription) || idOf(invoice.subscription),
+          stripe_invoice_id: invoice.id,
+        });
         break;
       }
 

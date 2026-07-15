@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
@@ -7,26 +7,61 @@ import { apiPost } from '../lib/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-// Join flow, account-first: sign in (1 click) → pick a tier + term → Stripe
-// Checkout. Checkout is created server-side with the user's id as
-// client_reference_id, so the webhook can activate the right profile without
+// Join flow, account-first: sign in (1 click) → confirm tier + term → Stripe
+// Checkout. Homepage is the catalog; this page is step 2 (purchase).
+// `?tier=` from the homepage is honored: that card is highlighted and scrolled
+// into view. Checkout is created server-side with the user's id as
+// client_reference_id so the webhook can activate the right profile without
 // email matching. Terms: 1/2/3-year auto-renewing subscriptions (multi-year
 // at a discount), plus a one-time Lifetime option on Legacy.
 export default function Join() {
   const { user, loading, profile, isActiveMember } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const canceled = searchParams.get('checkout') === 'canceled';
+  const tierFromQuery = tierByKey(searchParams.get('tier'));
+
+  // Which tier is the "current choice" for visual focus.
+  const [focusedKey, setFocusedKey] = useState(tierFromQuery?.key ?? null);
+  const focusedTier = tierByKey(focusedKey) || tierFromQuery;
 
   // Selected term per tier card, defaulting to 1 year.
   const [terms, setTerms] = useState({});
   const [busyTier, setBusyTier] = useState(null);
   const [error, setError] = useState(null);
+  const cardRefs = useRef({});
+  const didScrollFor = useRef(null);
+
+  // Keep focus in sync if the URL changes (e.g. back/forward, login return).
+  useEffect(() => {
+    if (tierFromQuery?.key) setFocusedKey(tierFromQuery.key);
+  }, [tierFromQuery?.key]);
+
+  // Scroll the preselected tier into view once per inbound query value.
+  useEffect(() => {
+    if (!tierFromQuery?.key) return;
+    if (didScrollFor.current === tierFromQuery.key) return;
+    const el = cardRefs.current[tierFromQuery.key];
+    if (!el) return;
+    didScrollFor.current = tierFromQuery.key;
+    const t = window.setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+    return () => window.clearTimeout(t);
+  }, [tierFromQuery?.key]);
 
   const termFor = (tier) => terms[tier.key] ?? 1;
 
+  const focusTier = (tierKey) => {
+    setFocusedKey(tierKey);
+    const next = new URLSearchParams(searchParams);
+    next.set('tier', tierKey);
+    setSearchParams(next, { replace: true });
+  };
+
   const selectTier = async (tierKey) => {
     setError(null);
+    focusTier(tierKey);
     const duration = terms[tierKey] ?? 1;
     if (!user) {
       navigate(`/login?next=${encodeURIComponent(`/join?tier=${tierKey}`)}`);
@@ -44,6 +79,24 @@ export default function Join() {
 
   const currentTier = tierByKey(profile?.membership_tier);
 
+  const stepLabel = focusedTier
+    ? `Confirm ${focusedTier.name} · choose term & pay`
+    : 'Confirm tier, term & pay';
+
+  const headerSub = (() => {
+    if (isActiveMember) {
+      return 'You already have an active membership. Manage billing from your dashboard rather than starting a new checkout here.';
+    }
+    if (focusedTier) {
+      return user
+        ? `You chose ${focusedTier.name}. Pick a term below, then continue to secure payment via Stripe. Need a different level? Select another card.`
+        : `You chose ${focusedTier.name}. Sign in (one click, no password), then choose a term and pay. Need a different level? Select another card.`;
+    }
+    return user
+      ? 'Choose the level that fits your career stage, pick a term, then continue to secure payment via Stripe.'
+      : 'Choose your level, sign in (one click, no password), pick a term, then pay. Active membership includes the member networking directory.';
+  })();
+
   return (
     <div className="relative min-h-screen bg-background text-text">
       <div className="noise-overlay pointer-events-none"></div>
@@ -51,20 +104,23 @@ export default function Join() {
 
       <main className="max-w-6xl mx-auto px-4 pt-32 pb-24">
         <header className="text-center mb-12">
-          <div className="inline-block px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-accent text-xs font-semibold mb-6 font-data uppercase tracking-wider">
-            Membership
+          <div className="inline-block px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-accent text-xs font-semibold mb-4 font-data uppercase tracking-wider">
+            Step 2 · Checkout
           </div>
-          <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">Join SAMPA</h1>
-          <p className="text-lg text-text/70 max-w-2xl mx-auto">
-            {user
-              ? 'Pick the membership level that fits your career stage — payment is handled securely by Stripe.'
-              : 'Two quick steps: sign in (one click, no password), then pick your membership level.'}
+          <p className="text-xs font-data tracking-wide text-text/45 mb-4">
+            <Link to="/#membership" className="hover:text-primary-text underline-offset-2 hover:underline">
+              Membership options
+            </Link>
+            <span className="mx-2 text-text/25">→</span>
+            <span className="text-text/70">Confirm &amp; pay</span>
           </p>
+          <h1 className="text-4xl md:text-5xl font-drama font-bold mb-6">{stepLabel}</h1>
+          <p className="text-lg text-text/70 max-w-2xl mx-auto">{headerSub}</p>
           {user && !isActiveMember && (
             <p className="text-text/40 text-xs mt-4 max-w-xl mx-auto">
               You're signed in as <strong className="text-text/60">{user.email}</strong>.
               Already a member under a different email? Sign out from your{' '}
-              <Link to="/dashboard" className="underline hover:text-primary">dashboard</Link>{' '}
+              <Link to="/dashboard" className="underline hover:text-primary-text">dashboard</Link>{' '}
               and sign back in with that address instead of paying again.
             </p>
           )}
@@ -72,7 +128,7 @@ export default function Join() {
 
         {canceled && (
           <div className="max-w-2xl mx-auto bg-text/5 border border-text/10 rounded-2xl p-5 mb-10 text-center text-sm text-text/70">
-            Checkout was canceled — no charge was made. Pick a tier whenever you're ready.
+            Checkout was canceled — no charge was made. Confirm a tier and term whenever you're ready.
           </div>
         )}
 
@@ -92,26 +148,28 @@ export default function Join() {
 
         {isActiveMember && (
           <div className="max-w-2xl mx-auto bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-10 text-center">
-            <p className="font-semibold text-primary mb-1">
+            <p className="font-semibold text-primary-text mb-1">
               You're already an active member{currentTier ? ` (${currentTier.name})` : ''}. 🎉
             </p>
             <p className="text-sm text-text/70">
               To change tiers, update your card, or cancel, use the billing portal on your{' '}
-              <Link to="/dashboard" className="text-primary font-semibold hover:underline">dashboard</Link>{' '}
+              <Link to="/dashboard" className="text-primary-text font-semibold hover:underline">dashboard</Link>{' '}
               — starting a second checkout here would create a duplicate subscription.
             </p>
           </div>
         )}
 
-        {/* Multi-year discount callout (mirrors the homepage) */}
+        {/* Multi-year detail lives on Join (homepage only teases it) */}
         <div className="max-w-3xl mx-auto bg-primary/5 border border-primary/20 rounded-3xl p-6 mb-12 flex items-center gap-4 shadow-sm">
           <div className="bg-white p-3 rounded-full text-primary shrink-0 shadow-sm">
             <Star className="w-6 h-6 fill-primary/10" />
           </div>
           <p className="text-text/80 text-sm">
-            <strong>Multi-year discounts:</strong> save ~10% on a 2-year term and up
-            to ~20% on 3 years — pick your term on the card below. Memberships
-            auto-renew at the end of the term and are easy to cancel.
+            <strong>Choose your term on the card:</strong> save ~10% on 2 years and up
+            to ~20% on 3 years. Memberships auto-renew at the end of the term and are easy to cancel.
+            <span className="block mt-1 text-xs text-text/50">
+              Student and Pre-PA cap at 2 years. Legacy members can choose a one-time lifetime option.
+            </span>
           </p>
         </div>
 
@@ -121,37 +179,66 @@ export default function Join() {
             const isLifetime = duration === 'lifetime';
             const price = isLifetime ? tier.lifetime : tier.prices[duration];
             const savings = !isLifetime ? savingsPercent(tier, duration) : 0;
+            const isFocused = focusedKey === tier.key;
+            const isDimmed = focusedKey && !isFocused;
+            const darkCard = isFocused || (!focusedKey && tier.highlight);
+
             return (
               <div
                 key={tier.key}
-                className={`${tier.highlight ? 'bg-text text-white border-accent shadow-2xl' : 'bg-white border-primary/10 text-text'} p-8 rounded-4xl border shadow-sm flex flex-col justify-between hover:shadow-lg transition-all duration-300 relative overflow-hidden`}
+                ref={(el) => {
+                  if (el) cardRefs.current[tier.key] = el;
+                }}
+                onClick={() => focusTier(tier.key)}
+                className={`${
+                  isFocused
+                    ? 'bg-text text-white border-accent shadow-2xl ring-2 ring-accent ring-offset-2 ring-offset-background'
+                    : tier.highlight
+                      ? 'bg-text text-white border-accent shadow-xl'
+                      : 'bg-white border-primary/10 text-text'
+                } ${isDimmed ? 'opacity-70 hover:opacity-100' : ''} p-8 rounded-4xl border shadow-sm flex flex-col justify-between hover:shadow-lg transition-all duration-300 relative overflow-hidden cursor-pointer`}
               >
-                {tier.highlight && (
+                {isFocused && (
+                  <div className="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-accent text-white text-[10px] font-bold font-data tracking-wider uppercase">
+                    Your selection
+                  </div>
+                )}
+                {!isFocused && tier.highlight && (
                   <div className="absolute top-6 -right-10 w-40 text-center bg-accent rotate-45 py-1 text-xs font-bold font-data tracking-wider uppercase shadow-md text-white">
                     Featured
                   </div>
                 )}
-                <div className="relative z-10">
+                <div className={`relative z-10 ${isFocused ? 'mt-4' : ''}`}>
                   <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
-                  <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-5 h-10`}>{tier.desc}</p>
+                  <p className={`${darkCard ? 'text-white/70' : 'text-text/60'} text-sm mb-5 h-10`}>
+                    {tier.desc}
+                  </p>
 
-                  {/* Term picker */}
-                  <div className="flex flex-wrap gap-1.5 mb-5" role="radiogroup" aria-label={`${tier.name} term`}>
+                  <div
+                    className="flex flex-wrap gap-1.5 mb-5"
+                    role="radiogroup"
+                    aria-label={`${tier.name} term`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {durationsForTier(tier).map((d) => {
                       const active = duration === d;
                       const pct = d !== 'lifetime' ? savingsPercent(tier, d) : 0;
                       return (
                         <button
                           key={d}
+                          type="button"
                           role="radio"
                           aria-checked={active}
-                          onClick={() => setTerms({ ...terms, [tier.key]: d })}
+                          onClick={() => {
+                            focusTier(tier.key);
+                            setTerms({ ...terms, [tier.key]: d });
+                          }}
                           className={`px-3 py-1.5 rounded-full text-xs font-data font-semibold border transition-colors ${
                             active
-                              ? tier.highlight
+                              ? darkCard
                                 ? 'bg-accent border-accent text-white'
-                                : 'bg-primary border-primary text-white'
-                              : tier.highlight
+                                : 'bg-primary-text border-primary-text text-white'
+                              : darkCard
                                 ? 'border-white/30 text-white/70 hover:border-white'
                                 : 'border-primary/20 text-text/60 hover:border-primary'
                           }`}
@@ -163,13 +250,13 @@ export default function Join() {
                     })}
                   </div>
 
-                  <div className={`text-4xl font-bold font-sans mb-2 ${tier.highlight ? 'text-white' : 'text-primary'}`}>
+                  <div className={`text-4xl font-bold font-sans mb-2 ${darkCard ? 'text-white' : 'text-primary-text'}`}>
                     ${price}
-                    <span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>
+                    <span className={`text-lg font-normal ${darkCard ? 'text-white/50' : 'text-text/50'}`}>
                       {isLifetime ? ' once' : duration === 1 ? '/yr' : ` / ${duration} yrs`}
                     </span>
                   </div>
-                  <p className={`text-xs mb-6 h-4 ${tier.highlight ? 'text-white/50' : 'text-text/40'}`}>
+                  <p className={`text-xs mb-6 h-4 ${darkCard ? 'text-white/50' : 'text-text/40'}`}>
                     {isLifetime
                       ? 'One payment, member for life.'
                       : savings > 0
@@ -178,15 +265,27 @@ export default function Join() {
                   </p>
                 </div>
                 <button
-                  onClick={() => selectTier(tier.key)}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    selectTier(tier.key);
+                  }}
                   disabled={loading || busyTier !== null || isActiveMember}
-                  className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 disabled:opacity-50 ${tier.highlight ? 'bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg' : 'border-2 border-primary text-primary hover:bg-primary/5'}`}
+                  className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 disabled:opacity-50 ${
+                    darkCard
+                      ? 'bg-gradient-to-r from-primary-text to-accent text-white hover:shadow-lg'
+                      : 'border-2 border-primary-text text-primary-text hover:bg-primary-text/5'
+                  }`}
                 >
                   {busyTier === tier.key
                     ? 'Opening checkout…'
                     : user
-                      ? 'Continue to payment'
-                      : 'Sign in to join'}
+                      ? isFocused
+                        ? 'Continue to payment'
+                        : `Continue with ${tier.name}`
+                      : isFocused
+                        ? 'Sign in to join'
+                        : `Sign in · ${tier.name}`}
                 </button>
               </div>
             );
@@ -198,8 +297,8 @@ export default function Join() {
           details. You'll get a receipt by email, and you can manage billing anytime
           from your dashboard. Multi-year terms renew at the end of the term until
           canceled. By joining you agree to our{' '}
-          <Link to="/terms" className="underline hover:text-primary">Terms of Service</Link> and{' '}
-          <Link to="/privacy" className="underline hover:text-primary">Privacy Policy</Link>.
+          <Link to="/terms" className="underline hover:text-primary-text">Terms of Service</Link> and{' '}
+          <Link to="/privacy" className="underline hover:text-primary-text">Privacy Policy</Link>.
         </p>
       </main>
 
