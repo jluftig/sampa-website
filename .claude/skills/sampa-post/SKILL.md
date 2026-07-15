@@ -20,6 +20,12 @@ news section (React + TipTap editor, draft -> publish workflow).
 Audience: PAs, physicians, and other clinicians in addiction and emergency
 medicine who want the clinical and policy significance quickly and accurately.
 
+**Voice — PA abbreviation (required):** Prefer **PA** / **PAs** throughout the
+post (lede, body, H2s, excerpt, key points). This is a PA organization; readers
+do not need “physician associate(s)” spelled out every time. **Never** write
+“physician assistants.” Spell out “physician associate(s)” only when essential
+(e.g. full legal org name, or a rare first intro for mixed non-PA readers).
+
 ## Inputs
 
 1. **Source** — this is: **$ARGUMENTS**
@@ -130,15 +136,22 @@ sources), and **why it matters specifically to addiction-medicine PAs**.
 
   **Structure (house style — required):** See `docs/news-article-structure.md`.
   - Open with a **lede** of 1–2 short paragraphs (what happened + why it matters to
-    addiction-medicine PAs). **No heading above the lede.**
+    **PAs**). **No heading above the lede.** Prefer the abbreviation **PA/PAs**
+    (not “physician associates”) in lede and body.
   - Then break the article with **`<h2>` section headings** (major sections only; use
     `<h3>` rarely). Do **not** write the body as one long run of paragraphs.
   - **Agency/policy** posts should usually include H2s in this spirit (adapt labels):
     *What [Agency] is targeting* / *What is not covered* / *Process, timing, and prior
-    actions* / *Why this matters for addiction-medicine PAs*.
+    actions* / ***Why this matters for PAs*** (exact preferred closing H2 — not
+    “addiction-medicine physician associates”).
   - **Clinical/study** posts should usually include: *Key findings* / *Study design and
     limits* / *Practice implications for PAs*.
   - Aim for **3–4 H2s** on agency posts; **at least 2 H2s** on any post over ~200 words.
+  - **Closing PA section (required depth):** `Why this matters for PAs` / `Practice implications for PAs`
+    must be **actionable**, not a vague “be aware” stub. Prefer screening prompts, counseling
+    bullets, testing caveats, MOUD/induction notes when relevant. Gold standard: tianeptine NPRM
+    PA section. Full bar: `docs/news-article-structure.md` (“Why this matters for PAs” quality bar).
+    ~120–250 words for high-impact substance/regulatory stories is OK; never invent doses.
   - Lists for enumerated findings or substance lists; at most one blockquote.
   - End with a paragraph starting with "Source:". For academic sources,
   write the full AMA-style citation as plain text and hyperlink ONLY the DOI at the end — wrap
