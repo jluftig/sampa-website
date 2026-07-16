@@ -7,7 +7,8 @@ Living project status (what's live / in flight / blocked / next): `docs/STATUS.m
 decision made). Original build plan/decisions: `docs/news-blog-plan.md`. Original
 design brief: `GEMINI.md`. `AGENTS.md` is a pointer here for non-Claude agents.
 
-Last updated: 2026-07-10 (member directory live on main; STATUS/HANDOFF refreshed).
+Last updated: 2026-07-15 (mobile app complete through Phase 4 — push live, TestFlight in
+beta review; docs sweep).
 
 ## What this project is
 
@@ -81,6 +82,14 @@ api/                        Vercel serverless functions (Web-handler signature: 
   create-donation-session.js POST {amount,frequency} -> {url}; NO auth (public donate);
                             metadata.type='donation' keeps gifts OUT of membership columns
   create-portal-session.js  POST -> {url} of Stripe Customer Portal; JWT required
+  delete-account.js         POST; JWT required. Cancels the user's Stripe subscriptions
+                            FIRST (aborts on failure), then auth.admin.deleteUser (profile +
+                            favorites cascade; posts.author_id SET NULL). App Store 5.1.1(v).
+  send-push.js              POST; auth = x-push-secret header (PUSH_WEBHOOK_SECRET env, NOT
+                            a JWT). Called by the Supabase DB webhook "push-on-publish" on
+                            posts INSERT/UPDATE; acts only when a post BECOMES published →
+                            Expo Push to device_tokens joined on profiles.push_opt_in;
+                            prunes DeviceNotRegistered tokens. Manual re-send: {slug}.
   stripe-webhook.js         Stripe events -> membership columns on profiles (ONLY writer) +
                             donations table (one-time: checkout.session.completed; recurring
                             cycles: invoice.paid). type='donation' segregates the two flows.
@@ -383,10 +392,13 @@ themes agents may be asked to implement:
 
 Standalone Expo (React Native) iOS/Android app; NOT a webview. Separate build from the
 website (Vite/Vercel never touch `mobile/`), same Supabase project. Read `mobile/AGENTS.md`
-before editing app code. Status: Phases 0–3 (tab shell + brand theme, auth incl. Apple/
-Google/Face ID, News/Key Points/keywords/search/saved, member area + account deletion)
-built and **verified on a physical iPhone** (EAS dev build); remaining: push/offline polish
-(Phase 4) and store launch (Phase 5) — see docs/STATUS.md.
+before editing app code. Status: Phases 0–4 complete and **device-verified** — tab shell +
+brand identity (real logo, icon, splash), auth (Apple/Google/email-code via Brevo SMTP,
+Face ID lock, encrypted sessions), News/Key Points/keywords/search/saved, member area +
+account deletion, member directory, and push notifications (publish → opted-in phones,
+fully configured). Sentry merged but dormant until EXPO_PUBLIC_SENTRY_DSN is set. In
+TestFlight beta review; remaining = board rollout + App Store submission (Phase 5) — see
+docs/STATUS.md for the live checklist.
 
 - **Shared code:** the app imports the pure-JS modules in `src/lib/` (membership.js, tags.js,
   slug.js, format.js, usStates.js) as the npm package **`sampa-shared`** — a `file:../src/lib`

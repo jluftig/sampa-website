@@ -21,7 +21,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_...   # same anon/publishable key a
 
 The anon key is safe to ship — Row-Level Security is the real boundary (same as the web app).
 
-## 2. Supabase → Auth → URL Configuration → Redirect URLs
+## 2. Supabase → Auth → URL Configuration → Redirect URLs — ✅ CONFIGURED 2026-07-10
 
 Add the app's deep-link callback so Supabase is allowed to redirect back into the app:
 
@@ -33,14 +33,14 @@ sampa://auth-callback
 add that too if you test that way, but the real flows need a dev build with the `sampa://`
 scheme.)
 
-## 3. Google — reuses the website's provider
+## 3. Google — reuses the website's provider — ✅ WORKING (device-verified 2026-07-11; consent screen published 2026-07-12)
 
 The app signs in with Google through an **in-app browser** against Supabase's existing Google
 provider, so **no new Google client is required** — just make sure step 2's redirect URL is
 allowlisted. Note the Google consent screen is still in **Testing** mode (per the web repo's
 CLAUDE.md), so only whitelisted test users can sign in until it's published.
 
-## 4. Apple — enable the provider (required on iOS)
+## 4. Apple — enable the provider (required on iOS) — ✅ CONFIGURED (native flow, device-verified 2026-07-11)
 
 Apple requires Sign in with Apple once Google login is offered (App Store guideline 4.8), so
 the app shows the Apple button on iOS. To make it work:
@@ -92,7 +92,7 @@ the app only reads status and links out (Apple's in-app-purchase rules).
 
 ---
 
-## 6. Push notifications (app Phase 4) — one-time config
+## 6. Push notifications (app Phase 4) — ✅ CONFIGURED 2026-07-15 (steps below are the record)
 
 The app registers device tokens; `api/send-push.js` fans out "new article"
 notifications when a post becomes published. Three config steps:
@@ -117,7 +117,7 @@ Manual test/re-send (careful — notifies every opted-in device):
 ask about push notification credentials — answer yes and EAS manages the APNs
 key. Push only works on real devices (never simulators).
 
-## 7. Crash reporting (Sentry — optional but recommended before launch)
+## 7. Crash reporting (Sentry — optional but recommended before launch) — ⬜ NOT YET (no account/DSN)
 
 `src/lib/sentry.ts` arms itself only when `EXPO_PUBLIC_SENTRY_DSN` is set:
 create a free account at sentry.io → new project (React Native) → copy the DSN
