@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Heart } from 'lucide-react';
 import { MEMBERSHIP_TIERS } from '../lib/membership';
+import DonateLink from './DonateLink';
 
 export default function Membership() {
   const membershipTiers = MEMBERSHIP_TIERS;
@@ -78,9 +79,9 @@ export default function Membership() {
         </div>
 
         <div className="flex justify-center">
-          <Link to="/donate" className="btn-magnetic bg-gradient-to-r from-primary-text to-accent text-white text-lg px-10 py-4 rounded-full shadow-xl font-bold flex items-center justify-center hover:shadow-2xl transition-all">
+          <DonateLink className="btn-magnetic bg-gradient-to-r from-primary-text to-accent text-white text-lg px-10 py-4 rounded-full shadow-xl font-bold flex items-center justify-center hover:shadow-2xl transition-all">
             Donate Now
-          </Link>
+          </DonateLink>
         </div>
       </div>
 

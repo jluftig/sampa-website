@@ -8,11 +8,19 @@ import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
 // gift to that profile; otherwise it's an anonymous gift keyed only by the email
 // Stripe collects. The load-bearing signal is metadata.type='donation', which
 // keeps these payments OUT of the membership columns in the webhook.
+//
+// TEMP kill-switch — keep in sync with src/lib/features.js DONATIONS_ENABLED.
+// false = no Checkout sessions; restore by setting true + redeploy.
+const DONATIONS_ENABLED = false;
+
 const MIN_CENTS = 100;         // $1 floor
 const MAX_CENTS = 5_000_000;   // $50,000 ceiling (typo/fraud sanity check)
 
 export async function POST(request) {
   try {
+    if (!DONATIONS_ENABLED) {
+      return json({ error: 'Donations are temporarily unavailable. Please try again later.' }, 503);
+    }
     const body = await request.json().catch(() => ({}));
     const frequency = body.frequency === 'monthly' ? 'monthly' : 'once';
     const amount = Math.round(Number(body.amount) * 100); // dollars → cents

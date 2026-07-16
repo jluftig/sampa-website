@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useAuth } from '../lib/AuthContext';
+import DonateLink from './DonateLink';
 
 export default function Navbar() {
   const navRef = useRef(null);
@@ -31,7 +32,7 @@ export default function Navbar() {
           <a href="/#value-props" className="hover:text-primary-text transition-colors">CE & Resources</a>
           <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
-          <Link to="/donate" className="hover:text-primary-text transition-colors">Donate</Link>
+          <DonateLink className="hover:text-primary-text transition-colors">Donate</DonateLink>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Contact Us</a>
           {canAccessMemberDirectory && (
             <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
@@ -69,7 +70,7 @@ export default function Navbar() {
           <a href="/#value-props" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>CE & Resources</a>
           <a href="/#membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
-          <Link to="/donate" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</Link>
+          <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</DonateLink>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</a>
           {canAccessMemberDirectory && (
             <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>

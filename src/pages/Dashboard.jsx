@@ -15,6 +15,7 @@ import { apiPost } from '../lib/api';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import DonateLink from '../components/DonateLink';
 
 const STATUS_BADGES = {
   active:   { label: 'Active',            cls: 'bg-green-500/10 text-green-700 border-green-500/20' },
@@ -885,12 +886,11 @@ export default function Dashboard() {
         <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mt-8">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
             <h2 className="text-xl font-bold">Your donations</h2>
-            <Link
-              to="/donate"
+            <DonateLink
               className="flex items-center gap-1.5 text-primary-text font-semibold text-sm hover:underline"
             >
               <Heart className="w-4 h-4" /> Make a donation
-            </Link>
+            </DonateLink>
           </div>
 
           {donations === null && <p className="text-text/50 font-data text-sm">Loading…</p>}
@@ -898,7 +898,7 @@ export default function Dashboard() {
           {donations?.length === 0 && (
             <p className="text-text/60 text-sm">
               No donations yet. Gifts are separate from your membership dues —{' '}
-              <Link to="/donate" className="text-primary-text font-semibold hover:underline">donate here</Link>{' '}
+              <DonateLink className="text-primary-text font-semibold hover:underline">donate here</DonateLink>{' '}
               to support SAMPA's mission.
             </p>
           )}

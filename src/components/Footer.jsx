@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import DonateLink from './DonateLink';
 
 export default function Footer() {
   return (
@@ -21,7 +22,7 @@ export default function Footer() {
           <a href="/#about" className="hover:text-white transition-colors">About</a>
           <a href="/#membership" className="hover:text-white transition-colors">Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Store</a>
-          <Link to="/donate" className="hover:text-white transition-colors">Donate</Link>
+          <DonateLink className="hover:text-white transition-colors">Donate</DonateLink>
           <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>

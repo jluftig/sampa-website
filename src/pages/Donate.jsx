@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Heart, UserCheck, LogIn } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import { apiPost } from '../lib/api';
+import { DONATIONS_ENABLED } from '../lib/features';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -11,6 +12,9 @@ import Footer from '../components/Footer';
 // that Stripe collects. Payment runs through the same Stripe account as dues,
 // via /api/create-donation-session. Deductibility is disclosed as pending the
 // IRS 501(c)(3) determination.
+//
+// TEMP: DONATIONS_ENABLED in src/lib/features.js — when false, no Stripe
+// checkout (buttons elsewhere are no-ops; restore with true + redeploy).
 const PRESETS = [25, 50, 100, 250];
 
 export default function Donate() {
@@ -29,6 +33,10 @@ export default function Donate() {
 
   const donate = async () => {
     setError(null);
+    if (!DONATIONS_ENABLED) {
+      // Hard stop while temporarily disconnected — do not open Stripe.
+      return;
+    }
     if (!amountValid) {
       setError('Please enter an amount between $1 and $50,000.');
       return;
@@ -66,7 +74,21 @@ export default function Donate() {
           </p>
         </header>
 
-        {status === 'success' ? (
+        {!DONATIONS_ENABLED ? (
+          <div className="bg-white rounded-4xl shadow-sm border border-primary/10 p-10 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-6">
+              <Heart className="w-8 h-8 fill-primary/20" />
+            </div>
+            <h2 className="text-2xl font-bold mb-3">Donations temporarily unavailable</h2>
+            <p className="text-text/70 text-sm mb-2">
+              Online giving is paused for a short time while we sort out payment
+              setup. Please check back soon — thank you for supporting better care.
+            </p>
+            <p className="text-text/50 text-xs">
+              Membership and the rest of the site are unaffected.
+            </p>
+          </div>
+        ) : status === 'success' ? (
           <div className="bg-white rounded-4xl shadow-sm border border-primary/10 p-10 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-6">
               <Heart className="w-8 h-8 fill-primary/20" />

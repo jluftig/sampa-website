@@ -55,6 +55,11 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   badge). Further board-only privileges not built yet.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
   ledger in Supabase, donor column on the admin roster.
+  **TEMP OFF (2026-07-14):** Stripe checkout disconnected via
+  `DONATIONS_ENABLED = false` in `src/lib/features.js` **and**
+  `api/create-donation-session.js` (keep in sync). Nav/footer/homepage Donate
+  controls still show but are no-ops; `/donate` shows “temporarily unavailable.”
+  **Restore:** set both flags `true` + redeploy.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
 
 ### DB migrations applied (2026-07-11)
