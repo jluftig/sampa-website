@@ -89,3 +89,38 @@ Expo Go can't do Apple sign-in, Face ID, or custom-scheme deep links. Build a de
 
 Then `npx expo start` and open the dev build. Membership **purchase** stays on the website —
 the app only reads status and links out (Apple's in-app-purchase rules).
+
+---
+
+## 6. Push notifications (app Phase 4) — one-time config
+
+The app registers device tokens; `api/send-push.js` fans out "new article"
+notifications when a post becomes published. Three config steps:
+
+1. **Database migration** — run the device_tokens/push_opt_in snippet (the
+   `Mobile push notifications` section at the bottom of `supabase/schema.sql`)
+   in the Supabase SQL editor. Apply BEFORE deploying/using app builds that
+   include the notifications toggle.
+2. **Vercel env var** — add `PUSH_WEBHOOK_SECRET` = a long random string
+   (Production + Preview). Without it the endpoint answers 503 and does nothing.
+3. **Supabase Database Webhook** — Dashboard → Database → Webhooks → Create:
+   - Table: `posts` · Events: INSERT + UPDATE
+   - Type: HTTP request → POST `https://www.addictionpas.org/api/send-push`
+   - HTTP header: `x-push-secret` = the same secret
+   The endpoint ignores everything except a post BECOMING published, so edits
+   to already-published posts never re-notify.
+
+Manual test/re-send (careful — notifies every opted-in device):
+`POST /api/send-push` with header `x-push-secret` and body `{"slug":"<post-slug>"}`.
+
+**EAS push credentials:** the first build after adding expo-notifications will
+ask about push notification credentials — answer yes and EAS manages the APNs
+key. Push only works on real devices (never simulators).
+
+## 7. Crash reporting (Sentry — optional but recommended before launch)
+
+`src/lib/sentry.ts` arms itself only when `EXPO_PUBLIC_SENTRY_DSN` is set:
+create a free account at sentry.io → new project (React Native) → copy the DSN
+→ add `EXPO_PUBLIC_SENTRY_DSN` to `mobile/.env.local` AND to the EAS build
+environment (eas.json env or EAS dashboard secrets) so production builds carry
+it. No DSN = no-op.

@@ -1,8 +1,10 @@
 import { tierByKey } from 'sampa-shared/membership';
 import { formatDateOnly } from 'sampa-shared/format';
+import * as Device from 'expo-device';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import {
+  Bell,
   ChevronRight,
   ExternalLink,
   GraduationCap,
@@ -22,6 +24,8 @@ import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { apiPost } from '@/lib/api';
 import { useAuth } from '@/lib/AuthContext';
+import { registerForPush } from '@/lib/push';
+import { supabase } from '@/lib/supabaseClient';
 import {
   getBiometricLabel,
   getBiometricPref,
@@ -47,7 +51,7 @@ function membershipSummary(profile: Record<string, any> | null) {
 export default function AccountScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const { user, profile, loading, isActiveMember, signOut } = useAuth();
+  const { user, profile, loading, isActiveMember, signOut, refreshProfile } = useAuth();
 
   const [bioAvailable, setBioAvailable] = useState(false);
   const [bioLabel, setBioLabel] = useState('Face ID');
@@ -99,6 +103,25 @@ export default function AccountScreen() {
   const toggleBio = async (value: boolean) => {
     setRequireBio(value);
     await setBiometricPref(value);
+  };
+
+  // "New article notifications": the profile's push_opt_in is what the server
+  // filters on; enabling also registers this device's token (may show the OS
+  // permission prompt the first time).
+  const pushOn = profile?.push_opt_in !== false;
+  const togglePush = async (value: boolean) => {
+    if (!user) return;
+    await supabase.from('profiles').update({ push_opt_in: value }).eq('id', user.id);
+    await refreshProfile();
+    if (value) {
+      const registered = await registerForPush(user.id);
+      if (!registered && Device.isDevice) {
+        Alert.alert(
+          'Notifications are blocked',
+          'To get new-article alerts, allow notifications for SAMPA in your iPhone Settings.'
+        );
+      }
+    }
   };
 
   // Signed out → sign-in options.
@@ -192,6 +215,24 @@ export default function AccountScreen() {
               ? 'CME and member resources are coming to the app — as an active member, you’ll have access the day they launch.'
               : 'CME and member resources are coming to the app. Join SAMPA to access them when they launch.'}
           </ThemedText>
+        </View>
+      </View>
+
+      {/* Notifications */}
+      <View style={styles.section}>
+        <ThemedText type="smallBold" themeColor="textSecondary" style={styles.eyebrow}>
+          NOTIFICATIONS
+        </ThemedText>
+        <View style={[styles.card, styles.rowBetween, { backgroundColor: theme.backgroundElement, borderColor: theme.border }]}>
+          <View style={styles.rowLeft}>
+            <Bell color={theme.tint} size={20} />
+            <Text style={[styles.settingLabel, { color: theme.text }]}>New article alerts</Text>
+          </View>
+          <Switch
+            value={pushOn}
+            onValueChange={togglePush}
+            trackColor={{ true: theme.tint, false: theme.border }}
+          />
         </View>
       </View>
 

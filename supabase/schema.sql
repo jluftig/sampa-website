@@ -855,3 +855,41 @@ begin
     and p.membership_status = 'active';
 end;
 $$;
+
+-- ---------------------------------------------------------------------------
+-- Mobile push notifications (added 2026-07: app Phase 4)
+-- ---------------------------------------------------------------------------
+
+-- Per-member push preference (self-editable, like newsletter_opt_in; the
+-- guard_profile_role trigger doesn't cover it deliberately).
+alter table public.profiles add column if not exists push_opt_in boolean not null default true;
+
+-- One row per (user, device token). The app upserts on sign-in/registration;
+-- api/send-push.js (service role, bypasses RLS) reads all opted-in tokens and
+-- prunes tokens Expo reports as DeviceNotRegistered.
+create table if not exists public.device_tokens (
+  user_id         uuid not null references auth.users(id) on delete cascade,
+  expo_push_token text not null check (char_length(expo_push_token) <= 200),
+  platform        text not null default 'ios' check (platform in ('ios','android')),
+  updated_at      timestamptz not null default now(),
+  primary key (user_id, expo_push_token)
+);
+
+alter table public.device_tokens enable row level security;
+
+-- Own rows only. UPDATE is required for the app's upsert to refresh updated_at.
+drop policy if exists device_tokens_select on public.device_tokens;
+create policy device_tokens_select on public.device_tokens
+  for select using ( auth.uid() = user_id );
+
+drop policy if exists device_tokens_insert on public.device_tokens;
+create policy device_tokens_insert on public.device_tokens
+  for insert with check ( auth.uid() = user_id );
+
+drop policy if exists device_tokens_update on public.device_tokens;
+create policy device_tokens_update on public.device_tokens
+  for update using ( auth.uid() = user_id ) with check ( auth.uid() = user_id );
+
+drop policy if exists device_tokens_delete on public.device_tokens;
+create policy device_tokens_delete on public.device_tokens
+  for delete using ( auth.uid() = user_id );

@@ -12,7 +12,8 @@ import {
   PlayfairDisplay_700Bold,
 } from '@expo-google-fonts/playfair-display';
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import * as Notifications from 'expo-notifications';
+import { DarkTheme, DefaultTheme, router, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -20,10 +21,12 @@ import { useColorScheme } from 'react-native';
 
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 
+import '@/lib/sentry'; // crash reporting — no-op until EXPO_PUBLIC_SENTRY_DSN is set
 import { BiometricGate } from '@/components/biometric-gate';
 import { Colors } from '@/constants/theme';
-import { AuthProvider } from '@/lib/AuthContext';
+import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { FavoritesProvider } from '@/lib/favorites';
+import { refreshPushToken } from '@/lib/push';
 import { persistOptions, queryClient, useQueryFocusManager } from '@/lib/query';
 
 SplashScreen.preventAutoHideAsync();
@@ -53,6 +56,32 @@ const NavDark = {
   },
 };
 
+// Inside AuthProvider: keep the push token fresh for opted-in members (never
+// prompts — silent refresh only when permission is already granted), and route
+// notification taps to their article (warm taps via the listener; cold-start
+// taps via the last response, once).
+function PushBridge() {
+  const { user, profile } = useAuth();
+
+  useEffect(() => {
+    if (user && profile?.push_opt_in !== false) {
+      refreshPushToken(user.id);
+    }
+  }, [user?.id, profile?.push_opt_in]);
+
+  useEffect(() => {
+    const openFromResponse = (response: Notifications.NotificationResponse | null) => {
+      const slug = response?.notification.request.content.data?.slug;
+      if (typeof slug === 'string' && slug) router.push(`/news/${slug}`);
+    };
+    Notifications.getLastNotificationResponseAsync().then(openFromResponse);
+    const sub = Notifications.addNotificationResponseReceivedListener(openFromResponse);
+    return () => sub.remove();
+  }, []);
+
+  return null;
+}
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   useQueryFocusManager();
@@ -79,6 +108,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
+      <PushBridge />
       <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
         <FavoritesProvider>
           <ThemeProvider value={colorScheme === 'dark' ? NavDark : NavLight}>
