@@ -4,9 +4,19 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { slugify, slugifyWithDate } from '../lib/slug';
 import { draftKeyFor, readDraft, writeDraft, clearDraft, draftSignature, draftHasContent } from '../lib/draft';
+import { formatAuthorNames } from '../lib/format';
 import RichTextEditor from '../components/RichTextEditor';
+import AuthorPicker from '../components/AuthorPicker';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+
+function selfAuthor(user, profile) {
+  if (!user) return null;
+  return {
+    profileId: user.id,
+    fullName: profile?.full_name || profile?.email || 'You',
+  };
+}
 
 export default function PostEditor() {
   const { id } = useParams();
@@ -32,6 +42,10 @@ export default function PostEditor() {
   const [currentStatus, setCurrentStatus] = useState('draft');
   const [publishedAt, setPublishedAt] = useState(null);
 
+  // Co-authors: ordered [{ profileId, fullName }]. First = primary (author_id).
+  const [authors, setAuthors] = useState([]);
+  const [editors, setEditors] = useState([]);
+
   // Key Points: each is { localId, dbId, content, tagIds[] }. dbId is the
   // items.id row this point already has (null for new points) — saves sync by
   // id so shared /news/<slug>#point-<id> links survive edits.
@@ -46,17 +60,28 @@ export default function PostEditor() {
   const [editorNonce, setEditorNonce] = useState(0);      // bump to remount the uncontrolled rich-text editor
   const loadedSigRef = useRef(draftSignature({}));        // signature of the saved/loaded content
 
-  // Load the controlled tag vocabulary (for the chip pickers).
+  // Load tag vocabulary + news-editor roster (for the co-author picker).
   useEffect(() => {
     let active = true;
     (async () => {
-      const { data } = await supabase.from('tags').select('id, name, short_label, slug').order('name');
-      if (active) setAllTags(data || []);
+      const [{ data: tagData }, { data: editorData }] = await Promise.all([
+        supabase.from('tags').select('id, name, short_label, slug').order('name'),
+        supabase.rpc('list_news_editors'),
+      ]);
+      if (!active) return;
+      setAllTags(tagData || []);
+      setEditors(editorData || []);
     })();
     return () => { active = false; };
   }, []);
 
-  // Load the post (and its Key Points) when editing.
+  // New post: default to the signed-in editor as sole author once auth is ready.
+  useEffect(() => {
+    if (isEditing || !user) return;
+    setAuthors((prev) => (prev.length ? prev : [selfAuthor(user, profile)].filter(Boolean)));
+  }, [isEditing, user, profile]);
+
+  // Load the post (and its Key Points + authors) when editing.
   useEffect(() => {
     if (!isEditing) return;
     let active = true;
@@ -77,12 +102,42 @@ export default function PostEditor() {
       setCurrentStatus(data.status);
       setPublishedAt(data.published_at);
 
-      const { data: itemData } = await supabase
-        .from('items')
-        .select('id, content, sort_order, item_tags(tag_id)')
-        .eq('post_id', id)
-        .order('sort_order');
+      const [{ data: itemData }, { data: authorRows }, { data: editorData }] = await Promise.all([
+        supabase
+          .from('items')
+          .select('id, content, sort_order, item_tags(tag_id)')
+          .eq('post_id', id)
+          .order('sort_order'),
+        supabase
+          .from('post_authors')
+          .select('profile_id, sort_order, display_name')
+          .eq('post_id', id)
+          .order('sort_order'),
+        supabase.rpc('list_news_editors'),
+      ]);
       if (!active) return;
+
+      const editorList = editorData || [];
+      setEditors(editorList);
+      const byId = new Map(editorList.map((e) => [e.id, e]));
+
+      let loadedAuthors = (authorRows || []).map((row) => {
+        const ed = byId.get(row.profile_id);
+        return {
+          profileId: row.profile_id,
+          fullName: ed?.full_name || row.display_name || 'Editor',
+        };
+      });
+      // Legacy posts: author_id set but post_authors not yet backfilled.
+      if (!loadedAuthors.length && data.author_id) {
+        const ed = byId.get(data.author_id);
+        loadedAuthors = [{
+          profileId: data.author_id,
+          fullName: ed?.full_name || data.author_name || 'Editor',
+        }];
+      }
+      setAuthors(loadedAuthors);
+
       const loadedKeyPoints = (itemData || []).map((it) => ({
         localId: crypto.randomUUID(),
         dbId: it.id,
@@ -103,6 +158,7 @@ export default function PostEditor() {
         sourceName: data.source_name || '',
         sourceUrl: data.source_url || '',
         sourceDate: data.source_published_at || '',
+        authors: loadedAuthors,
         keyPoints: loadedKeyPoints,
       });
       if (captured && draftHasContent(captured.data) &&
@@ -117,6 +173,13 @@ export default function PostEditor() {
     return () => { active = false; };
   }, [id, isEditing]);
 
+  // If an edited post has no authors yet (legacy free-text byline), default to self
+  // once auth is ready — without re-fetching the whole post.
+  useEffect(() => {
+    if (!isEditing || !user || loading) return;
+    setAuthors((prev) => (prev.length ? prev : [selfAuthor(user, profile)].filter(Boolean)));
+  }, [isEditing, user, profile, loading]);
+
   // New post: offer to restore any draft captured at mount.
   useEffect(() => {
     if (isEditing) return;
@@ -130,7 +193,7 @@ export default function PostEditor() {
     if (!hydrated) return;
     const fields = {
       title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption,
-      sourceName, sourceUrl, sourceDate, keyPoints,
+      sourceName, sourceUrl, sourceDate, authors, keyPoints,
     };
     const t = setTimeout(() => {
       if (draftHasContent(fields) && draftSignature(fields) !== loadedSigRef.current) {
@@ -139,7 +202,7 @@ export default function PostEditor() {
     }, 700);
     return () => clearTimeout(t);
   }, [hydrated, title, slug, slugTouched, excerpt, bodyHtml, coverImageUrl, coverImageCaption,
-      sourceName, sourceUrl, sourceDate, keyPoints, draftKey]);
+      sourceName, sourceUrl, sourceDate, authors, keyPoints, draftKey]);
 
   function addKeyPoint() {
     setKeyPoints((prev) => [...prev, { localId: crypto.randomUUID(), dbId: null, content: '', tagIds: [] }]);
@@ -197,6 +260,12 @@ export default function PostEditor() {
     setSourceName(d.sourceName || '');
     setSourceUrl(d.sourceUrl || '');
     setSourceDate(d.sourceDate || '');
+    if (Array.isArray(d.authors) && d.authors.length) {
+      setAuthors(d.authors.map((a) => ({
+        profileId: a.profileId,
+        fullName: a.fullName || 'Editor',
+      })));
+    }
     setKeyPoints((d.keyPoints || []).map((k) => ({
       localId: crypto.randomUUID(),
       dbId: k.dbId || null, // keep the db identity so restoring doesn't recreate rows
@@ -217,6 +286,7 @@ export default function PostEditor() {
     // --- Required-field validation ---
     if (!title.trim()) { setError('Please add a title.'); return; }
     if (!slug.trim()) { setError('Please add a URL slug.'); return; }
+    if (!authors.length) { setError('Add at least one author.'); return; }
     if (!keyPoints.some((k) => k.content.trim())) {
       setError('Add at least one Key Point.');
       return;
@@ -243,6 +313,7 @@ export default function PostEditor() {
       ? (excerptSource.length > 200 ? `${excerptSource.slice(0, 200).trimEnd()}…` : excerptSource)
       : null;
 
+    const primary = authors[0];
     const payload = {
       title: title.trim(),
       slug: slug.trim(),
@@ -253,8 +324,8 @@ export default function PostEditor() {
       source_name: sourceName.trim() || null,
       source_url: sourceUrl.trim() || null,
       source_published_at: sourceDate || null,
-      author_id: user.id,
-      author_name: profile?.full_name || profile?.email,
+      author_id: primary.profileId,
+      author_name: formatAuthorNames(authors.map((a) => a.fullName)) || primary.fullName,
       status: targetStatus,
     };
     // Stamp publish date the first time it goes live.
@@ -279,7 +350,20 @@ export default function PostEditor() {
       postId = data.id;
     }
 
-    // 2) Sync Key Points BY ID — update changed rows, insert new ones, delete
+    // 2) Replace co-author rows (ordered). Not share-link targets, so replace-all is fine.
+    const { error: delAuthorsErr } = await supabase.from('post_authors').delete().eq('post_id', postId);
+    if (delAuthorsErr) { setError(delAuthorsErr.message); setSaving(false); return; }
+    const { error: insAuthorsErr } = await supabase.from('post_authors').insert(
+      authors.map((a, i) => ({
+        post_id: postId,
+        profile_id: a.profileId,
+        sort_order: i,
+        display_name: a.fullName,
+      }))
+    );
+    if (insAuthorsErr) { setError(insAuthorsErr.message); setSaving(false); return; }
+
+    // 3) Sync Key Points BY ID — update changed rows, insert new ones, delete
     //    removed ones. Point ids are permanent share targets
     //    (/news/<slug>#point-<id>), so the old delete-all/reinsert would break
     //    every previously shared claim link on each save.
@@ -354,7 +438,7 @@ export default function PostEditor() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
+        <Link to="/editor" className="text-primary font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
 
@@ -414,6 +498,8 @@ export default function PostEditor() {
               )}
             </div>
 
+            <AuthorPicker authors={authors} editors={editors} onChange={setAuthors} />
+
             <div>
               <label className="block text-sm font-semibold mb-2">
                 Excerpt <span className="text-text/40 font-normal">— short summary shown on news cards. Optional; if blank, we'll use the start of your article.</span>
@@ -440,7 +526,7 @@ export default function PostEditor() {
                 <input
                   value={sourceName}
                   onChange={(e) => setSourceName(e.target.value)}
-                  placeholder="Publication, e.g. JAMA Psychiatry"
+                  placeholder="Publication, e.g. JAMA Network"
                   className="w-full px-4 py-2.5 rounded-xl border border-primary/20 focus:outline-none focus:border-primary bg-white text-sm"
                 />
                 <input
@@ -474,7 +560,7 @@ export default function PostEditor() {
                 </div>
               )}
               <input type="file" accept="image/*" onChange={onCoverSelected} disabled={uploading}
-                className="block text-sm text-text/70 file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-primary/10 file:text-primary-text file:font-semibold hover:file:bg-primary/20" />
+                className="block text-sm text-text/70 file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:bg-primary/10 file:text-primary file:font-semibold hover:file:bg-primary/20" />
               {uploading && <p className="text-text/50 text-sm mt-2 font-data">Uploading…</p>}
 
               {coverImageUrl && (
@@ -535,7 +621,7 @@ export default function PostEditor() {
                           <button type="button" key={tag.id} title={tag.name}
                             onClick={() => toggleTag(kp.localId, tag.id)}
                             className={`px-2.5 py-0.5 rounded-full text-xs font-data font-semibold transition-colors ${
-                              selected ? 'bg-primary-text text-white' : 'bg-primary/10 text-primary-text hover:bg-primary/20'
+                              selected ? 'bg-primary text-white' : 'bg-primary/10 text-primary hover:bg-primary/20'
                             }`}>
                             {tag.short_label || tag.name}
                           </button>
@@ -547,7 +633,7 @@ export default function PostEditor() {
               </div>
 
               <button type="button" onClick={addKeyPoint}
-                className="mt-4 text-primary-text font-semibold hover:underline">
+                className="mt-4 text-primary font-semibold hover:underline">
                 + Add Key Point
               </button>
             </div>
@@ -567,7 +653,7 @@ export default function PostEditor() {
                     {saving ? 'Saving…' : 'Save changes'}
                   </button>
                   <button onClick={() => save('draft')} disabled={saving}
-                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50">
+                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary hover:text-white transition-colors disabled:opacity-50">
                     Unpublish
                   </button>
                 </>
@@ -578,7 +664,7 @@ export default function PostEditor() {
                     {saving ? 'Saving…' : 'Publish'}
                   </button>
                   <button onClick={() => save('draft')} disabled={saving}
-                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50">
+                    className="px-6 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary hover:text-white transition-colors disabled:opacity-50">
                     Save draft
                   </button>
                 </>

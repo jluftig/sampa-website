@@ -72,6 +72,10 @@ No further directory migrations pending.
 
 ## In flight (branches / local work)
 
+- **`feature/post-coauthors`** — multi-author news posts (ordered `post_authors`,
+  editor-only picker, denormalized `author_name` byline). Migration:
+  `supabase/migrations/2026-07-15-post-authors.sql` (run before merge). Article
+  page only for v1; mobile keeps reading `author_name`.
 - **Mobile app — TestFlight rollout** (`mobile/` on main; PRs #22 #43 #44 #45 all
   merged; every feature device-verified on Josh's iPhone). Built: news/Key Points/
   keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID lock,

@@ -118,7 +118,8 @@ src/
     LegalPage.jsx           shared shell for /privacy and /terms
     KeyPointActions.jsx     copy-citation / copy-link / native-share row on a Key Point card
     SearchBox.jsx           small form that routes to /search?q=…
-    PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx Membership.jsx
+    PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx Membership.jsx AuthorPicker.jsx
+      (ordered co-author chips for PostEditor)
   pages/
     Home.jsx                marketing homepage (was App) + NewsTeaser + Membership section
     News.jsx                /news — published post list + search box
@@ -212,11 +213,19 @@ redirect to `/login?next=...` so users return where they were headed.
   log_permission_change() trigger (old→new in detail jsonb), 'member_csv_export' rows
   written by AdminMembers. SELECT is_admin(); INSERT only rows with actor_id = self.
 - `posts` — `id, title, slug (unique), excerpt, body_html, cover_image_url,
-  cover_image_caption, author_id, author_name (denormalized), status` (enum post_status
-  draft|published), `published_at, created_at, updated_at`; original-source citation
-  (nullable): `source_url, source_name, source_published_at (date)` — published_at is
-  when WE posted, source_published_at is when the SOURCE did; `fts` (generated tsvector
-  over title+excerpt+tag-stripped body, GIN-indexed).
+  cover_image_caption, author_id, author_name (denormalized byline), status` (enum
+  post_status draft|published), `published_at, created_at, updated_at`; original-source
+  citation (nullable): `source_url, source_name, source_published_at (date)` —
+  published_at is when WE posted, source_published_at is when the SOURCE did; `fts`
+  (generated tsvector over title+excerpt+tag-stripped body, GIN-indexed).
+  `author_id` / `author_name` are denormalized from `post_authors` on save (primary =
+  first in order; byline = joined display names) so public/mobile reads never join
+  profiles.
+- `post_authors` — ordered co-authors: `(post_id, profile_id)` composite PK,
+  `sort_order`, `display_name` (denormalized). Linked news-editor profiles only
+  (`profile_is_news_editor`). SELECT: public for published posts, editors see all;
+  write: `is_editor()`. Picker roster: `list_news_editors()` (SECURITY DEFINER,
+  editor-gated, allowlisted columns).
 - `tags` — `id, name, short_label, slug (unique)`. (UI term: "keyword".)
 - `items` — Key Points: `id, post_id (FK posts), content (text), sort_order`; `fts`
   (generated tsvector over content, GIN-indexed). **Item ids are permanent share targets**
@@ -234,6 +243,7 @@ redirect to `/login?next=...` so users return where they were headed.
   `search_key_points(q)`, `search_posts(q)` (websearch_to_tsquery + ts_rank),
   `key_points_for_tags(tag_slugs text[])` (AND semantics), `related_posts(for_post_id,
   max_results)` (ranked by shared keywords), `keyword_counts()`,
+  `list_news_editors()` (editor-only co-author picker roster),
   `member_directory(search, state_filter)` and `member_directory_profile(member_id)`
   (SECURITY DEFINER peer directory; allowlisted columns only; null email/phone when
   not shared).
@@ -248,9 +258,11 @@ SECURITY DEFINER (bypass RLS → no recursion), `search_path=public`. Gate futur
 member-only content (CME) on `is_active_member()` (true for membership_status='active'
 OR editors/admins).
 
-- **posts/items/item_tags SELECT:** public sees `status='published'`; editors/admins see all
-  (incl. drafts). items/item_tags gate on their parent post being published.
-- **posts/items/item_tags write (INS/UPD/DEL):** `is_editor()` only.
+- **posts/items/item_tags/post_authors SELECT:** public sees `status='published'`;
+  editors/admins see all (incl. drafts). items/item_tags/post_authors gate on their
+  parent post being published.
+- **posts/items/item_tags/post_authors write (INS/UPD/DEL):** `is_editor()` only;
+  post_authors inserts also require `profile_is_news_editor(profile_id)`.
 - **tags SELECT:** public. **tags write:** `is_admin()` only.
 - **profiles SELECT:** own row, admin, or member-viewer (read-only staff roster access).
   Do **not** open SELECT to all active members for networking — use

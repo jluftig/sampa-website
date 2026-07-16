@@ -45,6 +45,7 @@ export function draftSignature(f) {
     sourceName: (f?.sourceName || '').trim(),
     sourceUrl: (f?.sourceUrl || '').trim(),
     sourceDate: f?.sourceDate || '',
+    authors: (f?.authors || []).map((a) => a.profileId),
     keyPoints: (f?.keyPoints || []).map((k) => ({
       content: (k.content || '').trim(),
       tagIds: [...(k.tagIds || [])].sort(),
