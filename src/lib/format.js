@@ -21,3 +21,13 @@ export function formatDateOnly(value) {
     day: 'numeric',
   });
 }
+
+// Join author display names for the denormalized posts.author_name byline
+// ("A", "A and B", "A, B, and C"). Empty / blank names are skipped.
+export function formatAuthorNames(names) {
+  const list = (names || []).map((n) => String(n || '').trim()).filter(Boolean);
+  if (list.length === 0) return '';
+  if (list.length === 1) return list[0];
+  if (list.length === 2) return `${list[0]} and ${list[1]}`;
+  return `${list.slice(0, -1).join(', ')}, and ${list[list.length - 1]}`;
+}
