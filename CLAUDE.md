@@ -102,6 +102,7 @@ src/
     AuthContext.jsx         session + profile; useAuth() -> {user, profile, role, isEditor, isAdmin, isBoard, isActiveMember, canAccessMemberDirectory, canViewMembers, loading, signInWithGoogle(next), signInWithEmail(email,next), signOut, refreshProfile}
     membership.js           MEMBERSHIP_TIERS (tier keys/names/prices) — keep in sync with api/_lib/tiers.js
     api.js                  apiPost(path, body) — calls /api/* with the Supabase JWT
+    comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle for the signed-in user
     tags.js                 collectPostTags(post) — dedupe a post's keywords from nested items
     slug.js                 slugify()
@@ -119,7 +120,8 @@ src/
     KeyPointActions.jsx     copy-citation / copy-link / native-share row on a Key Point card
     SearchBox.jsx           small form that routes to /search?q=…
     PostCard.jsx TagChip.jsx NewsTeaser.jsx ScrollToTop.jsx Membership.jsx AuthorPicker.jsx
-      (ordered co-author chips for PostEditor)
+    PostComments.jsx        member discussion (reactions + brief comments) on PostView
+    (ordered co-author chips for PostEditor)
   pages/
     Home.jsx                marketing homepage (was App) + NewsTeaser + Membership section
     News.jsx                /news — published post list + search box
@@ -232,6 +234,14 @@ redirect to `/login?next=...` so users return where they were headed.
   (`/news/<slug>#point-<id>`) — see gotcha 5.
 - `item_tags` — M2M: `(item_id, tag_id)` composite PK.
 - `favorites` — saved news posts: `(user_id, post_id)` composite PK, `created_at`.
+- `post_comments` — member discussion on news: `id, post_id, user_id, body` (1–500
+  chars), `author_name` (denormalized on insert — do not join profiles), soft-delete
+  via `deleted_at`. Flat (no threads). Public SELECT on published posts; INSERT
+  `is_active_member()`; owner may edit body or soft-delete; `is_editor()` soft-delete
+  only (trigger blocks rewriting others’ text).
+- `post_reactions` — one emoji per member per post: `(user_id, post_id)` PK, `emoji`
+  in `thumbs_up|celebrate|insight|heart|clap` (glyphs in `src/lib/comments.js`).
+  Public SELECT on published; write `is_active_member()`.
 - `donations` — gifts (separate from dues). `id, user_id (FK profiles, NULLABLE = anonymous),
   donor_email, donor_name, amount (cents), currency, frequency ('once'|'monthly'), status,
   stripe_customer_id, stripe_session_id (one-time), stripe_subscription_id + stripe_invoice_id
@@ -269,6 +279,11 @@ OR editors/admins).
   `member_directory*` RPCs instead. **profiles UPDATE:** own row or admin —
   member-viewers cannot write; members may self-edit directory privacy columns.
 - **favorites:** SELECT/DELETE own rows only; INSERT own rows AND only for published posts.
+- **post_comments / post_reactions:** SELECT public on published posts (comments hide
+  soft-deleted except editors); INSERT `is_active_member()` + own user_id; comments
+  UPDATE = own body edit or soft-delete, or editor soft-delete only; reactions
+  UPDATE/DELETE own only. Triggers stamp `author_name` / force `user_id` — do not
+  widen profiles SELECT for bylines.
 - **member_import:** SELECT `is_admin()` or `is_member_viewer()` (pledge tracking on
   /editor/members); NO write policies — writes happen server-side only (SQL editor /
   SECURITY DEFINER claim).

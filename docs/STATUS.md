@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-15 (mobile: Phase 4 push shipped + configured; TestFlight build 1 in beta review, build 2 building)
+**Last updated:** 2026-07-15 (member comments feature on `feature/member-comments` — migration pending)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -72,6 +72,14 @@ No further directory migrations pending.
 
 ## In flight (branches / local work)
 
+- **`feature/member-comments`** — member discussion on news articles: flat brief
+  comments + emoji reactions (👍 🎉 ‼️ ❤️ 👏). Public read on published posts;
+  write gated by `is_active_member()`; edit/soft-delete own; editors soft-delete
+  only; denormalized `author_name` (no profiles SELECT widening). Web:
+  `PostComments` on PostView; mobile: `PostDiscussion` on article screen. Shared
+  keys in `src/lib/comments.js`. **Migration required before use:**
+  `supabase/migrations/2026-07-15-member-comments.sql`. **Deferred:** discussion
+  notifications (see backlog).
 - **`feature/post-coauthors`** — multi-author news posts (ordered `post_authors`,
   editor-only picker, denormalized `author_name` byline). Migration:
   `supabase/migrations/2026-07-15-post-authors.sql` (run before merge). Article
@@ -90,7 +98,6 @@ No further directory migrations pending.
   codebase); bup tool port after the CA Bridge permission hold lifts.
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
   usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
-- **Member comments on news** — **Not started (parked 2026-07-15).** Members comment on articles; design TBD (RLS, visibility, moderation). Thin resume: [`PARK-member-comments.md`](PARK-member-comments.md). Resume phrase: *Resume SAMPA member comments*.
 - **Pre-membership security review** — **Parked mid-stream (2026-07-12 evening).**
   Code/schema health check written: [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md).
   Thin resume: [`PARK-security-review.md`](PARK-security-review.md).
@@ -190,6 +197,10 @@ Deferred from the first directory ship:
 
 ### Product — membership & content
 
+- **Discussion notifications (deferred)** — after member comments see real use:
+  notify opted-in members (Expo push and/or Brevo email) when someone comments on
+  a post they saved — not every reaction. Prefer quiet defaults + an in-app /
+  dashboard toggle. Resume from [`PARK-member-comments.md`](PARK-member-comments.md).
 - **Policy page (and possibly Research)** — public area similar in spirit to News
   for SAMPA policy work: positions we’re taking, issues we’re advocating for,
   published documents, white papers, and related materials. Open design choices:

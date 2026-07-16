@@ -6,6 +6,7 @@ import { formatDate, formatDateOnly } from 'sampa-shared/format';
 
 import { ArticleBody } from '@/components/article-body';
 import { KeyPointCard } from '@/components/key-point-card';
+import { PostDiscussion } from '@/components/post-discussion';
 import { SaveButton } from '@/components/save-button';
 import { Fonts, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -84,6 +85,8 @@ export default function ArticleScreen() {
           ))}
         </View>
       ) : null}
+
+      <PostDiscussion postId={post.id} />
 
       {related.length ? (
         <View style={styles.section}>
