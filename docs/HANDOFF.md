@@ -176,6 +176,15 @@ label (the compact chip like "OUD"), or delete them. The web address part of a k
 - **The database structure** is defined in the file `supabase/schema.sql` in the code.
   That file is the master blueprint — if you ever had to rebuild the database from scratch,
   you'd run it.
+- **Sign-in emails** (the 8-digit codes) are sent through **Brevo** using SMTP credentials
+  stored in **Supabase → Authentication → Emails → SMTP settings**. The Brevo SMTP key is
+  named `supabase-auth`. ⚠️ Brevo deletes SMTP keys unused for 90 days — if sign-in emails
+  ever stop, generate a new key in Brevo and paste it into that Supabase screen.
+- **Mobile push notifications** are authenticated by a shared secret that lives in TWO
+  places that must match: **Vercel → Environment Variables → `PUSH_WEBHOOK_SECRET`** and
+  the `x-push-secret` header on the **Supabase → Database → Webhooks → `push-on-publish`**
+  webhook. The app-store signing keys (certificates, push key) are managed automatically
+  by **Expo's EAS service** under the Expo account — you never handle those files.
 
 ---
 
@@ -382,7 +391,38 @@ Make sure a trusted second person has access to (or knows how to recover):
 - The **Vercel** account/project
 - The **Supabase** project (and the database password saved at creation)
 - The **Google Cloud** project for OAuth
-- The domain registrar for **addictionpas.org**
+- The domain registrar for **addictionpas.org** (Porkbun — also hosts the DNS records
+  that make sign-in emails deliverable)
+- The **Apple Developer** account (currently Josh's individual account,
+  joshluftig@hotmail.com; plan is to convert it to a SAMPA organization account once
+  SAMPA has a D-U-N-S number — before public App Store launch)
+- The **Expo (EAS)** account (username `jluftig`) — builds and signing for the mobile app
+- The **Brevo** account — sign-in emails today, member newsletters per the board plan
 
 Losing access to these is the main "bus factor" risk — everything else is documented in
 code (`supabase/schema.sql`) and in the companion AI guide (`CLAUDE.md`).
+
+---
+
+## 12. The mobile app (iPhone / Android) — built July 2026
+
+- **What it is:** a native app (in the `mobile/` folder of the same repository) sharing
+  the website's database — same accounts, same membership, same articles. Members read
+  news and Key Points, search, save articles (synced with the website), browse the
+  member directory, edit their profile, and get a push notification when SAMPA
+  publishes an article. Signing in works with Apple, Google, or an emailed code, with
+  optional Face ID lock. **Memberships are never sold inside the app** (Apple would
+  take up to 30%) — the app links to the website to join or renew.
+- **How testers/members get it (today):** Apple **TestFlight**. Testers install the free
+  TestFlight app and open our invite link; updates then arrive automatically. Managed at
+  **appstoreconnect.apple.com** → SAMPA → TestFlight (tester group: "SAMPA Board").
+- **How a new version ships:** one Terminal command (an AI session provides and guides
+  it — see `docs/mobile-app-setup.md`), which builds in Expo's cloud and uploads to
+  Apple automatically. There is no manual Xcode work.
+- **How push notifications flow:** publishing a post on the website → a Supabase
+  webhook calls the site's `/api/send-push` → Expo/Apple deliver to every member who
+  has "New article alerts" on. Nobody has to "send" anything — publishing is the send.
+- **If push stops working:** check the two matching secrets described in section 5,
+  and confirm the `push-on-publish` webhook is enabled in Supabase.
+- **Status & roadmap** live in `docs/STATUS.md`; technical setup history in
+  `docs/mobile-app-setup.md`.

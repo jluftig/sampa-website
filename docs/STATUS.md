@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-15 (park: member comments track + session sticky)
+**Last updated:** 2026-07-15 (mobile: Phase 4 push shipped + configured; TestFlight build 1 in beta review, build 2 building)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -72,12 +72,18 @@ No further directory migrations pending.
 
 ## In flight (branches / local work)
 
-- **Mobile app — Phases 4–5 remaining** (`mobile/` on main since PR #22): push
-  notifications + crash reporting + offline polish (Phase 4), then icon/splash,
-  TestFlight, App Store (Phase 5). Also pending: SAMPA D-U-N-S → convert Apple
-  Developer account (Individual → org) before public launch; delete-account E2E test
-  (throwaway account, now that the endpoint is deployed). Directory screens not built
-  yet (web RPCs are reusable).
+- **Mobile app — TestFlight rollout** (`mobile/` on main; PRs #22 #43 #44 #45 all
+  merged; every feature device-verified on Josh's iPhone). Built: news/Key Points/
+  keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID lock,
+  encrypted sessions), member area + account deletion, **member directory**, real
+  logo + app icon/splash, **push notifications (fully configured — publish → phones)**,
+  Sentry (dormant, needs DSN). **Now:** TestFlight build 1 waiting for Apple beta
+  review ("SAMPA Board" external group ready); build 2 (adds push + foreground
+  refresh) building/uploading. **Remaining:** invite board when review clears; Sentry
+  account + `EXPO_PUBLIC_SENTRY_DSN`; delete-account E2E test (throwaway account —
+  endpoint is live); SAMPA D-U-N-S → convert Apple account Individual → org before
+  public App Store launch; App Store submission (Phase 5); Android later (same
+  codebase); bup tool port after the CA Bridge permission hold lifts.
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
   usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
 - **Member comments on news** — **Not started (parked 2026-07-15).** Members comment on articles; design TBD (RLS, visibility, moderation). Thin resume: [`PARK-member-comments.md`](PARK-member-comments.md). Resume phrase: *Resume SAMPA member comments*.
@@ -123,6 +129,15 @@ No further directory migrations pending.
 - [x] Publish Google OAuth consent screen — operator-confirmed **2026-07-12** (not Testing).
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
   interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
+  **Head start done 2026-07-15:** Brevo account exists, `addictionpas.org` domain
+  authenticated (DKIM/DMARC at Porkbun), and Supabase **auth emails** already send
+  via Brevo SMTP from no-reply@addictionpas.org. Campaign side still pending board.
+- [ ] **Sentry account** (free) + `EXPO_PUBLIC_SENTRY_DSN` in mobile/.env.local and the
+  EAS build env — turns on mobile crash reporting (code already merged, dormant).
+- [ ] **SAMPA D-U-N-S number** (free, developer.apple.com/enroll/duns-lookup) → convert
+  the Apple Developer account Individual → SAMPA organization **before public App
+  Store launch** (publisher shows "SAMPA"; unlocks nonprofit fee waiver post-501(c)(3)).
+- [ ] **Mobile delete-account E2E test** with a throwaway account (endpoint live).
 - [ ] Optional: board skim of privacy/terms (already emailed informally about the directory).
 
 ### Product — news pipeline
@@ -188,19 +203,26 @@ Deferred from the first directory ship:
 
 ### Product — platforms
 
-- **iOS/Android launch** — `mobile/` merged & device-verified; remaining: Phase 4
-  (push/crash/offline) + Phase 5 app-store work (no in-app membership sales — see
-  `CLAUDE.md` mobile section).
+- **iOS/Android launch** — TestFlight beta review in progress (see In flight); after
+  board testing: App Store submission (screenshots, description, category) under the
+  converted SAMPA org account; then Android/Play from the same codebase. No in-app
+  membership sales — see `CLAUDE.md` mobile section.
 - **Bup dosing tool** — launch decision after clinical review hold is lifted.
 
 ---
 
 ## Recently shipped (newest first)
 
+- 2026-07-15 · **TestFlight submission + push fully configured** — build 1 uploaded &
+  submitted for beta review ("SAMPA Board" external group, review notes, test info);
+  PUSH_WEBHOOK_SECRET set in Vercel + `push-on-publish` Supabase webhook created →
+  publishing a post now notifies opted-in devices end-to-end; build 2 (push + APNs key
+  + foreground refresh) kicked off. Apple Developer enrollment complete (Individual).
 - 2026-07-15 · **Mobile push notifications + crash reporting** (PR #45): device_tokens
   + push_opt_in (SQL applied), api/send-push.js (DB-webhook triggered, secret-authed,
   self-healing tokens), in-app alerts toggle + tap-to-article; Sentry armed by env var.
-  Config remaining: PUSH_WEBHOOK_SECRET in Vercel + Supabase webhook on posts.
+- 2026-07-15 · **Mobile foreground profile refresh** (PR #44): membership paid on the
+  website appears in the app on next foreground (closes the join-flow seam).
 - 2026-07-15 · **Mobile member directory + app identity** (PR #43): Members tab +
   member profiles calling the self-gating `member_directory*` RPCs (search, state
   filter, tappable shared contact); tab order News/Keywords/Saved/Members/Account;
