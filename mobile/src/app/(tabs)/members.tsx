@@ -29,9 +29,9 @@ const ALL_STATES = 'All states';
 export default function MembersScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const { user, loading, isActiveMember, isEditor, isAdmin } = useAuth();
+  const { user, loading, canAccessMemberDirectory } = useAuth();
   // Mirrors the SQL is_active_member() helper the RPC enforces server-side.
-  const canAccess = isActiveMember || isEditor || isAdmin;
+  const canAccess = canAccessMemberDirectory;
 
   const [search, setSearch] = useState('');
   const [debounced, setDebounced] = useState('');

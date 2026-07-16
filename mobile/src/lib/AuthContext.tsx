@@ -28,6 +28,8 @@ type AuthValue = {
   canViewMembers: boolean;
   isAdmin: boolean;
   isActiveMember: boolean;
+  /** Matches SQL is_active_member(): paid members + staff (editors/admins). */
+  canAccessMemberDirectory: boolean;
   loading: boolean;
   signInWithGoogle: () => Promise<unknown>;
   signInWithApple: () => Promise<unknown>;
@@ -119,16 +121,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const role = profile?.role ?? null;
+  const isAdmin = role === 'admin';
+  const isActiveMember = profile?.membership_status === 'active';
   const value: AuthValue = {
     session,
     user: session?.user ?? null,
     profile,
     role,
     // Capabilities are independent flags, not a ladder (matches the web app).
-    isEditor: role === 'editor' || role === 'admin' || !!profile?.can_edit_news,
-    canViewMembers: role === 'admin' || !!profile?.can_view_members,
-    isAdmin: role === 'admin',
-    isActiveMember: profile?.membership_status === 'active',
+    isEditor: role === 'editor' || isAdmin || !!profile?.can_edit_news,
+    canViewMembers: isAdmin || !!profile?.can_view_members,
+    isAdmin,
+    isActiveMember,
+    // Matches SQL is_active_member() — paid + role editor/admin (not can_edit_news alone).
+    canAccessMemberDirectory: isActiveMember || role === 'editor' || isAdmin,
     loading: !authReady || (!!session?.user && !profileReady),
     signInWithGoogle,
     signInWithApple,

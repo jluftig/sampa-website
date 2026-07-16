@@ -986,3 +986,198 @@ select p.id, p.author_id, 0, p.author_name
   from public.posts p
  where p.author_id is not null
 on conflict do nothing;
+
+-- ============================================================================
+-- Member comments + emoji reactions on news (2026-07-15)
+-- Standalone runnable copy: supabase/migrations/2026-07-15-member-comments.sql
+--
+--   Flat text comments (soft-delete) + one emoji reaction per member per post.
+--   Public read on published posts; write gated by is_active_member().
+--   author_name denormalized — does NOT widen profiles SELECT RLS.
+-- ============================================================================
+
+create table if not exists public.post_comments (
+  id          uuid primary key default gen_random_uuid(),
+  post_id     uuid not null references public.posts(id) on delete cascade,
+  user_id     uuid not null references public.profiles(id) on delete cascade,
+  body        text not null,
+  author_name text not null default '',
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  deleted_at  timestamptz
+);
+
+alter table public.post_comments add column if not exists body text;
+alter table public.post_comments add column if not exists author_name text not null default '';
+alter table public.post_comments add column if not exists created_at timestamptz not null default now();
+alter table public.post_comments add column if not exists updated_at timestamptz not null default now();
+alter table public.post_comments add column if not exists deleted_at timestamptz;
+
+alter table public.post_comments drop constraint if exists post_comments_body_len;
+alter table public.post_comments
+  add constraint post_comments_body_len
+  check (char_length(btrim(body)) between 1 and 500);
+
+create index if not exists post_comments_post_id_idx
+  on public.post_comments (post_id, created_at desc)
+  where deleted_at is null;
+
+create index if not exists post_comments_user_id_idx
+  on public.post_comments (user_id);
+
+create table if not exists public.post_reactions (
+  user_id    uuid not null references public.profiles(id) on delete cascade,
+  post_id    uuid not null references public.posts(id) on delete cascade,
+  emoji      text not null,
+  created_at timestamptz not null default now(),
+  primary key (user_id, post_id)
+);
+
+alter table public.post_reactions add column if not exists emoji text;
+alter table public.post_reactions add column if not exists created_at timestamptz not null default now();
+
+alter table public.post_reactions drop constraint if exists post_reactions_emoji_check;
+alter table public.post_reactions
+  add constraint post_reactions_emoji_check
+  check (emoji in ('thumbs_up', 'celebrate', 'insight', 'heart', 'clap'));
+
+create index if not exists post_reactions_post_id_idx
+  on public.post_reactions (post_id);
+
+create or replace function public.stamp_comment_author()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare
+  n text;
+begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
+
+  if tg_op = 'UPDATE' then
+    -- Never reassign post/user/byline/created_at.
+    new.post_id := old.post_id;
+    new.user_id := old.user_id;
+    new.author_name := old.author_name;
+    new.created_at := old.created_at;
+
+    if auth.uid() is distinct from old.user_id then
+      -- Staff: soft-delete only (cannot rewrite someone else's text).
+      if not public.is_editor() then
+        raise exception 'not allowed';
+      end if;
+      new.body := old.body;
+      if new.deleted_at is null then
+        raise exception 'editors may only remove comments';
+      end if;
+    else
+      -- Owner: edit body and/or soft-delete.
+      new.body := btrim(new.body);
+    end if;
+
+    new.updated_at := now();
+    return new;
+  end if;
+
+  -- INSERT: force identity + stamp denormalized byline.
+  new.user_id := auth.uid();
+  select coalesce(nullif(btrim(full_name), ''), email)
+    into n from public.profiles where id = auth.uid();
+  new.author_name := coalesce(n, 'Member');
+  new.body := btrim(new.body);
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_comment_author on public.post_comments;
+create trigger stamp_comment_author
+  before insert or update on public.post_comments
+  for each row execute function public.stamp_comment_author();
+
+create or replace function public.stamp_reaction_user()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
+  new.user_id := auth.uid();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_reaction_user on public.post_reactions;
+create trigger stamp_reaction_user
+  before insert or update on public.post_reactions
+  for each row execute function public.stamp_reaction_user();
+
+alter table public.post_comments enable row level security;
+alter table public.post_reactions enable row level security;
+
+drop policy if exists post_comments_select on public.post_comments;
+create policy post_comments_select on public.post_comments
+  for select using (
+    public.is_editor()
+    or (
+      deleted_at is null
+      and exists (
+        select 1 from public.posts p
+        where p.id = post_comments.post_id and p.status = 'published'
+      )
+    )
+  );
+
+drop policy if exists post_comments_insert on public.post_comments;
+create policy post_comments_insert on public.post_comments
+  for insert with check (
+    public.is_active_member()
+    and auth.uid() = user_id
+    and deleted_at is null
+    and exists (
+      select 1 from public.posts p
+      where p.id = post_id and p.status = 'published'
+    )
+  );
+
+drop policy if exists post_comments_update on public.post_comments;
+create policy post_comments_update on public.post_comments
+  for update using (
+    auth.uid() = user_id or public.is_editor()
+  )
+  with check (
+    auth.uid() = user_id or public.is_editor()
+  );
+
+drop policy if exists post_comments_delete on public.post_comments;
+create policy post_comments_delete on public.post_comments
+  for delete using (
+    auth.uid() = user_id or public.is_editor()
+  );
+
+drop policy if exists post_reactions_select on public.post_reactions;
+create policy post_reactions_select on public.post_reactions
+  for select using (
+    public.is_editor()
+    or exists (
+      select 1 from public.posts p
+      where p.id = post_reactions.post_id and p.status = 'published'
+    )
+  );
+
+drop policy if exists post_reactions_insert on public.post_reactions;
+create policy post_reactions_insert on public.post_reactions
+  for insert with check (
+    public.is_active_member()
+    and auth.uid() = user_id
+    and exists (
+      select 1 from public.posts p
+      where p.id = post_id and p.status = 'published'
+    )
+  );
+
+drop policy if exists post_reactions_update on public.post_reactions;
+create policy post_reactions_update on public.post_reactions
+  for update using ( auth.uid() = user_id )
+  with check ( auth.uid() = user_id and public.is_active_member() );
+
+drop policy if exists post_reactions_delete on public.post_reactions;
+create policy post_reactions_delete on public.post_reactions
+  for delete using ( auth.uid() = user_id );

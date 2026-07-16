@@ -19,9 +19,22 @@ declare module 'sampa-shared/membership' {
   export function durationLabel(duration: number | 'lifetime'): string;
 }
 
-declare module 'sampa-shared/format' {
-  export function formatDate(value: string | number | Date | null | undefined): string;
-  export function formatDateOnly(value: string | number | Date | null | undefined): string;
+declare module 'sampa-shared/comments' {
+  export type ReactionKey = 'thumbs_up' | 'celebrate' | 'insight' | 'heart' | 'clap';
+  export const MAX_COMMENT_LENGTH: number;
+  export const REACTIONS: { key: ReactionKey; glyph: string; label: string }[];
+  export function isReactionKey(key: string): boolean;
+  export function reactionGlyph(key: string): string;
+  export function reactionLabel(key: string): string;
+  export function summarizeReactions(
+    rows: { user_id: string; emoji: string }[],
+    userId: string | null | undefined,
+  ): { counts: Record<string, number>; mine: string | null };
+  export function normalizeCommentBody(raw: string): {
+    ok: boolean;
+    body: string;
+    error: string | null;
+  };
 }
 
 declare module 'sampa-shared/usStates' {

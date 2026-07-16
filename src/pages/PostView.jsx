@@ -9,6 +9,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import TagChip from '../components/TagChip';
 import KeyPointActions from '../components/KeyPointActions';
+import PostComments from '../components/PostComments';
 import { formatDate, formatDateOnly } from '../lib/format';
 import { postUrl } from '../lib/cite';
 import { shareOrCopy } from '../lib/share';
@@ -267,6 +268,8 @@ export default function PostView() {
                 </ul>
               </section>
             )}
+
+            <PostComments postId={post.id} postSlug={post.slug} />
 
             {related.length > 0 && (
               <section className="mt-16">
