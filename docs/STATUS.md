@@ -197,6 +197,10 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-07-15 · **Mobile push notifications + crash reporting** (PR #45): device_tokens
+  + push_opt_in (SQL applied), api/send-push.js (DB-webhook triggered, secret-authed,
+  self-healing tokens), in-app alerts toggle + tap-to-article; Sentry armed by env var.
+  Config remaining: PUSH_WEBHOOK_SECRET in Vercel + Supabase webhook on posts.
 - 2026-07-15 · **Mobile member directory + app identity** (PR #43): Members tab +
   member profiles calling the self-gating `member_directory*` RPCs (search, state
   filter, tappable shared contact); tab order News/Keywords/Saved/Members/Account;
