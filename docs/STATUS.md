@@ -77,6 +77,17 @@ No further directory migrations pending.
 
 ## In flight (branches / local work)
 
+- **`feature/hero-assembly`** — new homepage hero ("Assembly"): ~6k canvas
+  particles assemble into the SAMPA wordmark, repelled by the cursor, click to
+  scatter (they always re-form). Chosen by Josh from the 10-concept hero
+  exploration (2026-07-18, interactive prototypes:
+  https://claude.ai/code/artifact/9219d907-f16f-4f24-a38b-db049e9bcfea).
+  Replaces the GSAP fade hero in `src/components/Hero.jsx`; wordmark path data +
+  pixel-sampler in `src/components/heroMark.js` (flattened from
+  `public/SAMPA_no_bg.svg`, tagline stripped). Zero new deps; reduced-motion
+  users get the static SVG mark. Hero copy changed (review in PR): headline
+  "It takes every one of us."; the 501(c)(3)-pending pill moved out of the hero
+  (still on /donate + Membership).
 - **`feature/member-comments`** — member discussion on news articles: flat brief
   comments + emoji reactions (👍 🎉 ‼️ ❤️ 👏). Public read on published posts;
   write gated by `is_active_member()`; edit/soft-delete own; editors soft-delete
