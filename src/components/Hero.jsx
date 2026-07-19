@@ -212,9 +212,9 @@ export default function Hero() {
         </h1>
 
         <p className="max-w-2xl mx-auto text-base md:text-xl text-text/70 leading-relaxed font-medium">
-          SAMPA connects the physician associates delivering evidence-based,
-          patient-centered care to people and communities impacted by substance
-          use disorder.
+          SAMPA connects physician associates and advances their education,
+          training, and clinical practice — so people and communities impacted
+          by substance use disorder receive high-quality, evidence-based care.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center">
