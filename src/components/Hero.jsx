@@ -208,12 +208,13 @@ export default function Hero() {
         </div>
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-text mb-6 [text-wrap:balance]">
-          It takes <span className="font-drama font-semibold">every one</span> of us.
+          Stronger <span className="font-drama font-semibold">together</span>
         </h1>
 
         <p className="max-w-2xl mx-auto text-base md:text-xl text-text/70 leading-relaxed font-medium">
-          SAMPA is thousands of small acts of care, assembled into something you
-          can see. Scatter us — we come back together. That&rsquo;s rather the point.
+          SAMPA connects the physician associates delivering evidence-based,
+          patient-centered care to people and communities impacted by substance
+          use disorder.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center">
