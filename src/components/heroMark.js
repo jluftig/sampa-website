@@ -35,7 +35,8 @@ export function sampleMarkPoints(cols) {
           for (let gx = step / 2; gx < W; gx += step) {
             const i = (((gy | 0) * W) + (gx | 0)) * 4;
             const r = d[i], g2 = d[i + 1], b = d[i + 2], a = d[i + 3];
-            if (a < 200) continue;                       // outside the letters
+            if (a < 250) continue;                       // outside the letters; also drops AA edge
+                                                         // fringe whose squares overhang the silhouette
             if (r > 208 && g2 > 208 && b > 200) continue; // counter hole fill
             pts.push({ x: gx / W, y: gy / H, c: b > g2 ? 1 : 0 });
           }
