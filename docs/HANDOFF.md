@@ -230,7 +230,7 @@ In plain terms, Supabase holds these tables:
 |---|---|---|
 | Whole site is a blank white page | The Supabase environment variables are missing/renamed in Vercel | Re-check `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` in Vercel, then redeploy |
 | A direct link like `/news/…` shows a Vercel 404 | The `vercel.json` "SPA rewrite" file is missing | Ensure `vercel.json` is present (it tells Vercel to serve the app for all routes) |
-| An editor can't sign in | They're not on the Google **Test users** list | Add their email in Google Cloud Console (consent screen still in Testing mode) |
+| An editor can't sign in | OAuth/config issue, wrong account, or browser blocking | Confirm Google provider enabled in Supabase; try magic link; check they’re using the intended Google account. Consent screen is **published** (not limited to test users) |
 | Someone signed in but can't publish | They don't have the news permission | Check **Publish news** for them in People & permissions |
 | Member directory says “not available yet” or is empty for everyone | Directory SQL migration not applied | Run `supabase/migrations/2026-07-10-member-directory.sql` in Supabase SQL Editor |
 | Active member can't open Directory | Membership not `active` on their profile | Check dashboard / Stripe; staff (editor/admin) can still browse |
