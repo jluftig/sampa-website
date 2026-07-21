@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-21 (docs diet — split CLAUDE architecture; slim HANDOFF)
+**Last updated:** 2026-07-21 (bup tool v2 backlog on STATUS + PARK)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -108,7 +108,9 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
   usage analytics (`tool_events`). Built; **clinical launch hold** (do not merge to
   `main` until review says go). Worktree on Studio: `~/Projects/sampa-website-bup`.
-  Sticky: branch-local `docs/PARK-bup-dosing-tool.md`. Resume: *Resume SAMPA bup dosing tool*.
+  Sticky (on main): [`PARK-bup-dosing-tool.md`](PARK-bup-dosing-tool.md). Resume:
+  *Resume SAMPA bup dosing tool*. Post-launch / v2 ideas (practice settings, EHR
+  disclaimers, Bridge attribution) live in that PARK — do not lose.
   Older `feature/bup-micro-macro` is fully superseded by this branch (safe to delete).
 - **Pre-membership security review** — **Parked mid-stream (2026-07-12).**
   Code/schema health check: [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md).
@@ -230,11 +232,27 @@ Deferred from the first directory ship:
   SAMPA org account; Android/Play later from same codebase. No in-app membership
   sales — see `docs/architecture/mobile.md`.
 - **Bup dosing tool** — launch decision after clinical review hold is lifted.
+  **v2 / post-launch backlog** (detail in
+  [`PARK-bup-dosing-tool.md`](PARK-bup-dosing-tool.md) § Deferred):
+  - Additional practice settings: **EMS**, **perinatal**, **perioperative**,
+    **outpatient clinic** (beyond current ED/hospital-oriented paths).
+  - **EHR copy disclaimers** — every “Copy for EHR” / pasteable summary should
+    include standard CDS language: decision-support only; not medical advice;
+    does not replace clinical judgment; for licensed clinicians.
+  - **Source credit** — algorithm adapted from **CA Bridge / Bridge to Treatment
+    (Public Health Institute)** protocols; confirm attribution wording + any
+    distribution requirements before public launch.
+  - **Framing research** — MDCalc and peer CDS tools for disclaimer placement
+    and tone (draft notes in the PARK).
 
 ---
 
 ## Recently shipped (newest first)
 
+- 2026-07-21 · **Bup tool v2 backlog captured** — practice settings (EMS/perinatal/
+  perioperative/outpatient), EHR CDS disclaimers, Bridge/PHI attribution, MDCalc
+  framing notes in [`PARK-bup-dosing-tool.md`](PARK-bup-dosing-tool.md); STATUS
+  board updated. Launch hold unchanged.
 - 2026-07-21 · **Docs diet** — CLAUDE split into `docs/architecture/*` (under ~6k entry);
   HANDOFF thinned to front door + bus-factor accounts; GEMINI + news-blog-plan → `docs/archive/`.
 - 2026-07-21 · **Repo hygiene** — STATUS catch-up after PRs #49–#51; OAuth truth; pruned merged branches.
@@ -266,6 +284,6 @@ Deferred from the first directory ship:
 | Mid-flight agent track | This file → In flight | Thin [PARK-*.md](.) sticky note + linked specs — **not** a second backlog |
 | Pre-membership security (deep) | [SECURITY-REVIEW-2026-07-12.md](SECURITY-REVIEW-2026-07-12.md) | Open P0 on **this board**; resume sticky [PARK-security-review.md](PARK-security-review.md) |
 | News scout / draft pipeline | Specs + cron (see In flight) | Sticky [PARK-news-pipeline.md](PARK-news-pipeline.md); *Resume SAMPA news pipeline* |
-| Bup / COWS tool | This file → In flight | Branch `feature/bup-dosing-tool` + worktree sticky; *Resume SAMPA bup dosing tool* |
+| Bup / COWS tool | This file → In flight + backlog | Sticky [PARK-bup-dosing-tool.md](PARK-bup-dosing-tool.md) (v2 deferred); branch `feature/bup-dosing-tool`; *Resume SAMPA bup dosing tool* |
 | Product history / original plan | [archive/news-blog-plan.md](archive/news-blog-plan.md) | Historical; **STATUS** supersedes “what’s next” |
 | Original design brief | [archive/GEMINI.md](archive/GEMINI.md) | Historical bootstrap only |
