@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Newspaper } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { collectPostTags } from '../lib/tags';
 import PostCard from './PostCard';
@@ -30,10 +29,6 @@ export default function NewsTeaser() {
   return (
     <section id="news" className="py-24 px-4">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-          <Newspaper className="w-8 h-8 text-primary" />
-        </div>
-
         <h2 className="text-3xl md:text-5xl font-drama font-bold text-text mb-6">
           Daily News
         </h2>
