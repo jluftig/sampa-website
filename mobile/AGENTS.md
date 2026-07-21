@@ -2,7 +2,7 @@
 
 Expo (React Native) iOS/Android app for SAMPA. Standalone native app sharing the website's
 Supabase backend — NOT a webview. The website lives at the repo root; its conventions are in
-the root `CLAUDE.md` (read the "Mobile app" section there too).
+the root `CLAUDE.md` and `docs/architecture/mobile.md`.
 
 **Expo APIs change fast.** This app is on SDK 57 — verify APIs against
 https://docs.expo.dev/versions/v57.0.0/ before writing code; don't trust memory. Stay pinned

@@ -2,8 +2,9 @@
 
 > **What this is:** the one place to check "where is everything right now?" — what's
 > live, what's being built, what's blocked, what's next. It complements (never
-> duplicates) the reference docs: how the system *works* lives in `CLAUDE.md` (agents)
-> and `docs/HANDOFF.md` (humans).
+> duplicates) the reference docs: how the system *works* lives in `CLAUDE.md` +
+> `docs/architecture/` (agents). Humans start at thin `docs/HANDOFF.md` or ask an
+> agent to walk STATUS + CLAUDE.
 >
 > **How to keep it alive:** whenever significant work finishes — a feature merges, a
 > config milestone lands, a decision is made — update the relevant section and the
@@ -11,19 +12,20 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-21 (repo hygiene pass — STATUS catch-up after hero/news polish PRs #49–#51)
+**Last updated:** 2026-07-21 (docs diet — split CLAUDE architecture; slim HANDOFF)
 
 **Doc roles (one board — not three sources of truth):**
 
 | Doc | Role |
 |-----|------|
 | **This file (`STATUS.md`)** | **Only product board** — live / in flight / blocked / next / backlog |
-| **`HANDOFF.md`** | Human **how-to** — not a second backlog |
+| **`CLAUDE.md` + `docs/architecture/`** | How the system works / must not break |
+| **`HANDOFF.md`** | Thin human front door + bus-factor accounts — not a second manual |
 | **`PARK-*.md`** | Thin **agent sticky note** (resume phrase + next 1–4 steps + links here) |
 | **Specs / dated reviews** | How it works / findings snapshot — open work stays on this board |
-| **`CLAUDE.md` / `AGENTS.md`** | Architecture + this workflow for agents |
+| **`docs/archive/`** | Historical only |
 
-**Write path:** state change → **STATUS first** → HANDOFF only if procedure changed → PARK only if track still mid-flight (slim) → specs only if design/findings changed.  
+**Write path:** state change → **STATUS first** → CLAUDE/architecture if design/security changed → PARK only if track still mid-flight (slim) → HANDOFF only if bus-factor/front-door changed.  
 If the same “what’s next” list appears in three files, **keep STATUS and delete the extras**.  
 **GitHub `main`** — source of truth across laptop + Mac Studio; pull → work → push.
 
@@ -226,17 +228,17 @@ Deferred from the first directory ship:
 
 - **iOS/Android launch** — TestFlight / board testing; then App Store under converted
   SAMPA org account; Android/Play later from same codebase. No in-app membership
-  sales — see `CLAUDE.md` mobile section.
+  sales — see `docs/architecture/mobile.md`.
 - **Bup dosing tool** — launch decision after clinical review hold is lifted.
 
 ---
 
 ## Recently shipped (newest first)
 
-- 2026-07-21 · **Homepage Daily News icon removed** (PR #51) — teaser section no longer
-  shows the circular newspaper icon above the heading.
-- 2026-07-21 · **Hero scroll cue** (PR #50) — replaces duplicate Join/News CTA row with
-  accessible bouncing chevron to `#news`; reduced-motion safe.
+- 2026-07-21 · **Docs diet** — CLAUDE split into `docs/architecture/*` (under ~6k entry);
+  HANDOFF thinned to front door + bus-factor accounts; GEMINI + news-blog-plan → `docs/archive/`.
+- 2026-07-21 · **Repo hygiene** — STATUS catch-up after PRs #49–#51; OAuth truth; pruned merged branches.
+- 2026-07-21 · **Homepage Daily News icon removed** (PR #51); **Hero scroll cue** (PR #50).
 - 2026-07-19 · **Assembly hero** (PR #49) — particles assemble SAMPA wordmark; mission-
   derived copy; donations remain temp-off flag from same window.
 - 2026-07-16 · **Member discussion on news** (PR #48): comments + emoji reactions (web + mobile).
@@ -259,11 +261,11 @@ Deferred from the first directory ship:
 
 | Audience | Start here | Then |
 | --- | --- | --- |
-| Human operator | [HANDOFF.md](HANDOFF.md) (how) | **This file** for “what’s happening now”; [member-area-setup.md](member-area-setup.md) for one-time Stripe/OAuth config |
-| AI agent | [CLAUDE.md](../CLAUDE.md) via [AGENTS.md](../AGENTS.md) | **This file** before planning; update **this file** on state change (single board) |
+| Human operator | [HANDOFF.md](HANDOFF.md) (thin) or ask an AI to walk STATUS + CLAUDE | **This file** for “what’s happening now”; setup runbooks for one-time config |
+| AI agent | [CLAUDE.md](../CLAUDE.md) via [AGENTS.md](../AGENTS.md) | **This file** before planning; [architecture/](architecture/) when editing that area |
 | Mid-flight agent track | This file → In flight | Thin [PARK-*.md](.) sticky note + linked specs — **not** a second backlog |
 | Pre-membership security (deep) | [SECURITY-REVIEW-2026-07-12.md](SECURITY-REVIEW-2026-07-12.md) | Open P0 on **this board**; resume sticky [PARK-security-review.md](PARK-security-review.md) |
 | News scout / draft pipeline | Specs + cron (see In flight) | Sticky [PARK-news-pipeline.md](PARK-news-pipeline.md); *Resume SAMPA news pipeline* |
 | Bup / COWS tool | This file → In flight | Branch `feature/bup-dosing-tool` + worktree sticky; *Resume SAMPA bup dosing tool* |
-| Product history / original plan | [news-blog-plan.md](news-blog-plan.md) | Historical; **STATUS** supersedes “what’s next” |
-| Original design brief | [GEMINI.md](../GEMINI.md) | Historical bootstrap prompt only — not current architecture |
+| Product history / original plan | [archive/news-blog-plan.md](archive/news-blog-plan.md) | Historical; **STATUS** supersedes “what’s next” |
+| Original design brief | [archive/GEMINI.md](archive/GEMINI.md) | Historical bootstrap only |
