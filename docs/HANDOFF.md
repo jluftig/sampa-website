@@ -8,7 +8,7 @@ this over cold, start here._
 status (live / blocked / next / backlog). This guide explains *how* the system works;
 STATUS tracks *where things stand right now* and suggested future features.
 
-_Last updated: 2026-07-10_
+_Last updated: 2026-07-21_ (OAuth published; donations temp-off flag; STATUS is board of record)
 
 ---
 
@@ -364,18 +364,22 @@ determination letter arrives.
 ### Still ahead (summary — full backlog in STATUS.md)
 
 **Ops / blocked**
-- Publish Google OAuth consent screen when membership opens broadly.
+- Google OAuth consent screen **already published** (2026-07-12).
+- Donations Stripe checkout is **temporarily off** via `DONATIONS_ENABLED` in
+  `src/lib/features.js` and `api/create-donation-session.js` — flip both to `true` +
+  redeploy to restore.
 - 501(c)(3) letter → update donate disclosure; Google for Nonprofits; email platform
-  (Brevo + Supabase sync recommended to the board).
-- Counsel review of privacy/terms and directory sharing defaults.
+  campaigns (Brevo auth SMTP already live; board campaign side pending).
+- Remaining pre-membership security P0 (Vercel/Stripe/webhook E2E) — see STATUS.
+- Counsel review of privacy/terms and directory sharing defaults (optional).
 
 **Product ideas already planned or suggested**
 - Directory v2: **avatars/photos**, short bio, LinkedIn/website, richer filters.
 - **Board-only tools** (beyond the Board badge).
 - **CME content** for members (gate with existing `is_active_member()` rule).
-- **iPhone/Android apps** — same Supabase DB and `/api` endpoints; memberships stay
-  purchased on the website (no Apple IAP); enable Sign in with Apple when iOS ships.
-- Clinical **buprenorphine dosing / COWS** tool (built on a branch; launch hold).
+- **Mobile app** is built on main and in TestFlight path — public App Store still open
+  (D-U-N-S / org account, board testing). Memberships stay on the website (no Apple IAP).
+- Clinical **buprenorphine dosing / COWS** tool (built on `feature/bup-dosing-tool`; launch hold).
 
 Multi-year membership terms in checkout are **already built** (1/2/3-year prices per
 tier; Legacy lifetime where configured).

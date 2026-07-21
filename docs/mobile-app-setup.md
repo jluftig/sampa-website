@@ -37,8 +37,8 @@ scheme.)
 
 The app signs in with Google through an **in-app browser** against Supabase's existing Google
 provider, so **no new Google client is required** — just make sure step 2's redirect URL is
-allowlisted. Note the Google consent screen is still in **Testing** mode (per the web repo's
-CLAUDE.md), so only whitelisted test users can sign in until it's published.
+allowlisted. Google consent screen was **published 2026-07-12** (any Google user can
+sign in — no test-user whitelist).
 
 ## 4. Apple — enable the provider (required on iOS) — ✅ CONFIGURED (native flow, device-verified 2026-07-11)
 

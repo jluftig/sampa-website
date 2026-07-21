@@ -11,7 +11,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-15 (member comments feature on `feature/member-comments` — migration pending)
+**Last updated:** 2026-07-21 (repo hygiene pass — STATUS catch-up after hero/news polish PRs #49–#51)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -38,9 +38,19 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   nonprofit — no outside counsel). **Homepage copy (2026-07-14):** outcomes for
   individuals/communities first; daily news + member networking as live offers;
   education/CME not the front pitch.
+- **Homepage hero (2026-07-19 → 2026-07-21)** — particle “Assembly” wordmark
+  (PR #49), bouncing scroll cue instead of duplicate hero CTAs (PR #50),
+  newspaper icon removed above Daily News teaser (PR #51).
 - **News/blog + Key Points research database** — editor dashboard, keyword browse and
   intersections, full-text search, per-claim share links and citations, social-preview
   cards. Posts are drafted via the `/sampa-post` skill.
+- **Ordered co-authors on news posts** (PR #47) — `post_authors` + editor picker;
+  article byline uses ordered authors. Migration file:
+  `supabase/migrations/2026-07-15-post-authors.sql` (also folded into `schema.sql`).
+- **Member discussion on news** (PR #48) — flat comments + emoji reactions on web and
+  mobile. Public read on published posts; write gated by `is_active_member()`.
+  Migration file: `supabase/migrations/2026-07-15-member-comments.sql`.
+  **Deferred:** discussion notifications (see backlog).
 - **Member area + Stripe memberships** — Google/magic-link sign-in, `/join` checkout,
   `/dashboard` (billing portal; **account contact** for SAMPA vs **directory profile**
   for peers; multi-org employers with role/city/state/website; optional directory
@@ -61,76 +71,55 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   controls still show but are no-ops; `/donate` shows “temporarily unavailable.”
   **Restore:** set both flags `true` + redeploy.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
+- **Mobile app code on main** — Expo app in `mobile/` (PRs #22, #43–#45); see In flight
+  for TestFlight / App Store rollout status (not a “messy branch” — shipped code,
+  external rollout still open).
 
-### DB migrations applied (2026-07-11)
+### DB migrations applied (directory stack, 2026-07-11)
 
-Operator confirmed the directory stack SQL was run in Supabase (shared DB). For
-reference, these three files were applied (safe to re-run if a future env is blank):
+Operator confirmed the directory stack SQL was run in Supabase (shared DB):
 
 1. `supabase/migrations/2026-07-10-member-directory.sql`
 2. `supabase/migrations/2026-07-10-profile-organizations.sql`
 3. `supabase/migrations/2026-07-10-directory-contact.sql`
 
-No further directory migrations pending.
+### DB migrations to verify (code already on main)
+
+If co-authors or comments misbehave in prod, re-run (idempotent) in Supabase SQL Editor:
+
+1. `supabase/migrations/2026-07-15-post-authors.sql`
+2. `supabase/migrations/2026-07-15-member-comments.sql`
+
+Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ---
 
-## In flight (branches / local work)
+## In flight (branches / active tracks)
 
-- **`feature/hero-assembly`** — new homepage hero ("Assembly"): ~6k canvas
-  particles assemble into the SAMPA wordmark, repelled by the cursor, click to
-  scatter (they always re-form). Chosen by Josh from the 10-concept hero
-  exploration (2026-07-18, interactive prototypes:
-  https://claude.ai/code/artifact/9219d907-f16f-4f24-a38b-db049e9bcfea).
-  Replaces the GSAP fade hero in `src/components/Hero.jsx`; wordmark path data +
-  pixel-sampler in `src/components/heroMark.js` (flattened from
-  `public/SAMPA_no_bg.svg`, tagline stripped). Zero new deps; reduced-motion
-  users get the static SVG mark. Hero copy changed (review in PR): headline
-  "It takes every one of us."; the 501(c)(3)-pending pill moved out of the hero
-  (still on /donate + Membership).
-- **`feature/member-comments`** — member discussion on news articles: flat brief
-  comments + emoji reactions (👍 🎉 ‼️ ❤️ 👏). Public read on published posts;
-  write gated by `is_active_member()`; edit/soft-delete own; editors soft-delete
-  only; denormalized `author_name` (no profiles SELECT widening). Web:
-  `PostComments` on PostView; mobile: `PostDiscussion` on article screen. Shared
-  keys in `src/lib/comments.js`. **Migration required before use:**
-  `supabase/migrations/2026-07-15-member-comments.sql`. **Deferred:** discussion
-  notifications (see backlog).
-- **`feature/post-coauthors`** — multi-author news posts (ordered `post_authors`,
-  editor-only picker, denormalized `author_name` byline). Migration:
-  `supabase/migrations/2026-07-15-post-authors.sql` (run before merge). Article
-  page only for v1; mobile keeps reading `author_name`.
-- **Mobile app — TestFlight rollout** (`mobile/` on main; PRs #22 #43 #44 #45 all
-  merged; every feature device-verified on Josh's iPhone). Built: news/Key Points/
-  keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID lock,
-  encrypted sessions), member area + account deletion, **member directory**, real
-  logo + app icon/splash, **push notifications (fully configured — publish → phones)**,
-  Sentry (dormant, needs DSN). **Now:** TestFlight build 1 waiting for Apple beta
-  review ("SAMPA Board" external group ready); build 2 (adds push + foreground
-  refresh) building/uploading. **Remaining:** invite board when review clears; Sentry
-  account + `EXPO_PUBLIC_SENTRY_DSN`; delete-account E2E test (throwaway account —
-  endpoint is live); SAMPA D-U-N-S → convert Apple account Individual → org before
-  public App Store launch; App Store submission (Phase 5); Android later (same
-  codebase); bup tool port after the CA Bridge permission hold lifts.
+- **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
+  long-lived feature branch anymore). Built and device-verified: news/Key Points/
+  keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID,
+  encrypted sessions), member area + account deletion, member directory, app identity,
+  **push notifications** (publish → phones), Sentry (dormant until DSN).
+  **Now:** TestFlight external group / board invite path; remaining ops below.
+  **Not blocked by code mess** — waiting on Apple/org/ops items.
 - **`feature/bup-dosing-tool`** — buprenorphine dosing + COWS calculator with anonymous
-  usage analytics (`tool_events`). Built but **on launch hold** (clinical content).
-- **Pre-membership security review** — **Parked mid-stream (2026-07-12 evening).**
-  Code/schema health check written: [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md).
+  usage analytics (`tool_events`). Built; **clinical launch hold** (do not merge to
+  `main` until review says go). Worktree on Studio: `~/Projects/sampa-website-bup`.
+  Sticky: branch-local `docs/PARK-bup-dosing-tool.md`. Resume: *Resume SAMPA bup dosing tool*.
+  Older `feature/bup-micro-macro` is fully superseded by this branch (safe to delete).
+- **Pre-membership security review** — **Parked mid-stream (2026-07-12).**
+  Code/schema health check: [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md).
   Thin resume: [`PARK-security-review.md`](PARK-security-review.md).
-  **Done this pass:** OAuth **published**; single-board STATUS/HANDOFF/PARK hygiene.
+  **Done:** OAuth **published** (2026-07-12); single-board STATUS/HANDOFF/PARK hygiene.
   **Next P0 when resumed:** Vercel Production Stripe/webhook/Supabase elevated keys;
   E2E join → webhook → directory; non-member blocked; no self-admin.
-  Resume phrase: *Resume SAMPA security review*.
-- **News scout → auto-draft pipeline (Hermes / Egg)** — **Operational / park for
-  monitoring (2026-07-12 evening).** Daily cron **6:00 AM PT, 7 days/week** (job
-  `1f55242ea122`): scout → up to **3 OA-preferred drafts** → editor briefing + menu
-  on Telegram → human Publish only (**never auto-publish**). Insert path:
-  `scripts/run-insert-draft.sh` + profile skill `sampa-news-pipeline`. Style guides:
-  article H2 structure, agency covers + stock library, prior-art rules.
-  Thin resume: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
-  Resume phrase: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
-  **Agency covers:** prefer Hermes `image_gen.provider: xai` (SuperGrok / Grok Imagine
-  edit) with dual-talon gold PNG as reference — see backlog item marked done 2026-07-14.
+  Resume: *Resume SAMPA security review*.
+- **News scout → auto-draft pipeline (Hermes / Egg)** — **Operational.**
+  Daily cron **6:00 AM PT, 7 days/week** (job `1f55242ea122`): scout → up to **3**
+  OA-preferred drafts → editor briefing + menu on Telegram → human Publish only
+  (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
+  Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
 
 ---
 
@@ -141,6 +130,10 @@ No further directory migrations pending.
   be applied for.
 - **Privileged-access agreement** (staff roster) — still informal; formal board
   adoption optional when the board wants a signed policy track.
+- **Bup dosing tool clinical review** — code ready on branch; launch hold until
+  content/clinical sign-off.
+- **Mobile public launch deps** — Apple org conversion (D-U-N-S), TestFlight/board
+  validation, App Store assets; Sentry account optional but recommended.
 
 ---
 
@@ -150,10 +143,11 @@ No further directory migrations pending.
 
 - [x] Directory-related Supabase migrations applied (member-directory, profile-organizations, directory-contact) — 2026-07-11.
 - [x] News draft pipeline secrets + insert script + daily cron (6am PT 7d) on Hermes Egg profile — 2026-07-12.
+- [x] Publish Google OAuth consent screen — operator-confirmed **2026-07-12** (not Testing).
+- [ ] **Confirm 2026-07-15 SQL in prod** — post-authors + member-comments (if not already run).
 - [ ] **Pre-membership security P0** (remaining) — Vercel Production env + Stripe
   live webhook + E2E membership path; see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md)
   / [`PARK-security-review.md`](PARK-security-review.md).
-- [x] Publish Google OAuth consent screen — operator-confirmed **2026-07-12** (not Testing).
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
   interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
   **Head start done 2026-07-15:** Brevo account exists, `addictionpas.org` domain
@@ -166,21 +160,18 @@ No further directory migrations pending.
   Store launch** (publisher shows "SAMPA"; unlocks nonprofit fee waiver post-501(c)(3)).
 - [ ] **Mobile delete-account E2E test** with a throwaway account (endpoint live).
 - [ ] Optional: board skim of privacy/terms (already emailed informally about the directory).
+- [ ] **Restore donations** when ops-ready — flip both `DONATIONS_ENABLED` flags to `true` + redeploy.
 
 ### Product — news pipeline
 
 - [x] **Agency cover image-to-image / reference pathway** — **done 2026-07-14.**
   Hermes Egg `image_gen.provider: xai` (Grok Imagine / SuperGrok OAuth) supports
   edit via `grok-imagine-image-quality` with the dual-talon gold PNG as
-  `image_url` (`docs/assets/cover-agency-reference-dual-talon-7oh.png`). Proven
-  with lockup **MOUD** → resized 1600×900 → Supabase `post-images` → draft
-  `cover_image_url` on DEA final-rule post
-  (`a6bde566-7040-440e-a33b-168bf44b2fb2`). **Not FAL_KEY / SuperGrok:** FAL is a
-  separate account; Nous FAL proxy still 403s `…/klein/9b/edit` — leave FAL as
-  optional later. **Default for agency covers:** xAI img2img + house master
-  prompt; QA (no emblem text, both talons, exact lockup); text-to-image fallback
-  if xAI edit fails. Caption pattern: *Editorial illustration: stylized dual-talon
-  emblem and [LOCKUP]; not an official seal.*
+  `image_url` (`docs/assets/cover-agency-reference-dual-talon-7oh.png`). **Default
+  for agency covers:** xAI img2img + house master prompt; QA (no emblem text, both
+  talons, exact lockup); text-to-image fallback if xAI edit fails. Caption pattern:
+  *Editorial illustration: stylized dual-talon emblem and [LOCKUP]; not an official seal.*
+  Dual-talon for scheduling/enforcement-type stories — not grants/stats.
 
 ### Product — site polish / marketing
 
@@ -209,14 +200,13 @@ Deferred from the first directory ship:
 - **Richer filters** — practice setting, credentials, board-only, specialty keywords.
 - **Rate limits / anti-scrape** if harvest becomes a problem (Terms already forbid
   commercial use / bulk export of directory data).
-- **Mobile directory** — screens on `feature/mobile-app` calling existing RPCs.
 
 ### Product — membership & content
 
 - **Discussion notifications (deferred)** — after member comments see real use:
   notify opted-in members (Expo push and/or Brevo email) when someone comments on
   a post they saved — not every reaction. Prefer quiet defaults + an in-app /
-  dashboard toggle. Resume from [`PARK-member-comments.md`](PARK-member-comments.md).
+  dashboard toggle.
 - **Policy page (and possibly Research)** — public area similar in spirit to News
   for SAMPA policy work: positions we’re taking, issues we’re advocating for,
   published documents, white papers, and related materials. Open design choices:
@@ -234,54 +224,34 @@ Deferred from the first directory ship:
 
 ### Product — platforms
 
-- **iOS/Android launch** — TestFlight beta review in progress (see In flight); after
-  board testing: App Store submission (screenshots, description, category) under the
-  converted SAMPA org account; then Android/Play from the same codebase. No in-app
-  membership sales — see `CLAUDE.md` mobile section.
+- **iOS/Android launch** — TestFlight / board testing; then App Store under converted
+  SAMPA org account; Android/Play later from same codebase. No in-app membership
+  sales — see `CLAUDE.md` mobile section.
 - **Bup dosing tool** — launch decision after clinical review hold is lifted.
 
 ---
 
 ## Recently shipped (newest first)
 
-- 2026-07-15 · **TestFlight submission + push fully configured** — build 1 uploaded &
-  submitted for beta review ("SAMPA Board" external group, review notes, test info);
-  PUSH_WEBHOOK_SECRET set in Vercel + `push-on-publish` Supabase webhook created →
-  publishing a post now notifies opted-in devices end-to-end; build 2 (push + APNs key
-  + foreground refresh) kicked off. Apple Developer enrollment complete (Individual).
-- 2026-07-15 · **Mobile push notifications + crash reporting** (PR #45): device_tokens
-  + push_opt_in (SQL applied), api/send-push.js (DB-webhook triggered, secret-authed,
-  self-healing tokens), in-app alerts toggle + tap-to-article; Sentry armed by env var.
-- 2026-07-15 · **Mobile foreground profile refresh** (PR #44): membership paid on the
-  website appears in the app on next foreground (closes the join-flow seam).
-- 2026-07-15 · **Mobile member directory + app identity** (PR #43): Members tab +
-  member profiles calling the self-gating `member_directory*` RPCs (search, state
-  filter, tappable shared contact); tab order News/Keywords/Saved/Members/Account;
-  real SAMPA logo in-app (theme-aware SVG); app icon + splash (light/dark) + Android
-  adaptive icons generated from the logo — TestFlight-ready identity.
-- 2026-07-15 · **Mobile app Phases 0–3 merged** (PR #22): Expo iOS/Android app in
-  `mobile/` — news/Key Points/keywords/search/saved, auth (Apple + Google + email OTP
-  via Brevo SMTP, Face ID lock, encrypted sessions), member area + in-app account
-  deletion (`api/delete-account.js`, the sole website change). All device-verified on
-  a physical iPhone via EAS dev build.
-- 2026-07-12 · **Single-board doc hygiene** — STATUS = only product board; HANDOFF how-to; PARK sticky notes; workflow in AGENTS.md + CLAUDE.md.
-- 2026-07-12 · **Google OAuth consent published** (operator-confirmed; docs/STATUS/security review updated off Testing).
-- 2026-07-12 · **Security review doc** pre-membership (`SECURITY-REVIEW-2026-07-12.md`);
-  news pipeline operational (Hermes cron, insert scripts, H2 + agency cover + stock + prior-art docs).
-- 2026-07-11 · Privacy + Terms for member directory (PR #40); Terms spacing fix;
-  join/homepage mention directory as a member benefit. Effective date July 11, 2026.
-- 2026-07-10 · **Multi-org profile + directory contact** (PR #39): multiple employers
-  (role, city, state, website; bare domains OK); account vs directory contact;
-  optional work email for peers. Migrations: `profile-organizations` +
-  `directory-contact` (after member-directory SQL).
-- 2026-07-10 · **Member networking directory** + Board capability (PR #37).
-- 2026-07-10 · Nav CTA “Join” (PR #38); homepage donate simplified (PR #36).
-- 2026-07-10 · WCAG AA `primary-text` teal (PR #34); project docs layer.
-- 2026-07-09 · Donor column on roster (PR #33); donations in handoff (PR #32).
-- 2026-07-08 · Merch store (PR #31); DOI-only source links (PR #30).
-- 2026-07-07 · Purchased-term tracking; privileged-access agreement + audit log;
-  checkbox permissions; `/sampa-post` skill improvements.
-- 2026-07-06 · Member area + Stripe memberships; donations.
+- 2026-07-21 · **Homepage Daily News icon removed** (PR #51) — teaser section no longer
+  shows the circular newspaper icon above the heading.
+- 2026-07-21 · **Hero scroll cue** (PR #50) — replaces duplicate Join/News CTA row with
+  accessible bouncing chevron to `#news`; reduced-motion safe.
+- 2026-07-19 · **Assembly hero** (PR #49) — particles assemble SAMPA wordmark; mission-
+  derived copy; donations remain temp-off flag from same window.
+- 2026-07-16 · **Member discussion on news** (PR #48): comments + emoji reactions (web + mobile).
+- 2026-07-16 · **Ordered co-authors for news posts** (PR #47).
+- 2026-07-16 · **Docs sweep: mobile status current** (PR #46).
+- 2026-07-15 · **TestFlight submission + push fully configured** — build path +
+  PUSH_WEBHOOK_SECRET + `push-on-publish` webhook; publish notifies opted-in devices.
+- 2026-07-15 · **Mobile push + crash reporting shell** (PR #45); foreground profile
+  refresh (PR #44); member directory + app identity (PR #43); Phases 0–3 (PR #22).
+- 2026-07-14 · Donations temp kill-switch (`DONATIONS_ENABLED`); agency cover img2img pathway.
+- 2026-07-12 · Single-board doc hygiene; Google OAuth published; security review doc;
+  news pipeline operational.
+- 2026-07-11 · Privacy + Terms for member directory (PR #40).
+- 2026-07-10 · Multi-org profile + directory contact (PR #39); member networking
+  directory + Board capability (PR #37).
 
 ---
 
@@ -294,4 +264,6 @@ Deferred from the first directory ship:
 | Mid-flight agent track | This file → In flight | Thin [PARK-*.md](.) sticky note + linked specs — **not** a second backlog |
 | Pre-membership security (deep) | [SECURITY-REVIEW-2026-07-12.md](SECURITY-REVIEW-2026-07-12.md) | Open P0 on **this board**; resume sticky [PARK-security-review.md](PARK-security-review.md) |
 | News scout / draft pipeline | Specs + cron (see In flight) | Sticky [PARK-news-pipeline.md](PARK-news-pipeline.md); *Resume SAMPA news pipeline* |
+| Bup / COWS tool | This file → In flight | Branch `feature/bup-dosing-tool` + worktree sticky; *Resume SAMPA bup dosing tool* |
 | Product history / original plan | [news-blog-plan.md](news-blog-plan.md) | Historical; **STATUS** supersedes “what’s next” |
+| Original design brief | [GEMINI.md](../GEMINI.md) | Historical bootstrap prompt only — not current architecture |

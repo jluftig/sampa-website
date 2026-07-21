@@ -7,8 +7,7 @@ Living project status (what's live / in flight / blocked / next): `docs/STATUS.m
 decision made). Original build plan/decisions: `docs/news-blog-plan.md`. Original
 design brief: `GEMINI.md`. `AGENTS.md` is a pointer here for non-Claude agents.
 
-Last updated: 2026-07-15 (mobile app complete through Phase 4 — push live, TestFlight in
-beta review; docs sweep).
+Last updated: 2026-07-21 (OAuth published note + STATUS hygiene catch-up after PRs #49–#51).
 
 ## What this project is
 
@@ -36,8 +35,8 @@ second roadmap.
 - **Backend:** Supabase project ref `xbzzawjnphpnexwfjtif` (Postgres + Auth + Storage)
   + Vercel serverless functions in `api/` (Stripe checkout / portal / webhook).
 - **Auth:** Google OAuth + email magic link (Supabase providers). Google consent screen
-  currently in **Testing** mode → only whitelisted "test users" can sign in. Publish
-  before opening to members. One-time config steps: `docs/member-area-setup.md`.
+  was **published 2026-07-12** (not Testing — any Google user can complete sign-in).
+  One-time config steps: `docs/member-area-setup.md`.
 - **Payments:** Stripe annual subscriptions, sign-in-first: `/join` →
   `/api/create-checkout-session` (stamps `client_reference_id` = Supabase user id) →
   Stripe Checkout → `/api/stripe-webhook` writes membership columns on `profiles`.
@@ -413,7 +412,8 @@ themes agents may be asked to implement:
 - **CME / member-only content:** gate on `is_active_member()`.
 - **Mobile:** see the "Mobile app" section below; reuse `member_directory*` RPCs for any
   in-app directory.
-- **Ops:** OAuth consent publish, 501(c)(3), email platform (Brevo), legal review.
+- **Ops:** 501(c)(3), email platform campaigns (Brevo — auth SMTP already live),
+  pre-membership security P0 remaining, legal review optional.
 
 ## Mobile app (mobile/)
 
