@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { LOGO_VB, markSvgString, sampleMarkPoints } from './heroMark';
 
 // "Assembly" hero: ~6k particles assemble into the SAMPA wordmark, breathe with
@@ -24,6 +23,26 @@ export default function Hero() {
   const [reducedMotion] = useState(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
   );
+  const [cueReady, setCueReady] = useState(false);
+  const [scrolledPast, setScrolledPast] = useState(false);
+
+  // Scroll cue: fades in once the wordmark has mostly assembled (~2.3s after
+  // sampling resolves), hides while the visitor is scrolled down, returns at top.
+  useEffect(() => {
+    const t = setTimeout(() => setCueReady(true), reducedMotion ? 300 : 2600);
+    const onScroll = () => setScrolledPast(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [reducedMotion]);
+
+  function scrollToNews() {
+    const news = document.getElementById('news');
+    if (news) news.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+  }
 
   useEffect(() => {
     if (reducedMotion) return undefined;
@@ -217,22 +236,20 @@ export default function Hero() {
           by substance use disorder receive high-quality, evidence-based care.
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center">
-          <a
-            href="#membership"
-            className="btn-magnetic bg-primary-text text-white text-lg px-8 py-4 rounded-full shadow-xl shadow-primary/20 group flex items-center justify-center"
-          >
-            <span>Join as a Founding Member</span>
-            <ArrowRight className="ml-2 w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-          </a>
-          <Link
-            to="/news"
-            className="px-8 py-4 rounded-full text-text/80 hover:text-primary-text font-semibold transition-colors"
-          >
-            Read the news
-          </Link>
-        </div>
       </div>
+
+      {/* Bounce animates the chevron child, not the button — the button centers
+          with -translate-x-1/2, which an animated transform would override. */}
+      <button
+        type="button"
+        onClick={scrollToNews}
+        aria-label="Scroll to latest news"
+        className={`absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-10 rounded-full p-2 text-primary-text/70 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-text transition-opacity duration-700 [@media(max-height:560px)]:hidden ${
+          cueReady && !scrolledPast ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <ChevronDown className="w-7 h-7 animate-cue-bounce" aria-hidden="true" />
+      </button>
     </section>
   );
 }
