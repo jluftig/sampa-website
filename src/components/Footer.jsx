@@ -36,7 +36,7 @@ export default function Footer() {
           Legal & Tax Status
         </p>
         <p>
-          SAMPA is pending 501(c)(3) nonprofit status.
+          SAMPA, Inc. is a 501(c)(3) nonprofit organization. EIN: 42-2288772.
           © {new Date().getFullYear()} SAMPA, Inc. All rights reserved.
         </p>
       </div>

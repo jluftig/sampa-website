@@ -10,8 +10,8 @@ export default function Terms() {
       <p>
         These terms govern your use of <strong>www.addictionpas.org</strong>,
         operated by the Society of Addiction Medicine Physician Associates
-        ("SAMPA," "we," "us") — SAMPA, Inc., a Wyoming corporation pending
-        501(c)(3) status — a professional membership association for physician
+        ("SAMPA," "we," "us") — SAMPA, Inc., a Wyoming corporation and
+        501(c)(3) nonprofit (EIN 42-2288772) — a professional membership association for physician
         associates practicing addiction medicine. By using the site or becoming
         a member, you agree to these terms.
       </p>

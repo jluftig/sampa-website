@@ -11,8 +11,8 @@ export default function Privacy() {
         The Society of Addiction Medicine Physician Associates ("SAMPA," "we,"
         "us") operates <strong>www.addictionpas.org</strong>, a professional
         membership association for physician associates practicing addiction
-        medicine. SAMPA, Inc. is a Wyoming corporation pending 501(c)(3)
-        nonprofit status. This policy explains what information we collect,
+        medicine. SAMPA, Inc. is a Wyoming corporation and a 501(c)(3)
+        nonprofit organization (EIN 42-2288772). This policy explains what information we collect,
         why, and the choices you have.
       </p>
 

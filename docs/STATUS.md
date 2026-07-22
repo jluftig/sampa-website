@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-21 (bup tool v2 backlog on STATUS + PARK)
+**Last updated:** 2026-07-21 (501(c)(3) granted — donations restored)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,11 +67,9 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   badge). Further board-only privileges not built yet.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
   ledger in Supabase, donor column on the admin roster.
-  **TEMP OFF (2026-07-14):** Stripe checkout disconnected via
-  `DONATIONS_ENABLED = false` in `src/lib/features.js` **and**
-  `api/create-donation-session.js` (keep in sync). Nav/footer/homepage Donate
-  controls still show but are no-ops; `/donate` shows “temporarily unavailable.”
-  **Restore:** set both flags `true` + redeploy.
+  **ON (2026-07-21):** restored after IRS 501(c)(3) determination for SAMPA, Inc.
+  (EIN 42-2288772). `DONATIONS_ENABLED = true` in `src/lib/features.js` **and**
+  `api/create-donation-session.js`. Donate page shows tax-deductible boilerplate.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
 - **Mobile app code on main** — Expo app in `mobile/` (PRs #22, #43–#45); see In flight
   for TestFlight / App Store rollout status (not a “messy branch” — shipped code,
@@ -129,9 +127,10 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## Blocked / waiting on the outside world
 
-- **501(c)(3) determination letter** (IRS, pending). Until it arrives: keep the
-  “not yet tax-deductible” disclosure on `/donate`; Google for Nonprofits can’t
-  be applied for.
+- **501(c)(3) determination letter** — **granted 2026-07-21** (SAMPA, Inc.;
+  EIN 42-2288772). Donations restored with tax-deductible disclosure on `/donate`.
+  Still unlocks: Google for Nonprofits application; Apple nonprofit fee waiver
+  after org conversion.
 - **Privileged-access agreement** (staff roster) — still informal; formal board
   adoption optional when the board wants a signed policy track.
 - **Bup dosing tool clinical review** — code ready on branch; launch hold until
@@ -153,7 +152,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   live webhook + E2E membership path; see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md)
   / [`PARK-security-review.md`](PARK-security-review.md).
 - [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
-  interim consumer Google Group until 501(c)(3) unlocks Google for Nonprofits.
+  Google for Nonprofits now available post-501(c)(3).
   **Head start done 2026-07-15:** Brevo account exists, `addictionpas.org` domain
   authenticated (DKIM/DMARC at Porkbun), and Supabase **auth emails** already send
   via Brevo SMTP from no-reply@addictionpas.org. Campaign side still pending board.
@@ -161,10 +160,10 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   EAS build env — turns on mobile crash reporting (code already merged, dormant).
 - [ ] **SAMPA D-U-N-S number** (free, developer.apple.com/enroll/duns-lookup) → convert
   the Apple Developer account Individual → SAMPA organization **before public App
-  Store launch** (publisher shows "SAMPA"; unlocks nonprofit fee waiver post-501(c)(3)).
+  Store launch** (publisher shows "SAMPA"; nonprofit fee waiver available with 501(c)(3)).
 - [ ] **Mobile delete-account E2E test** with a throwaway account (endpoint live).
 - [ ] Optional: board skim of privacy/terms (already emailed informally about the directory).
-- [ ] **Restore donations** when ops-ready — flip both `DONATIONS_ENABLED` flags to `true` + redeploy.
+- [x] **Restore donations** — both `DONATIONS_ENABLED` flags `true` + 501(c)(3) copy (2026-07-21).
 
 ### Product — news pipeline
 
@@ -249,6 +248,10 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-07-21 · **501(c)(3) granted + donations restored** — SAMPA, Inc. EIN
+  42-2288772; both `DONATIONS_ENABLED` flags on; tax-deductible boilerplate on
+  `/donate`; pending copy cleared on footer, homepage donate CTA, dashboard,
+  Privacy, Terms.
 - 2026-07-21 · **Bup tool v2 backlog captured** — practice settings (EMS/perinatal/
   perioperative/outpatient), EHR CDS disclaimers, Bridge/PHI attribution, MDCalc
   framing notes in [`PARK-bup-dosing-tool.md`](PARK-bup-dosing-tool.md); STATUS

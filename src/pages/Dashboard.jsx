@@ -924,8 +924,9 @@ export default function Dashboard() {
             </ul>
           )}
           <p className="text-text/40 text-xs mt-6">
-            SAMPA's 501(c)(3) status is pending IRS determination; keep your emailed
-            receipts and consult your tax advisor about deductibility.
+            SAMPA, Inc. is a 501(c)(3) nonprofit (EIN 42-2288772). Contributions
+            are tax-deductible to the extent allowed by law — keep your emailed
+            receipts and consult your tax advisor.
           </p>
         </section>
       </main>

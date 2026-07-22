@@ -10,11 +10,10 @@ import Footer from '../components/Footer';
 // Public donation page — no account required (anyone in the US can give).
 // Signed-in gifts are linked to the profile; guests give with just an email
 // that Stripe collects. Payment runs through the same Stripe account as dues,
-// via /api/create-donation-session. Deductibility is disclosed as pending the
-// IRS 501(c)(3) determination.
+// via /api/create-donation-session. SAMPA, Inc. is a 501(c)(3); EIN on page.
 //
-// TEMP: DONATIONS_ENABLED in src/lib/features.js — when false, no Stripe
-// checkout (buttons elsewhere are no-ops; restore with true + redeploy).
+// DONATIONS_ENABLED in src/lib/features.js — when false, no Stripe checkout
+// (buttons elsewhere are no-ops).
 const PRESETS = [25, 50, 100, 250];
 
 export default function Donate() {
@@ -223,14 +222,15 @@ export default function Donate() {
                   : 'Enter an amount'}
             </button>
 
-            {/* Tax-deductibility disclosure (pending IRS determination) */}
+            {/* 501(c)(3) tax-deductibility disclosure */}
             <div className="mt-6 bg-accent/5 border border-accent/20 rounded-2xl p-4 text-xs text-text/70 leading-relaxed">
-              <strong className="text-text/80">Tax status:</strong> SAMPA's
-              application for 501(c)(3) tax-exempt status is pending with the IRS.
-              If approved, contributions are expected to be deductible retroactive
-              to SAMPA's formation — but until the determination is issued we
-              cannot guarantee deductibility. Please keep your emailed receipt and
-              consult your tax advisor.
+              <strong className="text-text/80">Tax-deductible gift:</strong>{' '}
+              SAMPA, Inc. is a nonprofit organization recognized as tax-exempt
+              under Section 501(c)(3) of the Internal Revenue Code. Contributions
+              are tax-deductible to the extent allowed by law. EIN: 42-2288772.
+              No goods or services are provided in exchange for your contribution.
+              Please keep your emailed receipt for your records and consult your
+              tax advisor.
             </div>
 
             <p className="text-center text-text/40 text-xs mt-6">
