@@ -118,6 +118,16 @@ SAMPA news is **not** “journals only.” Policy and agency actions are first-c
 - High-quality health journalism that **reports a primary study or agency action** and links it (STAT, Kaiser Health News, etc.) — use the **primary** paper/agency URL as Source when possible  
 - State law/board actions that change PA or addiction practice (cite official bill text or board PDF)
 
+### Trending signal (secondary outlets)
+
+Medscape, Psychiatric Times, Healio, society posts, etc. are a **useful attention map** for what large clinician audiences are seeing *now*. Use them to **discover and rank** primaries—not as the evidence base.
+
+1. Notice repeated headlines / amplification  
+2. Resolve to DOI, FDA.gov, or official protocol  
+3. Prefer OA primaries that are both PA-relevant **and** widely covered (so SAMPA readers aren’t behind peer outlets)  
+4. Draft and cite from the **primary**; secondary can appear in EIC notes as “widely covered”  
+5. Viral but weak or off-scope → skip or digest_only with caveat  
+
 ### Accept with explicit flags
 
 - **Preprints** (medRxiv/bioRxiv): flag “preprint — not peer-reviewed”  
