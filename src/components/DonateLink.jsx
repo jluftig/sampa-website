@@ -5,7 +5,7 @@ import { DONATIONS_ENABLED } from '../lib/features';
 /**
  * Donate entry control. When DONATIONS_ENABLED is false, still looks like a
  * Donate control but navigation and checkout are disconnected (no-op click).
- * Restore: set DONATIONS_ENABLED true in src/lib/features.js (+ API flag) and redeploy.
+ * Keep in sync with api/create-donation-session.js.
  */
 export default function DonateLink({ children, className = '', onClick, ...rest }) {
   if (!DONATIONS_ENABLED) {

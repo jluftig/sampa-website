@@ -1,7 +1,7 @@
 # Member area & Stripe
 
 Built 2026-07-06+. One-time dashboard config: `docs/member-area-setup.md`.  
-Live / blocked state: `docs/STATUS.md` (e.g. donations kill-switch).
+Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 
 ## Non-negotiable (do not regress)
 
@@ -30,7 +30,8 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations kill-switch).
 - Dynamic Checkout via `create-donation-session` (`price_data`), not a fixed Donation Product.
 - `metadata.type=donation` → `donations` table only.
 - **Ops kill-switch:** `DONATIONS_ENABLED` in `src/lib/features.js` **and**
-  `api/create-donation-session.js` (keep in sync). See STATUS when off.
+  `api/create-donation-session.js` (keep in sync). Currently **on** (501(c)(3)
+  granted 2026-07-21; EIN 42-2288772). See STATUS if flipped off.
 
 ## Tier keys (three-way sync)
 

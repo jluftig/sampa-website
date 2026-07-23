@@ -9,9 +9,9 @@ import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
 // Stripe collects. The load-bearing signal is metadata.type='donation', which
 // keeps these payments OUT of the membership columns in the webhook.
 //
-// TEMP kill-switch — keep in sync with src/lib/features.js DONATIONS_ENABLED.
-// false = no Checkout sessions; restore by setting true + redeploy.
-const DONATIONS_ENABLED = false;
+// Kill-switch — keep in sync with src/lib/features.js DONATIONS_ENABLED.
+// false = no Checkout sessions.
+const DONATIONS_ENABLED = true;
 
 const MIN_CENTS = 100;         // $1 floor
 const MAX_CENTS = 5_000_000;   // $50,000 ceiling (typo/fraud sanity check)

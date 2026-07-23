@@ -74,7 +74,7 @@ export default function Membership() {
             Make a Donation
           </h2>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">
-            SAMPA is pending 501(c)(3) nonprofit status. Your gift sustains daily provider news, member networking, and the education and training we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
+            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift sustains daily provider news, member networking, and the education and training we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
           </p>
         </div>
 
