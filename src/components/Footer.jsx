@@ -18,7 +18,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="flex gap-8 text-sm font-medium text-white/60">
+        <div className="flex flex-wrap justify-center md:justify-end items-center gap-x-8 gap-y-3 text-sm font-medium text-white/60">
           <a href="/#about" className="hover:text-white transition-colors">About</a>
           <a href="/#membership" className="hover:text-white transition-colors">Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Store</a>
@@ -26,7 +26,12 @@ export default function Footer() {
           <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
           <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>
-          <Link to="/dashboard" className="hover:text-white transition-colors">Member Login</Link>
+          <Link
+            to="/dashboard"
+            className="px-4 py-2 rounded-full border border-white/40 text-white font-semibold hover:bg-white hover:text-text transition-colors"
+          >
+            Member Login
+          </Link>
         </div>
 
       </div>
