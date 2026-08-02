@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Instagram, X } from 'lucide-react';
 import DonateLink from './DonateLink';
+import { SOCIAL_LINKS } from '../lib/socials';
+
+const SOCIAL_ICONS = {
+  Instagram,
+  X,
+};
 
 export default function Footer() {
   return (
@@ -16,6 +23,26 @@ export default function Footer() {
           <p className="text-white/60 max-w-sm text-sm">
             Improving health outcomes in addiction medicine by advancing physician associates—so individuals and communities impacted by substance use disorders get better care.
           </p>
+          {SOCIAL_LINKS.length > 0 && (
+            <div className="flex items-center gap-3">
+              {SOCIAL_LINKS.map(({ name, href }) => {
+                const Icon = SOCIAL_ICONS[name];
+                if (!Icon) return null;
+                return (
+                  <a
+                    key={name}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`SAMPA on ${name}`}
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/50 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" aria-hidden="true" />
+                  </a>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap justify-center md:justify-end items-center gap-x-8 gap-y-3 text-sm font-medium text-white/60">

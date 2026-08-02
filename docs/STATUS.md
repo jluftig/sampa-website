@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-22 (park: Workspace newsletter scout inbox)
+**Last updated:** 2026-08-02 (footer Instagram link; X awaiting handle)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -178,10 +178,12 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
-- [ ] **Footer social links** — Instagram (and eventually Twitter/X) icons/links in
-  the site footer so visitors can find SAMPA’s social accounts. Need final
-  profile URLs when ready; X can wait until the account exists. Touch
-  `src/components/Footer.jsx` (and optionally nav).
+- [x] **Footer social links** — Instagram icon/link in the site footer
+  (`src/components/Footer.jsx` + `src/lib/socials.js`). Profile:
+  [instagram.com/societyofaddictionmedicinepas](https://www.instagram.com/societyofaddictionmedicinepas/).
+  **Still open:** confirm org **X** handle (≤15 chars) and add
+  `{ name: 'X', href: 'https://x.com/…' }` to `SOCIAL_LINKS` — Footer already
+  maps the X icon.
 - [ ] **Newsletter signup without membership** — public way to subscribe (footer
   and/or homepage/donate-adjacent) for people who are not SAMPA members and
   need not create a full account. Today newsletter opt-in is only on the
