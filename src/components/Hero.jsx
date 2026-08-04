@@ -48,7 +48,7 @@ export default function Hero() {
         </p>
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-text mb-6 [text-wrap:balance]">
-          Stronger <span className="font-drama font-semibold">together</span>
+          Advancing <span className="font-drama font-semibold">addiction medicine</span>
         </h1>
 
         <p className="max-w-2xl mx-auto text-base md:text-xl text-text/70 leading-relaxed font-medium mb-8">
