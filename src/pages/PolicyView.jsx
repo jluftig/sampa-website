@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Download, FileText } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import Navbar from '../components/Navbar';
@@ -11,9 +11,24 @@ import {
 } from '../data/policyDocuments';
 import { formatDateOnly } from '../lib/format';
 
+/** Resolve hub slug; recover if a missing PDF was SPA-rewritten to /policy/:slug.pdf */
+function resolvePolicySlug(raw) {
+  if (!raw) return { slug: raw, fromPdfPath: false };
+  if (raw.toLowerCase().endsWith('.pdf')) {
+    return { slug: raw.slice(0, -4), fromPdfPath: true };
+  }
+  return { slug: raw, fromPdfPath: false };
+}
+
 export default function PolicyView() {
-  const { slug } = useParams();
+  const { slug: rawSlug } = useParams();
+  const { slug, fromPdfPath } = resolvePolicySlug(rawSlug);
   const doc = getPolicyDocument(slug);
+
+  // /policy/:slug.pdf was SPA-caught (missing static file) — show the hub page.
+  if (doc && fromPdfPath) {
+    return <Navigate to={`/policy/${doc.slug}`} replace />;
+  }
 
   if (!doc) {
     return (

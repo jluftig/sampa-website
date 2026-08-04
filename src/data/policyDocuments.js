@@ -72,7 +72,7 @@ const DOCUMENTS = [
     docket: 'FR Doc. 2026-11602 · Great American Recovery',
     submittedAt: '2026-07-05',
     publishedAt: '2026-07-05',
-    pdfUrl: '/policy/hhs-rfi-chronic-disease-addiction-2026.pdf',
+    pdfUrl: '/files/policy/hhs-rfi-chronic-disease-addiction-2026.pdf',
     onBehalfOfMembers: true,
     bodyHtml: `
 <p>The Society of Addiction Medicine Physician Associates (SAMPA) submitted this response to the HHS Request for Information on the chronic disease of addiction and the Great American Recovery Initiative.</p>

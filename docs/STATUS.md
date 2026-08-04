@@ -73,7 +73,7 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
 - **Policy hub** — public `/policy` + `/policy/:slug` for positions, public comments,
   and statements (mission-aligned educational framing; not News). MVP seeds from
-  `src/data/policyDocuments.js` + PDF in `public/policy/`. First document: HHS RFI
+  `src/data/policyDocuments.js` + PDF in `public/files/policy/`. First document: HHS RFI
   response on the chronic disease of addiction (submitted **2026-07-05**). Nav/footer
   **Policy** link; homepage value-prop + Membership/Join/About copy. CMS/table deferred
   until corpus grows. Distinct from News/Key Points.
