@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-04 (Policy hub access framing + levers)
+**Last updated:** 2026-08-04 (park Brevo email track; Policy hub framing on main)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -134,20 +134,12 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   OA-preferred drafts → editor briefing + menu on Telegram → human Publish only
   (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
   Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
-- **Email / Brevo campaigns (Hermes + repo)** — **Scaffolded 2026-08-03; not sending yet.**
-  Lives **in this repo** (not a sibling project): architecture
-  [`architecture/email-brevo.md`](architecture/email-brevo.md), sticky
-  [`PARK-brevo-email.md`](PARK-brevo-email.md), CLI `scripts/run-brevo.sh`,
-  repo skill `.claude/skills/sampa-email/`, Hermes skill `sampa-brevo-email`.
-  **Lists (v1):** Announcements, Weekly News, Policy, Jobs, CME, Test.
-  **From:** SAMPA `info@addictionpas.org` → Kelsey. Auth stays `no-reply@` SMTP.
-  **Agent:** draft + test only; mass send only on explicit approve or Brevo UI.
-  **Weekly News:** Mon **5:30 AM PT** after human approves draft (schedule, not autopilot).
-  **Google Group ~130:** Landing **A** (confirm prefs) — see
-  [`email/google-group-import.md`](email/google-group-import.md).
-  **First campaign:** new site + membership (`docs/email/templates/site-membership-launch.*`).
-  **Next:** API key in Hermes `.env`, create lists + pref center, Test seed, import, test send.
-  Resume: *Resume SAMPA Brevo email*.
+- **Email / Brevo campaigns (Hermes + repo)** — **Parked 2026-08-04.**
+  Scaffold in repo (CLI, architecture, skills); site copy lists member email as
+  **in development** (Ad Grants honesty). Not sending campaigns yet.
+  Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
+  [`architecture/email-brevo.md`](architecture/email-brevo.md).
+  Resume: *Resume SAMPA Brevo email* (API key → lists/Test → Landing A import → first campaign).
 
 ---
 
@@ -177,10 +169,9 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [ ] **Pre-membership security P0** (remaining) — Vercel Production env + Stripe
   live webhook + E2E membership path; see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md)
   / [`PARK-security-review.md`](PARK-security-review.md).
-- [ ] **Email / Brevo campaigns (in flight)** — decisions locked; scaffold in repo
-  2026-08-03. Still need: `BREVO_API_KEY`, lists + preference center, Test contacts,
-  Google Group Landing A import, first site/membership campaign test→send.
-  See In flight + [`PARK-brevo-email.md`](PARK-brevo-email.md).
+- [ ] **Email / Brevo campaigns (parked)** — scaffold + decisions locked; site = in development.
+  Still need: `BREVO_API_KEY`, lists + pref center, Test, Google Group Landing A, first campaign.
+  See [`PARK-brevo-email.md`](PARK-brevo-email.md).
   **Already live:** domain auth + Supabase auth SMTP via `no-reply@addictionpas.org`.
 - [ ] **Sentry account** (free) + `EXPO_PUBLIC_SENTRY_DSN` in mobile/.env.local and the
   EAS build env — turns on mobile crash reporting (code already merged, dormant).
