@@ -1,6 +1,6 @@
 # SAMPA website — human hand-off
 
-_Last updated: 2026-08-03_
+_Last updated: 2026-08-04_
 
 This file is a **thin front door** for a human taking over cold. It is **not** the
 system manual and **not** the product board.
@@ -16,6 +16,7 @@ Repo: **https://github.com/jluftig/sampa-website**
 |------|----------|
 | What’s live, blocked, next | **[STATUS.md](STATUS.md)** |
 | How the system is built / must not break | **[CLAUDE.md](../CLAUDE.md)** (+ [architecture/](architecture/) as needed) |
+| Google Ad Grants site follow-up (agent sticky) | **[PARK-ad-grants.md](PARK-ad-grants.md)** |
 | One-time Stripe / Google / env setup | [member-area-setup.md](member-area-setup.md) |
 | Mobile auth / push / TestFlight setup | [mobile-app-setup.md](mobile-app-setup.md) |
 
@@ -39,6 +40,10 @@ Then ask follow-ups (“how do I add an editor?”, “why is donate unavailable
 An agent with repo access can always rebuild a full operator guide from STATUS +
 CLAUDE + code — that’s intentional so we don’t maintain three copies.
 
+### Continue Ad Grants website work (paste to a new agent)
+
+> Resume SAMPA Ad Grants website. Read docs/PARK-ad-grants.md, docs/STATUS.md, and CLAUDE.md. PR #56 already merged: static hero, /about, Programs live vs in-development. Do not claim member email is live. No empty coming-soon routes. Help add more accurate org/program content for Ad Grants, then prepare for re-submit after prod deploy + PageSpeed check.
+
 ---
 
 ## Accounts to keep recoverable (bus factor)
@@ -54,6 +59,7 @@ Make sure a trusted second person can access or recover:
 - Apple Developer (Individual today → org after D-U-N-S; see STATUS)
 - Expo / EAS (`jluftig`)
 - Brevo (auth SMTP `no-reply@` live; marketing campaigns via `info@` → Kelsey — see STATUS / PARK-brevo-email)
+- Google for Nonprofits / Ad Grants (activation re-submit after website pass — see PARK-ad-grants)
 
 Losing these is the main non-code risk. Product/engineering truth is in git + STATUS.
 
@@ -69,6 +75,7 @@ Losing these is the main non-code risk. Product/engineering truth is in git + ST
 | Database / auth / SQL | Supabase dashboard |
 | Money | Stripe Dashboard (Test/Live toggle matters) |
 | Marketing email (Brevo) | Brevo dashboard; ops notes [PARK-brevo-email.md](PARK-brevo-email.md) / [architecture/email-brevo.md](architecture/email-brevo.md) |
+| Ad Grants website follow-up | [PARK-ad-grants.md](PARK-ad-grants.md) + [STATUS.md](STATUS.md) |
 | What’s in flight | [STATUS.md](STATUS.md) |
 
 If something looks broken: ask an agent with the repo open, or check STATUS + recent

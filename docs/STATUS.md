@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-04 (Ad Grants website policy pass — static hero, /about, programs)
+**Last updated:** 2026-08-04 (Ad Grants PARK handoff + PR #56 on main)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -98,6 +98,12 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
+- **Google Ad Grants website follow-up** — PR #56 merged 2026-08-04 (static hero,
+  `/about`, Programs live vs in-development). Sticky:
+  [`PARK-ad-grants.md`](PARK-ad-grants.md). Resume: *Resume SAMPA Ad Grants website*.
+  Still open: confirm prod deploy, PageSpeed mobile on `/` + `/about`, add more
+  org/program copy as supplied, then re-submit Ad Grants activation. Particle hero
+  stays parked until approval; member email stays “in development” until Brevo sends.
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
   keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID,
