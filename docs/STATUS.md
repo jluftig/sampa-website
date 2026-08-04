@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-04 (park Brevo email track; Policy hub framing on main)
+**Last updated:** 2026-08-04 (Policy hub intent/roadmap copy)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -73,14 +73,14 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   (EIN 42-2288772). `DONATIONS_ENABLED = true` in `src/lib/features.js` **and**
   `api/create-donation-session.js`. Donate page shows tax-deductible boilerplate.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
-- **Policy hub** — public `/policy` + `/policy/:slug`. **Framing (2026-08-04):**
-  SAMPA’s public voice for **access** to MAT/MOUD (buprenorphine and beyond)—not a
-  “public comment only” archive and not nav-labeled “Advocacy.” Nav stays **Policy**.
-  Instruments: Position / Public comment / Statement. Landing page shows **access
-  levers** (federal, state, payment, systems, professional voice, evidence→standards)
-  so the first HHS comment does not redefine the category. Seed:
-  `src/data/policyDocuments.js` + PDF in `public/files/policy/`. First document: HHS
-  RFI response (submitted **2026-07-05**). Deep dive:
+- **Policy hub** — public `/policy` + `/policy/:slug`. **Framing:** where SAMPA
+  **will publish** its public voice for **access** to MAT/MOUD—not a “comments only”
+  archive and not nav-labeled “Advocacy.” Nav stays **Policy**. Honest scope today:
+  one HHS public comment (submitted **2026-07-05**); levers table + Position/Statement
+  types are **roadmap / intent** (“How we will improve access”, “What we will publish”).
+  `/policy` also shows **Roadmap from our first comment** priorities seeded by that
+  HHS RFI (telehealth, state/OTP alignment, workforce, payment, stigma/peers, data).
+  Seed: `src/data/policyDocuments.js` + PDF in `public/files/policy/`. Deep dive:
   [`docs/architecture/policy-hub.md`](architecture/policy-hub.md). CMS/table deferred.
   Distinct from News/Key Points.
 - **Mobile app code on main** — Expo app in `mobile/` (PRs #22, #43–#45); see In flight
@@ -259,6 +259,9 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-04 · **Policy hub intent copy** — levers/types framed as will/roadmap
+  (not present-tense claims across unfinished levers); homepage/About/Membership
+  aligned. See [`architecture/policy-hub.md`](architecture/policy-hub.md).
 - 2026-08-04 · **Policy hub access framing** — hub copy + `/policy` levers table
   (federal / state / payment / systems / professional voice / evidence→standards);
   Position/Statement empty slots; keep nav **Policy** (reject “comment hub” /

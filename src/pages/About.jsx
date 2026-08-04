@@ -162,13 +162,14 @@ export default function AboutPage() {
                   New
                 </span>
                 <span className="text-text/80">. </span>
-                SAMPA’s public voice for expanding access to medications for
-                addiction treatment—including buprenorphine and other MOUD—across
-                federal, state, payment, and practice levers. Positions, public
-                comments, and statements advance clinical quality and access for
-                patients and communities, not partisan politics. Explore our{' '}
+                Where SAMPA will publish its public voice for expanding access to
+                medications for addiction treatment—including buprenorphine and
+                other MOUD. We are starting with federal public comments and
+                intend to grow into positions and statements across federal,
+                state, payment, and practice levers—not partisan politics.
+                Explore the{' '}
                 <Link to="/policy" className="text-primary-text font-semibold underline-offset-2 hover:underline">
-                  Policy work
+                  Policy hub
                 </Link>
                 .
               </li>
