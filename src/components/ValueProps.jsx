@@ -20,9 +20,9 @@ const live = [
   {
     icon: ScrollText,
     title: 'Policy work for quality care and access',
-    desc: 'SAMPA’s public voice for expanding access to MOUD and MAT—positions, public comments, and statements across federal, state, payment, and practice levers—not partisan politics.',
+    desc: 'Where SAMPA will publish its public voice for expanding access to MOUD and MAT—starting with federal comments, and growing into positions and statements across federal, state, payment, and practice levers—not partisan politics.',
     href: '/policy',
-    cta: 'See our Policy work',
+    cta: 'See our Policy hub',
   },
 ];
 

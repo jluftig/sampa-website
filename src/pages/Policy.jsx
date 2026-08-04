@@ -7,6 +7,7 @@ import {
   POLICY_HUB,
   POLICY_TYPES,
   POLICY_LEVERS,
+  POLICY_COMMENT_PRIORITIES,
   listPolicyDocuments,
   policyTypeCounts,
   typeLabel,
@@ -100,9 +101,29 @@ export default function Policy() {
           </section>
         )}
 
+        <section className="mb-16 md:mb-20" aria-labelledby="priorities-heading">
+          <h2 id="priorities-heading" className="text-2xl md:text-3xl font-drama font-bold mb-4">
+            Roadmap from our first comment
+          </h2>
+          <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-8">
+            {POLICY_HUB.prioritiesIntro}
+          </p>
+          <ul className="space-y-3 max-w-3xl">
+            {POLICY_COMMENT_PRIORITIES.map((item) => (
+              <li
+                key={item}
+                className="flex gap-3 text-text/75 leading-relaxed"
+              >
+                <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section className="mb-16 md:mb-20" aria-labelledby="levers-heading">
           <h2 id="levers-heading" className="text-2xl md:text-3xl font-drama font-bold mb-4">
-            How we improve access
+            How we will improve access
           </h2>
           <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-8">
             {POLICY_HUB.leversIntro}
@@ -110,7 +131,7 @@ export default function Policy() {
           <div className="overflow-x-auto rounded-3xl border border-primary/10 bg-white">
             <table className="w-full min-w-[40rem] text-left text-sm md:text-base">
               <caption className="sr-only">
-                Levers SAMPA uses to expand buprenorphine, MOUD, and MAT access
+                Levers SAMPA intends to use to expand buprenorphine, MOUD, and MAT access
               </caption>
               <thead>
                 <tr className="border-b border-primary/10 bg-primary/5">
@@ -121,7 +142,7 @@ export default function Policy() {
                     Examples
                   </th>
                   <th scope="col" className="px-5 py-4 font-semibold text-text">
-                    Typical artifact
+                    Planned artifact
                   </th>
                 </tr>
               </thead>
@@ -145,11 +166,12 @@ export default function Policy() {
 
         <section className="mb-16 md:mb-20" aria-labelledby="types-heading">
           <h2 id="types-heading" className="text-2xl font-drama font-bold mb-4">
-            What we publish
+            What we will publish
           </h2>
           <p className="text-text/70 leading-relaxed max-w-3xl mb-8">
-            Materials fall into these types. The corpus will grow beyond the first
-            public comment as positions, statements, and related work land.
+            Over time, materials will fall into these types. We have started with
+            a federal public comment; positions, statements, and related work
+            will follow as the corpus grows.
           </p>
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {Object.values(POLICY_TYPES).map((t) => {
@@ -199,7 +221,7 @@ export default function Policy() {
               <h3 className="text-xl font-bold mb-2">Nothing in this category yet</h3>
               <p className="text-text/60">
                 Check back as SAMPA publishes additional positions, comments, and
-                statements across the levers above.
+                statements across the planned levers above.
               </p>
             </div>
           ) : (

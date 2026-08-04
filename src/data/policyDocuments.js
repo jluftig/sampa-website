@@ -28,53 +28,76 @@ export const POLICY_TYPES = {
 };
 
 /**
- * Levers SAMPA uses to expand buprenorphine / MOUD / MAT access.
- * Shown on /policy; canonical product framing in docs/architecture/policy-hub.md.
+ * Levers SAMPA intends to use to expand buprenorphine / MOUD / MAT access.
+ * Examples are grounded in the July 2026 HHS RFI public comment (first published
+ * Policy hub material) plus planned follow-on work. Roadmap / intent — not a claim
+ * that each lever is already active. Canonical framing: docs/architecture/policy-hub.md.
  */
 export const POLICY_LEVERS = [
   {
     lever: 'Federal rulemaking',
-    examples: 'HHS/SAMHSA/DEA/CMS RFIs, telehealth, OTP rules',
+    examples:
+      'HHS/SAMHSA/DEA/CMS RFIs; permanent SUD telehealth with practitioner-neutral language; 42 CFR Part 8 OTP practitioner implementation',
     artifact: 'Public comments',
   },
   {
     lever: 'State practice law',
-    examples: 'Scope, supervision, PA OTP authority',
+    examples:
+      'Scope and supervision; stranded DATA-waiver / X-waiver references; MOUD-specific PA barriers; state OTP / methadone alignment with Part 8',
     artifact: 'Positions, board letters, model language, coalitions',
   },
   {
     lever: 'Payment',
-    examples: 'Medicaid, prior auth, team-based billing',
+    examples:
+      'Medicaid MOUD pay parity; prior auth reform; Medicare differentials; PA billing for Collaborative Care / behavioral health integration',
     artifact: 'Letters, positions, payer comments',
   },
   {
     lever: 'Systems / employers',
-    examples: 'Credentialing, formulary, clinic protocols',
+    examples:
+      'Low-barrier / same-day MOUD initiation; clinic protocols; peer recovery integrated with prescribing; rural specialty backup',
     artifact: 'Toolkits, positions, member education',
   },
   {
-    lever: 'Professional voice',
-    examples: 'Joint ASAM/AAPA letters, stigma, workforce programs',
-    artifact: 'Statements, coalitions',
+    lever: 'Workforce & professional voice',
+    examples:
+      'PA recognition in HRSA/NHSC and HHS workforce projections; MATE Act / clinical stigma education; peer recovery culture; joint society statements',
+    artifact: 'Statements, coalitions, comments',
   },
   {
     lever: 'Evidence → standards',
-    examples: 'Outcomes by prescriber type, quality measures',
+    examples:
+      'Outcome measures including prescriber type; near-real-time MOUD access dashboards; workforce-visible claims data',
     artifact: 'Positions + research briefs',
   },
+];
+
+/**
+ * Access priorities drawn from SAMPA’s July 2026 HHS RFI comment — shown on
+ * /policy as the near-term roadmap seeded by that first material.
+ */
+export const POLICY_COMMENT_PRIORITIES = [
+  'Scale accessible MOUD (buprenorphine, methadone, naltrexone), including low-barrier and telehealth delivery',
+  'Make SUD telehealth flexibilities permanent with practitioner-neutral language before the telemedicine cliff',
+  'Encourage states to retire obsolete MOUD-specific barriers and stranded waiver language, and align OTP rules with Part 8 so PAs can practice',
+  'Recognize and recruit PAs in HHS behavioral health workforce programs; align payment so PA-delivered addiction care is sustainable',
+  'Reduce clinical stigma (MATE Act education) and expand peer recovery support alongside MOUD',
+  'Standardize outcomes—including prescriber type—and build learning systems so policy can follow evidence on access',
 ];
 
 export const POLICY_HUB = {
   eyebrow: 'Access to evidence-based addiction care',
   title: 'Policy',
   oneLiner:
-    'SAMPA’s public voice for expanding access to medications for addiction treatment—including buprenorphine and other medications for opioid use disorder (MOUD)—so physician associates can deliver high-quality care to the patients and communities we serve. Public comments are one instrument; we also develop positions, statements, and related materials across federal, state, payment, and practice levers.',
+    'SAMPA’s Policy hub is where we will publish our public voice for expanding access to medications for addiction treatment—including buprenorphine, methadone, naltrexone, and other medications for opioid use disorder (MOUD)—so physician associates can deliver high-quality care to the patients and communities we serve, especially in rural and underserved areas. We are starting with public comments to federal agencies; our first comment to HHS sets the access agenda below. Over time we intend to develop positions, statements, and related materials across federal, state, payment, workforce, and practice levers.',
   leversIntro:
-    'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA works across several levers—not only federal dockets:',
+    'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA will work across several levers—not only federal dockets. These levers reflect the agenda in our first public comment and the work still ahead:',
+  prioritiesIntro:
+    'Priorities from our first public comment (HHS RFI, July 2026)—the near-term access roadmap we intend to advance:',
   disclaimer:
     'SAMPA, Inc. is a 501(c)(3) public charity. Our policy materials advance our educational and public-health mission. We do not engage in political campaign activity.',
   memberValue:
-    'Members support SAMPA’s policy work: the society’s public voice for access to care—positions, comments, and statements drafted on behalf of addiction-medicine PAs, focused on clinical quality and access—not partisan politics.',
+    'Members support SAMPA’s Policy hub: the society’s emerging public voice for access to care—starting with public comments, and growing into positions and statements drafted on behalf of addiction-medicine PAs, focused on clinical quality and access—not partisan politics.',
 };
 
 /** @typedef {'position' | 'comment' | 'statement'} PolicyType */
@@ -105,12 +128,12 @@ const DOCUMENTS = [
     summary:
       'SAMPA’s July 2026 public comment to HHS on the Great American Recovery Initiative. The comment centers the PA workforce as essential to expanding evidence-based addiction care—especially access to medications for opioid use disorder (MOUD)—in rural and underserved communities.',
     themes: [
-      'Scale accessible MOUD (buprenorphine, methadone, naltrexone) as the core of recovery policy',
-      'Make SUD telehealth flexibilities permanent with practitioner-neutral language',
-      'Encourage states to retire obsolete barriers to PA buprenorphine and OTP practice',
-      'Recognize PAs in HHS behavioral health workforce programs and align payment for team-based care',
-      'Reduce clinical stigma through MATE Act education and expand peer recovery support',
-      'Standardize outcomes—including prescriber type—so policy can follow evidence on access',
+      'Scale accessible MOUD (buprenorphine, methadone, naltrexone), including low-barrier and telehealth delivery',
+      'Make SUD telehealth flexibilities permanent with practitioner-neutral language before the telemedicine cliff',
+      'Encourage states to retire obsolete MOUD-specific barriers and stranded waiver language; align OTP / methadone practice with Part 8',
+      'Recognize PAs in HHS behavioral health workforce programs and align payment (including CoCM / BHI) for team-based care',
+      'Reduce clinical stigma through MATE Act education and expand peer recovery support alongside MOUD',
+      'Standardize outcomes—including prescriber type—and build near-real-time MOUD access measurement so policy can follow evidence',
     ],
     agency: 'U.S. Department of Health and Human Services (HHS)',
     docket: 'FR Doc. 2026-11602 · Great American Recovery',
@@ -121,8 +144,8 @@ const DOCUMENTS = [
     bodyHtml: `
 <p>The Society of Addiction Medicine Physician Associates (SAMPA) submitted this response to the HHS Request for Information on the chronic disease of addiction and the Great American Recovery Initiative.</p>
 <p>SAMPA’s central message is a workforce message: federal barriers to PA prescribing of buprenorphine have largely fallen, yet patient-level access has not grown in proportion because state scope restrictions, payment differentials, and unfinished telehealth rulemaking continue to sideline this workforce. Each recommendation identifies levers HHS can use under existing authority to close that gap.</p>
-<p>The full comment answers all five RFI questions—evidence-based interventions, federal program changes, stigma mitigation, practitioner supply, and evaluation/data modernization—with a consistent focus on quality care and equitable access to MOUD for patients and communities.</p>
-<p>Download the PDF for the complete submitted document, including citations and statutory authorities.</p>
+<p>The full comment answers all five RFI questions—evidence-based interventions (including MOUD and Collaborative Care), federal program changes (telehealth, federal–state MOUD alignment, Part 8 OTP practitioner implementation), stigma mitigation (MATE Act education and peer recovery), practitioner supply and payment, and evaluation/data modernization—with a consistent focus on quality care and equitable access to MOUD for patients and communities, especially in rural and underserved areas.</p>
+<p>Download the PDF for the complete submitted document, including citations and statutory authorities. The Policy hub roadmap below draws its near-term priorities from this comment.</p>
 `.trim(),
   },
 ];
