@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Newspaper, Users, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
+import { Newspaper, Users, Mail, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
 
 const live = [
   {
@@ -14,6 +14,13 @@ const live = [
     icon: Users,
     title: 'Member networking directory',
     desc: 'A private national peer directory for PAs in addiction medicine—collaborate on mission-related projects, share experience, and reduce isolation in the work.',
+    href: '/join',
+    cta: 'Join to connect',
+  },
+  {
+    icon: Mail,
+    title: 'Member email, on your terms',
+    desc: 'Stay connected between visits to the site. Members receive society announcements, a weekly roundup of SAMPA’s PA-focused news, and optional updates on policy, jobs, and CME as those programs come online. Preferences are yours; the goal is useful signal for physician associates—so patients and communities benefit from care that stays current.',
     href: '/join',
     cta: 'Join to connect',
   },
@@ -54,7 +61,7 @@ export default function ValueProps() {
         <h3 className="text-sm font-bold tracking-widest text-accent uppercase mb-8 text-center md:text-left">
           Live now
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {live.map((p) => {
             const Icon = p.icon;
             return (

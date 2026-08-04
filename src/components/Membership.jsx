@@ -20,7 +20,8 @@ export default function Membership() {
         </h2>
         <p className="text-lg text-text/70 max-w-2xl mx-auto">
           Join a national community of physician associates improving care for people and communities impacted by substance use disorders.
-          Members get daily news that keeps providers current and a private peer networking directory (you control listing and contact details).
+          Members get daily news that keeps providers current, a private peer networking directory (you control listing and contact details),
+          and email updates you control—announcements, a weekly roundup of our coverage for PAs, and optional policy, jobs, and CME lists.
           Choose the level that fits your career stage — then confirm term and pay on the next step.
         </p>
       </div>
@@ -74,7 +75,7 @@ export default function Membership() {
             Make a Donation
           </h2>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">
-            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift sustains daily provider news, member networking, and the education and training we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
+            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift sustains daily provider news, member networking, member email updates, and the education and training we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
           </p>
         </div>
 
