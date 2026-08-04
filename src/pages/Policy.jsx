@@ -35,8 +35,13 @@ export default function Policy() {
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-24">
         <header className="max-w-3xl mb-16 md:mb-20">
-          <div className="text-primary-text font-bold font-data tracking-widest text-sm mb-4 uppercase">
-            {POLICY_HUB.eyebrow}
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="text-primary-text font-bold font-data tracking-widest text-sm uppercase">
+              {POLICY_HUB.eyebrow}
+            </div>
+            <span className="text-xs font-data uppercase tracking-wider text-accent font-semibold">
+              New
+            </span>
           </div>
           <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">
             {POLICY_HUB.title}

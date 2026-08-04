@@ -116,10 +116,10 @@ export default function AboutPage() {
               What we do
             </h2>
             <p className="mb-8">
-              SAMPA is a young organization. We already operate programs that
-              help PAs stay current and connected, and we are actively building
-              the next layer of practice support. Below is an honest account of
-              what is live today and what is in development.
+              SAMPA is a young organization. Almost everything we offer today is
+              newly launched—and we are actively building the next layer of
+              practice support. Below is an honest account of what is live now
+              and what is in development.
             </p>
 
             <h3 className="text-xl font-bold text-text mb-3 tracking-tight">
@@ -127,7 +127,11 @@ export default function AboutPage() {
             </h3>
             <ul className="list-disc pl-6 space-y-4 mb-10">
               <li>
-                <strong className="text-text">Daily news and Key Points.</strong>{' '}
+                <strong className="text-text">Daily news and Key Points</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                  New
+                </span>
+                <span className="text-text/80">. </span>
                 We publish original coverage of research, policy, and practice
                 developments in addiction medicine so physician associates can
                 stay up to date on critical, breaking information—and better
@@ -138,7 +142,11 @@ export default function AboutPage() {
                 .
               </li>
               <li>
-                <strong className="text-text">Member networking directory.</strong>{' '}
+                <strong className="text-text">Member networking directory</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                  New
+                </span>
+                <span className="text-text/80">. </span>
                 Active members can use a private peer directory to find
                 colleagues, collaborate on mission-related projects, and reduce
                 professional isolation in addiction medicine. Members control
@@ -149,7 +157,11 @@ export default function AboutPage() {
                 .
               </li>
               <li>
-                <strong className="text-text">Policy hub.</strong>{' '}
+                <strong className="text-text">Policy hub</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                  New
+                </span>
+                <span className="text-text/80">. </span>
                 SAMPA’s public voice for expanding access to medications for
                 addiction treatment—including buprenorphine and other MOUD—across
                 federal, state, payment, and practice levers. Positions, public
@@ -172,7 +184,11 @@ export default function AboutPage() {
             </p>
             <ul className="list-disc pl-6 space-y-4">
               <li>
-                <strong className="text-text">Member email updates.</strong>{' '}
+                <strong className="text-text">Member email updates</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
+                  Coming soon
+                </span>
+                <span className="text-text/80">. </span>
                 Society announcements, a weekly roundup of the news we publish
                 for physician associates, and optional lists for policy, jobs,
                 and CME/events. Members will choose topics and can change
@@ -180,18 +196,30 @@ export default function AboutPage() {
                 exist on the member dashboard; regular campaigns are rolling out.
               </li>
               <li>
-                <strong className="text-text">Practice resources.</strong>{' '}
+                <strong className="text-text">Practice resources</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
+                  Coming soon
+                </span>
+                <span className="text-text/80">. </span>
                 Curated, evidence-based guidance so PAs can provide current best
                 practices and up-to-date treatments for patients with substance
                 use disorders.
               </li>
               <li>
-                <strong className="text-text">CME (continuing medical education).</strong>{' '}
+                <strong className="text-text">CME (continuing medical education)</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
+                  Coming soon
+                </span>
+                <span className="text-text/80">. </span>
                 Education activities tailored to addiction medicine for
                 physician associates, supporting lifelong clinical competence.
               </li>
               <li>
-                <strong className="text-text">Job board.</strong>{' '}
+                <strong className="text-text">Job board</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
+                  Coming soon
+                </span>
+                <span className="text-text/80">. </span>
                 A mission-aligned board for addiction medicine roles, helping
                 PAs find positions where they can serve individuals and
                 communities affected by substance use.
