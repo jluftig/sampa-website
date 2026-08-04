@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-03 (Brevo email campaign pipeline scaffold — in repo)
+**Last updated:** 2026-08-04 (Ad Grants website policy pass — static hero, /about, programs)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -35,14 +35,16 @@ If the same “what’s next” list appears in three files, **keep STATUS and d
 
 Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + preview).
 
-- **Marketing site** — homepage, about/sections, privacy & terms (effective
-  **July 11, 2026**; member directory fully disclosed; self-published for a small
-  nonprofit — no outside counsel). **Homepage copy (2026-07-14):** outcomes for
-  individuals/communities first; daily news + member networking as live offers;
-  education/CME not the front pitch.
-- **Homepage hero (2026-07-19 → 2026-07-21)** — particle “Assembly” wordmark
-  (PR #49), bouncing scroll cue instead of duplicate hero CTAs (PR #50),
-  newspaper icon removed above Daily News teaser (PR #51).
+- **Marketing site** — homepage, dedicated **`/about`** page, privacy & terms
+  (effective **July 11, 2026**; member directory fully disclosed; self-published
+  for a small nonprofit — no outside counsel). **Ad Grants pass (2026-08-04):**
+  501(c)(3) + EIN prominent on hero/about; mission + programs (live news/directory;
+  in-development member email, practice resources, CME, job board — no empty landing pages);
+  Join/Donate CTAs in hero; nav About → `/about`, Programs → `/#programs`.
+- **Homepage hero (2026-08-04)** — **static** wordmark + nonprofit line + Join/Donate
+  CTAs for Ad Grants PageSpeed. Particle “Assembly” effect (PR #49) parked until
+  after approval; scroll cue retained. Earlier: scroll cue (PR #50), news icon
+  removed (PR #51).
 - **News/blog + Key Points research database** — editor dashboard, keyword browse and
   intersections, full-text search, per-claim share links and citations, social-preview
   cards. Posts are drafted via the `/sampa-post` skill.
@@ -261,6 +263,12 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-04 · **Ad Grants website policy pass** — static hero (particle effect
+  parked); `/about` with mission, 501(c)(3)/EIN, live + in-development programs
+  (member email listed as rolling out, not live); homepage reorder
+  (mission → programs → news → membership); Programs nav; Join/Donate CTAs
+  restored on hero. Re-submit Google Ad Grants activation after deploy to
+  www.addictionpas.org.
 - 2026-07-21 · **501(c)(3) granted + donations restored** — SAMPA, Inc. EIN
   42-2288772; both `DONATIONS_ENABLED` flags on; tax-deductible boilerplate on
   `/donate`; pending copy cleared on footer, homepage donate CTA, dashboard,
