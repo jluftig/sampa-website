@@ -39,7 +39,7 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   (effective **July 11, 2026**; member directory fully disclosed; self-published
   for a small nonprofit — no outside counsel). **Ad Grants pass (2026-08-04):**
   501(c)(3) + EIN prominent on hero/about; mission + programs (live news/directory;
-  in-development practice resources, CME, job board — no empty landing pages);
+  in-development member email, practice resources, CME, job board — no empty landing pages);
   Join/Donate CTAs in hero; nav About → `/about`, Programs → `/#programs`.
 - **Homepage hero (2026-08-04)** — **static** wordmark + nonprofit line + Join/Donate
   CTAs for Ad Grants PageSpeed. Particle “Assembly” effect (PR #49) parked until
@@ -264,10 +264,11 @@ Deferred from the first directory ship:
 ## Recently shipped (newest first)
 
 - 2026-08-04 · **Ad Grants website policy pass** — static hero (particle effect
-  parked); `/about` with mission, 501(c)(3)/EIN, live + in-development programs;
-  homepage reorder (mission → programs → news → membership); Programs nav;
-  Join/Donate CTAs restored on hero. Re-submit Google Ad Grants activation after
-  deploy to www.addictionpas.org.
+  parked); `/about` with mission, 501(c)(3)/EIN, live + in-development programs
+  (member email listed as rolling out, not live); homepage reorder
+  (mission → programs → news → membership); Programs nav; Join/Donate CTAs
+  restored on hero. Re-submit Google Ad Grants activation after deploy to
+  www.addictionpas.org.
 - 2026-07-21 · **501(c)(3) granted + donations restored** — SAMPA, Inc. EIN
   42-2288772; both `DONATIONS_ENABLED` flags on; tax-deductible boilerplate on
   `/donate`; pending copy cleared on footer, homepage donate CTA, dashboard,

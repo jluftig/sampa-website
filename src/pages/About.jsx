@@ -104,8 +104,7 @@ export default function AboutPage() {
             <p className="mb-6">
               Contributions to SAMPA are tax-deductible to the extent allowed by
               law. Donations sustain daily provider news, member networking,
-              member email updates, and the education and practice resources we
-              are building.
+              and the education, email, and practice resources we are building.
             </p>
             <DonateLink className="inline-block bg-gradient-to-r from-primary-text to-accent text-white px-7 py-3 rounded-full text-sm font-semibold shadow-md">
               Make a tax-deductible donation
@@ -149,19 +148,6 @@ export default function AboutPage() {
                 </Link>
                 .
               </li>
-              <li>
-                <strong className="text-text">Member email updates.</strong>{' '}
-                Active members can get SAMPA in their inbox: society
-                announcements, a weekly roundup of the news we publish for
-                physician associates, and optional lists for policy, jobs, and
-                CME/events as those offerings grow. You choose topics and can
-                change preferences or unsubscribe anytime. Membership starts on
-                our{' '}
-                <Link to="/join" className="text-primary-text font-semibold underline-offset-2 hover:underline">
-                  join page
-                </Link>
-                .
-              </li>
             </ul>
 
             <h3 className="text-xl font-bold text-text mb-3 tracking-tight">
@@ -173,6 +159,14 @@ export default function AboutPage() {
               program pages will launch when each offering is ready.
             </p>
             <ul className="list-disc pl-6 space-y-4">
+              <li>
+                <strong className="text-text">Member email updates.</strong>{' '}
+                Society announcements, a weekly roundup of the news we publish
+                for physician associates, and optional lists for policy, jobs,
+                and CME/events. Members will choose topics and can change
+                preferences or unsubscribe anytime. Preference controls already
+                exist on the member dashboard; regular campaigns are rolling out.
+              </li>
               <li>
                 <strong className="text-text">Practice resources.</strong>{' '}
                 Curated, evidence-based guidance so PAs can provide current best
@@ -203,9 +197,8 @@ export default function AboutPage() {
               <Link to="/news" className="text-primary-text font-semibold underline-offset-2 hover:underline">
                 news
               </Link>
-              , becoming a member for the peer directory and member email,
-              supporting our nonprofit mission with a gift, or reaching out to
-              our team.
+              , becoming a member for the peer directory, supporting our
+              nonprofit mission with a gift, or reaching out to our team.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Link

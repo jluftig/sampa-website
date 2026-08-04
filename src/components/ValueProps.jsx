@@ -17,16 +17,14 @@ const live = [
     href: '/join',
     cta: 'Join to connect',
   },
-  {
-    icon: Mail,
-    title: 'Member email, on your terms',
-    desc: 'Stay connected between visits to the site. Members receive society announcements, a weekly roundup of SAMPA’s PA-focused news, and optional updates on policy, jobs, and CME as those programs come online. Preferences are yours; the goal is useful signal for physician associates—so patients and communities benefit from care that stays current.',
-    href: '/join',
-    cta: 'Join to connect',
-  },
 ];
 
 const building = [
+  {
+    icon: Mail,
+    title: 'Member email updates',
+    desc: 'Society announcements, a weekly roundup of SAMPA’s PA-focused news, and optional lists for policy, jobs, and CME—with preferences members control. Preference controls exist today; regular campaigns are rolling out.',
+  },
   {
     icon: BookOpen,
     title: 'Practice resources',
@@ -61,7 +59,7 @@ export default function ValueProps() {
         <h3 className="text-sm font-bold tracking-widest text-accent uppercase mb-8 text-center md:text-left">
           Live now
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           {live.map((p) => {
             const Icon = p.icon;
             return (
@@ -89,7 +87,7 @@ export default function ValueProps() {
         <h3 className="text-sm font-bold tracking-widest text-accent uppercase mb-8 text-center md:text-left">
           In development
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {building.map((p) => {
             const Icon = p.icon;
             return (
