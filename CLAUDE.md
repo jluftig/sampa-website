@@ -6,7 +6,7 @@ Machine-oriented entry point for agents on the SAMPA website.
 **Deep dives:** [`docs/architecture/`](docs/architecture/).  
 `AGENTS.md` points here for non-Claude agents.
 
-Last updated: 2026-07-21 (docs diet — split architecture; slim HANDOFF).
+Last updated: 2026-08-03 (Brevo email module + skills scaffold).
 
 ## What this project is
 
@@ -29,8 +29,9 @@ Repo: `jluftig/sampa-website`. Supabase ref: `xbzzawjnphpnexwfjtif`.
 | **`docs/architecture/*`** | Repo map, data model, RLS, Stripe, mobile |
 | **`docs/HANDOFF.md`** | Thin human front door + bus-factor accounts |
 | **`docs/PARK-*.md`** | Mid-flight stickies only |
-| Setup runbooks | `member-area-setup.md`, `mobile-app-setup.md` |
+| Setup runbooks | `member-area-setup.md`, `mobile-app-setup.md`, `email/setup-checklist.md` |
 | News production | scout/post/cover prompts under `docs/` |
+| Marketing email (Brevo) | `docs/architecture/email-brevo.md`, `docs/email/`, `.claude/skills/sampa-email/` |
 | Archive | `docs/archive/` (GEMINI bootstrap, original news plan) |
 
 **Write path:** STATUS first → architecture/CLAUDE if design/security changed → PARK only if mid-flight → HANDOFF only if bus-factor/accounts list changed.
@@ -61,7 +62,10 @@ optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOO
 | `src/pages/` | Public, member, editor, admin routes |
 | `supabase/schema.sql` | **DDL + RLS source of truth** |
 | `mobile/` | Expo app — see `docs/architecture/mobile.md` + `mobile/AGENTS.md` |
-
+| `scripts/brevo/`, `scripts/run-brevo.sh` | Brevo campaign CLI (draft+test; gated send) |
+| `docs/email/` | Email playbooks + HTML templates (no secrets/CSVs) |
+| `.claude/skills/sampa-email/` | Repo agent skill for Brevo campaigns |
+| `vercel.json` | SPA rewrite; crawler UAs on `/news/:slug` → `/api/share` |
 Full tree + routes: **`docs/architecture/repo-map.md`**.
 
 ## Security (do not weaken)

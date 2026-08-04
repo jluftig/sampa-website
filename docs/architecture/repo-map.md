@@ -39,26 +39,37 @@ src/
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      MVP Policy hub seed (positions / public comments / statements)
-  pages/                    Home, News, PostView, Policy, PolicyView, Tags, TagView, Search,
+  pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, Donate, Dashboard, MemberDirectory, MemberProfile,
                             Privacy, Terms, EditorDashboard, PostEditor, AdminTags,
                             AdminPeople, AdminMembers
 public/
-  policy/                   Official Policy PDFs (e.g. HHS RFI comment)
+  files/policy/             Official Policy PDFs (e.g. HHS RFI comment)
 supabase/
   schema.sql                SOURCE OF TRUTH (tables, RLS, functions, triggers, seed)
   migrations/               standalone per-change snippets (folded into schema.sql)
 docs/                       STATUS (board), HANDOFF (thin human front door), architecture/*,
-                            setup runbooks, news pipeline prompts, PARK-* stickies
+                            setup runbooks, news pipeline prompts, PARK-* stickies,
+                            email/ (Brevo playbooks + templates; imports/ gitignored CSVs)
+scripts/
+  insert-sampa-draft.mjs    News draft insert (status=draft only)
+  run-insert-draft.sh       Load SAMPA_* from Hermes .env → insert
+  brevo/cli.mjs             Brevo REST CLI (draft+test; gated send)
+  run-brevo.sh              Load BREVO_* from Hermes .env → brevo CLI
+.claude/skills/
+  sampa-post/               News post generator (repo agents)
+  sampa-email/              Brevo campaigns (repo agents)
 mobile/                     Expo iOS/Android — separate build, same Supabase (see architecture/mobile.md)
 vercel.json                 SPA rewrite; crawler UAs on /news/:slug → /api/share
 ```
+
+Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 ## Routes
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |

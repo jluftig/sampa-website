@@ -24,13 +24,13 @@ export default function Navbar() {
             <img src="/SAMPA_no_bg.svg" alt="SAMPA Logo" className="h-10 object-contain" />
           </Link>
         </div>
-        
+
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6 font-medium text-sm text-text/80">
           <Link to="/news" className="hover:text-primary-text transition-colors">News</Link>
           <Link to="/policy" className="hover:text-primary-text transition-colors">Policy</Link>
-          <a href="/#about" className="hover:text-primary-text transition-colors">About</a>
-          <a href="/#value-props" className="hover:text-primary-text transition-colors">CE & Resources</a>
+          <Link to="/about" className="hover:text-primary-text transition-colors">About</Link>
+          <a href="/#programs" className="hover:text-primary-text transition-colors">Programs</a>
           <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
           <DonateLink className="hover:text-primary-text transition-colors">Donate</DonateLink>
@@ -53,7 +53,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile/Tablet Hamburger Toggle */}
-        <button 
+        <button
           className="lg:hidden p-2 text-primary-text focus:outline-none"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
@@ -72,8 +72,8 @@ export default function Navbar() {
         <div className="lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
           <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>News</Link>
           <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Policy</Link>
-          <a href="/#about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-          <a href="/#value-props" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>CE & Resources</a>
+          <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+          <a href="/#programs" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Programs</a>
           <a href="/#membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
           <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</DonateLink>

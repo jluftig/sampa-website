@@ -22,6 +22,7 @@ export default function Membership() {
           Join a national community of physician associates improving care for people and communities impacted by substance use disorders.
           Members get daily news that keeps providers current, a private peer networking directory (you control listing and contact details),
           and support for SAMPA’s policy work—comments and positions drafted on behalf of addiction-medicine PAs, focused on clinical quality and access to care.
+          Member email updates—announcements, a weekly news roundup, and optional topic lists—are coming next.
           Choose the level that fits your career stage — then confirm term and pay on the next step.
         </p>
       </div>
@@ -75,7 +76,7 @@ export default function Membership() {
             Make a Donation
           </h2>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">
-            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift sustains daily provider news, member networking, mission-aligned policy comments, and the education and training we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
+            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift sustains daily provider news, member networking, mission-aligned policy comments, and the education, email, and practice resources we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
           </p>
         </div>
 

@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-04 (Policy hub MVP + HHS public comment)
+**Last updated:** 2026-08-04 (Policy hub MVP + Ad Grants website pass)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -35,14 +35,16 @@ If the same “what’s next” list appears in three files, **keep STATUS and d
 
 Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + preview).
 
-- **Marketing site** — homepage, about/sections, privacy & terms (effective
-  **July 11, 2026**; member directory fully disclosed; self-published for a small
-  nonprofit — no outside counsel). **Homepage copy (2026-07-14):** outcomes for
-  individuals/communities first; daily news + member networking as live offers;
-  education/CME not the front pitch.
-- **Homepage hero (2026-07-19 → 2026-07-21)** — particle “Assembly” wordmark
-  (PR #49), bouncing scroll cue instead of duplicate hero CTAs (PR #50),
-  newspaper icon removed above Daily News teaser (PR #51).
+- **Marketing site** — homepage, dedicated **`/about`** page, privacy & terms
+  (effective **July 11, 2026**; member directory fully disclosed; self-published
+  for a small nonprofit — no outside counsel). **Ad Grants pass (2026-08-04):**
+  501(c)(3) + EIN prominent on hero/about; mission + programs (live news/directory;
+  in-development member email, practice resources, CME, job board — no empty landing pages);
+  Join/Donate CTAs in hero; nav About → `/about`, Programs → `/#programs`.
+- **Homepage hero (2026-08-04)** — **static** wordmark + nonprofit line + Join/Donate
+  CTAs for Ad Grants PageSpeed. Particle “Assembly” effect (PR #49) parked until
+  after approval; scroll cue retained. Earlier: scroll cue (PR #50), news icon
+  removed (PR #51).
 - **News/blog + Key Points research database** — editor dashboard, keyword browse and
   intersections, full-text search, per-claim share links and citations, social-preview
   cards. Posts are drafted via the `/sampa-post` skill.
@@ -128,6 +130,20 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   OA-preferred drafts → editor briefing + menu on Telegram → human Publish only
   (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
   Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
+- **Email / Brevo campaigns (Hermes + repo)** — **Scaffolded 2026-08-03; not sending yet.**
+  Lives **in this repo** (not a sibling project): architecture
+  [`architecture/email-brevo.md`](architecture/email-brevo.md), sticky
+  [`PARK-brevo-email.md`](PARK-brevo-email.md), CLI `scripts/run-brevo.sh`,
+  repo skill `.claude/skills/sampa-email/`, Hermes skill `sampa-brevo-email`.
+  **Lists (v1):** Announcements, Weekly News, Policy, Jobs, CME, Test.
+  **From:** SAMPA `info@addictionpas.org` → Kelsey. Auth stays `no-reply@` SMTP.
+  **Agent:** draft + test only; mass send only on explicit approve or Brevo UI.
+  **Weekly News:** Mon **5:30 AM PT** after human approves draft (schedule, not autopilot).
+  **Google Group ~130:** Landing **A** (confirm prefs) — see
+  [`email/google-group-import.md`](email/google-group-import.md).
+  **First campaign:** new site + membership (`docs/email/templates/site-membership-launch.*`).
+  **Next:** API key in Hermes `.env`, create lists + pref center, Test seed, import, test send.
+  Resume: *Resume SAMPA Brevo email*.
 
 ---
 
@@ -157,11 +173,11 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [ ] **Pre-membership security P0** (remaining) — Vercel Production env + Stripe
   live webhook + E2E membership path; see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md)
   / [`PARK-security-review.md`](PARK-security-review.md).
-- [ ] Email platform — recommend **Brevo + Supabase sync** to the board (July 2026);
-  Google for Nonprofits now available post-501(c)(3).
-  **Head start done 2026-07-15:** Brevo account exists, `addictionpas.org` domain
-  authenticated (DKIM/DMARC at Porkbun), and Supabase **auth emails** already send
-  via Brevo SMTP from no-reply@addictionpas.org. Campaign side still pending board.
+- [ ] **Email / Brevo campaigns (in flight)** — decisions locked; scaffold in repo
+  2026-08-03. Still need: `BREVO_API_KEY`, lists + preference center, Test contacts,
+  Google Group Landing A import, first site/membership campaign test→send.
+  See In flight + [`PARK-brevo-email.md`](PARK-brevo-email.md).
+  **Already live:** domain auth + Supabase auth SMTP via `no-reply@addictionpas.org`.
 - [ ] **Sentry account** (free) + `EXPO_PUBLIC_SENTRY_DSN` in mobile/.env.local and the
   EAS build env — turns on mobile crash reporting (code already merged, dormant).
 - [ ] **SAMPA D-U-N-S number** (free, developer.apple.com/enroll/duns-lookup) → convert
@@ -188,16 +204,15 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   the site footer so visitors can find SAMPA’s social accounts. Need final
   profile URLs when ready; X can wait until the account exists. Touch
   `src/components/Footer.jsx` (and optionally nav).
-- [ ] **Newsletter signup without membership** — public way to subscribe (footer
-  and/or homepage/donate-adjacent) for people who are not SAMPA members and
-  need not create a full account. Today newsletter opt-in is only on the
-  member dashboard after sign-in. Design notes when building:
-  - Email capture form → store list (likely Brevo or whatever email platform
-    the board picks; see ops backlog) with double opt-in if required.
-  - Privacy: disclose what the newsletter is; link to `/privacy`; do not
-    create a paid membership or force Google login.
-  - Optional: if they later join, merge/link the same email to their profile
-    `newsletter_opt_in` without double-subscribing.
+- [ ] **Newsletter signup without membership** — public multi-list signup (footer
+  and/or homepage) → **Brevo DOI**; lists: Announcements / Weekly News / Policy /
+  Jobs / CME. Privacy: name lists + Brevo; link `/privacy`. No forced membership.
+  Prefer center for topic picks; full unsub always. **Exit interview after full
+  unsub = backlog** (never block unsub). Merge with member account later by email.
+- [ ] **Member ↔ Brevo sync** — `newsletter_opt_in` → Announcements + Weekly News;
+  finer prefs via Brevo/center; dashboard multi-toggle or deep link later.
+- [ ] **Weekly News email automation** — draft from published posts; human approves;
+  schedule Mon 5:30 AM PT (not autopilot until policy changes).
 
 ### Product — member directory / networking (v2 ideas)
 
@@ -251,6 +266,12 @@ Deferred from the first directory ship:
   Public comment / Statement; HHS RFI public comment (PDF + summary/themes);
   501(c)(3)-safe framing; nav/footer + membership value mention. Content module
   `src/data/policyDocuments.js` (CMS deferred).
+- 2026-08-04 · **Ad Grants website policy pass** — static hero (particle effect
+  parked); `/about` with mission, 501(c)(3)/EIN, live + in-development programs
+  (member email listed as rolling out, not live); homepage reorder
+  (mission → programs → news → membership); Programs nav; Join/Donate CTAs
+  restored on hero. Re-submit Google Ad Grants activation after deploy to
+  www.addictionpas.org.
 - 2026-07-21 · **501(c)(3) granted + donations restored** — SAMPA, Inc. EIN
   42-2288772; both `DONATIONS_ENABLED` flags on; tax-deductible boilerplate on
   `/donate`; pending copy cleared on footer, homepage donate CTA, dashboard,
