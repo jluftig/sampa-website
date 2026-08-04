@@ -1,6 +1,6 @@
 # SAMPA website — human hand-off
 
-_Last updated: 2026-07-21_
+_Last updated: 2026-08-03_
 
 This file is a **thin front door** for a human taking over cold. It is **not** the
 system manual and **not** the product board.
@@ -53,7 +53,7 @@ Make sure a trusted second person can access or recover:
 - Stripe account (live + test mode awareness)
 - Apple Developer (Individual today → org after D-U-N-S; see STATUS)
 - Expo / EAS (`jluftig`)
-- Brevo (auth email SMTP today; campaigns later)
+- Brevo (auth SMTP `no-reply@` live; marketing campaigns via `info@` → Kelsey — see STATUS / PARK-brevo-email)
 
 Losing these is the main non-code risk. Product/engineering truth is in git + STATUS.
 
@@ -68,6 +68,7 @@ Losing these is the main non-code risk. Product/engineering truth is in git + ST
 | Hosting / rollbacks | Vercel → Deployments |
 | Database / auth / SQL | Supabase dashboard |
 | Money | Stripe Dashboard (Test/Live toggle matters) |
+| Marketing email (Brevo) | Brevo dashboard; ops notes [PARK-brevo-email.md](PARK-brevo-email.md) / [architecture/email-brevo.md](architecture/email-brevo.md) |
 | What’s in flight | [STATUS.md](STATUS.md) |
 
 If something looks broken: ask an agent with the repo open, or check STATUS + recent

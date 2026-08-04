@@ -44,10 +44,21 @@ supabase/
   schema.sql                SOURCE OF TRUTH (tables, RLS, functions, triggers, seed)
   migrations/               standalone per-change snippets (folded into schema.sql)
 docs/                       STATUS (board), HANDOFF (thin human front door), architecture/*,
-                            setup runbooks, news pipeline prompts, PARK-* stickies
+                            setup runbooks, news pipeline prompts, PARK-* stickies,
+                            email/ (Brevo playbooks + templates; imports/ gitignored CSVs)
+scripts/
+  insert-sampa-draft.mjs    News draft insert (status=draft only)
+  run-insert-draft.sh       Load SAMPA_* from Hermes .env → insert
+  brevo/cli.mjs             Brevo REST CLI (draft+test; gated send)
+  run-brevo.sh              Load BREVO_* from Hermes .env → brevo CLI
+.claude/skills/
+  sampa-post/               News post generator (repo agents)
+  sampa-email/              Brevo campaigns (repo agents)
 mobile/                     Expo iOS/Android — separate build, same Supabase (see architecture/mobile.md)
 vercel.json                 SPA rewrite; crawler UAs on /news/:slug → /api/share
 ```
+
+Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 ## Routes
 

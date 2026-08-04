@@ -1,0 +1,9 @@
+{
+  "name": "SAMPA — New site + membership (confirm prefs)",
+  "subject": "SAMPA has a new home — choose your updates + join",
+  "previewText": "addictionpas.org is live. Set email preferences and explore membership.",
+  "htmlPath": "site-membership-launch.html",
+  "listKeys": ["test"],
+  "tag": "site-membership-launch",
+  "notes": "First production audience after Test: legacy Google Group Landing A cohort — not all five topic lists. Swap listKeys/listIds when ready. Draft+test only until Josh approves send/schedule."
+}
