@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Newspaper, Users, Mail, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
+import { Newspaper, Users, Mail, BookOpen, GraduationCap, Briefcase, ScrollText } from 'lucide-react';
 
 const live = [
   {
@@ -16,6 +16,13 @@ const live = [
     desc: 'A private national peer directory for PAs in addiction medicine—collaborate on mission-related projects, share experience, and reduce isolation in the work.',
     href: '/join',
     cta: 'Join to connect',
+  },
+  {
+    icon: ScrollText,
+    title: 'Policy work for quality care and access',
+    desc: 'SAMPA’s public voice for expanding access to MOUD and MAT—positions, public comments, and statements across federal, state, payment, and practice levers—not partisan politics.',
+    href: '/policy',
+    cta: 'See our Policy work',
   },
 ];
 
@@ -52,20 +59,25 @@ export default function ValueProps() {
             What we do
           </h2>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Programs that advance physician associates in addiction medicine—so individuals and communities impacted by substance use disorders get better care.
+            Programs that advance physician associates in addiction medicine—so individuals and communities impacted by substance use disorders get better care. Our live offerings are newly launched; more is on the way.
           </p>
         </div>
 
         <h3 className="text-sm font-bold tracking-widest text-accent uppercase mb-8 text-center md:text-left">
           Live now
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
           {live.map((p) => {
             const Icon = p.icon;
             return (
               <div key={p.title} className="bg-white p-10 rounded-4xl shadow-sm border border-primary/10">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8">
-                  <Icon className="w-8 h-8 text-primary" aria-hidden="true" />
+                <div className="flex items-center justify-between gap-3 mb-8">
+                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                    <Icon className="w-8 h-8 text-primary" aria-hidden="true" />
+                  </div>
+                  <span className="text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                    New
+                  </span>
                 </div>
                 <h3 className="text-2xl font-bold font-sans tracking-tight mb-4 text-text/90 leading-snug">
                   {p.title}

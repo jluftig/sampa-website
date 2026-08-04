@@ -1,6 +1,6 @@
 # SAMPA website — human hand-off
 
-_Last updated: 2026-08-03_
+_Last updated: 2026-08-04_
 
 This file is a **thin front door** for a human taking over cold. It is **not** the
 system manual and **not** the product board.
@@ -16,6 +16,7 @@ Repo: **https://github.com/jluftig/sampa-website**
 |------|----------|
 | What’s live, blocked, next | **[STATUS.md](STATUS.md)** |
 | How the system is built / must not break | **[CLAUDE.md](../CLAUDE.md)** (+ [architecture/](architecture/) as needed) |
+| Policy hub framing (access levers, naming) | [architecture/policy-hub.md](architecture/policy-hub.md) |
 | One-time Stripe / Google / env setup | [member-area-setup.md](member-area-setup.md) |
 | Mobile auth / push / TestFlight setup | [mobile-app-setup.md](mobile-app-setup.md) |
 

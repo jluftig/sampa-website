@@ -22,7 +22,7 @@ export default function About() {
             SAMPA is a nonprofit dedicated to improving public health outcomes in addiction medicine by advancing the education, training, clinical practice, and professional development of physician associates—so they may deliver high-quality, accessible, patient-centered, and evidence-based care to individuals and communities impacted by substance use disorders.
           </p>
           <p className="text-lg text-text/70 leading-relaxed mb-8">
-            Today that work lives in daily news that keeps providers current and a private member network for peer collaboration. Member email updates, practice resources, CME, and a job board are in development—always in service of better care for the people and communities we serve.
+            Today that work lives in newly launched programs: daily news that keeps providers current, a private member networking directory for peer collaboration, and a Policy hub that advances access to evidence-based addiction care—including medications for opioid use disorder. Member email updates, practice resources, CME, and a job board are coming soon—always in service of better care for the people and communities we serve.
           </p>
           <Link
             to="/about"

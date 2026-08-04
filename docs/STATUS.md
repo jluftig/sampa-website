@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-04 (Ad Grants website policy pass — static hero, /about, programs)
+**Last updated:** 2026-08-04 (Policy hub access framing + levers)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -73,6 +73,16 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   (EIN 42-2288772). `DONATIONS_ENABLED = true` in `src/lib/features.js` **and**
   `api/create-donation-session.js`. Donate page shows tax-deductible boilerplate.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
+- **Policy hub** — public `/policy` + `/policy/:slug`. **Framing (2026-08-04):**
+  SAMPA’s public voice for **access** to MAT/MOUD (buprenorphine and beyond)—not a
+  “public comment only” archive and not nav-labeled “Advocacy.” Nav stays **Policy**.
+  Instruments: Position / Public comment / Statement. Landing page shows **access
+  levers** (federal, state, payment, systems, professional voice, evidence→standards)
+  so the first HHS comment does not redefine the category. Seed:
+  `src/data/policyDocuments.js` + PDF in `public/files/policy/`. First document: HHS
+  RFI response (submitted **2026-07-05**). Deep dive:
+  [`docs/architecture/policy-hub.md`](architecture/policy-hub.md). CMS/table deferred.
+  Distinct from News/Key Points.
 - **Mobile app code on main** — Expo app in `mobile/` (PRs #22, #43–#45); see In flight
   for TestFlight / App Store rollout status (not a “messy branch” — shipped code,
   external rollout still open).
@@ -225,17 +235,12 @@ Deferred from the first directory ship:
   notify opted-in members (Expo push and/or Brevo email) when someone comments on
   a post they saved — not every reaction. Prefer quiet defaults + an in-app /
   dashboard toggle.
-- **Policy page (and possibly Research)** — public area similar in spirit to News
-  for SAMPA policy work: positions we’re taking, issues we’re advocating for,
-  published documents, white papers, and related materials. Open design choices:
-  - **One combined “Policy & research” hub** vs **separate `/policy` and
-    `/research` routes** (decide when first content is ready).
-  - Content model: re-use the posts stack with a type/channel (e.g. `policy` /
-    `research`) vs a dedicated table; PDF/file attachments for formal docs.
-  - Editor workflow (who can publish policy vs news), nav/footer links, and
-    optional social-preview cards for shareable policy pieces.
-  - Keep distinct from News/Key Points (news is clinical/industry updates;
-    policy is organizational positions and formal documents).
+- **Policy CMS / research library (deferred)** — Policy hub MVP + access framing
+  shipped 2026-08-04 (static module + PDF + levers table on `/policy`; see
+  [`architecture/policy-hub.md`](architecture/policy-hub.md)). When HRSA/ATF and more
+  Finals arrive: `policy_documents` table + Storage PDFs + editor permission;
+  optional separate `/research` later. Keep distinct from News/Key Points. Do not
+  shrink the hub to comments-only as corpus grows.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
 - **Board privileges** — `is_board` is badge-only today; decide board-only surfaces.
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
@@ -263,6 +268,15 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-04 · **Policy hub access framing** — hub copy + `/policy` levers table
+  (federal / state / payment / systems / professional voice / evidence→standards);
+  Position/Statement empty slots; keep nav **Policy** (reject “comment hub” /
+  public “Advocacy” lead). Canonical write-up:
+  [`architecture/policy-hub.md`](architecture/policy-hub.md).
+- 2026-08-04 · **Policy hub MVP** — `/policy` + `/policy/:slug`; types Position /
+  Public comment / Statement; HHS RFI public comment (PDF + summary/themes);
+  501(c)(3)-safe framing; nav/footer + membership value mention. Content module
+  `src/data/policyDocuments.js` (CMS deferred).
 - 2026-08-04 · **Ad Grants website policy pass** — static hero (particle effect
   parked); `/about` with mission, 501(c)(3)/EIN, live + in-development programs
   (member email listed as rolling out, not live); homepage reorder

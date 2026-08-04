@@ -29,9 +29,12 @@ export default function NewsTeaser() {
   return (
     <section id="news" className="py-24 px-4">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-        <h2 className="text-3xl md:text-5xl font-drama font-bold text-text mb-6">
+        <h2 className="text-3xl md:text-5xl font-drama font-bold text-text mb-3">
           Daily News
         </h2>
+        <p className="text-xs font-data uppercase tracking-wider text-accent font-semibold mb-6">
+          New
+        </p>
         <p className="text-xl text-text/70 max-w-2xl mb-12">
           Keep providers current on addiction medicine research, policy, and practice—so care for individuals and communities stays evidence-informed.
         </p>

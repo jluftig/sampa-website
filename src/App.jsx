@@ -11,6 +11,8 @@ import Home from './pages/Home';
 // (and its heavier dependencies — TipTap, DOMPurify) loads on demand.
 const News = lazy(() => import('./pages/News'));
 const PostView = lazy(() => import('./pages/PostView'));
+const Policy = lazy(() => import('./pages/Policy'));
+const PolicyView = lazy(() => import('./pages/PolicyView'));
 const Tags = lazy(() => import('./pages/Tags'));
 const TagView = lazy(() => import('./pages/TagView'));
 const Search = lazy(() => import('./pages/Search'));
@@ -39,6 +41,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:slug" element={<PostView />} />
+          <Route path="/policy" element={<Policy />} />
+          <Route path="/policy/:slug" element={<PolicyView />} />
           <Route path="/keywords" element={<Tags />} />
           <Route path="/keywords/:slug" element={<TagView />} />
           <Route path="/search" element={<Search />} />
