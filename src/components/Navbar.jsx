@@ -28,6 +28,7 @@ export default function Navbar() {
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6 font-medium text-sm text-text/80">
           <Link to="/news" className="hover:text-primary-text transition-colors">News</Link>
+          <Link to="/policy" className="hover:text-primary-text transition-colors">Policy</Link>
           <a href="/#about" className="hover:text-primary-text transition-colors">About</a>
           <a href="/#value-props" className="hover:text-primary-text transition-colors">CE & Resources</a>
           <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
@@ -70,6 +71,7 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className="lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
           <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>News</Link>
+          <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Policy</Link>
           <a href="/#about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</a>
           <a href="/#value-props" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>CE & Resources</a>
           <a href="/#membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>

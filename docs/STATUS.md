@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-07-22 (park: Workspace newsletter scout inbox)
+**Last updated:** 2026-08-04 (Policy hub MVP + HHS public comment)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -71,6 +71,12 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   (EIN 42-2288772). `DONATIONS_ENABLED = true` in `src/lib/features.js` **and**
   `api/create-donation-session.js`. Donate page shows tax-deductible boilerplate.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
+- **Policy hub** — public `/policy` + `/policy/:slug` for positions, public comments,
+  and statements (mission-aligned educational framing; not News). MVP seeds from
+  `src/data/policyDocuments.js` + PDF in `public/policy/`. First document: HHS RFI
+  response on the chronic disease of addiction (submitted **2026-07-05**). Nav/footer
+  **Policy** link; homepage value-prop + Membership/Join/About copy. CMS/table deferred
+  until corpus grows. Distinct from News/Key Points.
 - **Mobile app code on main** — Expo app in `mobile/` (PRs #22, #43–#45); see In flight
   for TestFlight / App Store rollout status (not a “messy branch” — shipped code,
   external rollout still open).
@@ -210,17 +216,10 @@ Deferred from the first directory ship:
   notify opted-in members (Expo push and/or Brevo email) when someone comments on
   a post they saved — not every reaction. Prefer quiet defaults + an in-app /
   dashboard toggle.
-- **Policy page (and possibly Research)** — public area similar in spirit to News
-  for SAMPA policy work: positions we’re taking, issues we’re advocating for,
-  published documents, white papers, and related materials. Open design choices:
-  - **One combined “Policy & research” hub** vs **separate `/policy` and
-    `/research` routes** (decide when first content is ready).
-  - Content model: re-use the posts stack with a type/channel (e.g. `policy` /
-    `research`) vs a dedicated table; PDF/file attachments for formal docs.
-  - Editor workflow (who can publish policy vs news), nav/footer links, and
-    optional social-preview cards for shareable policy pieces.
-  - Keep distinct from News/Key Points (news is clinical/industry updates;
-    policy is organizational positions and formal documents).
+- **Policy CMS / research library (deferred)** — Policy hub MVP shipped 2026-08-04
+  (static module + PDF). When HRSA/ATF and more Finals arrive: `policy_documents`
+  table + Storage PDFs + editor permission; optional separate `/research` later.
+  Keep distinct from News/Key Points.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
 - **Board privileges** — `is_board` is badge-only today; decide board-only surfaces.
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
@@ -248,6 +247,10 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-04 · **Policy hub MVP** — `/policy` + `/policy/:slug`; types Position /
+  Public comment / Statement; HHS RFI public comment (PDF + summary/themes);
+  501(c)(3)-safe framing; nav/footer + membership value mention. Content module
+  `src/data/policyDocuments.js` (CMS deferred).
 - 2026-07-21 · **501(c)(3) granted + donations restored** — SAMPA, Inc. EIN
   42-2288772; both `DONATIONS_ENABLED` flags on; tax-deductible boilerplate on
   `/donate`; pending copy cleared on footer, homepage donate CTA, dashboard,
