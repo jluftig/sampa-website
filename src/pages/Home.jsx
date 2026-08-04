@@ -12,7 +12,6 @@ export default function Home() {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Basic GSAP fade in for the whole app
     gsap.fromTo(containerRef.current,
       { opacity: 0 },
       { opacity: 1, duration: 1, ease: "power2.out" }
@@ -21,16 +20,15 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-background text-text overflow-hidden">
-      {/* Global CSS noise overlay */}
       <div className="noise-overlay pointer-events-none"></div>
 
       <Navbar />
 
       <main className="w-full">
         <Hero />
-        <NewsTeaser />
         <About />
         <ValueProps />
+        <NewsTeaser />
         <Membership />
       </main>
 

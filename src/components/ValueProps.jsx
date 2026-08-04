@@ -1,54 +1,117 @@
 import React from 'react';
-import { Newspaper, Users, HeartPulse } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Newspaper, Users, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
 
-const props = [
+const live = [
   {
-    icon: <Newspaper className="w-8 h-8 text-primary" />,
-    title: "Daily news to keep providers current",
-    desc: "Research, policy, and practice updates so physician associates stay informed—and patients and communities benefit from care grounded in what is happening now."
+    icon: Newspaper,
+    title: 'Daily news for providers',
+    desc: 'Research, policy, and practice updates so physician associates stay informed—and patients and communities benefit from care grounded in what is happening now.',
+    href: '/news',
+    cta: 'Read the news',
   },
   {
-    icon: <Users className="w-8 h-8 text-accent" />,
-    title: "Member networking that strengthens practice",
-    desc: "A private national peer directory and community for PAs in addiction medicine—share experience, find colleagues, and reduce isolation in the work."
+    icon: Users,
+    title: 'Member networking directory',
+    desc: 'A private national peer directory for PAs in addiction medicine—collaborate on mission-related projects, share experience, and reduce isolation in the work.',
+    href: '/join',
+    cta: 'Join to connect',
+  },
+];
+
+const building = [
+  {
+    icon: BookOpen,
+    title: 'Practice resources',
+    desc: 'Evidence-based treatment guidance so PAs can apply current best practices when supporting patients with substance use disorders.',
   },
   {
-    icon: <HeartPulse className="w-8 h-8 text-primary" />,
-    title: "Care that reaches people who need it",
-    desc: "Everything we build—from news to networking, and education and training as we grow—exists so individuals and communities impacted by substance use disorders receive high-quality, accessible, patient-centered care."
-  }
+    icon: GraduationCap,
+    title: 'CME',
+    desc: 'Continuing medical education tailored to addiction medicine for physician associates—so clinical skills keep pace with the field.',
+  },
+  {
+    icon: Briefcase,
+    title: 'Job board',
+    desc: 'A mission-aligned place for openings in addiction medicine, helping PAs find roles where they can serve individuals and communities in need.',
+  },
 ];
 
 export default function ValueProps() {
   return (
-    <section id="value-props" className="py-24 bg-gradient-to-b from-transparent to-primary/5 px-4">
+    <section id="programs" className="py-24 bg-gradient-to-b from-transparent to-primary/5 px-4">
       <div className="max-w-7xl mx-auto">
-        
-        <div className="text-center mb-16 md:mb-24">
+
+        <div className="text-center mb-16 md:mb-20">
           <h2 className="text-4xl md:text-5xl font-sans tracking-tight font-bold text-text mb-6">
-            What SAMPA offers now
+            What we do
           </h2>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Practical support for physician associates—so individuals and communities impacted by substance use disorders get better care.
+            Programs that advance physician associates in addiction medicine—so individuals and communities impacted by substance use disorders get better care.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {props.map((p, idx) => (
-            <div key={idx} className="bg-white p-10 rounded-4xl shadow-sm border border-primary/10 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-primary/10 group-hover:bg-primary/20 transition-colors rounded-2xl flex items-center justify-center mb-8">
-                {p.icon}
+        <h3 className="text-sm font-bold tracking-widest text-accent uppercase mb-8 text-center md:text-left">
+          Live now
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+          {live.map((p) => {
+            const Icon = p.icon;
+            return (
+              <div key={p.title} className="bg-white p-10 rounded-4xl shadow-sm border border-primary/10">
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8">
+                  <Icon className="w-8 h-8 text-primary" aria-hidden="true" />
+                </div>
+                <h3 className="text-2xl font-bold font-sans tracking-tight mb-4 text-text/90 leading-snug">
+                  {p.title}
+                </h3>
+                <p className="text-text/70 leading-relaxed text-lg mb-6">
+                  {p.desc}
+                </p>
+                <Link
+                  to={p.href}
+                  className="font-semibold text-primary-text hover:underline"
+                >
+                  {p.cta}
+                </Link>
               </div>
-              <h3 className="text-2xl font-bold font-sans tracking-tight mb-4 text-text/90 group-hover:text-primary-text transition-colors leading-snug">
-                {p.title}
-              </h3>
-              <p className="text-text/70 leading-relaxed text-lg">
-                {p.desc}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
-        
+
+        <h3 className="text-sm font-bold tracking-widest text-accent uppercase mb-8 text-center md:text-left">
+          In development
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {building.map((p) => {
+            const Icon = p.icon;
+            return (
+              <div key={p.title} className="bg-white/80 p-10 rounded-4xl border border-primary/10">
+                <div className="flex items-center justify-between gap-3 mb-8">
+                  <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center">
+                    <Icon className="w-8 h-8 text-accent" aria-hidden="true" />
+                  </div>
+                  <span className="text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
+                    Coming soon
+                  </span>
+                </div>
+                <h3 className="text-2xl font-bold font-sans tracking-tight mb-4 text-text/90 leading-snug">
+                  {p.title}
+                </h3>
+                <p className="text-text/70 leading-relaxed text-lg">
+                  {p.desc}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-center mt-12 text-text/60">
+          <Link to="/about#programs" className="font-semibold text-primary-text hover:underline">
+            Full program details on our About page
+          </Link>
+        </p>
+
       </div>
     </section>
   );

@@ -1,30 +1,35 @@
-import React, { useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+// Homepage mission / nonprofit band. Full narrative lives on /about.
 
 export default function About() {
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    // We could add ScrollTrigger animations here once imported, but for now simple setup
-  }, []);
-
   return (
-    <section id="about" ref={sectionRef} className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
+    <section id="about" className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
       <div className="bg-white rounded-5xl p-10 md:p-16 lg:p-24 shadow-sm border border-primary/5 flex flex-col md:flex-row gap-12 lg:gap-24 items-center">
-        
+
         <div className="w-full md:w-1/2">
           <h2 className="text-sm font-bold tracking-widest text-accent uppercase mb-4 relative before:content-[''] before:w-8 before:h-px before:bg-accent/50 before:inline-block before:align-middle before:mr-3">
             Our Mission
           </h2>
+          <p className="text-sm font-semibold text-primary-text mb-4 font-data tracking-wide">
+            SAMPA, Inc. is a 501(c)(3) nonprofit organization · EIN 42-2288772
+          </p>
           <h3 className="text-3xl md:text-5xl font-drama text-text leading-tight mb-8">
             Better outcomes for individuals and communities.
           </h3>
           <p className="text-lg text-text/80 leading-relaxed mb-6 font-medium">
             SAMPA is a nonprofit dedicated to improving public health outcomes in addiction medicine by advancing the education, training, clinical practice, and professional development of physician associates—so they may deliver high-quality, accessible, patient-centered, and evidence-based care to individuals and communities impacted by substance use disorders.
           </p>
-          <p className="text-lg text-text/70 leading-relaxed">
-            Today that work lives in what members already use: daily news that keeps providers up to date on research, policy, and practice, and a private member network for peer connection. Education, training, and professional development pathways are growing with the society—always in service of better care for the people and communities we serve.
+          <p className="text-lg text-text/70 leading-relaxed mb-8">
+            Today that work lives in daily news that keeps providers current and a private member network for peer collaboration. Practice resources, CME, and a job board are in development—always in service of better care for the people and communities we serve.
           </p>
+          <Link
+            to="/about"
+            className="inline-block px-7 py-3 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
+          >
+            Learn more about SAMPA
+          </Link>
         </div>
 
         <div className="w-full md:w-1/2 relative">
@@ -33,7 +38,7 @@ export default function About() {
               <img src="/SAMPA_no_bg.svg" alt="SAMPA Seal" className="w-2/3 object-contain drop-shadow-2xl" />
             </div>
           </div>
-          <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-3xl shadow-xl border border-primary/5 animate-bounce" style={{ animationDuration: '4s' }}>
+          <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-3xl shadow-xl border border-primary/5">
             <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-text to-accent bg-clip-text text-transparent leading-tight">
               Improving <br />
               Outcomes

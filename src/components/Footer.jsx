@@ -16,10 +16,15 @@ export default function Footer() {
           <p className="text-white/60 max-w-sm text-sm">
             Improving health outcomes in addiction medicine by advancing physician associates—so individuals and communities impacted by substance use disorders get better care.
           </p>
+          <p className="text-white/50 max-w-sm text-xs font-data tracking-wide">
+            501(c)(3) nonprofit · EIN 42-2288772
+          </p>
         </div>
 
         <div className="flex flex-wrap justify-center md:justify-end items-center gap-x-8 gap-y-3 text-sm font-medium text-white/60">
-          <a href="/#about" className="hover:text-white transition-colors">About</a>
+          <Link to="/about" className="hover:text-white transition-colors">About</Link>
+          <Link to="/news" className="hover:text-white transition-colors">News</Link>
+          <a href="/#programs" className="hover:text-white transition-colors">Programs</a>
           <a href="/#membership" className="hover:text-white transition-colors">Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Store</a>
           <DonateLink className="hover:text-white transition-colors">Donate</DonateLink>

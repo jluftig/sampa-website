@@ -37,7 +37,7 @@ src/
     tags.js                 collectPostTags(post)
     slug.js format.js cite.js share.js
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
-  pages/                    Home, News, PostView, Tags, TagView, Search, Login, Join, Donate,
+  pages/                    Home, About, News, PostView, Tags, TagView, Search, Login, Join, Donate,
                             Dashboard, MemberDirectory, MemberProfile, Privacy, Terms,
                             EditorDashboard, PostEditor, AdminTags, AdminPeople, AdminMembers
 supabase/
@@ -64,7 +64,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/news`, `/news/:slug` (`#point-<item id>`), `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about`, `/news`, `/news/:slug` (`#point-<item id>`), `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
