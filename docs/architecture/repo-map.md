@@ -38,7 +38,7 @@ src/
     slug.js format.js cite.js share.js
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
-    policyDocuments.js      MVP Policy hub seed (positions / public comments / statements)
+    policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
   pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, Donate, Dashboard, MemberDirectory, MemberProfile,
                             Privacy, Terms, EditorDashboard, PostEditor, AdminTags,

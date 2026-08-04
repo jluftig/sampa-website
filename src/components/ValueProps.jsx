@@ -20,7 +20,7 @@ const live = [
   {
     icon: ScrollText,
     title: 'Policy work for quality care and access',
-    desc: 'Public comments and positions drafted on behalf of addiction-medicine PAs—advancing clinical quality and access to MOUD for patients, not partisan politics.',
+    desc: 'SAMPA’s public voice for expanding access to MOUD and MAT—positions, public comments, and statements across federal, state, payment, and practice levers—not partisan politics.',
     href: '/policy',
     cta: 'See our Policy work',
   },

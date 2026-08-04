@@ -150,10 +150,11 @@ export default function AboutPage() {
               </li>
               <li>
                 <strong className="text-text">Policy hub.</strong>{' '}
-                Public comments and positions drafted on behalf of
-                addiction-medicine PAs—advancing clinical quality and access to
-                medications for opioid use disorder for patients and communities,
-                not partisan politics. Read our{' '}
+                SAMPA’s public voice for expanding access to medications for
+                addiction treatment—including buprenorphine and other MOUD—across
+                federal, state, payment, and practice levers. Positions, public
+                comments, and statements advance clinical quality and access for
+                patients and communities, not partisan politics. Explore our{' '}
                 <Link to="/policy" className="text-primary-text font-semibold underline-offset-2 hover:underline">
                   Policy work
                 </Link>

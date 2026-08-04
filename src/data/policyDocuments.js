@@ -1,19 +1,24 @@
 /**
- * SAMPA Policy hub — positions, public comments, and statements.
+ * SAMPA Policy hub — public voice for access to addiction care.
+ * Instruments: positions, public comments, statements (and later campaigns /
+ * toolkits / coalition letters). Comments are one tactic, not the whole function.
  * MVP: curated module (not the news/posts stack). Graduate to a
  * policy_documents table when volume warrants a CMS.
+ * Framing: docs/architecture/policy-hub.md
  */
 
 export const POLICY_TYPES = {
   position: {
     key: 'position',
     label: 'Position',
-    description: 'Standing SAMPA stance on clinical quality, workforce, or access to care.',
+    description:
+      'Standing SAMPA stance on clinical quality, workforce, payment, or access to care.',
   },
   comment: {
     key: 'comment',
     label: 'Public comment',
-    description: 'Response to a federal or state agency request for information or rulemaking.',
+    description:
+      'Response to a federal or state agency request for information or rulemaking.',
   },
   statement: {
     key: 'statement',
@@ -22,15 +27,54 @@ export const POLICY_TYPES = {
   },
 };
 
+/**
+ * Levers SAMPA uses to expand buprenorphine / MOUD / MAT access.
+ * Shown on /policy; canonical product framing in docs/architecture/policy-hub.md.
+ */
+export const POLICY_LEVERS = [
+  {
+    lever: 'Federal rulemaking',
+    examples: 'HHS/SAMHSA/DEA/CMS RFIs, telehealth, OTP rules',
+    artifact: 'Public comments',
+  },
+  {
+    lever: 'State practice law',
+    examples: 'Scope, supervision, PA OTP authority',
+    artifact: 'Positions, board letters, model language, coalitions',
+  },
+  {
+    lever: 'Payment',
+    examples: 'Medicaid, prior auth, team-based billing',
+    artifact: 'Letters, positions, payer comments',
+  },
+  {
+    lever: 'Systems / employers',
+    examples: 'Credentialing, formulary, clinic protocols',
+    artifact: 'Toolkits, positions, member education',
+  },
+  {
+    lever: 'Professional voice',
+    examples: 'Joint ASAM/AAPA letters, stigma, workforce programs',
+    artifact: 'Statements, coalitions',
+  },
+  {
+    lever: 'Evidence → standards',
+    examples: 'Outcomes by prescriber type, quality measures',
+    artifact: 'Positions + research briefs',
+  },
+];
+
 export const POLICY_HUB = {
-  eyebrow: 'Positions, public comments, and statements',
+  eyebrow: 'Access to evidence-based addiction care',
   title: 'Policy',
   oneLiner:
-    'SAMPA develops evidence-informed positions and submits public comments to federal agencies so physician associates can deliver high-quality, accessible addiction care—including medications for opioid use disorder (MOUD)—to the patients and communities we serve.',
+    'SAMPA’s public voice for expanding access to medications for addiction treatment—including buprenorphine and other medications for opioid use disorder (MOUD)—so physician associates can deliver high-quality care to the patients and communities we serve. Public comments are one instrument; we also develop positions, statements, and related materials across federal, state, payment, and practice levers.',
+  leversIntro:
+    'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA works across several levers—not only federal dockets:',
   disclaimer:
     'SAMPA, Inc. is a 501(c)(3) public charity. Our policy materials advance our educational and public-health mission. We do not engage in political campaign activity.',
   memberValue:
-    'Members support SAMPA’s policy work: comments and positions drafted on behalf of addiction-medicine PAs, focused on clinical quality and access to care—not partisan politics.',
+    'Members support SAMPA’s policy work: the society’s public voice for access to care—positions, comments, and statements drafted on behalf of addiction-medicine PAs, focused on clinical quality and access—not partisan politics.',
 };
 
 /** @typedef {'position' | 'comment' | 'statement'} PolicyType */
@@ -98,4 +142,15 @@ export function getPolicyDocument(slug) {
 /** @param {PolicyType | string} type */
 export function typeLabel(type) {
   return POLICY_TYPES[type]?.label || type;
+}
+
+/** Count published docs per type (for empty-slot UI). */
+export function policyTypeCounts() {
+  const counts = Object.fromEntries(
+    Object.keys(POLICY_TYPES).map((k) => [k, 0])
+  );
+  for (const d of DOCUMENTS) {
+    if (counts[d.type] != null) counts[d.type] += 1;
+  }
+  return counts;
 }

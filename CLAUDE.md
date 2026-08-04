@@ -6,7 +6,7 @@ Machine-oriented entry point for agents on the SAMPA website.
 **Deep dives:** [`docs/architecture/`](docs/architecture/).  
 `AGENTS.md` points here for non-Claude agents.
 
-Last updated: 2026-08-03 (Brevo email module + skills scaffold).
+Last updated: 2026-08-04 (Policy hub access framing).
 
 ## What this project is
 
@@ -26,12 +26,13 @@ Repo: `jluftig/sampa-website`. Supabase ref: `xbzzawjnphpnexwfjtif`.
 |-----|------|
 | **`docs/STATUS.md`** | **Only product board** |
 | **`CLAUDE.md`** (this file) | Invariants, gotchas, short map — load first |
-| **`docs/architecture/*`** | Repo map, data model, RLS, Stripe, mobile |
+| **`docs/architecture/*`** | Repo map, data model, RLS, Stripe, mobile, policy hub |
 | **`docs/HANDOFF.md`** | Thin human front door + bus-factor accounts |
 | **`docs/PARK-*.md`** | Mid-flight stickies only |
 | Setup runbooks | `member-area-setup.md`, `mobile-app-setup.md`, `email/setup-checklist.md` |
 | News production | scout/post/cover prompts under `docs/` |
 | Marketing email (Brevo) | `docs/architecture/email-brevo.md`, `docs/email/`, `.claude/skills/sampa-email/` |
+| Policy hub framing | `docs/architecture/policy-hub.md` |
 | Archive | `docs/archive/` (GEMINI bootstrap, original news plan) |
 
 **Write path:** STATUS first → architecture/CLAUDE if design/security changed → PARK only if mid-flight → HANDOFF only if bus-factor/accounts list changed.
@@ -78,7 +79,8 @@ Full tree + routes: **`docs/architecture/repo-map.md`**.
 
 Detail: **`docs/architecture/security-rls.md`**.  
 Data shapes: **`docs/architecture/data-model.md`**.  
-Stripe/membership/donations: **`docs/architecture/member-stripe.md`**.
+Stripe/membership/donations: **`docs/architecture/member-stripe.md`**.  
+Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 
 ## Conventions & gotchas (read before editing)
 

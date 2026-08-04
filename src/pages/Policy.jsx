@@ -6,7 +6,9 @@ import Footer from '../components/Footer';
 import {
   POLICY_HUB,
   POLICY_TYPES,
+  POLICY_LEVERS,
   listPolicyDocuments,
+  policyTypeCounts,
   typeLabel,
 } from '../data/policyDocuments';
 import { formatDateOnly } from '../lib/format';
@@ -20,6 +22,7 @@ const FILTERS = [
 
 export default function Policy() {
   const docs = useMemo(() => listPolicyDocuments(), []);
+  const typeCounts = useMemo(() => policyTypeCounts(), []);
   const [filter, setFilter] = useState('all');
 
   const visible = filter === 'all' ? docs : docs.filter((d) => d.type === filter);
@@ -46,14 +49,17 @@ export default function Policy() {
               to={`/policy/${featured.slug}`}
               className="inline-flex items-center gap-2 mt-8 text-primary-text font-semibold hover:underline"
             >
-              Read our latest public comment
+              Read our latest material
               <ArrowRight className="w-4 h-4" />
             </Link>
           )}
         </header>
 
         {featured && (
-          <section className="mb-16 md:mb-20">
+          <section className="mb-16 md:mb-20" aria-labelledby="featured-heading">
+            <h2 id="featured-heading" className="sr-only">
+              Featured material
+            </h2>
             <Link
               to={`/policy/${featured.slug}`}
               className="group block bg-white rounded-4xl border border-primary/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8 md:p-12"
@@ -68,9 +74,9 @@ export default function Policy() {
                   </span>
                 )}
               </div>
-              <h2 className="text-2xl md:text-3xl font-drama font-bold text-text group-hover:text-primary-text transition-colors mb-4 leading-snug">
+              <h3 className="text-2xl md:text-3xl font-drama font-bold text-text group-hover:text-primary-text transition-colors mb-4 leading-snug">
                 {featured.title}
-              </h2>
+              </h3>
               <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-6">
                 {featured.summary}
               </p>
@@ -81,13 +87,85 @@ export default function Policy() {
                   </span>
                 )}
                 <span className="inline-flex items-center gap-1.5 text-primary-text font-semibold group-hover:underline">
-                  View comment
+                  View material
                   <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
             </Link>
           </section>
         )}
+
+        <section className="mb-16 md:mb-20" aria-labelledby="levers-heading">
+          <h2 id="levers-heading" className="text-2xl md:text-3xl font-drama font-bold mb-4">
+            How we improve access
+          </h2>
+          <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-8">
+            {POLICY_HUB.leversIntro}
+          </p>
+          <div className="overflow-x-auto rounded-3xl border border-primary/10 bg-white">
+            <table className="w-full min-w-[40rem] text-left text-sm md:text-base">
+              <caption className="sr-only">
+                Levers SAMPA uses to expand buprenorphine, MOUD, and MAT access
+              </caption>
+              <thead>
+                <tr className="border-b border-primary/10 bg-primary/5">
+                  <th scope="col" className="px-5 py-4 font-semibold text-text">
+                    Lever
+                  </th>
+                  <th scope="col" className="px-5 py-4 font-semibold text-text">
+                    Examples
+                  </th>
+                  <th scope="col" className="px-5 py-4 font-semibold text-text">
+                    Typical artifact
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {POLICY_LEVERS.map((row) => (
+                  <tr
+                    key={row.lever}
+                    className="border-b border-primary/10 last:border-b-0 align-top"
+                  >
+                    <th scope="row" className="px-5 py-4 font-semibold text-text/90">
+                      {row.lever}
+                    </th>
+                    <td className="px-5 py-4 text-text/70">{row.examples}</td>
+                    <td className="px-5 py-4 text-text/70">{row.artifact}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="mb-16 md:mb-20" aria-labelledby="types-heading">
+          <h2 id="types-heading" className="text-2xl font-drama font-bold mb-4">
+            What we publish
+          </h2>
+          <p className="text-text/70 leading-relaxed max-w-3xl mb-8">
+            Materials fall into these types. The corpus will grow beyond the first
+            public comment as positions, statements, and related work land.
+          </p>
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {Object.values(POLICY_TYPES).map((t) => {
+              const count = typeCounts[t.key] || 0;
+              return (
+                <li
+                  key={t.key}
+                  className="bg-white/80 rounded-3xl border border-primary/10 px-6 py-5"
+                >
+                  <div className="flex items-baseline justify-between gap-3 mb-2">
+                    <h3 className="font-bold text-text">{t.label}</h3>
+                    <span className="text-xs font-data uppercase tracking-wider text-text/45 shrink-0">
+                      {count === 0 ? 'Coming soon' : `${count} published`}
+                    </span>
+                  </div>
+                  <p className="text-sm text-text/65 leading-relaxed">{t.description}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
         <section>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -115,7 +193,8 @@ export default function Policy() {
               <FileText className="w-10 h-10 text-primary/40 mx-auto mb-4" />
               <h3 className="text-xl font-bold mb-2">Nothing in this category yet</h3>
               <p className="text-text/60">
-                Check back as SAMPA publishes additional positions and comments.
+                Check back as SAMPA publishes additional positions, comments, and
+                statements across the levers above.
               </p>
             </div>
           ) : (
