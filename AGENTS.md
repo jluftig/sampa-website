@@ -28,3 +28,31 @@ No third file. **Pull → claim (Owner + move to In Progress) → commit+push ST
 Owners: `egg` · `cursor` · `josh` · `either`. Full workflow is in STATUS under **Task workflow**.
 
 **DB migrations:** after writing/updating `supabase/migrations/`, `pbcopy < path` and tell the user it’s ready for the Supabase SQL Editor — gotcha 10 in `CLAUDE.md`.
+
+## Reviewing files and localhost pages with human-review
+
+After writing an HTML or Markdown file the user will read, open it for them with
+`npx -y human-review <file.html>`. For a locally running web page, open the real
+route with `npx -y human-review http://localhost:3000/path` instead of recreating
+it as a static file. Then block on
+`npx -y human-review poll <target> --timeout 600` until they send feedback.
+If it prints `{"status":"timeout"}`, no feedback arrived yet — run the same
+poll command again to keep waiting. When a `{"status":"feedback"}` batch
+arrives, apply it, then poll again with `--ack`.
+
+Keep the poll command in the foreground and do not end the turn while it waits.
+If the shell returns a process or session handle, keep waiting on that handle until
+the command exits. `npx -y human-review status <target>` reports instantly
+whether feedback is already waiting, without blocking.
+
+The batch groups feedback by page under `pages`, so fix every page listed. Items
+under `edits` are changes the user already made: `after` is their exact wording,
+so carry it across verbatim and never revert it — and if the HTML was generated
+from MDX or Markdown, apply it to the source too. Markdown files open rendered
+and are never written by human-review: apply their comments and edits to the
+Markdown source, keeping its syntax. There is no reply channel; the user sees
+your work when the page reloads. For a localhost page, direct edits and deletions
+arrive with `kind: "url"`; find and update the matching MDX, TSX, template, or
+component source. Never write the rendered HTTP response over project source.
+
+Skill details: [`.claude/skills/human-review/SKILL.md`](.claude/skills/human-review/SKILL.md) (from [petergyang/human-review](https://github.com/petergyang/human-review)).

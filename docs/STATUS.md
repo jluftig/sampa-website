@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-04 (Tasks claim board for Egg ↔ Cursor)
+**Last updated:** 2026-08-05 (`human-review` agent skill added)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,7 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
-| — | — | — | — | *When completing: move here; drop 6th+ oldest row* |
+| T9 | Add Peter Yang `/human-review` agent skill | cursor | 2026-08-05 | `.claude/skills/human-review/` + AGENTS.md pointer; [petergyang/human-review](https://github.com/petergyang/human-review) |
 
 ### Task workflow (agents + humans)
 
