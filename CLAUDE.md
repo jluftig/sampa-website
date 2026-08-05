@@ -68,6 +68,7 @@ optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOO
 | `scripts/brevo/`, `scripts/run-brevo.sh` | Brevo campaign CLI (draft+test; gated send) |
 | `docs/email/` | Email playbooks + HTML templates (no secrets/CSVs) |
 | `.claude/skills/sampa-email/` | Repo agent skill for Brevo campaigns |
+| `.claude/skills/human-review/` | Visual HTML/Markdown/localhost review loop ([petergyang/human-review](https://github.com/petergyang/human-review)) |
 | `vercel.json` | SPA rewrite; crawler UAs on `/news/:slug` → `/api/share` |
 Full tree + routes: **`docs/architecture/repo-map.md`**.
 
