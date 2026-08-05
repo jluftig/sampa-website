@@ -21,4 +21,10 @@ do not duplicate architecture here.
 **Don’t** copy STATUS backlog into HANDOFF or PARK.  
 **Do** load the relevant `docs/architecture/*.md` file when editing that area (don’t require the whole monologue in context).
 
+### Multi-agent claim (Egg Studio ↔ Cursor laptop)
+
+Work is coordinated **only** via **`docs/STATUS.md` → section `## Tasks`** (Todo / In Progress / Done).  
+No third file. **Pull → claim (Owner + move to In Progress) → commit+push STATUS → do work → complete/push.**  
+Owners: `egg` · `cursor` · `josh` · `either`. Full workflow is in STATUS under **Task workflow**.
+
 **DB migrations:** after writing/updating `supabase/migrations/`, `pbcopy < path` and tell the user it’s ready for the Supabase SQL Editor — gotcha 10 in `CLAUDE.md`.

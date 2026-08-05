@@ -12,13 +12,13 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-04 (Policy hub intent/roadmap copy)
+**Last updated:** 2026-08-04 (Tasks claim board for Egg ↔ Cursor)
 
 **Doc roles (one board — not three sources of truth):**
 
 | Doc | Role |
 |-----|------|
-| **This file (`STATUS.md`)** | **Only product board** — live / in flight / blocked / next / backlog |
+| **This file (`STATUS.md`)** | **Only product board** — live / in flight / blocked / next / backlog **+ Tasks claim tables** |
 | **`CLAUDE.md` + `docs/architecture/`** | How the system works / must not break |
 | **`HANDOFF.md`** | Thin human front door + bus-factor accounts — not a second manual |
 | **`PARK-*.md`** | Thin **agent sticky note** (resume phrase + next 1–4 steps + links here) |
@@ -27,7 +27,54 @@
 
 **Write path:** state change → **STATUS first** → CLAUDE/architecture if design/security changed → PARK only if track still mid-flight (slim) → HANDOFF only if bus-factor/front-door changed.  
 If the same “what’s next” list appears in three files, **keep STATUS and delete the extras**.  
-**GitHub `main`** — source of truth across laptop + Mac Studio; pull → work → push.
+**GitHub `main`** — source of truth across laptop + Mac Studio; pull → work → **push**.  
+**No third coordination file** — claim work in **Tasks** below (not a parallel kanban repo).
+
+---
+
+## Tasks (claim board — Hermes Egg ↔ Cursor laptop ↔ Josh)
+
+Single place to **grab work** so Studio and laptop don’t double-edit.  
+**Roadmap / ideas** still live in **Next up** and **In flight** below — promote a row here when someone will actually execute soon.
+
+**Owners:** `egg` (Hermes/Studio) · `cursor` (laptop Cursor) · `josh` (human) · `either` (unclaimed)
+
+### Todo
+
+| ID | Task | Owner | Notes |
+|----|------|-------|-------|
+| T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
+| T2 | Pre-membership security P0 (Vercel Stripe/webhook/keys + E2E join) | either | [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) · *Resume SAMPA security review* |
+| T3 | Brevo: API key + lists/Test + first campaign path | either | [`PARK-brevo-email.md`](PARK-brevo-email.md) · *Resume SAMPA Brevo email* |
+| T4 | Footer social links (IG; X when ready) | either | `Footer.jsx`; need final profile URLs |
+| T5 | Public newsletter signup (no membership) → Brevo DOI | either | Backlog detail under Next up |
+| T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
+| T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
+| T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
+
+### In Progress
+
+| ID | Task | Owner | Started | Notes |
+|----|------|-------|---------|-------|
+| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
+
+### Done (last 5 only — older = git history)
+
+| ID | Task | Owner | Done | Notes |
+|----|------|-------|------|-------|
+| — | — | — | — | *When completing: move here; drop 6th+ oldest row* |
+
+### Task workflow (agents + humans)
+
+1. **`git pull`** on the machine you’re using (always before claim or code).
+2. **Claim:** pick a **Todo** row → set **Owner** to `egg` / `cursor` / `josh` → move that row to **In Progress** with **Started** = today’s date (`YYYY-MM-DD`) → **commit + push STATUS** *before* heavy work (so the other side sees the claim).
+3. **Work** on that task only (use PARK/spec linked in Notes). Don’t start a second claimed task without releasing or finishing the first unless Josh says parallel OK.
+4. **Update:** if blocked or notes change, edit the In Progress row → commit+push.
+5. **Complete:** move row to **Done** with **Done** date; keep **Done** to **5 rows max** (delete oldest); clear related PARK if track fully shipped; commit+push.
+6. **Release / unclaim:** if stopping mid-flight, either leave In Progress with an honest Notes line *or* move back to Todo with Owner `either` — then push.
+7. **Never** invent `TASKS.md` / a second board. **Never** claim only in chat.
+
+**Conflict rule:** if two claims race, **first push to `origin/main` wins**; the other pulls, yields, picks another ID.
 
 ---
 

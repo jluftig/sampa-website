@@ -6,7 +6,7 @@ Machine-oriented entry point for agents on the SAMPA website.
 **Deep dives:** [`docs/architecture/`](docs/architecture/).  
 `AGENTS.md` points here for non-Claude agents.
 
-Last updated: 2026-08-04 (Policy hub access framing).
+Last updated: 2026-08-04 (Tasks claim board Egg ↔ Cursor).
 
 ## What this project is
 
@@ -24,7 +24,7 @@ Repo: `jluftig/sampa-website`. Supabase ref: `xbzzawjnphpnexwfjtif`.
 
 | Doc | Role |
 |-----|------|
-| **`docs/STATUS.md`** | **Only product board** |
+| **`docs/STATUS.md`** | **Only product board** + **Tasks** claim tables (Egg ↔ Cursor ↔ Josh) |
 | **`CLAUDE.md`** (this file) | Invariants, gotchas, short map — load first |
 | **`docs/architecture/*`** | Repo map, data model, RLS, Stripe, mobile, policy hub |
 | **`docs/HANDOFF.md`** | Thin human front door + bus-factor accounts |
@@ -36,6 +36,8 @@ Repo: `jluftig/sampa-website`. Supabase ref: `xbzzawjnphpnexwfjtif`.
 | Archive | `docs/archive/` (GEMINI bootstrap, original news plan) |
 
 **Write path:** STATUS first → architecture/CLAUDE if design/security changed → PARK only if mid-flight → HANDOFF only if bus-factor/accounts list changed.
+
+**Multi-machine / multi-agent:** GitHub `main` is SoR. Before executable work: `git pull`, claim a **Tasks** row in STATUS (`Owner` = `egg` \| `cursor` \| `josh`), move to **In Progress**, **commit+push immediately**, then code. No `TASKS.md`. First push wins on claim races. See STATUS **Task workflow**.
 
 ## Commands
 
