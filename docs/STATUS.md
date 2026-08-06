@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-05 (T12 done — ops-board on laptop)
+**Last updated:** 2026-08-05 (T13 deferred — Wayfinder for foggy projects only)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -52,18 +52,26 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
 
+### Deferred
+
+Parked claims — **not** Todo. Claim only when reactivation criteria in Notes are met; then move to **In Progress** as usual.
+
+| ID | Task | Owner | Notes |
+|----|------|-------|-------|
+| T13 | **Deferred · Wayfinder only:** `/setup-matt-pocock-skills` (GitHub Issues wiring) | either | **Why (2026-08-05):** Matt’s issue tracker (`to-tickets` / `to-spec` / `wayfinder`) would publish a second backlog alongside **STATUS Tasks** — violates single-board. Claimed then unclaimed mid-setup after choosing GitHub. **When to reactivate:** only for a **foggy multi-session** project where Josh explicitly wants a Wayfinder decision map (not routine STATUS todos). **How:** claim this row → run `/setup-matt-pocock-skills` → GitHub Issues OK *only* as Wayfinder map/children; STATUS Tasks stay Egg↔Cursor claims. **Do not** use for day-to-day product/ops work. `triage` skill not installed; skip triage labels unless that changes. |
+
 ### In Progress
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T13 | Optional: `/setup-matt-pocock-skills` in this repo | cursor | 2026-08-05 | Wayfinder/triage wiring; don’t fork STATUS Tasks |
+| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
 
 ### Done (last 5 only — older = git history)
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
 | T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
-| T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. Optional next: T13 `/setup-matt-pocock-skills` in-repo |
+| T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. T13 deferred (Wayfinder/fog only) |
 | T10 | Session handoff for Cursor (ops-board + Matt skills + Tasks workflow) | egg | 2026-08-05 | [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
 | T9 | Add Peter Yang `/human-review` agent skill | cursor | 2026-08-05 | `.claude/skills/human-review/` + AGENTS.md; PR #61 |
 | T14 | STATUS Tasks claim board (Egg ↔ Cursor) | egg | 2026-08-05 | Todo/In Progress/Done + workflow in this file; AGENTS/CLAUDE wired |
