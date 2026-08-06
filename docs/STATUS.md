@@ -51,14 +51,13 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
-| T12 | Clone **ops-board** on laptop + run `./bin/ops` | either | Private repo [jluftig/ops-board](https://github.com/jluftig/ops-board); `config.local.yaml` if not `~/Projects`. Read-only lens — not a second STATUS |
 | T13 | Optional: `/setup-matt-pocock-skills` in this repo | either | Only if wayfinder/triage Issues desired; claim first; don’t fork STATUS Tasks |
 
 ### In Progress
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
+| T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | Private repo [jluftig/ops-board](https://github.com/jluftig/ops-board); `config.local.yaml` if not `~/Projects`. Read-only lens — not a second STATUS |
 
 ### Done (last 5 only — older = git history)
 
