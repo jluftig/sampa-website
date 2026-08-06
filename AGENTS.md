@@ -27,6 +27,8 @@ Work is coordinated **only** via **`docs/STATUS.md` → section `## Tasks`** (To
 No third file. **Pull → claim (Owner + move to In Progress) → commit+push STATUS → do work → complete/push.**  
 Owners: `egg` · `cursor` · `josh` · `either`. Full workflow is in STATUS under **Task workflow**.
 
+Session handoffs (when Egg/Cursor need full context transfer): `docs/HANDOFF-cursor-*.md` — one-shot, not a standing board. Latest: [`docs/HANDOFF-cursor-2026-08-05-session.md`](docs/HANDOFF-cursor-2026-08-05-session.md).
+
 **DB migrations:** after writing/updating `supabase/migrations/`, `pbcopy < path` and tell the user it’s ready for the Supabase SQL Editor — gotcha 10 in `CLAUDE.md`.
 
 ## Reviewing files and localhost pages with human-review
