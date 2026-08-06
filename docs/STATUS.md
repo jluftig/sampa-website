@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-05 (Cursor session handoff — ops-board + skills + Tasks workflow)
+**Last updated:** 2026-08-05 (T11 done — Matt Pocock skills on Cursor laptop)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -58,17 +58,17 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Cursor-primary; skills.sh only — **no** Claude plugin duplicate. See [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
+| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
 
 ### Done (last 5 only — older = git history)
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. Optional next: T13 `/setup-matt-pocock-skills` in-repo |
 | T10 | Session handoff for Cursor (ops-board + Matt skills + Tasks workflow) | egg | 2026-08-05 | [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
 | T9 | Add Peter Yang `/human-review` agent skill | cursor | 2026-08-05 | `.claude/skills/human-review/` + AGENTS.md; PR #61 |
 | T14 | STATUS Tasks claim board (Egg ↔ Cursor) | egg | 2026-08-05 | Todo/In Progress/Done + workflow in this file; AGENTS/CLAUDE wired |
 | T15 | ops-board multi-machine + GitHub | egg | 2026-08-05 | [jluftig/ops-board](https://github.com/jluftig/ops-board) private; Studio+laptop |
-| T16 | Matt Pocock skills v1.2.2 on Hermes egg (curated) | egg | 2026-08-05 | Hermes profile only — not bulk-copied into this repo |
 
 ### Task workflow (agents + humans)
 
