@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-05 (T11 done — Matt Pocock skills on Cursor laptop)
+**Last updated:** 2026-08-05 (T12 done — ops-board on laptop)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -57,17 +57,17 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | Private repo [jluftig/ops-board](https://github.com/jluftig/ops-board); `config.local.yaml` if not `~/Projects`. Read-only lens — not a second STATUS |
+| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
 
 ### Done (last 5 only — older = git history)
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
 | T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. Optional next: T13 `/setup-matt-pocock-skills` in-repo |
 | T10 | Session handoff for Cursor (ops-board + Matt skills + Tasks workflow) | egg | 2026-08-05 | [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
 | T9 | Add Peter Yang `/human-review` agent skill | cursor | 2026-08-05 | `.claude/skills/human-review/` + AGENTS.md; PR #61 |
 | T14 | STATUS Tasks claim board (Egg ↔ Cursor) | egg | 2026-08-05 | Todo/In Progress/Done + workflow in this file; AGENTS/CLAUDE wired |
-| T15 | ops-board multi-machine + GitHub | egg | 2026-08-05 | [jluftig/ops-board](https://github.com/jluftig/ops-board) private; Studio+laptop |
 
 ### Task workflow (agents + humans)
 
