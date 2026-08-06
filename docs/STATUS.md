@@ -51,7 +51,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
-| T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | either | Cursor-primary; skills.sh only — **no** Claude plugin duplicate; include `setup-matt-pocock-skills` if you want wayfinder GH wiring later. See [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
 | T12 | Clone **ops-board** on laptop + run `./bin/ops` | either | Private repo [jluftig/ops-board](https://github.com/jluftig/ops-board); `config.local.yaml` if not `~/Projects`. Read-only lens — not a second STATUS |
 | T13 | Optional: `/setup-matt-pocock-skills` in this repo | either | Only if wayfinder/triage Issues desired; claim first; don’t fork STATUS Tasks |
 
@@ -59,7 +58,7 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
+| T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Cursor-primary; skills.sh only — **no** Claude plugin duplicate. See [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
 
 ### Done (last 5 only — older = git history)
 
