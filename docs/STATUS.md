@@ -51,13 +51,12 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
-| T13 | Optional: `/setup-matt-pocock-skills` in this repo | either | Only if wayfinder/triage Issues desired; claim first; don’t fork STATUS Tasks |
 
 ### In Progress
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
+| T13 | Optional: `/setup-matt-pocock-skills` in this repo | cursor | 2026-08-05 | Wayfinder/triage wiring; don’t fork STATUS Tasks |
 
 ### Done (last 5 only — older = git history)
 
