@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T3 Brevo: catch-all Updates + branded email)
+**Last updated:** 2026-08-07 (T3 Brevo: domain auth + Weekly #01 From info@)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -63,7 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo: API key + lists/Test + first campaign path | egg | 2026-08-07 | Catch-all **Updates**; Test=Josh; branded template; **need `info@` active** |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg · do not double-claim.** Infra mostly done (see In flight). **Still open:** Google Group Landing A import → **SAMPA Updates**; human approve + first production send; site copy stays **In development** until real sends. Sticky [`PARK-brevo-email.md`](PARK-brevo-email.md) · *Resume SAMPA Brevo email* · architecture [`email-brevo.md`](architecture/email-brevo.md) |
 
 ### Done (last 5 only — older = git history)
 
@@ -197,11 +197,18 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
   Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
 - **Email / Brevo campaigns (Hermes + repo)** — **Active 2026-08-07 (T3 · egg).**
-  Catch-all **SAMPA Updates** + Test (Josh only). Branded logo template. Reply-To **info@** early
-  (Google group alias OK). **Blocker:** `info@` sender inactive — drafts From `admin@` until active.
+  **Done this session:** `BREVO_API_KEY`; domain **authenticated + verified** (Porkbun DNS:
+  SPF + DKIM + DMARC + `em` branded links); From/Reply-To **`info@`** (Workspace group
+  alias; active); catch-all list **SAMPA Updates** (id 3) + **SAMPA Test** (id 8, Josh only);
+  topic lists reserved unused; branded **SAMPA Weekly Issue 01** template
+  (`docs/email/templates/site-membership-launch.*` + logo `public/email/sampa-logo.png`);
+  draft+test campaigns through **#5** (From info@ → `luftig@gmail.com`). CLI free-plan
+  tag omit + FIRSTNAME map. Decisions locked in PARK + architecture.
+  **Still open:** Landing A Google Group import → Updates; human approve first real send;
+  site marketing still lists member email **In development** (honest until send).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
-  Next: activate `info@` → branded re-test → Landing A → human send.
+  Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
 
 ---
 
@@ -231,10 +238,12 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [ ] **Pre-membership security P0** (remaining) — Vercel Production env + Stripe
   live webhook + E2E membership path; see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md)
   / [`PARK-security-review.md`](PARK-security-review.md).
-- [ ] **Email / Brevo campaigns (T3 in progress)** — scaffold + decisions locked; site = in development.
-  Still need: `BREVO_API_KEY`, lists + pref center, Test, Google Group Landing A, first campaign.
-  See [`PARK-brevo-email.md`](PARK-brevo-email.md).
-  **Already live:** domain auth + Supabase auth SMTP via `no-reply@addictionpas.org`.
+- [ ] **Email / Brevo (T3 · egg in progress)** — **infra done** 2026-08-07 (API key, domain
+  auth SPF/DKIM/DMARC + `em` brand, info@ From, Updates+Test lists, Weekly #01 draft+test).
+  **Still need:** Google Group Landing A → Updates; human first production send; then
+  consider flipping site copy from In development → Live. Later: member sync, public DOI
+  signup (T5). See [`PARK-brevo-email.md`](PARK-brevo-email.md).
+  **Also live:** Supabase auth SMTP via `no-reply@addictionpas.org` (separate from campaigns).
 - [ ] **Sentry account** (free) + `EXPO_PUBLIC_SENTRY_DSN` in mobile/.env.local and the
   EAS build env — turns on mobile crash reporting (code already merged, dormant).
 - [ ] **SAMPA D-U-N-S number** (free, developer.apple.com/enroll/duns-lookup) → convert
@@ -322,6 +331,11 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-07 · **Brevo domain + campaign path (T3 partial)** — `addictionpas.org`
+  authenticated in Brevo (SPF + domain DKIM + DMARC; branded `em.` links); senders
+  `info@` + `admin@` active; catch-all **SAMPA Updates** + Test; **SAMPA Weekly
+  Issue 01** branded HTML tested From info@ (draft only). Full track still In Progress
+  until Landing A + first real send — see Tasks **T3** + [`PARK-brevo-email.md`](PARK-brevo-email.md).
 - 2026-08-07 · **Practice settings on directory profiles** — curated multi-select
   per employer (`practice_settings` in org jsonb); soft color chips on web +
   mobile directory; OR-filter on `/members`; Other + optional note; legacy
