@@ -80,8 +80,10 @@ alter table public.profiles add column if not exists organization      text;
 alter table public.profiles add column if not exists practice_setting  text;
 alter table public.profiles add column if not exists city              text;
 alter table public.profiles add column if not exists state             text;
--- Multi-employer list: [{name, role, city, state, practice_setting, website},
--- ...]. org.role = job title at that employer (not profiles.role).
+-- Multi-employer list: [{name, role, city, state, practice_settings[],
+-- practice_setting_other, practice_setting (legacy), website}, ...].
+-- org.role = job title at that employer (not profiles.role).
+-- practice_settings = curated slugs (src/lib/practiceSettings.js).
 -- organization / city / practice_setting stay denormalized from
 -- organizations[0] for admin roster/CSV. profiles.state is PERSONAL
 -- (home/membership — often from member_import), never overwritten from an org.
@@ -765,13 +767,16 @@ $$;
 -- Viewer: is_active_member(). Targets: membership_status='active' AND
 -- directory_visible. Email/phone null when the owner did not share them.
 
--- Drop first when return shape changes (create or replace cannot alter OUT cols).
+-- Drop first when return shape or arg list changes (create or replace cannot
+-- alter OUT cols; new arity needs the old signature dropped).
 drop function if exists public.member_directory(text, text);
+drop function if exists public.member_directory(text, text, text[]);
 drop function if exists public.member_directory_profile(uuid);
 
 create or replace function public.member_directory(
   search text default null,
-  state_filter text default null
+  state_filter text default null,
+  settings_filter text[] default null
 )
 returns table (
   id uuid,
@@ -790,6 +795,7 @@ language plpgsql stable security definer set search_path = public as $$
 declare
   q text := nullif(btrim(coalesce(search, '')), '');
   st text := nullif(btrim(coalesce(state_filter, '')), '');
+  sf text[] := nullif(settings_filter, '{}'::text[]);
 begin
   if not public.is_active_member() then
     return;
@@ -826,6 +832,7 @@ begin
       or p.credentials ilike '%' || q || '%'
       or p.city ilike '%' || q || '%'
       or p.state ilike '%' || q || '%'
+      or p.practice_setting ilike '%' || q || '%'
       or exists (
         select 1
         from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
@@ -834,7 +841,13 @@ begin
            or o->>'city' ilike '%' || q || '%'
            or o->>'state' ilike '%' || q || '%'
            or o->>'practice_setting' ilike '%' || q || '%'
+           or o->>'practice_setting_other' ilike '%' || q || '%'
            or o->>'website' ilike '%' || q || '%'
+           or exists (
+             select 1
+             from jsonb_array_elements_text(coalesce(o->'practice_settings', '[]'::jsonb)) s(slug)
+             where s.slug ilike '%' || q || '%'
+           )
       )
       or (
         p.share_email
@@ -853,6 +866,17 @@ begin
         select 1
         from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
         where o->>'state' = st
+      )
+    )
+    and (
+      sf is null
+      or exists (
+        select 1
+        from jsonb_array_elements(coalesce(p.organizations, '[]'::jsonb)) o
+        cross join lateral jsonb_array_elements_text(
+          coalesce(o->'practice_settings', '[]'::jsonb)
+        ) s(slug)
+        where s.slug = any(sf)
       )
     )
   order by p.full_name nulls last, p.email nulls last;

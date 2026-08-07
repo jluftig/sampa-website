@@ -9,8 +9,12 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 - Identity: `email`, `full_name`, `phone`, `role`
 - Account contact: `phone`, `newsletter_opt_in`, `sms_opt_in` (`email` = sign-in)
 - Professional / directory: `credentials`, `npi`, `state`; `organizations` jsonb
-  `{name, role, city, state, practice_setting, website}`; denormalized
+  `{name, role, city, state, practice_settings[], practice_setting_other,
+  practice_setting (legacy), website}`; denormalized
   `organization`, `practice_setting`, `city` from `organizations[0]` for roster/CSV
+  (practice_setting denorm prefers joined labels from `practice_settings` slugs).
+  Curated slugs live in `src/lib/practiceSettings.js`. Directory OR-filter via
+  `member_directory(..., settings_filter text[])`.
   (personal `state` never overwritten from an org)
 - Directory privacy: `directory_visible` (default true), `share_email` (true),
   `share_phone` (false), `directory_use_account_contact`, `directory_email`,

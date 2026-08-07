@@ -16,6 +16,7 @@ import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import DonateLink from '../components/DonateLink';
+import { PracticeSettingPicker } from '../components/PracticeSettingChips';
 
 const STATUS_BADGES = {
   active:   { label: 'Active',            cls: 'bg-green-500/10 text-green-700 border-green-500/20' },
@@ -258,6 +259,8 @@ export default function Dashboard() {
         role: o.role || '',
         city: o.city || '',
         state: o.state || '',
+        practice_settings: o.practice_settings || [],
+        practice_setting_other: o.practice_setting_other || '',
         practice_setting: o.practice_setting || '',
         website: o.website || '',
       })) : [emptyOrganization()],
@@ -616,20 +619,25 @@ export default function Dashboard() {
                           />
                         </div>
                         <div className="md:col-span-2">
-                          <label
-                            htmlFor={`pf-org-setting-${index}`}
-                            className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2"
-                          >
-                            Practice setting
-                          </label>
-                          <input
-                            id={`pf-org-setting-${index}`}
-                            type="text"
-                            value={org.practice_setting}
-                            onChange={(e) => updateOrganization(index, 'practice_setting', e.target.value)}
-                            placeholder="e.g. OTP, FQHC, hospital, private practice"
-                            className="w-full px-4 py-2.5 rounded-2xl border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                          <div className="block text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
+                            Practice settings
+                          </div>
+                          <p className="text-text/40 text-xs mb-2">
+                            Click all that apply for this employer.
+                          </p>
+                          <PracticeSettingPicker
+                            selected={org.practice_settings || []}
+                            onChange={(next) => updateOrganization(index, 'practice_settings', next)}
+                            otherNote={org.practice_setting_other || ''}
+                            onOtherNoteChange={(v) =>
+                              updateOrganization(index, 'practice_setting_other', v)
+                            }
                           />
+                          {org.practice_setting && !(org.practice_settings || []).length && (
+                            <p className="text-text/40 text-xs mt-2">
+                              Previous free-text: {org.practice_setting}
+                            </p>
+                          )}
                         </div>
                         <div className="md:col-span-2">
                           <label

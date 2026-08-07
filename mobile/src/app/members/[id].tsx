@@ -4,10 +4,15 @@ import { useLocalSearchParams } from 'expo-router';
 import { Globe, Mail, MapPin, Phone } from 'lucide-react-native';
 import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { displayOrganizations, formatOrgLocation, formatWebsiteLabel } from 'sampa-shared/organizations';
+import { sanitizePracticeSettingSlugs } from 'sampa-shared/practiceSettings';
 
 import { Fonts, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { fetchMemberProfile } from '@/lib/directory';
+import {
+  PersonPracticeSettings,
+  PracticeSettingChips,
+} from '@/components/practice-setting-chips';
 
 export default function MemberProfileScreen() {
   const theme = useTheme();
@@ -66,6 +71,8 @@ export default function MemberProfileScreen() {
         </View>
       ) : null}
 
+      <PersonPracticeSettings person={person} style={{ marginTop: Spacing.two }} />
+
       {/* Contact (only fields this member chose to share) */}
       {person.email || person.phone ? (
         <View style={styles.section}>
@@ -103,6 +110,7 @@ export default function MemberProfileScreen() {
           </Text>
           {orgs.map((org, i) => {
             const location = formatOrgLocation(org);
+            const settings = sanitizePracticeSettingSlugs(org.practice_settings);
             return (
               <View
                 key={i}
@@ -113,7 +121,16 @@ export default function MemberProfileScreen() {
                 {org.role ? (
                   <Text style={[styles.line, { color: theme.textSecondary }]}>{org.role}</Text>
                 ) : null}
-                {org.practice_setting ? (
+                {settings.length ? (
+                  <View style={{ gap: 4, marginTop: 2 }}>
+                    <PracticeSettingChips slugs={settings} />
+                    {settings.includes('other') && org.practice_setting_other ? (
+                      <Text style={[styles.faint, { color: theme.textSecondary }]}>
+                        {org.practice_setting_other}
+                      </Text>
+                    ) : null}
+                  </View>
+                ) : org.practice_setting ? (
                   <Text style={[styles.faint, { color: theme.textSecondary }]}>
                     {org.practice_setting}
                   </Text>

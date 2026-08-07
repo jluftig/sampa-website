@@ -46,6 +46,8 @@ declare module 'sampa-shared/organizations' {
     name?: string;
     role?: string;
     practice_setting?: string;
+    practice_settings?: string[];
+    practice_setting_other?: string | null;
     city?: string;
     state?: string;
     website?: string;
@@ -54,6 +56,15 @@ declare module 'sampa-shared/organizations' {
   export function formatOrgLocation(org: Organization): string;
   export function normalizeWebsite(raw: string): string;
   export function formatWebsiteLabel(url: string): string;
+  export function legacyPracticeSettingText(person: any): string;
+}
+
+declare module 'sampa-shared/practiceSettings' {
+  export const PRACTICE_SETTINGS: { slug: string; label: string; chipClass: string }[];
+  export function formatPracticeSettingLabel(slug: string): string;
+  export function sanitizePracticeSettingSlugs(raw: unknown): string[];
+  export function collectPracticeSettings(personOrOrgs: any): string[];
+  export function practiceSettingMobileColors(slug: string): { bg: string; text: string };
 }
 
 declare module 'sampa-shared/tags' {

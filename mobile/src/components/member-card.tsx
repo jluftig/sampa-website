@@ -6,6 +6,7 @@ import { displayOrganizations, formatOrgLocation } from 'sampa-shared/organizati
 import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import type { DirectoryMember } from '@/lib/directory';
+import { PersonPracticeSettings } from '@/components/practice-setting-chips';
 
 /** Directory list card — mirrors the website's MemberCard (src/pages/MemberDirectory.jsx). */
 export function MemberCard({ person }: { person: DirectoryMember }) {
@@ -51,17 +52,13 @@ export function MemberCard({ person }: { person: DirectoryMember }) {
       {primary?.role ? (
         <Text style={[styles.line, { color: theme.textSecondary }]}>{primary.role}</Text>
       ) : null}
-      {primary?.practice_setting ? (
-        <Text style={[styles.lineFaint, { color: theme.textSecondary }]}>
-          {primary.practice_setting}
-        </Text>
-      ) : null}
       {location ? (
         <View style={styles.iconRow}>
           <MapPin color={theme.textSecondary} size={13} />
           <Text style={[styles.lineFaint, { color: theme.textSecondary }]}>{location}</Text>
         </View>
       ) : null}
+      <PersonPracticeSettings person={person} style={{ marginTop: 6 }} />
 
       {person.email || person.phone ? (
         <View style={[styles.contactRow, { borderTopColor: theme.border }]}>

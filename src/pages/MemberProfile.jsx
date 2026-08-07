@@ -8,6 +8,11 @@ import {
   formatWebsiteLabel,
   normalizeWebsite,
 } from '../lib/organizations';
+import { sanitizePracticeSettingSlugs } from '../lib/practiceSettings';
+import {
+  PersonPracticeSettings,
+  PracticeSettingChips,
+} from '../components/PracticeSettingChips';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -103,6 +108,8 @@ export default function MemberProfile() {
               )}
             </div>
 
+            <PersonPracticeSettings person={person} className="mb-6" />
+
             {(() => {
               const orgs = displayOrganizations(person);
               if (orgs.length === 0) return null;
@@ -115,6 +122,7 @@ export default function MemberProfile() {
                     {orgs.map((org, i) => {
                       const location = formatOrgLocation(org);
                       const websiteHref = normalizeWebsite(org.website);
+                      const settings = sanitizePracticeSettingSlugs(org.practice_settings);
                       return (
                         <li
                           key={i}
@@ -132,12 +140,24 @@ export default function MemberProfile() {
                                   <span>{org.role}</span>
                                 </div>
                               )}
-                              {org.practice_setting && (
+                              {settings.length > 0 ? (
+                                <div className="flex items-start gap-2 text-sm text-text/70">
+                                  <Stethoscope className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
+                                  <div className="min-w-0 space-y-1.5">
+                                    <PracticeSettingChips slugs={settings} />
+                                    {settings.includes('other') && org.practice_setting_other && (
+                                      <p className="text-text/50 text-xs">
+                                        {org.practice_setting_other}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              ) : org.practice_setting ? (
                                 <div className="flex items-start gap-2 text-sm text-text/70">
                                   <Stethoscope className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
                                   <span>{org.practice_setting}</span>
                                 </div>
-                              )}
+                              ) : null}
                               {location && (
                                 <div className="flex items-start gap-2 text-sm text-text/70">
                                   <MapPin className="w-4 h-4 text-primary-text shrink-0 mt-0.5" />
