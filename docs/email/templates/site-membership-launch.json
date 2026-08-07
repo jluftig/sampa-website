@@ -1,9 +1,9 @@
 {
-  "name": "SAMPA Weekly — Issue 01 (launch / new home)",
-  "subject": "SAMPA Weekly: a national home for addiction-medicine PAs",
-  "previewText": "Daily news, member directory, Policy hub — and the first of our weekly letters. Join us.",
+  "name": "SAMPA Weekly — Issue 01 (Claude rebuild + logo)",
+  "subject": "addictionpas.org is live — addiction medicine PAs have a home",
+  "previewText": "Daily news, a national peer directory, and a policy hub — built for PAs. Here's what's ready today.",
   "htmlPath": "site-membership-launch.html",
   "listKeys": ["test"],
   "tag": "sampa-weekly-01",
-  "notes": "Weekly newsletter framing. Live vs building honesty from site ValueProps. Test list Josh only. Reply-To info@. From info@ when active else admin@ for path test."
+  "notes": "Claude structural rewrite + hosted logo + non-partisan. News desk 3 live slugs verified 200. CONFIRM signer Shani Wilson President before prod. CAN-SPAM mailing address placeholder still amber. Draft+test only."
 }
