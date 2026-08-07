@@ -1,11 +1,11 @@
 # PARK — SAMPA email / Brevo campaigns
 
-**Status:** Parked 2026-08-04 — scaffold + product decisions locked; site lists email **in development** (Ad Grants honesty). PR #56 merged.  
+**Status:** Active 2026-08-07 (T3 claimed by egg) — scaffold + product decisions locked; site lists email **in development** (Ad Grants honesty). Blocked on `BREVO_API_KEY`.  
 **Resume phrase:** `Resume SAMPA Brevo email`  
-**Board:** [`STATUS.md`](STATUS.md)  
+**Board:** [`STATUS.md`](STATUS.md) · Task **T3**  
 **How:** [`architecture/email-brevo.md`](architecture/email-brevo.md)  
 **Repo skill:** [`.claude/skills/sampa-email/SKILL.md`](../.claude/skills/sampa-email/SKILL.md)  
-**Hermes skill:** `sampa-brevo-email`  
+**Hermes skill:** `sampa-brevo-campaigns`  
 **Clone:** `~/Projects/sampa-website` · **Remote:** `jluftig/sampa-website` · branch **`main`**
 
 ---
@@ -21,6 +21,7 @@ Programmatic **draft + test** Brevo campaigns; multi-list prefs; Google Group La
 - Architecture, CLI (`scripts/run-brevo.sh`), templates, repo + Hermes skills  
 - Locked lists/from/prefs/weekly 5:30 PT schedule-after-approve / Landing A  
 - Ad Grants site live; member email described as **in development** on www  
+- Offline `campaign-draft --validate-only` OK for `site-membership-launch` (2026-08-07)
 
 ---
 
@@ -37,9 +38,9 @@ Programmatic **draft + test** Brevo campaigns; multi-list prefs; Google Group La
 
 ## Next (ordered)
 
-1. Josh: `BREVO_API_KEY` → Hermes egg `.env`  
-2. `info@` sender + **Test** list (Josh + Kelsey)  
-3. Create lists; set `BREVO_LIST_*`; preference center URL  
+1. Josh: `BREVO_API_KEY` → Hermes egg `.env` (`~/.hermes/profiles/egg/.env`)  
+2. Confirm `info@` sender in Brevo + **Test** list (Josh + Kelsey)  
+3. Create six lists; set `BREVO_LIST_*`; preference center URL  
 4. Google Group CSV → Landing A import  
 5. Draft/test confirm-prefs + site/membership campaign → human send  
 6. Then: site copy Live if accurate; member sync; public DOI signup later  

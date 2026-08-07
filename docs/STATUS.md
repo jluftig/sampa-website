@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (practice-settings SQL confirmed)
+**Last updated:** 2026-08-07 (T3 Brevo email claimed; waiting on API key)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -45,7 +45,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 |----|------|-------|-------|
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
 | T2 | Pre-membership security P0 (Vercel Stripe/webhook/keys + E2E join) | either | [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) · *Resume SAMPA security review* |
-| T3 | Brevo: API key + lists/Test + first campaign path | either | [`PARK-brevo-email.md`](PARK-brevo-email.md) · *Resume SAMPA Brevo email* |
 | T4 | Footer social links (IG; X when ready) | either | `Footer.jsx`; need final profile URLs |
 | T5 | Public newsletter signup (no membership) → Brevo DOI | either | Backlog detail under Next up |
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
@@ -64,7 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
+| T3 | Brevo: API key + lists/Test + first campaign path | egg | 2026-08-07 | [`PARK-brevo-email.md`](PARK-brevo-email.md) · *Resume SAMPA Brevo email* · setup-check: no `BREVO_API_KEY` yet; campaign pack validates offline |
 
 ### Done (last 5 only — older = git history)
 
@@ -198,11 +197,12 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
   Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
 - **Email / Brevo campaigns (Hermes + repo)** — **Parked 2026-08-04.**
-  Scaffold in repo (CLI, architecture, skills); site copy lists member email as
-  **in development** (Ad Grants honesty). Not sending campaigns yet.
-  Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
-  [`architecture/email-brevo.md`](architecture/email-brevo.md).
-  Resume: *Resume SAMPA Brevo email* (API key → lists/Test → Landing A import → first campaign).
+  - **Email / Brevo campaigns (Hermes + repo)** — **Active 2026-08-07 (T3 · egg).**
+    Scaffold ready; `setup-check` = no `BREVO_API_KEY` yet; first-campaign pack
+    validates offline. Site still **in development** for member email.
+    Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
+    [`architecture/email-brevo.md`](architecture/email-brevo.md).
+    Next: API key → lists/Test → Landing A → draft/test first campaign (no mass send).
 
 ---
 
@@ -232,7 +232,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [ ] **Pre-membership security P0** (remaining) — Vercel Production env + Stripe
   live webhook + E2E membership path; see [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md)
   / [`PARK-security-review.md`](PARK-security-review.md).
-- [ ] **Email / Brevo campaigns (parked)** — scaffold + decisions locked; site = in development.
+- [ ] **Email / Brevo campaigns (T3 in progress)** — scaffold + decisions locked; site = in development.
   Still need: `BREVO_API_KEY`, lists + pref center, Test, Google Group Landing A, first campaign.
   See [`PARK-brevo-email.md`](PARK-brevo-email.md).
   **Already live:** domain auth + Supabase auth SMTP via `no-reply@addictionpas.org`.
