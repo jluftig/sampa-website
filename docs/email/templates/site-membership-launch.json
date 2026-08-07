@@ -1,9 +1,9 @@
 {
-  "name": "SAMPA — New site + membership (v2 branded)",
-  "subject": "SAMPA has a new home — join us at addictionpas.org",
-  "previewText": "addictionpas.org is live. Membership, news for PAs, and a simple updates list.",
+  "name": "SAMPA Weekly — Issue 01 (launch / new home)",
+  "subject": "SAMPA Weekly: a national home for addiction-medicine PAs",
+  "previewText": "Daily news, member directory, Policy hub — and the first of our weekly letters. Join us.",
   "htmlPath": "site-membership-launch.html",
   "listKeys": ["test"],
-  "tag": "site-membership-launch",
-  "notes": "Catch-all list model (SAMPA Updates). Test list = Josh only. Reply-To info@ (Google Group) early phase. From info@ when sender active; else admin@ for path tests. Free plan: omit tags unless --with-tag."
+  "tag": "sampa-weekly-01",
+  "notes": "Weekly newsletter framing. Live vs building honesty from site ValueProps. Test list Josh only. Reply-To info@. From info@ when active else admin@ for path test."
 }
