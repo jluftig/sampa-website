@@ -32,12 +32,17 @@ export function replyToFromEnv() {
 
 /** Map logical list keys → env var list IDs */
 export const LIST_ENV = {
-  announcements: 'BREVO_LIST_ANNOUNCEMENTS',
+  // v1 product: one catch-all marketing list + Test
+  updates: 'BREVO_LIST_UPDATES',
+  newsletter: 'BREVO_LIST_UPDATES', // alias
+  announcements: 'BREVO_LIST_UPDATES', // legacy alias (pre–catch-all)
+  test: 'BREVO_LIST_TEST',
+  // Reserved lists exist in Brevo but are not v1 product surfaces:
+  // weekly_news / policy / jobs / cme — keep env optional for later
   weekly_news: 'BREVO_LIST_WEEKLY_NEWS',
   policy: 'BREVO_LIST_POLICY',
   jobs: 'BREVO_LIST_JOBS',
   cme: 'BREVO_LIST_CME',
-  test: 'BREVO_LIST_TEST',
 };
 
 export function resolveListIds(keys) {

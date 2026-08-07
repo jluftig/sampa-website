@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T3 Brevo: API + lists + draft #2 test; info@ inactive)
+**Last updated:** 2026-08-07 (T3 Brevo: catch-all Updates + branded email)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -63,7 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo: API key + lists/Test + first campaign path | egg | 2026-08-07 | [`PARK-brevo-email.md`](PARK-brevo-email.md) · lists 3–8 + Test seeded; draft **#2** test OK via `admin@`; **need `info@` activate** |
+| T3 | Brevo: API key + lists/Test + first campaign path | egg | 2026-08-07 | Catch-all **Updates**; Test=Josh; branded template; **need `info@` active** |
 
 ### Done (last 5 only — older = git history)
 
@@ -197,12 +197,11 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
   Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
 - **Email / Brevo campaigns (Hermes + repo)** — **Active 2026-08-07 (T3 · egg).**
-  API key live; six lists + Test (Josh/Kelsey/admin); draft campaign **#2** test-sent.
-  **Blocker:** sender `info@addictionpas.org` registered but **inactive** (draft From = `admin@` temp).
-  Free plan: no campaign tags. Site still **in development** for member email.
+  Catch-all **SAMPA Updates** + Test (Josh only). Branded logo template. Reply-To **info@** early
+  (Google group alias OK). **Blocker:** `info@` sender inactive — drafts From `admin@` until active.
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
-  Next: activate `info@` → re-test From info@ → Landing A → human send.
+  Next: activate `info@` → branded re-test → Landing A → human send.
 
 ---
 

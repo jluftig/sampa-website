@@ -24,48 +24,54 @@ Optional later: a parent `sampa/` folder that *contains* this clone is fine as a
 | Path | Provider | Address |
 |------|----------|---------|
 | Auth magic links / codes | Brevo **SMTP** → Supabase | `no-reply@addictionpas.org` |
-| Marketing campaigns | Brevo **REST API** | From: **SAMPA** `<info@addictionpas.org>` (alias → Kelsey `kelsey@addictionpas.org`) |
+| Marketing campaigns | Brevo **REST API** | From: **SAMPA** `<info@addictionpas.org>` (Google Workspace **group alias** — routes to whoever handles info; not a paid mailbox) |
 
-Domain `addictionpas.org` is already authenticated in Brevo (DKIM/DMARC). Register **`info@` as a sender** before first campaign send.  
+Domain `addictionpas.org` must be authenticated in Brevo (DKIM/DMARC). Register **`info@` as a sender** and wait until **active** before production From.  
 Use a dedicated **`BREVO_API_KEY`** (API), not the SMTP key used by Supabase.
 
-Docs: [developers.brevo.com](https://developers.brevo.com/) · base `https://api.brevo.com/v3` · header `api-key: …`
+Docs: [developers.brevo.com](https://developers.brevo.com/) · base `https://api.brevo.com/v3` · header `api-key: ***`
 
-## Standing lists (v1)
+## Standing lists (v1 — catch-all)
 
-| List key | Brevo name (suggested) | Who | Notes |
-|----------|------------------------|-----|--------|
-| `announcements` | SAMPA Announcements | Public + members | Org news, elections, site/features |
-| `weekly_news` | SAMPA Weekly News | Public + members | Mon **5:30 AM PT** target after human approve |
-| `policy` | SAMPA Policy & positions | Opt-in | Position papers, advocacy |
-| `jobs` | SAMPA Jobs & opportunities | Opt-in | Jobs, fellowships |
-| `cme` | SAMPA Events & CME | Opt-in | Webinars, CME, live events |
-| `test` | SAMPA Test | Josh, Kelsey, QA only | Every campaign: test here first |
+| List key | Brevo name | Who | Notes |
+|----------|------------|-----|--------|
+| `updates` | **SAMPA Updates** | Public + members | **Single catch-all** marketing list |
+| `test` | SAMPA Test | Josh (expand later) | Every campaign: test here first |
 
-Store numeric list IDs in env once created: `BREVO_LIST_ANNOUNCEMENTS`, etc. (see `scripts/brevo`).
+Aliases for CLI: `newsletter`, `announcements` → same as `updates`.  
+Env: `BREVO_LIST_UPDATES`, `BREVO_LIST_TEST`.
 
-**No board/internal marketing list required for v1** — use **Test** for QA. A private board list can be added later for non-public ops mail (do not mix with public lists).
+**Reserved in Brevo (not product yet):** Weekly News, Policy, Jobs, CME (ids 4–7). Do not attach on import/sync until multi-topic prefs reopen.
+
+**No board/internal marketing list required for v1** — use **Test** for QA.
+
+## From / Reply-To
+
+| Phase | From | Reply-To | Why |
+|-------|------|----------|-----|
+| **Early (now)** | SAMPA `info@` | **`info@`** (group alias) | People can ask questions while list is small; group routes handlers |
+| **Later (scale)** | SAMPA `info@` | **`no-reply@`** or none + footer **Contact us** form | Control spam; structured intake |
+| Auth (always) | — | SMTP `no-reply@` | Magic links only — not marketing |
 
 ## Audiences & consent
 
 ```
 Public signup (site, later)
   → double opt-in (DOI)
-  → chosen lists only
+  → SAMPA Updates
 
 Member (Supabase) with newsletter_opt_in = true
-  → Announcements + Weekly News
-  → Policy / Jobs / CME still opt-in via prefs
+  → SAMPA Updates
 
 Google Group legacy (~130)
   → import Brevo only (not auth.users)
   → SOURCE=google_group_legacy
-  → Landing A: confirm-prefs email before full multi-list placement
+  → Landing A: stay-or-unsub / confirm before treating as opted Updates
   → first major CTA: new site + membership
 
 Unsubscribe
   → always one-click full exit
-  → preference center for “only news / only announcements / …”
+  → multi-list preference center = later (single list now)
   → exit interview = backlog (never block unsub)
 ```
 
@@ -73,11 +79,17 @@ Unsubscribe
 
 | Concern | System |
 |---------|--------|
-| Who receives which marketing mail | **Brevo** lists + attributes |
+| Who receives marketing mail | **Brevo** Updates list + attributes |
 | Who has a site account / paid membership | **Supabase** (+ Stripe) |
 | Legacy interest without an account | **Brevo** (optional future `email_prospects` table only if staff need in-app roster) |
 
 Do **not** bulk-create Supabase auth users for the Google Group.
+
+## Brand in email
+
+- Logo PNG: `public/email/sampa-logo.png` → live `https://www.addictionpas.org/email/sampa-logo.png`  
+- Colors: teal `#0F766E` / `#36A79C`, purple `#8513C1`, soft ground `#F4F7F5`  
+- Templates under `docs/email/templates/`
 
 ## Agent / automation safety
 

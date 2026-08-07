@@ -15,7 +15,8 @@ argument-hint: "[draft campaign | import google group | weekly digest | setup]"
 
 Marketing email for SAMPA lives **in this repo** (`sampa-website`), not a sibling
 project. Auth magic-links already use Brevo SMTP (`no-reply@`). Campaigns use the
-**REST API** from **SAMPA `<info@addictionpas.org>`** (alias → Kelsey).
+**REST API** from **SAMPA `<info@addictionpas.org>`** (Google Workspace **group
+alias** for inbound routing — not a paid mailbox).
 
 **Board:** `docs/STATUS.md`  
 **Architecture:** `docs/architecture/email-brevo.md`  
@@ -27,8 +28,8 @@ project. Auth magic-links already use Brevo SMTP (`no-reply@`). Campaigns use th
 
 - Resume / build / send-test SAMPA Brevo campaigns  
 - Google Group → Brevo migration  
-- Weekly news roundup email  
-- Public multi-list signup or member `newsletter_opt_in` sync design  
+- Catch-all updates / future weekly digest email  
+- Public signup or member `newsletter_opt_in` sync design  
 - First campaign: new site + membership  
 
 **Don't use for:** Supabase auth email template copy only; site news *article* drafting (`sampa-post` / news pipeline).
@@ -37,27 +38,22 @@ project. Auth magic-links already use Brevo SMTP (`no-reply@`). Campaigns use th
 
 1. **Draft + test default.** Never mass-send unless Josh says so (or uses Brevo UI).  
 2. CLI `campaign-send` requires `--i-understand-send-to-production`.  
-3. **Weekly News** target Mon **5:30 AM PT** = schedule **after** human approves draft — not autopilot.  
-4. Digest body = **published** posts only.  
-5. Secrets: `BREVO_API_KEY` in Hermes `.env` — never git; never reuse SMTP key.  
-6. Google Group: **Landing A** (confirm prefs) — see `docs/email/google-group-import.md`.  
-7. User-facing copy: **PA/PAs**; never “physician assistants.”
+3. Secrets: `BREVO_API_KEY` in Hermes `.env` — never git; never reuse SMTP key.  
+4. Google Group: **Landing A** — see `docs/email/google-group-import.md`.  
+5. User-facing copy: **PA/PAs**; never “physician assistants.”  
+6. **v1 = one catch-all list** (`updates` / SAMPA Updates). Topic multi-list deferred.  
+7. **Reply-To early = `info@`**; later may flip to no-reply + Contact form.
 
 ## Lists (v1)
 
 | Key | Purpose |
 |-----|---------|
-| `announcements` | Org news, elections, site/features |
-| `weekly_news` | Weekly roundup of site articles |
-| `policy` | Positions / advocacy |
-| `jobs` | Jobs & opportunities |
-| `cme` | Events & CME |
-| `test` | Josh + Kelsey QA only |
+| `updates` | **Catch-all** marketing (aliases: `newsletter`, `announcements`) |
+| `test` | Josh QA only (expand later) |
 
-Env: `BREVO_LIST_<ANNOUNCEMENTS|WEEKLY_NEWS|POLICY|JOBS|CME|TEST>`.
-
-Members with `newsletter_opt_in` → announcements + weekly_news (when sync built).  
-Policy/jobs/cme stay opt-in. Public signup = **DOI**.
+Env: `BREVO_LIST_UPDATES`, `BREVO_LIST_TEST`.  
+Reserved (not product): weekly_news / policy / jobs / cme still exist in Brevo.  
+Members with `newsletter_opt_in` → **Updates** only (when sync built). Public signup = **DOI**.
 
 ## Commands
 

@@ -1,9 +1,9 @@
 {
-  "name": "SAMPA — New site + membership (confirm prefs)",
-  "subject": "SAMPA has a new home — choose your updates + join",
-  "previewText": "addictionpas.org is live. Set email preferences and explore membership.",
+  "name": "SAMPA — New site + membership (v2 branded)",
+  "subject": "SAMPA has a new home — join us at addictionpas.org",
+  "previewText": "addictionpas.org is live. Membership, news for PAs, and a simple updates list.",
   "htmlPath": "site-membership-launch.html",
   "listKeys": ["test"],
   "tag": "site-membership-launch",
-  "notes": "tag is ignored on free plan unless campaign-draft --with-tag. First production audience after Test: legacy Google Group Landing A cohort — not all five topic lists. Swap listKeys/listIds when ready. Draft+test only until Josh approves send/schedule."
+  "notes": "Catch-all list model (SAMPA Updates). Test list = Josh only. Reply-To info@ (Google Group) early phase. From info@ when sender active; else admin@ for path tests. Free plan: omit tags unless --with-tag."
 }
