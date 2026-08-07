@@ -52,6 +52,7 @@ Commands:
   campaign-draft --file F.json    Create draft campaign from JSON
     --validate-only               Schema check only (no API)
     --dry-run                     Print payload, no POST
+    --with-tag                    Include JSON tag (paid plans; free rejects tags)
   campaign-get --id N             GET campaign
   campaign-test --id N            POST sendTest
     --email a@x,b@y               Explicit test recipients (else Brevo test list)
@@ -180,8 +181,12 @@ function buildCampaignPayload(spec) {
     mirrorActive: true,
   };
   if (spec.previewText) payload.previewText = spec.previewText;
-  if (spec.tag) payload.tag = spec.tag;
-  if (Array.isArray(spec.tags)) payload.tag = spec.tags[0];
+  // Free Brevo plan rejects campaign tags (405 method_not_allowed).
+  // Only attach when caller opts in: --with-tag (paid plans).
+  if (flag('--with-tag')) {
+    if (spec.tag) payload.tag = spec.tag;
+    if (Array.isArray(spec.tags)) payload.tag = spec.tags[0];
+  }
   if (spec.scheduledAt) {
     // Optional: only if human put a schedule in the JSON on purpose
     payload.scheduledAt = spec.scheduledAt;
@@ -298,8 +303,9 @@ async function cmdContactUpsert() {
   const attributes = {};
   const fname = opt('--fname');
   const lname = opt('--lname');
-  if (fname) attributes.FNAME = fname;
-  if (lname) attributes.LNAME = lname;
+  // Brevo default contact attrs are FIRSTNAME/LASTNAME (not FNAME/LNAME).
+  if (fname) attributes.FIRSTNAME = fname;
+  if (lname) attributes.LASTNAME = lname;
   // --attr KEY=VAL
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--attr' && args[i + 1]) {

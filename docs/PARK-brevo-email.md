@@ -1,6 +1,6 @@
 # PARK — SAMPA email / Brevo campaigns
 
-**Status:** Active 2026-08-07 (T3 claimed by egg) — scaffold + product decisions locked; site lists email **in development** (Ad Grants honesty). Blocked on `BREVO_API_KEY`.  
+**Status:** Active 2026-08-07 (T3 · egg) — API live; lists + Test seeded; first draft **campaign id 2** test-sent. **Blocker:** activate/verify sender `info@addictionpas.org` (still inactive; draft used `admin@` temporarily). Site lists email **in development**.  
 **Resume phrase:** `Resume SAMPA Brevo email`  
 **Board:** [`STATUS.md`](STATUS.md) · Task **T3**  
 **How:** [`architecture/email-brevo.md`](architecture/email-brevo.md)  
@@ -21,7 +21,14 @@ Programmatic **draft + test** Brevo campaigns; multi-list prefs; Google Group La
 - Architecture, CLI (`scripts/run-brevo.sh`), templates, repo + Hermes skills  
 - Locked lists/from/prefs/weekly 5:30 PT schedule-after-approve / Landing A  
 - Ad Grants site live; member email described as **in development** on www  
-- Offline `campaign-draft --validate-only` OK for `site-membership-launch` (2026-08-07)
+- **2026-08-07:** `BREVO_API_KEY` live (account `admin@addictionpas.org`, free 300 credits)  
+- Lists created + env ids: Announcements **3**, Weekly News **4**, Policy **5**, Jobs **6**, CME **7**, Test **8**  
+- Custom attrs: `MEMBER_STATUS`, `IS_BOARD`, `STATE`, `SOURCE`, `LEGACY_MEMBER`  
+- Test contacts: `luftig@gmail.com`, `kelsey@addictionpas.org`, `admin@addictionpas.org`  
+- Sender `info@` **registered** (id 2) but **`active: false`** — needs Brevo UI verify  
+- Draft campaign **id 2** (site-membership-launch, recipients Test) — **sendTest** to Josh + Kelsey OK  
+  - Temporary From: `admin@` until `info@` active  
+- Free plan: campaign **tags not allowed** — CLI defaults omit tag (`--with-tag` for paid)
 
 ---
 
@@ -38,11 +45,11 @@ Programmatic **draft + test** Brevo campaigns; multi-list prefs; Google Group La
 
 ## Next (ordered)
 
-1. Josh: `BREVO_API_KEY` → Hermes egg `.env` (`~/.hermes/profiles/egg/.env`)  
-2. Confirm `info@` sender in Brevo + **Test** list (Josh + Kelsey)  
-3. Create six lists; set `BREVO_LIST_*`; preference center URL  
+1. **Josh (Brevo UI):** Senders → verify/activate **`info@addictionpas.org`** (check inbox/spam for confirm; domain DNS if prompted)  
+2. Preference center covering the five public lists; paste URL into setup checklist  
+3. Re-draft (or update campaign 2) with From `info@` → re-test  
 4. Google Group CSV → Landing A import  
-5. Draft/test confirm-prefs + site/membership campaign → human send  
+5. Human approve → send/schedule first real campaign (not agent sendNow unless explicit)  
 6. Then: site copy Live if accurate; member sync; public DOI signup later  
 
 ---
