@@ -39,18 +39,16 @@ In Brevo: Senders → add/verify `info@` if not already listed under authenticat
 
 ## 3. Lists
 
-Create (or confirm) these exact conceptual lists:
+**v1 product:** one catch-all + Test.
 
-| Env key suffix | Suggested Brevo name |
-|----------------|----------------------|
-| ANNOUNCEMENTS | SAMPA Announcements |
-| WEEKLY_NEWS | SAMPA Weekly News |
-| POLICY | SAMPA Policy & positions |
-| JOBS | SAMPA Jobs & opportunities |
-| CME | SAMPA Events & CME |
-| TEST | SAMPA Test |
+| Env | Brevo name | Role |
+|-----|------------|------|
+| `BREVO_LIST_UPDATES` | SAMPA Updates | Catch-all marketing |
+| `BREVO_LIST_TEST` | SAMPA Test | Josh only (expand later) |
 
-Add Josh + Kelsey emails to **SAMPA Test** only.
+Topic lists (Weekly News / Policy / Jobs / CME) may exist in Brevo as **reserved** — do not use for v1 signup or sync.
+
+Add Josh email to **SAMPA Test** only.
 
 ```bash
 cd ~/Projects/sampa-website
@@ -60,10 +58,9 @@ scripts/run-brevo.sh lists
 
 ## 4. Preference center
 
-1. Brevo → Contacts → Settings → **Subscription forms / Preference page** (wording varies by UI).  
-2. Enable multi-list preference center covering the five public lists.  
-3. Ensure campaign footers include preference + unsubscribe (Brevo default footers OK for v1).  
-4. Paste the public preference URL here when known:
+- **v1 (single list):** global unsubscribe in campaign footer is enough.  
+- Multi-list preference center only if topic lists ship later.  
+- Paste public preference URL here if you enable one anyway:
 
 ```
 PREFERENCE_CENTER_URL=
@@ -71,8 +68,8 @@ PREFERENCE_CENTER_URL=
 
 ## 5. Double opt-in (public)
 
-- Public forms (when built): use Brevo DOI / double opt-in templates.  
-- Members: verified via site auth; still honor list prefs.  
+- Public forms (when built): use Brevo DOI / double opt-in templates → **Updates**.  
+- Members: verified via site auth.  
 - Legacy Google Group: **Landing A** — see `google-group-import.md`.
 
 ## 6. Smoke test
@@ -80,9 +77,9 @@ PREFERENCE_CENTER_URL=
 ```bash
 scripts/run-brevo.sh account
 scripts/run-brevo.sh campaign-draft --validate-only --file docs/email/templates/site-membership-launch.json
-# after key + lists:
+# after key + lists + active info@ sender:
 scripts/run-brevo.sh campaign-draft --file docs/email/templates/site-membership-launch.json
-scripts/run-brevo.sh campaign-test --id <campaignId> --email you@...,kelsey@addictionpas.org
+scripts/run-brevo.sh campaign-test --id <campaignId> --email luftig@gmail.com
 ```
 
 Mass send only with explicit approval + `campaign-send --i-understand-send-to-production`.
@@ -90,8 +87,10 @@ Mass send only with explicit approval + `campaign-send --i-understand-send-to-pr
 ## 7. Backlog (do not block v1)
 
 - [ ] Exit interview after full unsubscribe  
-- [ ] Site `/email-preferences` (optional; Brevo center is enough first)  
-- [ ] Privacy policy multi-list + Brevo disclosure update  
+- [ ] Reply-To flip to no-reply + Contact us form (scale)  
+- [ ] Site `/email-preferences` (optional)  
+- [ ] Privacy policy Brevo disclosure update  
 - [ ] Public footer signup  
 - [ ] Automated member sync cron  
-- [ ] Weekly digest auto-draft cron (still human schedule at Mon 5:30 PT)  
+- [ ] Topic lists / multi-list prefs if volume grows  
+- [ ] Weekly digest auto-draft (still human approve)  
