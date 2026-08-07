@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T15 practice settings shipped)
+**Last updated:** 2026-08-07 (practice-settings SQL confirmed)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -70,7 +70,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
-| T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs; soft chips; web Dashboard edit; directory filter; mobile display; migration `2026-08-07-practice-settings-directory.sql` — apply in SQL Editor |
+| T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs; soft chips; web Dashboard edit; directory filter; mobile display; migration applied in prod (2026-08-07) |
 | T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
 | T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. T13 deferred (Wayfinder/fog only) |
 | T10 | Session handoff for Cursor (ops-board + Matt skills + Tasks workflow) | egg | 2026-08-05 | [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
@@ -125,8 +125,8 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   RPCs (profiles SELECT RLS is **not** opened to all members). Separate from the
   staff roster at `/editor/members`. **Practice settings (2026-08-07):** curated
   multi-select per employer (soft color chips on list/detail; OR-filter on
-  `/members`); legacy free-text fallback until re-save. Apply migration
-  `supabase/migrations/2026-08-07-practice-settings-directory.sql` if not yet run.
+  `/members` via live `member_directory(..., settings_filter)`); legacy free-text
+  fallback until re-save.
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
   badge). Further board-only privileges not built yet.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
@@ -156,6 +156,7 @@ Operator confirmed the directory stack SQL was run in Supabase (shared DB):
 1. `supabase/migrations/2026-07-10-member-directory.sql`
 2. `supabase/migrations/2026-07-10-profile-organizations.sql`
 3. `supabase/migrations/2026-07-10-directory-contact.sql`
+4. `supabase/migrations/2026-08-07-practice-settings-directory.sql` — applied **2026-08-07** (`settings_filter` on `member_directory`)
 
 ### DB migrations to verify (code already on main)
 
@@ -325,8 +326,8 @@ Deferred from the first directory ship:
 - 2026-08-07 · **Practice settings on directory profiles** — curated multi-select
   per employer (`practice_settings` in org jsonb); soft color chips on web +
   mobile directory; OR-filter on `/members`; Other + optional note; legacy
-  free-text fallback. Migration:
-  `supabase/migrations/2026-08-07-practice-settings-directory.sql`.
+  free-text fallback. Migration
+  `supabase/migrations/2026-08-07-practice-settings-directory.sql` applied in prod.
 - 2026-08-04 · **Policy hub intent copy** — levers/types framed as will/roadmap
   (not present-tense claims across unfinished levers); homepage/About/Membership
   aligned. See [`architecture/policy-hub.md`](architecture/policy-hub.md).
