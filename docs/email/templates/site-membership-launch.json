@@ -1,5 +1,5 @@
 {
-  "name": "SAMPA Weekly \u2014 Issue 01 (hero contrast + news picks)",
+  "name": "SAMPA Weekly \u2014 Issue 01 (FIRSTNAME + feedback ready)",
   "subject": "addictionpas.org is live \u2014 addiction medicine PAs have a home",
   "previewText": "Daily news, a national peer directory, and a policy hub \u2014 built for PAs. Here's what's ready today.",
   "htmlPath": "site-membership-launch.html",
@@ -7,5 +7,5 @@
     "test"
   ],
   "tag": "sampa-weekly-01",
-  "notes": "Hero domain link near-white on teal; news: ASAM TUD Aug12 deadline, 7-OH Aug1, street bupe Jul5; signer Josh Luftig PA-C President Elect (no board claim)."
+  "notes": "Greeting uses Brevo {{ contact.FIRSTNAME | default: \"there\" }}. Ensure contacts have FIRSTNAME before prod. Feedback test: add emails to Test list or campaign-test --email."
 }
