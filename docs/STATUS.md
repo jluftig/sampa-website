@@ -196,13 +196,12 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   OA-preferred drafts → editor briefing + menu on Telegram → human Publish only
   (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
   Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
-- **Email / Brevo campaigns (Hermes + repo)** — **Parked 2026-08-04.**
-  - **Email / Brevo campaigns (Hermes + repo)** — **Active 2026-08-07 (T3 · egg).**
-    Scaffold ready; `setup-check` = no `BREVO_API_KEY` yet; first-campaign pack
-    validates offline. Site still **in development** for member email.
-    Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
-    [`architecture/email-brevo.md`](architecture/email-brevo.md).
-    Next: API key → lists/Test → Landing A → draft/test first campaign (no mass send).
+- **Email / Brevo campaigns (Hermes + repo)** — **Active 2026-08-07 (T3 · egg).**
+  Scaffold ready; `setup-check` = no `BREVO_API_KEY` yet; first-campaign pack
+  validates offline. Site still **in development** for member email.
+  Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
+  [`architecture/email-brevo.md`](architecture/email-brevo.md).
+  Next: API key → lists/Test → Landing A → draft/test first campaign (no mass send).
 
 ---
 
