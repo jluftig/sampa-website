@@ -1,9 +1,11 @@
 {
-  "name": "SAMPA Weekly — Issue 01 (Claude rebuild + logo)",
-  "subject": "addictionpas.org is live — addiction medicine PAs have a home",
-  "previewText": "Daily news, a national peer directory, and a policy hub — built for PAs. Here's what's ready today.",
+  "name": "SAMPA Weekly \u2014 Issue 01 (Josh PE + address)",
+  "subject": "addictionpas.org is live \u2014 addiction medicine PAs have a home",
+  "previewText": "Daily news, a national peer directory, and a policy hub \u2014 built for PAs. Here's what's ready today.",
   "htmlPath": "site-membership-launch.html",
-  "listKeys": ["test"],
+  "listKeys": [
+    "test"
+  ],
   "tag": "sampa-weekly-01",
-  "notes": "Claude structural rewrite + hosted logo + non-partisan. News desk 3 live slugs verified 200. CONFIRM signer Shani Wilson President before prod. CAN-SPAM mailing address placeholder still amber. Draft+test only."
+  "notes": "Signer Josh Luftig President Elect; CAN-SPAM PO Box 8 Point Reyes Station CA 94956. Logo + non-partisan + news desk. Draft+test only."
 }
