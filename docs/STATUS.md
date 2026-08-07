@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-05 (T13 deferred — Wayfinder for foggy projects only)
+**Last updated:** 2026-08-07 (T15 practice settings claimed by cursor)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -64,7 +64,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| — | — | — | — | *Claim from Todo: set Owner, move row here, commit+push immediately* |
+| T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs + soft color chips; legacy text fallback; web edit + mobile display; officer/committee pills = backlog only |
 
 ### Done (last 5 only — older = git history)
 
@@ -275,7 +275,8 @@ Deferred from the first directory ship:
 - **Profile photos / avatars** — Storage upload; opt-in; not public.
 - **Short bio** — free-text “about me.”
 - **LinkedIn / personal website URLs** (org websites already ship on multi-org profile).
-- **Richer filters** — practice setting, credentials, board-only, specialty keywords.
+- **Richer filters** — credentials, board-only, specialty keywords (practice-setting OR-filter ships with T15).
+- **Officer / committee pills** — directory badges similar to Board for officers (President, President-elect, Secretary, Treasurer, Director at large, Student director at large, ASIO) and committees (Membership, Finance, Bylaws, Policy, Education, Credentialing). Admin assign UI + capability model TBD; not in T15.
 - **Rate limits / anti-scrape** if harvest becomes a problem (Terms already forbid
   commercial use / bulk export of directory data).
 
