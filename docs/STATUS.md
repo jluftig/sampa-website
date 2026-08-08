@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T3 Brevo: 120 contacts on Updates; send still gated)
+**Last updated:** 2026-08-07 (Tasks T5 expanded + T16 welcome/renewal email)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -46,10 +46,11 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
 | T2 | Pre-membership security P0 (Vercel Stripe/webhook/keys + E2E join) | either | [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) · *Resume SAMPA security review* |
 | T4 | Footer social links (IG; X when ready) | either | `Footer.jsx`; need final profile URLs |
-| T5 | Public newsletter signup (no membership) → Brevo DOI | either | Backlog detail under Next up |
+| T5 | **Public newsletter signup** (non-members) → Brevo DOI → **SAMPA Updates** | either | Site has **no** public email capture today (footer/dashboard only after login). Build footer and/or homepage form → Brevo **double opt-in** → catch-all **Updates** only (not multi-topic). Privacy: name list + Brevo; link `/privacy`; no forced membership. Merge with member later by email. Depends on T3 list model. See Next up + [`architecture/email-brevo.md`](architecture/email-brevo.md) |
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
+| T16 | **Member welcome + renewal emails** (Brevo transactional/automation) | either | Trigger on Stripe webhook membership **activate** (new) and **renew** paths. Branded like Weekly (logo v3). **Welcome:** mission excitement, live offers (news / directory / policy), how to use member area, what’s building (resources/CME/jobs), Weekly opt-in clarity, join the cause CTAs. **Renewal:** thank-you, continuity, what’s new. Draft+test only until Josh approves templates; no blast. Wire after T3 stable. [`architecture/email-brevo.md`](architecture/email-brevo.md) · webhook [`api/stripe-webhook.js`](../api/stripe-webhook.js) |
 
 ### Deferred
 
@@ -270,15 +271,18 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   the site footer so visitors can find SAMPA’s social accounts. Need final
   profile URLs when ready; X can wait until the account exists. Touch
   `src/components/Footer.jsx` (and optionally nav).
-- [ ] **Newsletter signup without membership** — public multi-list signup (footer
-  and/or homepage) → **Brevo DOI**; lists: Announcements / Weekly News / Policy /
-  Jobs / CME. Privacy: name lists + Brevo; link `/privacy`. No forced membership.
-  Prefer center for topic picks; full unsub always. **Exit interview after full
-  unsub = backlog** (never block unsub). Merge with member account later by email.
-- [ ] **Member ↔ Brevo sync** — `newsletter_opt_in` → Announcements + Weekly News;
-  finer prefs via Brevo/center; dashboard multi-toggle or deep link later.
+- [ ] **Newsletter signup without membership** (**T5**) — site has **no** public
+  capture today. Footer and/or homepage → **Brevo DOI** → catch-all **SAMPA Updates**
+  only (topic multi-list deferred). Privacy: name list + Brevo; link `/privacy`.
+  No forced membership. Full unsub always. Merge with member account later by email.
+- [ ] **Member welcome + renewal emails** (**T16**) — Brevo automation/templates
+  triggered from Stripe webhook on new active membership and renewal. Same brand
+  system as Weekly #01. Content: mission, live programs, member how-to, building
+  next, CTAs. Draft+test; Josh approves before live triggers.
+- [ ] **Member ↔ Brevo sync** — `newsletter_opt_in` → **Updates**; dashboard toggle
+  or deep link later.
 - [ ] **Weekly News email automation** — draft from published posts; human approves;
-  schedule Mon 5:30 AM PT (not autopilot until policy changes).
+  schedule after approve (not autopilot until policy changes).
 
 ### Product — member directory / networking (v2 ideas)
 
