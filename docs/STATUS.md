@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (Tasks T5 expanded + T16 welcome/renewal email)
+**Last updated:** 2026-08-07 (T5 claimed by cursor)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -46,7 +46,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
 | T2 | Pre-membership security P0 (Vercel Stripe/webhook/keys + E2E join) | either | [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) · *Resume SAMPA security review* |
 | T4 | Footer social links (IG; X when ready) | either | `Footer.jsx`; need final profile URLs |
-| T5 | **Public newsletter signup** (non-members) → Brevo DOI → **SAMPA Updates** | either | Site has **no** public email capture today (footer/dashboard only after login). Build footer and/or homepage form → Brevo **double opt-in** → catch-all **Updates** only (not multi-topic). Privacy: name list + Brevo; link `/privacy`; no forced membership. Merge with member later by email. Depends on T3 list model. See Next up + [`architecture/email-brevo.md`](architecture/email-brevo.md) |
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
@@ -64,6 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T5 | **Public newsletter signup** (non-members) → Brevo DOI → **SAMPA Updates** | cursor | 2026-08-07 | **Claimed cursor.** Footer/homepage form → Brevo DOI → Updates only. Privacy + Brevo disclosure. No forced membership. Depends on T3 Updates list (exists). [`architecture/email-brevo.md`](architecture/email-brevo.md) |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
 
 ### Done (last 5 only — older = git history)
