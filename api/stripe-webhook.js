@@ -3,6 +3,7 @@ import {
   memberEmailsEnabled,
   profileForEmail,
   sendMemberLifecycleEmail,
+  donorFromStripeFields,
 } from './_lib/brevo-member-email.js';
 
 // Stripe → Supabase sync (the ONLY writer of the membership columns on
@@ -10,9 +11,9 @@ import {
 // relevant facts onto the member's row, keyed by the Supabase user id that
 // checkout stamped into client_reference_id / subscription metadata.
 //
-// Optional Brevo member welcome/renewal emails: gated by
-// BREVO_MEMBER_EMAILS_ENABLED=true. Failures are logged only — never fail
-// the webhook (membership write always wins).
+// Optional Brevo transactional emails (welcome / renewal / donation thanks):
+// gated by BREVO_MEMBER_EMAILS_ENABLED=true (or BREVO_TRANSACTIONAL_EMAILS_ENABLED).
+// Failures are logged only — never fail the webhook (DB write always wins).
 
 async function maybeMemberEmail(kind, admin, userId) {
   if (!memberEmailsEnabled()) return;
@@ -30,6 +31,48 @@ async function maybeMemberEmail(kind, admin, userId) {
     console.log(`stripe-webhook: member ${kind} email`, result);
   } catch (err) {
     console.error(`stripe-webhook: member ${kind} email failed:`, err.message || err);
+  }
+}
+
+async function maybeDonationThanks(admin, row) {
+  if (!memberEmailsEnabled()) return;
+  try {
+    let email = row.donor_email || null;
+    let firstName = '';
+    let lastName = '';
+    const fromStripe = donorFromStripeFields({
+      email: row.donor_email,
+      name: row.donor_name,
+    });
+    firstName = fromStripe.firstName;
+    lastName = fromStripe.lastName;
+
+    // Prefer profile name/email when logged-in donor
+    if (row.user_id && admin) {
+      const profile = await profileForEmail(admin, row.user_id);
+      if (profile?.email) email = email || profile.email;
+      if (profile?.firstName) {
+        firstName = firstName || profile.firstName;
+        lastName = lastName || profile.lastName;
+      }
+    }
+
+    if (!email) {
+      console.warn('stripe-webhook: donation thanks skipped — no donor email');
+      return;
+    }
+
+    const result = await sendMemberLifecycleEmail('donation', {
+      email,
+      firstName,
+      lastName,
+      amountCents: row.amount,
+      currency: row.currency || 'usd',
+      frequency: row.frequency || 'once',
+    });
+    console.log('stripe-webhook: donation thanks email', result);
+  } catch (err) {
+    console.error('stripe-webhook: donation thanks email failed:', err.message || err);
   }
 }
 
@@ -107,7 +150,7 @@ export async function POST(request) {
         // cycle by invoice.paid (including the first), so skip subscription mode.
         if (session.metadata?.type === 'donation') {
           if (session.mode === 'payment') {
-            await recordDonation(admin, {
+            const donationRow = {
               user_id: session.client_reference_id || session.metadata?.supabase_user_id || null,
               donor_email: session.customer_details?.email || session.customer_email || null,
               donor_name: session.customer_details?.name || null,
@@ -118,7 +161,9 @@ export async function POST(request) {
               stripe_customer_id: idOf(session.customer),
               stripe_session_id: session.id,
               stripe_payment_intent_id: idOf(session.payment_intent),
-            });
+            };
+            await recordDonation(admin, donationRow);
+            await maybeDonationThanks(admin, donationRow);
           }
           break;
         }
@@ -215,7 +260,7 @@ export async function POST(request) {
         const meta = subDetails?.metadata || invoice.subscription_details?.metadata || {};
 
         if (meta.type === 'donation') {
-          await recordDonation(admin, {
+          const donationRow = {
             user_id: meta.supabase_user_id || null,
             donor_email: invoice.customer_email || null,
             donor_name: invoice.customer_name || null,
@@ -226,7 +271,9 @@ export async function POST(request) {
             stripe_customer_id: idOf(invoice.customer),
             stripe_subscription_id: idOf(subDetails?.subscription) || idOf(invoice.subscription),
             stripe_invoice_id: invoice.id,
-          });
+          };
+          await recordDonation(admin, donationRow);
+          await maybeDonationThanks(admin, donationRow);
           break;
         }
 

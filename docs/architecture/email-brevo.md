@@ -151,6 +151,7 @@ Transactional (not marketing campaign blast):
 |------|---------|------|
 | **Welcome** | `checkout.session.completed` membership → `membership_status=active` | `BREVO_MEMBER_EMAILS_ENABLED=true` on Vercel |
 | **Renewal** | `invoice.paid` / `invoice.payment_succeeded` with `billing_reason=subscription_cycle` (not donations) | same |
+| **Donation thanks** | One-time: `checkout.session.completed` + `metadata.type=donation` + `mode=payment`. Monthly: `invoice.paid` when donation subscription | same gate (or `BREVO_TRANSACTIONAL_EMAILS_ENABLED`) |
 
 Implementation: `api/_lib/brevo-member-email.js` + HTML under `api/_lib/email-templates/`.  
 Webhook failures to send email are **logged only** — membership write never fails because of Brevo.
@@ -160,6 +161,7 @@ CLI test (bypasses gate with force):
 ```bash
 scripts/run-brevo.sh member-email-test --kind welcome --email you@example.com --fname Josh
 scripts/run-brevo.sh member-email-test --kind renewal --email you@example.com --fname Josh
+scripts/run-brevo.sh member-email-test --kind donation --email you@example.com --fname Josh --amount-cents 5000 --frequency once
 ```
 
 **Default:** gate **off**. Josh enables on Vercel after approving templates.

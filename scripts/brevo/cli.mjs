@@ -61,8 +61,9 @@ Commands:
   contact-upsert --email a@x      Create/update contact
     --fname --lname --lists k,k   --attr KEY=VAL (repeatable)
   import-csv-plan --file f.csv    Print Landing-A import guidance (no API)
-  member-email-test --kind welcome|renewal --email a@x
-    --fname Name                  Send transactional member email (always force; not a blast)
+  member-email-test --kind welcome|renewal|donation --email a@x
+    --fname Name [--amount-cents 5000] [--frequency once|monthly]
+                                  Send transactional email (always force; not a blast)
 
 Campaign JSON shape:
 {
@@ -352,14 +353,20 @@ async function cmdMemberEmailTest() {
   const kind = opt('--kind', 'welcome');
   const email = opt('--email');
   if (!email) die('member-email-test requires --email');
-  if (!['welcome', 'renewal'].includes(kind)) die('--kind must be welcome or renewal');
+  if (!['welcome', 'renewal', 'donation'].includes(kind)) {
+    die('--kind must be welcome, renewal, or donation');
+  }
   const { sendMemberLifecycleEmail } = await import('../../api/_lib/brevo-member-email.js');
+  const amountRaw = opt('--amount-cents', '5000');
   const result = await sendMemberLifecycleEmail(
     kind,
     {
       email,
       firstName: opt('--fname', ''),
       lastName: opt('--lname', ''),
+      amountCents: kind === 'donation' ? Number(amountRaw) : undefined,
+      currency: opt('--currency', 'usd'),
+      frequency: opt('--frequency', 'once'),
     },
     { force: true },
   );

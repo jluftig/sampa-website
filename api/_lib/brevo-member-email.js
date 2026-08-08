@@ -1,6 +1,7 @@
 /**
- * Brevo transactional email for member welcome / renewal.
+ * Brevo transactional email: member welcome / renewal + donation thanks.
  * Gated by BREVO_MEMBER_EMAILS_ENABLED=true (off by default).
+ * Alias: BREVO_TRANSACTIONAL_EMAILS_ENABLED also enables.
  * Uses POST /smtp/email (transactional), not marketing campaigns.
  */
 import { readFileSync } from 'node:fs';
@@ -11,9 +12,18 @@ const BASE = 'https://api.brevo.com/v3';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export function memberEmailsEnabled() {
-  const v = (process.env.BREVO_MEMBER_EMAILS_ENABLED || '').toLowerCase();
-  return v === '1' || v === 'true' || v === 'yes';
+  const keys = [
+    process.env.BREVO_MEMBER_EMAILS_ENABLED,
+    process.env.BREVO_TRANSACTIONAL_EMAILS_ENABLED,
+  ];
+  return keys.some((v) => {
+    const s = (v || '').toLowerCase();
+    return s === '1' || s === 'true' || s === 'yes';
+  });
 }
+
+/** @deprecated use memberEmailsEnabled — same gate */
+export const transactionalEmailsEnabled = memberEmailsEnabled;
 
 function apiKey() {
   const key = process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
@@ -33,17 +43,38 @@ function loadTemplate(name) {
   return readFileSync(path, 'utf8');
 }
 
-/** Simple {{params.KEY}} and bare {{params.KEY}} replacement for local HTML. */
+/** Simple {{params.KEY}} replacement for local HTML. */
 export function renderTemplate(html, params = {}) {
   let out = html;
   for (const [k, v] of Object.entries(params)) {
-    const val = v == null || v === '' ? '' : String(v);
+    const val = v == null ? '' : String(v);
     out = out.split(`{{params.${k}}}`).join(val);
   }
-  // leftover empty firstname → "there"
   out = out.replace(/Hello\s+,/g, 'Hello there,');
   out = out.replace(/Hello\s+<\/p>/g, 'Hello there,</p>');
   return out;
+}
+
+/** Format Stripe amount (cents) + currency for display. */
+export function formatMoney(amountCents, currency = 'usd') {
+  const cents = Number(amountCents);
+  if (!Number.isFinite(cents)) return '';
+  const cur = (currency || 'usd').toUpperCase();
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: cur.length === 3 ? cur : 'USD',
+    }).format(cents / 100);
+  } catch {
+    return `$${(cents / 100).toFixed(2)}`;
+  }
+}
+
+function splitName(full) {
+  const s = (full || '').trim();
+  if (!s) return { firstName: '', lastName: '' };
+  const parts = s.split(/\s+/);
+  return { firstName: parts[0] || '', lastName: parts.slice(1).join(' ') || '' };
 }
 
 async function brevoPost(path, body) {
@@ -75,43 +106,61 @@ async function brevoPost(path, body) {
 }
 
 /**
- * @param {'welcome'|'renewal'} kind
- * @param {{ email: string, firstName?: string, lastName?: string }} to
- * @param {{ force?: boolean }} [opts] force=true bypasses enable gate (CLI test only)
+ * @param {'welcome'|'renewal'|'donation'} kind
+ * @param {{ email: string, firstName?: string, lastName?: string, amountCents?: number, currency?: string, frequency?: string }} to
+ * @param {{ force?: boolean }} [opts]
  */
 export async function sendMemberLifecycleEmail(kind, to, opts = {}) {
   if (!opts.force && !memberEmailsEnabled()) {
-    return { skipped: true, reason: 'BREVO_MEMBER_EMAILS_ENABLED is not true' };
+    return {
+      skipped: true,
+      reason: 'BREVO_MEMBER_EMAILS_ENABLED / BREVO_TRANSACTIONAL_EMAILS_ENABLED is not true',
+    };
   }
   if (!to?.email) {
     return { skipped: true, reason: 'no email' };
   }
 
   const firstName = (to.firstName || '').trim() || 'there';
+  const amountStr = formatMoney(to.amountCents, to.currency);
+  const freq = (to.frequency || 'once').toLowerCase();
+  const isMonthly = freq === 'monthly' || freq === 'month' || freq === 'recurring';
+
   const templates = {
     welcome: {
       file: 'member-welcome.html',
       subject: 'Welcome to SAMPA — your membership is active',
       tags: ['member-welcome'],
+      params: { FIRSTNAME: firstName === 'there' ? 'there' : firstName },
     },
     renewal: {
       file: 'member-renewal.html',
       subject: 'Thank you for renewing your SAMPA membership',
       tags: ['member-renewal'],
+      params: { FIRSTNAME: firstName === 'there' ? 'there' : firstName },
+    },
+    donation: {
+      file: 'donation-thanks.html',
+      subject: amountStr
+        ? `Thank you for your ${amountStr} gift to SAMPA`
+        : 'Thank you for your gift to SAMPA',
+      tags: ['donation-thanks'],
+      params: {
+        FIRSTNAME: firstName === 'there' ? 'there' : firstName,
+        AMOUNT: amountStr || 'your gift',
+        FREQUENCY_LABEL: isMonthly ? 'Monthly recurring gift' : 'One-time gift',
+        FREQUENCY_PHRASE: isMonthly ? ' (monthly)' : '',
+      },
     },
   };
+
   const spec = templates[kind];
-  if (!spec) throw new Error(`Unknown member email kind: ${kind}`);
+  if (!spec) throw new Error(`Unknown lifecycle email kind: ${kind}`);
 
-  const html = renderTemplate(loadTemplate(spec.file), {
-    FIRSTNAME: firstName === 'there' ? 'there' : firstName,
-  });
-
-  // Prefer real name in greeting when we have it
-  const htmlFinal =
-    firstName === 'there'
-      ? html.replace(/Hello there,/g, 'Hello,')
-      : html;
+  let html = renderTemplate(loadTemplate(spec.file), spec.params);
+  if (firstName === 'there') {
+    html = html.replace(/Hello there,/g, 'Hello,');
+  }
 
   const payload = {
     sender: sender(),
@@ -119,14 +168,29 @@ export async function sendMemberLifecycleEmail(kind, to, opts = {}) {
       email: process.env.BREVO_REPLY_TO || process.env.BREVO_SENDER_EMAIL || 'info@addictionpas.org',
       name: 'SAMPA',
     },
-    to: [{ email: to.email, name: [to.firstName, to.lastName].filter(Boolean).join(' ') || undefined }],
+    to: [
+      {
+        email: to.email,
+        name: [to.firstName, to.lastName].filter(Boolean).join(' ') || undefined,
+      },
+    ],
     subject: spec.subject,
-    htmlContent: htmlFinal,
+    htmlContent: html,
     tags: spec.tags,
   };
 
   const data = await brevoPost('/smtp/email', payload);
   return { skipped: false, messageId: data?.messageId || null, kind, to: to.email };
+}
+
+/** @deprecated alias — same as sendMemberLifecycleEmail('donation', ...) */
+export async function sendDonationThanksEmail(to, opts = {}) {
+  return sendMemberLifecycleEmail('donation', to, opts);
+}
+
+export function donorFromStripeFields({ email, name, userId } = {}) {
+  const { firstName, lastName } = splitName(name);
+  return { email: email || null, firstName, lastName, userId: userId || null };
 }
 
 /**
@@ -146,7 +210,6 @@ export async function profileForEmail(admin, userId) {
   if (!data) return null;
 
   let email = data.email || null;
-  // Prefer auth email if profile email empty
   if (!email) {
     try {
       const { data: authData } = await admin.auth.admin.getUserById(userId);

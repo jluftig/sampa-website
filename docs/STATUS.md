@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T5 DOI activate handoff → Egg)
+**Last updated:** 2026-08-07 (T16 donation thanks; T5 DOI handoff to Egg)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -63,7 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
-| T16 | Member welcome + renewal emails (Brevo) | egg | 2026-08-07 | **Claimed egg.** Templates + gated webhook wired; BREVO_MEMBER_EMAILS_ENABLED off until Josh OK. Test CLI `member-email-test`. |
+| T16 | Member welcome + renewal + **donation thanks** (Brevo) | egg | 2026-08-07 | **Claimed egg.** Welcome/renewal/donation templates + Stripe webhook; gated `BREVO_MEMBER_EMAILS_ENABLED`. CLI `member-email-test --kind donation`. T5 DOI handoff for Egg activate. |
 
 ### Done (last 5 only — older = git history)
 
