@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T5 DOI template id 13 ready; Vercel env paste pending)
+**Last updated:** 2026-08-08 (T5 DOI live on Production — smoke API 200)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -69,7 +69,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
-| T5 | Public newsletter signup → Brevo DOI → SAMPA Updates | cursor | 2026-08-07 | PR #62. Chip + API + confirm + Privacy live. **Ops activate with Egg:** [`HANDOFF-egg-2026-08-07-t5-doi.md`](HANDOFF-egg-2026-08-07-t5-doi.md) (DOI template + Vercel `BREVO_*` from Hermes `.env`) |
+| T5 | Public newsletter signup → Brevo DOI → SAMPA Updates | either | 2026-08-08 | **DOI live.** Vercel env + template id 13; API smoke `200 pending`. Finish: confirm test email on Updates with SOURCE=public_signup. PR #62. |
 | T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs; soft chips; web Dashboard edit; directory filter; mobile display; migration applied in prod (2026-08-07) |
 | T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
 | T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. T13 deferred (Wayfinder/fog only) |

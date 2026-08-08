@@ -109,7 +109,7 @@ Mass send only with explicit approval + `campaign-send --i-understand-send-to-pr
 - [ ] Reply-To flip to no-reply + Contact us form (scale)  
 - [ ] Site `/email-preferences` (optional)  
 - [ ] Privacy policy Brevo disclosure update  
-- [x] Public footer signup (T5 — code live; DOI template id 13; needs Vercel env + redeploy) 
+- [x] Public footer signup (T5 — DOI live 2026-08-08; template 13; Vercel Production env) 
 - [ ] Automated member sync cron  
 - [ ] Topic lists / multi-list prefs if volume grows  
 - [ ] Weekly digest auto-draft (still human approve)  

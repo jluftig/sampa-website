@@ -49,7 +49,7 @@ Programmatic **draft + test** Brevo campaigns; **one catch-all Updates list**; G
 
 ## T5 DOI
 
-Template **id 13** live in Brevo. Vercel needs `BREVO_API_KEY` + `BREVO_LIST_UPDATES=3` + `BREVO_DOI_TEMPLATE_ID=13` + redeploy. Script: `scripts/set-vercel-brevo-env.sh` (after `vercel login`).
+Template **id 13** live in Brevo. **DONE 2026-08-08** Vercel had `BREVO_API_KEY` + `BREVO_LIST_UPDATES=3` + `BREVO_DOI_TEMPLATE_ID=13` + redeploy. Script: `scripts/set-vercel-brevo-env.sh` (after `vercel login`).
 
 ## Related task T16 (egg)
 
