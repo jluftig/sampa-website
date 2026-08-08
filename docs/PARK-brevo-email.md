@@ -57,7 +57,8 @@ Welcome + renewal transactional templates live; webhook wired; **BREVO_MEMBER_EM
 2. Final Weekly #01 polish if needed (logo v3 live)  
 3. **Josh gate:** explicit approve → first production send of Weekly #01 to **Updates** only (never agent `sendNow` without “send campaign N”)  
 4. Flip site copy to Live for member email **only if** accurate after first real send  
-5. Later: member `newsletter_opt_in` sync; public DOI form (T5); Reply-To flip  
+5. **T5 DOI activate (with Josh):** UI shipped PR #62 — see [`HANDOFF-egg-2026-08-07-t5-doi.md`](HANDOFF-egg-2026-08-07-t5-doi.md) (template + Vercel env).  
+6. Later: member `newsletter_opt_in` sync; Reply-To flip 
 
 ---
 
