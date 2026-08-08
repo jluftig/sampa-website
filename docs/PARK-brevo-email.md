@@ -47,6 +47,10 @@ Programmatic **draft + test** Brevo campaigns; **one catch-all Updates list**; G
 
 ---
 
+## T5 DOI
+
+Template **id 13** live in Brevo. Vercel needs `BREVO_API_KEY` + `BREVO_LIST_UPDATES=3` + `BREVO_DOI_TEMPLATE_ID=13` + redeploy. Script: `scripts/set-vercel-brevo-env.sh` (after `vercel login`).
+
 ## Related task T16 (egg)
 
 Welcome + renewal transactional templates live; webhook wired; **BREVO_MEMBER_EMAILS_ENABLED** LIVE (kill-switch false only). CLI: `member-email-test`.

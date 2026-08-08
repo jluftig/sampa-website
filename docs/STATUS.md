@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T16 lifecycle emails LIVE by default)
+**Last updated:** 2026-08-07 (T5 DOI template id 13 ready; Vercel env paste pending)
 
 **Doc roles (one board — not three sources of truth):**
 

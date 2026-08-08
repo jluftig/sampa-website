@@ -80,7 +80,7 @@ Confirm redirect: `/newsletter-confirmed`.
 ```bash
 BREVO_API_KEY=xkeysib-...          # same campaign API key as Hermes (not SMTP)
 BREVO_LIST_UPDATES=3               # SAMPA Updates
-BREVO_DOI_TEMPLATE_ID=             # numeric DOI template id from step 1
+BREVO_DOI_TEMPLATE_ID=13            # SAMPA Updates DOI (created 2026-08-07)
 # optional:
 # BREVO_DOI_REDIRECT_URL=https://www.addictionpas.org/newsletter-confirmed
 ```
@@ -109,7 +109,7 @@ Mass send only with explicit approval + `campaign-send --i-understand-send-to-pr
 - [ ] Reply-To flip to no-reply + Contact us form (scale)  
 - [ ] Site `/email-preferences` (optional)  
 - [ ] Privacy policy Brevo disclosure update  
-- [ ] Public footer signup (T5 — code ready; needs DOI template + Vercel env) 
+- [x] Public footer signup (T5 — code live; DOI template id 13; needs Vercel env + redeploy) 
 - [ ] Automated member sync cron  
 - [ ] Topic lists / multi-list prefs if volume grows  
 - [ ] Weekly digest auto-draft (still human approve)  
