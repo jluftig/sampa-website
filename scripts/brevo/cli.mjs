@@ -61,6 +61,8 @@ Commands:
   contact-upsert --email a@x      Create/update contact
     --fname --lname --lists k,k   --attr KEY=VAL (repeatable)
   import-csv-plan --file f.csv    Print Landing-A import guidance (no API)
+  member-email-test --kind welcome|renewal --email a@x
+    --fname Name                  Send transactional member email (always force; not a blast)
 
 Campaign JSON shape:
 {
@@ -346,6 +348,28 @@ function cmdImportCsvPlan() {
   });
 }
 
+async function cmdMemberEmailTest() {
+  const kind = opt('--kind', 'welcome');
+  const email = opt('--email');
+  if (!email) die('member-email-test requires --email');
+  if (!['welcome', 'renewal'].includes(kind)) die('--kind must be welcome or renewal');
+  const { sendMemberLifecycleEmail } = await import('../../api/_lib/brevo-member-email.js');
+  const result = await sendMemberLifecycleEmail(
+    kind,
+    {
+      email,
+      firstName: opt('--fname', ''),
+      lastName: opt('--lname', ''),
+    },
+    { force: true },
+  );
+  printJson({
+    ok: true,
+    ...result,
+    note: 'Transactional test only (force). Production webhook still gated by BREVO_MEMBER_EMAILS_ENABLED.',
+  });
+}
+
 async function main() {
   if (!cmd || cmd === '-h' || cmd === '--help' || cmd === 'help') {
     usage();
@@ -379,6 +403,9 @@ async function main() {
         break;
       case 'import-csv-plan':
         cmdImportCsvPlan();
+        break;
+      case 'member-email-test':
+        await cmdMemberEmailTest();
         break;
       default:
         usage();

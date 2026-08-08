@@ -47,6 +47,10 @@ Programmatic **draft + test** Brevo campaigns; **one catch-all Updates list**; G
 
 ---
 
+## Related task T16 (egg)
+
+Welcome + renewal transactional templates live; webhook wired; **BREVO_MEMBER_EMAILS_ENABLED** off until Josh OK. CLI: `member-email-test`.
+
 ## Next (ordered)
 
 1. ~~Google Group / contacts CSV → **SAMPA Updates**~~ — **done 2026-08-07** (120 unique; SOURCE=google_group_legacy; **no send**)  

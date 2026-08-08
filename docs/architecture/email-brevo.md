@@ -140,3 +140,25 @@ Supabase profiles (opt-in members)
 - Auth SMTP notes: `docs/mobile-app-setup.md`  
 - Member `newsletter_opt_in`: `docs/architecture/data-model.md`  
 - News drafts (not email): Hermes skill `sampa-news-pipeline` / repo `sampa-post`  
+
+
+## Member welcome + renewal (T16)
+
+Transactional (not marketing campaign blast):
+
+| Kind | Trigger | Gate |
+|------|---------|------|
+| **Welcome** | `checkout.session.completed` membership → `membership_status=active` | `BREVO_MEMBER_EMAILS_ENABLED=true` on Vercel |
+| **Renewal** | `invoice.paid` / `invoice.payment_succeeded` with `billing_reason=subscription_cycle` (not donations) | same |
+
+Implementation: `api/_lib/brevo-member-email.js` + HTML under `api/_lib/email-templates/`.  
+Webhook failures to send email are **logged only** — membership write never fails because of Brevo.
+
+CLI test (bypasses gate with force):
+
+```bash
+scripts/run-brevo.sh member-email-test --kind welcome --email you@example.com --fname Josh
+scripts/run-brevo.sh member-email-test --kind renewal --email you@example.com --fname Josh
+```
+
+**Default:** gate **off**. Josh enables on Vercel after approving templates.

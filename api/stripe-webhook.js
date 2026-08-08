@@ -1,9 +1,37 @@
 import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
+import {
+  memberEmailsEnabled,
+  profileForEmail,
+  sendMemberLifecycleEmail,
+} from './_lib/brevo-member-email.js';
 
 // Stripe → Supabase sync (the ONLY writer of the membership columns on
 // profiles). Stripe is the source of truth for billing; this copies the
 // relevant facts onto the member's row, keyed by the Supabase user id that
 // checkout stamped into client_reference_id / subscription metadata.
+//
+// Optional Brevo member welcome/renewal emails: gated by
+// BREVO_MEMBER_EMAILS_ENABLED=true. Failures are logged only — never fail
+// the webhook (membership write always wins).
+
+async function maybeMemberEmail(kind, admin, userId) {
+  if (!memberEmailsEnabled()) return;
+  try {
+    const profile = await profileForEmail(admin, userId);
+    if (!profile?.email) {
+      console.warn(`stripe-webhook: member ${kind} email skipped — no email for user ${userId}`);
+      return;
+    }
+    const result = await sendMemberLifecycleEmail(kind, {
+      email: profile.email,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+    });
+    console.log(`stripe-webhook: member ${kind} email`, result);
+  } catch (err) {
+    console.error(`stripe-webhook: member ${kind} email failed:`, err.message || err);
+  }
+}
 
 function membershipStatus(subscriptionStatus) {
   if (subscriptionStatus === 'active' || subscriptionStatus === 'trialing') return 'active';
@@ -125,6 +153,11 @@ export async function POST(request) {
 
         const { error } = await admin.from('profiles').update(update).eq('id', userId);
         if (error) throw error;
+        // New paid membership (subscription or lifetime) → welcome once.
+        // Renewals are handled on invoice.paid (billing_reason=subscription_cycle).
+        if (update.membership_status === 'active') {
+          await maybeMemberEmail('welcome', admin, userId);
+        }
         break;
       }
 
@@ -173,28 +206,45 @@ export async function POST(request) {
       }
 
       // Recurring donations: one row per successful monthly charge. Membership
-      // renewals also fire this, so act ONLY on donation subscriptions. In the
-      // dahlia API the subscription + its metadata snapshot live under
-      // invoice.parent.subscription_details (fallbacks cover older shapes).
+      // renewals also fire this — send renewal email only for membership
+      // subscription_cycle (not the first invoice after checkout).
       case 'invoice.paid':
       case 'invoice.payment_succeeded': {
         const invoice = event.data.object;
         const subDetails = invoice.parent?.subscription_details;
         const meta = subDetails?.metadata || invoice.subscription_details?.metadata || {};
-        if (meta.type !== 'donation') break;
 
-        await recordDonation(admin, {
-          user_id: meta.supabase_user_id || null,
-          donor_email: invoice.customer_email || null,
-          donor_name: invoice.customer_name || null,
-          amount: invoice.amount_paid,
-          currency: invoice.currency || 'usd',
-          frequency: 'monthly',
-          status: 'succeeded',
-          stripe_customer_id: idOf(invoice.customer),
-          stripe_subscription_id: idOf(subDetails?.subscription) || idOf(invoice.subscription),
-          stripe_invoice_id: invoice.id,
-        });
+        if (meta.type === 'donation') {
+          await recordDonation(admin, {
+            user_id: meta.supabase_user_id || null,
+            donor_email: invoice.customer_email || null,
+            donor_name: invoice.customer_name || null,
+            amount: invoice.amount_paid,
+            currency: invoice.currency || 'usd',
+            frequency: 'monthly',
+            status: 'succeeded',
+            stripe_customer_id: idOf(invoice.customer),
+            stripe_subscription_id: idOf(subDetails?.subscription) || idOf(invoice.subscription),
+            stripe_invoice_id: invoice.id,
+          });
+          break;
+        }
+
+        // Membership renewal thank-you (not first invoice — that pairs with checkout welcome).
+        const reason = invoice.billing_reason;
+        if (reason === 'subscription_cycle') {
+          const userId = meta.supabase_user_id || null;
+          if (userId) {
+            await maybeMemberEmail('renewal', admin, userId);
+          } else if (invoice.customer) {
+            const { data: row } = await admin
+              .from('profiles')
+              .select('id')
+              .eq('stripe_customer_id', idOf(invoice.customer))
+              .maybeSingle();
+            if (row?.id) await maybeMemberEmail('renewal', admin, row.id);
+          }
+        }
         break;
       }
 

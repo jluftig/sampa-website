@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T5 claimed by cursor)
+**Last updated:** 2026-08-07 (T5 cursor + T16 egg in parallel)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -49,7 +49,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
-| T16 | **Member welcome + renewal emails** (Brevo transactional/automation) | either | Trigger on Stripe webhook membership **activate** (new) and **renew** paths. Branded like Weekly (logo v3). **Welcome:** mission excitement, live offers (news / directory / policy), how to use member area, what’s building (resources/CME/jobs), Weekly opt-in clarity, join the cause CTAs. **Renewal:** thank-you, continuity, what’s new. Draft+test only until Josh approves templates; no blast. Wire after T3 stable. [`architecture/email-brevo.md`](architecture/email-brevo.md) · webhook [`api/stripe-webhook.js`](../api/stripe-webhook.js) |
 
 ### Deferred
 
@@ -65,6 +64,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 |----|------|-------|---------|-------|
 | T5 | **Public newsletter signup** (non-members) → Brevo DOI → **SAMPA Updates** | cursor | 2026-08-07 | **Claimed cursor.** Footer/homepage form → Brevo DOI → Updates only. Privacy + Brevo disclosure. No forced membership. Depends on T3 Updates list (exists). [`architecture/email-brevo.md`](architecture/email-brevo.md) |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
+| T16 | Member welcome + renewal emails (Brevo) | egg | 2026-08-07 | **Claimed egg.** Templates + gated webhook wired; BREVO_MEMBER_EMAILS_ENABLED off until Josh OK. Test CLI `member-email-test`. Parallel with T5 (cursor). |
 
 ### Done (last 5 only — older = git history)
 
