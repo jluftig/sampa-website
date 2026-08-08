@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T5 form in flight — needs DOI template + Vercel env; T16 egg parallel)
+**Last updated:** 2026-08-07 (T5 public newsletter signup merged — PR #62)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,19 +62,18 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T5 | **Public newsletter signup** (non-members) → Brevo DOI → **SAMPA Updates** | cursor | 2026-08-07 | **In flight.** Code: footer form + `api/newsletter-signup.js` + `/newsletter-confirmed` + Privacy (Updates/Brevo). **Blocked on ops:** create Brevo DOI template; set Vercel `BREVO_API_KEY` + `BREVO_LIST_UPDATES=3` + `BREVO_DOI_TEMPLATE_ID`. Checklist §5 in [`email/setup-checklist.md`](email/setup-checklist.md). |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
-| T16 | Member welcome + renewal emails (Brevo) | egg | 2026-08-07 | **Claimed egg.** Templates + gated webhook wired; BREVO_MEMBER_EMAILS_ENABLED off until Josh OK. Test CLI `member-email-test`. Parallel with T5 (cursor). |
+| T16 | Member welcome + renewal emails (Brevo) | egg | 2026-08-07 | **Claimed egg.** Templates + gated webhook wired; BREVO_MEMBER_EMAILS_ENABLED off until Josh OK. Test CLI `member-email-test`. |
 
 ### Done (last 5 only — older = git history)
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T5 | Public newsletter signup → Brevo DOI → SAMPA Updates | cursor | 2026-08-07 | PR #62. Prominent chip above footer; `api/newsletter-signup.js`; `/newsletter-confirmed`; Privacy. **Ops to activate DOI:** Brevo DOI template + Vercel `BREVO_API_KEY` / `BREVO_LIST_UPDATES=3` / `BREVO_DOI_TEMPLATE_ID` ([`email/setup-checklist.md`](email/setup-checklist.md) §5) |
 | T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs; soft chips; web Dashboard edit; directory filter; mobile display; migration applied in prod (2026-08-07) |
 | T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
 | T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. T13 deferred (Wayfinder/fog only) |
 | T10 | Session handoff for Cursor (ops-board + Matt skills + Tasks workflow) | egg | 2026-08-05 | [`HANDOFF-cursor-2026-08-05-session.md`](HANDOFF-cursor-2026-08-05-session.md) |
-| T9 | Add Peter Yang `/human-review` agent skill | cursor | 2026-08-05 | `.claude/skills/human-review/` + AGENTS.md; PR #61 |
 
 ### Task workflow (agents + humans)
 
@@ -241,9 +240,9 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   / [`PARK-security-review.md`](PARK-security-review.md).
 - [ ] **Email / Brevo (T3 · egg in progress)** — **infra done** 2026-08-07 (API key, domain
   auth SPF/DKIM/DMARC + `em` brand, info@ From, Updates+Test lists, Weekly #01 draft+test).
-  **Still need:** Google Group Landing A → Updates; human first production send; then
-  consider flipping site copy from In development → Live. Later: member sync, public DOI
-  signup (T5). See [`PARK-brevo-email.md`](PARK-brevo-email.md).
+  **Still need:** human first production send; then consider flipping site copy from
+  In development → Live. Later: member sync. Public DOI signup UI shipped (T5) — activate
+  with DOI template + Vercel `BREVO_*`. See [`PARK-brevo-email.md`](PARK-brevo-email.md).
   **Also live:** Supabase auth SMTP via `no-reply@addictionpas.org` (separate from campaigns).
 - [ ] **Sentry account** (free) + `EXPO_PUBLIC_SENTRY_DSN` in mobile/.env.local and the
   EAS build env — turns on mobile crash reporting (code already merged, dormant).
@@ -271,9 +270,9 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   the site footer so visitors can find SAMPA’s social accounts. Need final
   profile URLs when ready; X can wait until the account exists. Touch
   `src/components/Footer.jsx` (and optionally nav).
-- [ ] **Newsletter signup without membership** (**T5 · cursor in progress**) —
-  footer form + API + confirm page + Privacy drafted. Needs Brevo DOI template +
-  Vercel env (`BREVO_*`) before live. Catch-all **SAMPA Updates** only.
+- [x] **Newsletter signup without membership** (**T5**) — PR #62 (2026-08-07).
+  Prominent chip above footer → Brevo DOI → **SAMPA Updates**. Activate DOI with
+  Brevo template + Vercel `BREVO_*` ([`email/setup-checklist.md`](email/setup-checklist.md) §5).
 - [ ] **Member welcome + renewal emails** (**T16**) — Brevo automation/templates
   triggered from Stripe webhook on new active membership and renewal. Same brand
   system as Weekly #01. Content: mission, live programs, member how-to, building
@@ -334,6 +333,10 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-07 · **Public newsletter signup (T5)** — PR #62. Large **SAMPA Updates**
+  chip above footer sitewide; `api/newsletter-signup.js` → Brevo DOI → Updates
+  list; `/newsletter-confirmed`; Privacy names Updates + Brevo. Live DOI needs
+  Vercel env + Brevo DOI template.
 - 2026-08-07 · **Brevo domain + campaign path (T3 partial)** — `addictionpas.org`
   authenticated in Brevo (SPF + domain DKIM + DMARC; branded `em.` links); senders
   `info@` + `admin@` active; catch-all **SAMPA Updates** + Test; **SAMPA Weekly
