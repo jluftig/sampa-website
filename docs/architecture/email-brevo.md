@@ -149,9 +149,9 @@ Transactional (not marketing campaign blast):
 
 | Kind | Trigger | Gate |
 |------|---------|------|
-| **Welcome** | `checkout.session.completed` membership → `membership_status=active` | ``BREVO_API_KEY` on Vercel (emails live; kill-switch false) |
+| **Welcome** | `checkout.session.completed` membership → `membership_status=active` | `BREVO_API_KEY` on Vercel (live; kill-switch `=false`) |
 | **Renewal** | `invoice.paid` / `invoice.payment_succeeded` with `billing_reason=subscription_cycle` (not donations) | same |
-| **Donation thanks** | One-time: `checkout.session.completed` + `metadata.type=donation` + `mode=payment`. Monthly: `invoice.paid` when donation subscription | same (API key; kill-switch false) |
+| **Donation thanks** | One-time: `checkout.session.completed` + `metadata.type=donation` + `mode=payment`. Monthly: `invoice.paid` when donation subscription | same |
 
 Implementation: `api/_lib/brevo-member-email.js` + HTML under `api/_lib/email-templates/`.  
 Webhook failures to send email are **logged only** — membership write never fails because of Brevo.
