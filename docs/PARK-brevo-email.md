@@ -49,7 +49,7 @@ Programmatic **draft + test** Brevo campaigns; **one catch-all Updates list**; G
 
 ## Related task T16 (egg)
 
-Welcome + renewal transactional templates live; webhook wired; **BREVO_MEMBER_EMAILS_ENABLED** off until Josh OK. CLI: `member-email-test`.
+Welcome + renewal transactional templates live; webhook wired; **BREVO_MEMBER_EMAILS_ENABLED** LIVE (kill-switch false only). CLI: `member-email-test`.
 
 ## Next (ordered)
 

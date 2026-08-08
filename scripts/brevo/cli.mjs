@@ -373,7 +373,7 @@ async function cmdMemberEmailTest() {
   printJson({
     ok: true,
     ...result,
-    note: 'Transactional test only (force). Production webhook still gated by BREVO_MEMBER_EMAILS_ENABLED.',
+    note: 'Transactional test (force). Production: live when BREVO_API_KEY set; kill-switch BREVO_MEMBER_EMAILS_ENABLED=false.',
   });
 }
 

@@ -12,8 +12,9 @@ import {
 // checkout stamped into client_reference_id / subscription metadata.
 //
 // Optional Brevo transactional emails (welcome / renewal / donation thanks):
-// gated by BREVO_MEMBER_EMAILS_ENABLED=true (or BREVO_TRANSACTIONAL_EMAILS_ENABLED).
-// Failures are logged only — never fail the webhook (DB write always wins).
+// LIVE by default when BREVO_API_KEY is set. Kill-switch:
+// BREVO_MEMBER_EMAILS_ENABLED=false. Failures are logged only — never fail
+// the webhook (DB write always wins).
 
 async function maybeMemberEmail(kind, admin, userId) {
   if (!memberEmailsEnabled()) return;

@@ -1,7 +1,7 @@
 /**
  * Brevo transactional email: member welcome / renewal + donation thanks.
- * Gated by BREVO_MEMBER_EMAILS_ENABLED=true (off by default).
- * Alias: BREVO_TRANSACTIONAL_EMAILS_ENABLED also enables.
+ * LIVE by default when BREVO_API_KEY is set.
+ * Kill-switch only: BREVO_MEMBER_EMAILS_ENABLED=false (or BREVO_TRANSACTIONAL_EMAILS_ENABLED=false).
  * Uses POST /smtp/email (transactional), not marketing campaigns.
  */
 import { readFileSync } from 'node:fs';
@@ -11,15 +11,21 @@ import { fileURLToPath } from 'node:url';
 const BASE = 'https://api.brevo.com/v3';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+/**
+ * On unless explicitly disabled. Still requires BREVO_API_KEY at send time.
+ */
 export function memberEmailsEnabled() {
   const keys = [
     process.env.BREVO_MEMBER_EMAILS_ENABLED,
     process.env.BREVO_TRANSACTIONAL_EMAILS_ENABLED,
   ];
-  return keys.some((v) => {
-    const s = (v || '').toLowerCase();
-    return s === '1' || s === 'true' || s === 'yes';
-  });
+  // If either is explicitly off → kill-switch
+  for (const v of keys) {
+    if (v == null || v === '') continue;
+    const s = String(v).toLowerCase();
+    if (s === '0' || s === 'false' || s === 'no' || s === 'off') return false;
+  }
+  return true;
 }
 
 /** @deprecated use memberEmailsEnabled — same gate */
@@ -114,7 +120,7 @@ export async function sendMemberLifecycleEmail(kind, to, opts = {}) {
   if (!opts.force && !memberEmailsEnabled()) {
     return {
       skipped: true,
-      reason: 'BREVO_MEMBER_EMAILS_ENABLED / BREVO_TRANSACTIONAL_EMAILS_ENABLED is not true',
+      reason: 'BREVO_MEMBER_EMAILS_ENABLED / BREVO_TRANSACTIONAL_EMAILS_ENABLED is false (kill-switch)',
     };
   }
   if (!to?.email) {
