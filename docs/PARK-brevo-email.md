@@ -36,6 +36,8 @@ Programmatic **draft + test** Brevo campaigns; **one catch-all Updates list**; G
 
 ## Done
 
+- **2026-08-07:** Imported **120** cleaned contacts → **SAMPA Updates** (id 3); attrs `SOURCE=google_group_legacy`, `LEGACY_MEMBER=true`. CSV cleaned locally under `docs/email/imports/` (**gitignored**). **No production send.**
+
 - `BREVO_API_KEY` + list env ids in Hermes egg `.env`  
 - Domain auth (SPF `include:_spf.google.com include:spf.brevo.com`, DKIM, DMARC, `em` / `r.em` / `img.em`)  
 - Senders `info@` + `admin@` active  
@@ -47,10 +49,10 @@ Programmatic **draft + test** Brevo campaigns; **one catch-all Updates list**; G
 
 ## Next (ordered)
 
-1. Confirm Josh happy with Weekly #01 test in Gmail (logo, From info@, links)  
-2. Google Group CSV → Landing A import onto **Updates** (not topic lists)  
-3. Human approve → first production send/schedule (Brevo UI or explicit `send campaign N`)  
-4. Flip site copy to Live for member email **only if** accurate  
+1. ~~Google Group / contacts CSV → **SAMPA Updates**~~ — **done 2026-08-07** (120 unique; SOURCE=google_group_legacy; **no send**)  
+2. Final Weekly #01 polish if needed (logo v3 live)  
+3. **Josh gate:** explicit approve → first production send of Weekly #01 to **Updates** only (never agent `sendNow` without “send campaign N”)  
+4. Flip site copy to Live for member email **only if** accurate after first real send  
 5. Later: member `newsletter_opt_in` sync; public DOI form (T5); Reply-To flip  
 
 ---

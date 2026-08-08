@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T3 Brevo: domain auth + Weekly #01 From info@)
+**Last updated:** 2026-08-07 (T3 Brevo: 120 contacts on Updates; send still gated)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -63,7 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg · do not double-claim.** Infra mostly done (see In flight). **Still open:** Google Group Landing A import → **SAMPA Updates**; human approve + first production send; site copy stays **In development** until real sends. Sticky [`PARK-brevo-email.md`](PARK-brevo-email.md) · *Resume SAMPA Brevo email* · architecture [`email-brevo.md`](architecture/email-brevo.md) |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
 
 ### Done (last 5 only — older = git history)
 
@@ -204,7 +204,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   (`docs/email/templates/site-membership-launch.*` + logo `public/email/sampa-logo.png`);
   draft+test campaigns through **#5** (From info@ → `luftig@gmail.com`). CLI free-plan
   tag omit + FIRSTNAME map. Decisions locked in PARK + architecture.
-  **Still open:** Landing A Google Group import → Updates; human approve first real send;
+  **Import:** 120 contacts on **SAMPA Updates** (2026-08-07; no send). **Still open:** human approve first real send of Weekly #01;
   site marketing still lists member email **In development** (honest until send).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
