@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-07 (T5 cursor + T16 egg in parallel)
+**Last updated:** 2026-08-07 (T5 form in flight — needs DOI template + Vercel env; T16 egg parallel)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T5 | **Public newsletter signup** (non-members) → Brevo DOI → **SAMPA Updates** | cursor | 2026-08-07 | **Claimed cursor.** Footer/homepage form → Brevo DOI → Updates only. Privacy + Brevo disclosure. No forced membership. Depends on T3 Updates list (exists). [`architecture/email-brevo.md`](architecture/email-brevo.md) |
+| T5 | **Public newsletter signup** (non-members) → Brevo DOI → **SAMPA Updates** | cursor | 2026-08-07 | **In flight.** Code: footer form + `api/newsletter-signup.js` + `/newsletter-confirmed` + Privacy (Updates/Brevo). **Blocked on ops:** create Brevo DOI template; set Vercel `BREVO_API_KEY` + `BREVO_LIST_UPDATES=3` + `BREVO_DOI_TEMPLATE_ID`. Checklist §5 in [`email/setup-checklist.md`](email/setup-checklist.md). |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
 | T16 | Member welcome + renewal emails (Brevo) | egg | 2026-08-07 | **Claimed egg.** Templates + gated webhook wired; BREVO_MEMBER_EMAILS_ENABLED off until Josh OK. Test CLI `member-email-test`. Parallel with T5 (cursor). |
 
@@ -271,10 +271,9 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   the site footer so visitors can find SAMPA’s social accounts. Need final
   profile URLs when ready; X can wait until the account exists. Touch
   `src/components/Footer.jsx` (and optionally nav).
-- [ ] **Newsletter signup without membership** (**T5**) — site has **no** public
-  capture today. Footer and/or homepage → **Brevo DOI** → catch-all **SAMPA Updates**
-  only (topic multi-list deferred). Privacy: name list + Brevo; link `/privacy`.
-  No forced membership. Full unsub always. Merge with member account later by email.
+- [ ] **Newsletter signup without membership** (**T5 · cursor in progress**) —
+  footer form + API + confirm page + Privacy drafted. Needs Brevo DOI template +
+  Vercel env (`BREVO_*`) before live. Catch-all **SAMPA Updates** only.
 - [ ] **Member welcome + renewal emails** (**T16**) — Brevo automation/templates
   triggered from Stripe webhook on new active membership and renewal. Same brand
   system as Weekly #01. Content: mission, live programs, member how-to, building

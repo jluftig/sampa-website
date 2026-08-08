@@ -24,6 +24,7 @@ const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
 const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const About = lazy(() => import('./pages/About'));
 const Privacy = lazy(() => import('./pages/Privacy'));
+const NewsletterConfirmed = lazy(() => import('./pages/NewsletterConfirmed'));
 const Terms = lazy(() => import('./pages/Terms'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
 const PostEditor = lazy(() => import('./pages/PostEditor'));
@@ -51,6 +52,7 @@ function App() {
           <Route path="/donate" element={<Donate />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/newsletter-confirmed" element={<NewsletterConfirmed />} />
           <Route path="/terms" element={<Terms />} />
           <Route
             path="/dashboard"

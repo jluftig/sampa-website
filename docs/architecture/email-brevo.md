@@ -128,12 +128,13 @@ Supabase profiles (opt-in members)
 | `scripts/run-brevo.sh` | Load `BREVO_*` (+ optional SAMPA_*) from Hermes `.env`, run CLI |
 | `scripts/brevo/cli.mjs` | Subcommands: `account`, `lists`, `setup-check`, `campaign-draft`, `campaign-test`, `campaign-get`, `contact-upsert`, `import-csv-plan` |
 
-## Site surfaces (product backlog — see STATUS)
+## Site surfaces
 
-- Public multi-list signup + DOI  
-- Dashboard: multi-list prefs or deep link to Brevo preference center  
-- Privacy copy: name lists + Brevo as provider  
-- Footer signup without membership  
+- **Public signup (T5):** footer form → `api/newsletter-signup.js` → Brevo DOI →
+  **SAMPA Updates** only. Confirm page: `/newsletter-confirmed`.
+  Env: `BREVO_API_KEY`, `BREVO_LIST_UPDATES`, `BREVO_DOI_TEMPLATE_ID`.
+- Privacy: names **SAMPA Updates** + Brevo; link `/privacy`.
+- Later: member `newsletter_opt_in` sync; multi-topic prefs / preference center. 
 
 ## Related
 
