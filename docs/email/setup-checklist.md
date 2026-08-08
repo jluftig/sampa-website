@@ -66,10 +66,29 @@ scripts/run-brevo.sh lists
 PREFERENCE_CENTER_URL=
 ```
 
-## 5. Double opt-in (public)
+## 5. Double opt-in (public) — T5
 
-- Public forms (when built): use Brevo DOI / double opt-in templates → **Updates**.  
-- Members: verified via site auth.  
+Site form: footer → `POST /api/newsletter-signup` → Brevo
+`POST /contacts/doubleOptinConfirmation` → **SAMPA Updates** only.
+Confirm redirect: `/newsletter-confirmed`.
+
+1. Brevo → Campaigns → Templates → create a **Double opt-in** template
+   (must include `{{ params.DOIurl }}` for the confirm link).  
+2. Note the numeric **template id**.  
+3. Vercel **Production** (and Preview if you want) server env:
+
+```bash
+BREVO_API_KEY=xkeysib-...          # same campaign API key as Hermes (not SMTP)
+BREVO_LIST_UPDATES=3               # SAMPA Updates
+BREVO_DOI_TEMPLATE_ID=             # numeric DOI template id from step 1
+# optional:
+# BREVO_DOI_REDIRECT_URL=https://www.addictionpas.org/newsletter-confirmed
+```
+
+4. Smoke: submit footer form with a throwaway address → confirm email → land on
+   `/newsletter-confirmed` → contact on Updates with `SOURCE=public_signup`.
+
+- Members: verified via site auth (dashboard opt-in → sync later).  
 - Legacy Google Group: **Landing A** — see `google-group-import.md`.
 
 ## 6. Smoke test
@@ -90,7 +109,7 @@ Mass send only with explicit approval + `campaign-send --i-understand-send-to-pr
 - [ ] Reply-To flip to no-reply + Contact us form (scale)  
 - [ ] Site `/email-preferences` (optional)  
 - [ ] Privacy policy Brevo disclosure update  
-- [ ] Public footer signup  
+- [ ] Public footer signup (T5 — code ready; needs DOI template + Vercel env) 
 - [ ] Automated member sync cron  
 - [ ] Topic lists / multi-list prefs if volume grows  
 - [ ] Weekly digest auto-draft (still human approve)  

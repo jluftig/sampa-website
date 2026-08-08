@@ -6,7 +6,7 @@ const CONTACT_FORM_URL = 'https://forms.gle/YqYYRVE9z2nCYdNz5';
 
 export default function Privacy() {
   return (
-    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="July 11, 2026">
+    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="August 7, 2026">
       <p>
         The Society of Addiction Medicine Physician Associates ("SAMPA," "we,"
         "us") operates <strong>www.addictionpas.org</strong>, a professional
@@ -19,6 +19,7 @@ export default function Privacy() {
       <h2>The short version</h2>
       <ul>
         <li>You can read everything public on this site without an account, and we don't track who you are when you do.</li>
+        <li>You can subscribe to <strong>SAMPA Updates</strong> by email without becoming a member (double opt-in via Brevo).</li>
         <li>If you create an account, we collect your name and email, plus any professional details you choose to add.</li>
         <li>Active members can use a <strong>member networking directory</strong> to find each other. That directory is not public. You control whether you appear and whether peers see your email or phone.</li>
         <li>Payments are handled by Stripe — <strong>we never see or store your card number</strong>.</li>
@@ -35,6 +36,14 @@ export default function Privacy() {
         third-party analytics. Like nearly every website, our hosting providers
         keep standard, short-lived server logs (such as IP address and browser
         type) for security and operations.
+      </p>
+      <p>
+        If you use the public newsletter form, we collect the email address you
+        submit so we can send a confirmation message and — only after you
+        confirm — add you to our <strong>SAMPA Updates</strong> list. That list
+        is for organizational and news updates. Membership is not required.
+        Email delivery and list management are handled by{' '}
+        <strong>Brevo</strong> (see Service providers).
       </p>
 
       <h3>Accounts</h3>
@@ -141,7 +150,7 @@ export default function Privacy() {
         <li>To process dues and send receipts (via Stripe).</li>
         <li>To run the member networking directory under the listing and contact choices you set.</li>
         <li>To operate membership (staff roster) for people authorized to manage memberships.</li>
-        <li>To send the SAMPA newsletter and member updates — only if you've opted in, and you can opt out on your dashboard at any time.</li>
+        <li>To send <strong>SAMPA Updates</strong> and related organizational email — only if you've opted in (public double opt-in or member preference), and you can unsubscribe anytime.</li>
         <li>To respond when you contact us.</li>
         <li>To keep the site secure and understand aggregate (not individual) usage.</li>
       </ul>
@@ -156,6 +165,8 @@ export default function Privacy() {
         <li><strong>Supabase</strong> — our database and sign-in infrastructure (stores accounts and profiles).</li>
         <li><strong>Stripe</strong> — payment processing and billing management.</li>
         <li><strong>Vercel</strong> — website hosting.</li>
+        <li><strong>Brevo</strong> — email delivery for magic-link / auth messages and for the public <strong>SAMPA Updates</strong> newsletter list (and related campaigns). Brevo's handling of subscriber data is described in{' '}
+          <a href="https://www.brevo.com/legal/privacypolicy/" target="_blank" rel="noopener noreferrer">Brevo's privacy policy</a>.</li>
         <li><strong>Google</strong> — the optional "Sign in with Google" service.</li>
       </ul>
       <p>
@@ -186,7 +197,8 @@ export default function Privacy() {
         <li>View and edit your profile and directory settings anytime on your <Link to="/dashboard">dashboard</Link>.</li>
         <li>Hide yourself from the member directory, or share/unshare email and phone, with the checkboxes on that page.</li>
         <li>Use a directory email or phone that differs from your sign-in / account contact.</li>
-        <li>Opt out of the newsletter with one checkbox on the same page.</li>
+        <li>Opt out of member newsletter preferences with the checkbox on your dashboard.</li>
+        <li>Unsubscribe from <strong>SAMPA Updates</strong> (public or member) via the link in any email we send through Brevo.</li>
         <li>Manage or cancel your membership through the billing portal on your dashboard.</li>
         <li>Request a copy or deletion of your information via the <a href={CONTACT_FORM_URL} target="_blank" rel="noopener noreferrer">contact form</a>.</li>
       </ul>
