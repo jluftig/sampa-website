@@ -50,8 +50,9 @@ export default function NewsletterSignup({ variant = 'banner' }) {
                 SAMPA Updates
               </h2>
               <p className="text-white/85 text-base md:text-lg leading-relaxed mb-3">
-                Sign up for news and organizational updates by email. No
-                membership required.
+                Low-volume email on addiction-medicine practice, society news,
+                and nonpartisan policy that affects patient access. No membership
+                required.
               </p>
               <p className="text-white/60 text-sm italic leading-relaxed">
                 We respect your privacy and will not share your email. Unsubscribe

@@ -12,7 +12,11 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-10 (Messaging V2 pulled off main → PR for preview)
+<<<<<<< HEAD
+**Last updated:** 2026-08-10 (Messaging V2 on PR feature/messaging-v2-patient-access)
+=======
+**Last updated:** 2026-08-09 (Messaging V2 locked — patient-access hero + emails)
+>>>>>>> e874b53 (feat(messaging): V2 patient-access north star (hero B+hybrid))
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -64,6 +68,12 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 |----|------|-------|---------|-------|
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
+
+### Done
+
+| ID | Task | Owner | Started | Notes |
+|----|------|-------|---------|-------|
+| T17 | Messaging V2 patient-access north star | egg | 2026-08-09 | **PR preview.** Branch `feature/messaging-v2-patient-access`. Main = pre-V2 site voice. Merge only after Josh approves preview. |
 
 ### Done (last 5 only — older = git history)
 
