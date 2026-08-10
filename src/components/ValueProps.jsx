@@ -6,7 +6,7 @@ const live = [
   {
     icon: Newspaper,
     title: 'Daily news for providers',
-    desc: 'Research, policy, and practice updates so care stays grounded in what is happening now—and people and communities benefit.',
+    desc: 'Research, policy, and practice updates so physician associates stay informed—and patients and communities benefit from care grounded in what is happening now.',
     href: '/news',
     cta: 'Read the news',
   },
@@ -19,8 +19,8 @@ const live = [
   },
   {
     icon: ScrollText,
-    title: 'Policy for patient access',
-    desc: 'When rules and payment systems limit access to evidence-based treatment, patients lose—especially in rural and underserved communities. Our Policy hub is a nonpartisan voice for quality care and access, starting with federal comments.',
+    title: 'Policy work for quality care and access',
+    desc: 'Where SAMPA will publish its public voice for expanding access to MOUD and MAT—starting with federal comments, and growing into positions and statements across federal, state, payment, and practice levers—not partisan politics.',
     href: '/policy',
     cta: 'See our Policy hub',
   },
@@ -59,10 +59,7 @@ export default function ValueProps() {
             What we do
           </h2>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Programs that improve care for people and communities impacted by
-            substance use disorders — by supporting the PAs who deliver that care,
-            including in rural and underserved settings. Live offerings are newly
-            launched; more is on the way.
+            Programs that advance physician associates in addiction medicine—so individuals and communities impacted by substance use disorders get better care. Our live offerings are newly launched; more is on the way.
           </p>
         </div>
 
