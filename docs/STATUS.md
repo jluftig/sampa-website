@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-10 (Messaging V3 merged PR #64 — patient-access voice live)
+**Last updated:** 2026-08-10 (T18 DOI template 13 → V3 copy · egg)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -49,7 +49,7 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
-| T18 | Brevo DOI template 13 → V3 weekly wording | egg | Match `docs/email/templates/doi-confirm.html` on main ("a short weekly email for addiction-medicine PAs…"). Needs `BREVO_API_KEY` (egg profile env). Verify: footer signup with +alias → confirm email shows new copy. |
+| T18 | Brevo DOI template 13 → Messaging V3 copy | egg | 2026-08-10 | **Claimed egg.** Match doi-confirm.html; doiTemplate+DOIurl; smoke alias. |
 
 ### Deferred
 
