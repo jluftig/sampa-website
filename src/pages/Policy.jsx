@@ -131,18 +131,19 @@ export default function Policy() {
           <div className="overflow-x-auto rounded-3xl border border-primary/10 bg-white">
             <table className="w-full min-w-[40rem] text-left text-sm md:text-base">
               <caption className="sr-only">
-                Levers SAMPA intends to use to expand buprenorphine, MOUD, and MAT access
+                Domains where SAMPA intends to expand buprenorphine, MOUD, and MAT
+                access, with examples and planned work
               </caption>
               <thead>
                 <tr className="border-b border-primary/10 bg-primary/5">
                   <th scope="col" className="px-5 py-4 font-semibold text-text">
-                    Lever
+                    Domain
                   </th>
                   <th scope="col" className="px-5 py-4 font-semibold text-text">
                     Examples
                   </th>
                   <th scope="col" className="px-5 py-4 font-semibold text-text">
-                    Planned artifact
+                    Planned work
                   </th>
                 </tr>
               </thead>
