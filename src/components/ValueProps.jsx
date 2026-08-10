@@ -6,7 +6,7 @@ const live = [
   {
     icon: Newspaper,
     title: 'Daily news for providers',
-    desc: 'Research, policy, and practice updates so care stays grounded in what is happening now—and people and communities benefit.',
+    desc: 'Research, policy, and practice updates — so the care you deliver stays grounded in what’s happening now.',
     href: '/news',
     cta: 'Read the news',
   },
@@ -20,7 +20,7 @@ const live = [
   {
     icon: ScrollText,
     title: 'Policy for patient access',
-    desc: 'When rules and payment systems limit access to evidence-based treatment, patients lose—especially in rural and underserved communities. Our Policy hub is a nonpartisan voice for quality care and access, starting with federal comments.',
+    desc: 'When rules and payment systems limit access to evidence-based treatment, patients lose. The Policy hub is SAMPA’s nonpartisan voice for quality care and access — starting with federal public comments.',
     href: '/policy',
     cta: 'See our Policy hub',
   },
@@ -59,10 +59,9 @@ export default function ValueProps() {
             What we do
           </h2>
           <p className="text-xl text-text/70 max-w-2xl mx-auto">
-            Programs that improve care for people and communities impacted by
-            substance use disorders — by supporting the PAs who deliver that care,
-            including in rural and underserved settings. Live offerings are newly
-            launched; more is on the way.
+            Every program serves the same end — patients getting better care
+            from PAs equipped to give it. What’s live is newly launched; more
+            is on the way.
           </p>
         </div>
 

@@ -89,9 +89,9 @@ export const POLICY_HUB = {
   eyebrow: 'Access to evidence-based addiction care',
   title: 'Policy',
   oneLiner:
-    'SAMPA’s Policy hub is where we will publish our public voice for expanding access to medications for addiction treatment—including buprenorphine, methadone, naltrexone, and other medications for opioid use disorder (MOUD)—so physician associates can deliver high-quality care to the patients and communities we serve, especially in rural and underserved areas. We are starting with public comments to federal agencies; our first comment to HHS sets the access agenda below. Over time we intend to develop positions, statements, and related materials across federal, state, payment, workforce, and practice levers.',
+    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s Policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments to federal agencies — our first comment to HHS sets the access agenda below — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, payment systems, workforce rules, and everyday practice.',
   leversIntro:
-    'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA will work across several levers—not only federal dockets. These levers reflect the agenda in our first public comment and the work still ahead:',
+    'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA will work on several fronts—not only federal dockets. These reflect the agenda in our first public comment and the work still ahead:',
   prioritiesIntro:
     'Priorities from our first public comment (HHS RFI, July 2026)—the near-term access roadmap we intend to advance:',
   disclaimer:

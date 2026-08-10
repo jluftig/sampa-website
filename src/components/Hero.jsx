@@ -48,14 +48,13 @@ export default function Hero() {
         </p>
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-text mb-6 [text-wrap:balance]">
-          Better care for people affected by{' '}
-          <span className="font-drama font-semibold">substance use disorders</span>
+          Care that <span className="font-drama font-semibold">reaches people</span>
         </h1>
 
         <p className="max-w-2xl mx-auto text-base md:text-xl text-text/70 leading-relaxed font-medium mb-8">
-          PAs often practice at the front lines of rural and underserved care.
-          SAMPA strengthens education, peer community, and nonpartisan policy so
-          patients can reach evidence-based treatment.
+          The society for PAs in addiction medicine. We connect you with peers,
+          keep your practice current, and speak up when policy gets between your
+          patients and treatment.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
