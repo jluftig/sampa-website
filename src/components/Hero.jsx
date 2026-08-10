@@ -48,13 +48,13 @@ export default function Hero() {
         </p>
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-text mb-6 [text-wrap:balance]">
-          Advancing <span className="font-drama font-semibold">addiction medicine</span>
+          Care that <span className="font-drama font-semibold">reaches people</span>
         </h1>
 
         <p className="max-w-2xl mx-auto text-base md:text-xl text-text/70 leading-relaxed font-medium mb-8">
-          SAMPA connects physician associates and advances their education,
-          training, and clinical practice — so people and communities impacted
-          by substance use disorder receive high-quality, evidence-based care.
+          The society for PAs in addiction medicine. We connect you with peers,
+          keep your practice current, and speak up when policy gets between your
+          patients and treatment.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

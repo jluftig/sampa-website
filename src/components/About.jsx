@@ -16,13 +16,23 @@ export default function About() {
             SAMPA, Inc. is a 501(c)(3) nonprofit organization · EIN 42-2288772
           </p>
           <h3 className="text-3xl md:text-5xl font-drama text-text leading-tight mb-8">
-            Better outcomes for individuals and communities.
+            Built for the people addiction medicine serves.
           </h3>
           <p className="text-lg text-text/80 leading-relaxed mb-6 font-medium">
-            SAMPA is a nonprofit dedicated to improving public health outcomes in addiction medicine by advancing the education, training, clinical practice, and professional development of physician associates—so they may deliver high-quality, accessible, patient-centered, and evidence-based care to individuals and communities impacted by substance use disorders.
+            SAMPA is a nonprofit with one measure of success: better care for
+            people with substance use disorders. We pursue it by strengthening
+            the PAs who deliver that care — often the clinicians closest to
+            rural and underserved communities — through education, training,
+            and clinical practice.
           </p>
           <p className="text-lg text-text/70 leading-relaxed mb-8">
-            Today that work lives in newly launched programs: daily news that keeps providers current, a private member networking directory for peer collaboration, and a Policy hub where we will publish our voice for access to evidence-based addiction care—including medications for opioid use disorder (starting with federal public comments). Member email updates, practice resources, CME, and a job board are coming soon—always in service of better care for the people and communities we serve.
+            Today that work lives in newly launched programs: daily news that
+            keeps providers current, a private member directory for peer
+            collaboration, and a Policy hub where we make the case for access
+            to addiction care — including medications for opioid use disorder,
+            starting with federal public comments. Member email updates,
+            practice resources, CME, and a job board are coming soon — always
+            in service of better care.
           </p>
           <Link
             to="/about"

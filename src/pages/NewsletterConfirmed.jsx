@@ -19,10 +19,10 @@ export default function NewsletterConfirmed() {
           You’re subscribed
         </h1>
         <p className="text-text/70 mb-8 leading-relaxed">
-          Thanks for confirming. You’ll receive SAMPA Updates — news and
-          organizational email from the Society of Addiction Medicine Physician
-          Associates. No membership required; you can unsubscribe from any
-          message.
+          Thanks for confirming. You’ll receive SAMPA Updates — a weekly email
+          with practice news, society notes, and the policy changes that affect
+          your patients’ access to care. No membership required; you can
+          unsubscribe at any time.
         </p>
         <div className="flex flex-wrap justify-center gap-4 text-sm font-semibold">
           <Link

@@ -94,7 +94,7 @@ export default function Join() {
     }
     return user
       ? 'Choose the level that fits your career stage, pick a term, then continue to secure payment via Stripe.'
-      : 'Choose your level, sign in (one click, no password), pick a term, then pay. Active membership includes newly launched benefits—the member networking directory and support for SAMPA’s Policy hub as we build our voice for quality care and MOUD access.';
+      : 'Choose your level, sign in (one click, no password), pick a term, then pay. Active membership opens the member directory today — and backs SAMPA’s voice for your patients’ access to quality care and MOUD.';
   })();
 
   return (
