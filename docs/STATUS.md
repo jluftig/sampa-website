@@ -69,6 +69,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T17 | Messaging V2 patient-access north star | egg | — | **PR #64 preview only** — not on Production. https://github.com/jluftig/sampa-website/pull/64 · merge after Josh OK. Site voice on main = pre-V2. |
 | T5 | Public newsletter signup → Brevo DOI → SAMPA Updates | either | 2026-08-08 | **Done · DOI live E2E.** Template id 13 (doiTemplate). Vercel BREVO_* set. Josh confirmed inbox → confirm link → /newsletter-confirmed → Updates. |
 | T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs; soft chips; web Dashboard edit; directory filter; mobile display; migration applied in prod (2026-08-07) |
 | T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
