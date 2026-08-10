@@ -45,7 +45,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 |----|------|-------|-------|
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
 | T2 | Pre-membership security P0 (Vercel Stripe/webhook/keys + E2E join) | either | [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) · *Resume SAMPA security review* |
-| T4 | Footer social links (IG; X when ready) | either | `Footer.jsx`; need final profile URLs |
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
@@ -62,7 +61,8 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Updates list loaded. Weekly #01 **draft #15** rebuilt post-Messaging V3. **Josh gate for first production send** (`send campaign 15`). |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Updates list loaded. Weekly #01 **draft #15** rebuilt post-Messaging V3. **Josh gate for first production send** (`send campaign 15`). ⚠ T4 adds social icons to `site-membership-launch.html` — rebuild draft #15 from file again before first send. |
+| T4 | Socials (site + emails) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx + 4 email templates (not DOI 13); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
 
 ### Done (last 5 only — older = git history)
