@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-10 (T18 DOI template 13 → V3 copy · egg)
+**Last updated:** 2026-08-10 (T18 DOI 13 V3 live; Weekly #01 rebuilt as draft #15)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -49,7 +49,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
-| T18 | Brevo DOI template 13 → Messaging V3 copy | egg | 2026-08-10 | **Claimed egg.** Match doi-confirm.html; doiTemplate+DOIurl; smoke alias. |
 
 ### Deferred
 
@@ -63,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Updates list loaded. Weekly #01 **draft #15** rebuilt post-Messaging V3. **Josh gate for first production send** (`send campaign 15`). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
 
 ### Done (last 5 only — older = git history)
@@ -71,6 +70,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
 | T17 | Messaging V3 patient-access voice | egg | 2026-08-10 | **Merged PR #64 → Production.** Patient-first site + emails; rules in docs/messaging/patient-access-north-star.md; V1 snaps in docs/email/templates/v1/. Follow-up → T18. |
+| T18 | Brevo DOI template 13 → Messaging V3 copy | egg | 2026-08-10 | **Done.** PUT template 13; doiTemplate=true; DOIurl intact; V3 weekly intro; smoke site API + alias. Weekly #01 rebuilt draft **campaign #15** (test to Josh). No mass send. |
 | T5 | Public newsletter signup → Brevo DOI → SAMPA Updates | either | 2026-08-08 | **Done · DOI live E2E.** Template id 13 (doiTemplate). Vercel BREVO_* set. Josh confirmed inbox → confirm link → /newsletter-confirmed → Updates. |
 | T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs; soft chips; web Dashboard edit; directory filter; mobile display; migration applied in prod (2026-08-07) |
 | T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
