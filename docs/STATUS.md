@@ -64,7 +64,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 |----|------|-------|---------|-------|
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
-| T17 | Messaging V3 patient-access voice (retune of V2) | egg | 2026-08-09 | **Claimed egg · PR #64 preview only.** V3 copy from Josh-approved deck (2026-08-10): hero A "Care that reaches people", one-theme-per-surface, emails thank-first. Merge + Brevo DOI template 13 update only after Josh approves preview. |
+| T17 | Messaging V3 patient-access voice (retune of V2) | egg | 2026-08-09 | **V3 pushed to PR #64 (3966d03), Vercel preview live.** Josh-approved deck 2026-08-10: hero A "Care that reaches people", one-theme-per-surface, emails thank-first. Pending: welcome/renewal/donation test sends to luftig@gmail.com (this machine lacks `~/.hermes/profiles/egg/.env` BREVO key — run from Studio). Merge + Brevo DOI template 13 update only after Josh approves preview. |
 
 ### Done (last 5 only — older = git history)
 
