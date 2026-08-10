@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-10 (T17 Messaging V3 voice retune on PR #64 — preview pending Josh approval)
+**Last updated:** 2026-08-10 (Messaging V3 merged PR #64 — patient-access voice live)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -64,7 +64,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 |----|------|-------|---------|-------|
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** 120 on Updates imported (no send). Weekly #01 draft ready. **Josh gate for first production send.** PARK-brevo-email · *Resume SAMPA Brevo email* |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
-| T17 | Messaging V3 patient-access voice (retune of V2) | egg | 2026-08-09 | **V3 pushed to PR #64 (3966d03), Vercel preview live.** Josh-approved deck 2026-08-10: hero A "Care that reaches people", one-theme-per-surface, emails thank-first. Pending: welcome/renewal/donation test sends to luftig@gmail.com (this machine lacks `~/.hermes/profiles/egg/.env` BREVO key — run from Studio). Merge + Brevo DOI template 13 update only after Josh approves preview. |
+| T17 | Messaging V3 patient-access voice | egg | 2026-08-10 | **Done · merged PR #64.** Patient-first site + emails. docs/messaging/patient-access-north-star.md · V1 snaps in docs/email/templates/v1/. |
 
 ### Done (last 5 only — older = git history)
 
