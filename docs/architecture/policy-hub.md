@@ -92,3 +92,9 @@ clusters.
   mission; no political campaign activity.
 - First published artifact is an HHS public comment; empty Position/Statement
   slots are intentional so the first item does not redefine the whole category.
+
+## Policy ops (adjacent track)
+
+Opportunity sensing, comment windows, and influence workflow are **not** the news
+pipeline. Decisions + park sticky: [`docs/PARK-policy-ops.md`](../PARK-policy-ops.md)
+(*Resume SAMPA policy ops*). Grill R1 locked 2026-08-10.
