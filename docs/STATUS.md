@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-12 (PRs #66/#68/#69 merged: copy pass, member email Live, socials site-only, no-wrong-doors band + 2025-NSDUH stats)
+**Last updated:** 2026-08-12 (PRs #66/#68/#69/#70 merged; policy hub has two public comments, two-up latest-material layout; Weekly rebuild pending on Studio)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T22 | Policy hub: HRSA psychedelic-therapies RFI comment | egg | 2026-08-12 | **Claimed egg.** Second public comment (submitted 2026-08-11, 91 FR 43103; Shani Wilson sign-off; PA-recognition workforce message). Convert docx → PDF → `public/files/policy/`; add to `policyDocuments.js`; /policy oneLiner shifts off "first comment" framing. Emails unchanged. PR + preview; Josh gates. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -70,11 +69,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T22 | Policy hub: HRSA psychedelic-therapies RFI comment | egg | 2026-08-12 | **Merged PR #70 → Production.** Second comment live (submitted 2026-08-11, 91 FR 43103; PDF from final docx). /policy opens with two-up "Read our latest material" (both comments, equal weight; auto-takes newest two). Welcome + Weekly policy cards widened: "from MOUD and MAT to emerging therapies." ⚠ Weekly draft rebuild must run AFTER this (T3 note). |
 | T21 | No wrong doors + prevalence — site + emails | egg | 2026-08-12 | **Merged PR #69 → Production.** Hero: "PAs treating addiction wherever patients present"; homepage No-wrong-doors band (8 setting chips incl. street medicine / telehealth / bridge clinics / OTPs; 2025-NSDUH stats 44.6M · 1 in 6 · 73% w/ on-page sources; stats refresh ~July 2027); /about anchor sentence (co-occurring MH lives there); /donate echo; welcome + launch identity clause. |
 | T20 | Copy pass — site + email templates (V3 rules) | egg | 2026-08-12 | **Merged PR #68 → Production.** V3 sweep (second-person voice, placement dedupe, no wonk vocab); email program described content+cadence only (no preference/unsubscribe signals — north-star updated); member email flipped **Live** sitewide (launch day; card CTA → `/#updates-signup`); "policy hub" lowercase in running copy; sign-offs verified. |
 | T4 | Socials (site) + merch links (emails) | egg | 2026-08-12 | **Merged PR #66 → Production.** IG + FB icons **site footer only** — email icons pulled 2026-08-12 (socials too early to promote; gray PNGs staged in `public/email/` for later); merch card in welcome, store link in renewal. |
 | T17 | Messaging V3 patient-access voice | egg | 2026-08-10 | **Merged PR #64 → Production.** Patient-first site + emails; rules in docs/messaging/patient-access-north-star.md; V1 snaps in docs/email/templates/v1/. Follow-up → T18. |
-| T18 | Brevo DOI template 13 → Messaging V3 copy | egg | 2026-08-10 | **Done.** PUT template 13; doiTemplate=true; DOIurl intact; V3 weekly intro; smoke site API + alias. Weekly #01 rebuilt draft **campaign #15** (test to Josh). No mass send. |
 
 ### Task workflow (agents + humans)
 
