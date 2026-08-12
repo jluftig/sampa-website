@@ -67,8 +67,9 @@ export default function Donate() {
             Put better care within reach
           </h1>
           <p className="text-lg text-text/70">
-            Your gift helps physician associates deliver evidence-based, compassionate
-            care to people with substance use disorders — expanding access to treatment
+            About 1 in 7 Americans lives with a substance use disorder, and most
+            never reach treatment. Your gift helps physician associates deliver
+            evidence-based, compassionate care — expanding access to treatment
             and improving health outcomes in communities across the country.
           </p>
         </header>
