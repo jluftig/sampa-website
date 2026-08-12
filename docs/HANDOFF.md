@@ -55,7 +55,7 @@ Make sure a trusted second person can access or recover:
 - Apple Developer (Individual today → org after D-U-N-S; see STATUS)
 - Expo / EAS (`jluftig`)
 - Brevo (auth SMTP `no-reply@` live; marketing campaigns via `info@` → Kelsey — see STATUS / PARK-brevo-email)
-- Instagram `societyofaddictionmedicinepas` + Facebook page (id 61587232361195) — linked from site + email footers
+- Instagram `societyofaddictionmedicinepas` + Facebook page (id 61587232361195) — linked from the site footer
 - Printful store (`sampastore.printful.me` — the `/store` + `/merch` redirects point here)
 
 Losing these is the main non-code risk. Product/engineering truth is in git + STATUS.

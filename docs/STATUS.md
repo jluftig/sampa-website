@@ -62,8 +62,8 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Updates list loaded. Weekly #01 **draft #15** rebuilt post-Messaging V3. **Josh gate for first production send** (`send campaign 15`). ⚠ T4 adds social icons to `site-membership-launch.html` — rebuild draft #15 from file again before first send. |
-| T4 | Socials (site + emails) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx + 4 email templates (not DOI 13); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
-| T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 (2026-08-10) added social icons + merch/store links to these templates — files read at send time, no Brevo action. |
+| T4 | Socials (site + emails) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx (site only; email icons pulled 2026-08-12 — promote socials later); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
+| T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 (2026-08-10) added merch/store links to these templates (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
 ### Done (last 5 only — older = git history)
 
@@ -268,9 +268,9 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ### Product — site polish / marketing
 
 - [x] **Footer social links** (**T4**) — 2026-08-10. IG + FB icons in site footer
-  (`Footer.jsx`, lucide icons) **and** email footers (welcome / renewal / donation /
-  Weekly launch; gray PNGs in `public/email/`). DOI template 13 deliberately
-  excluded (single-purpose). X/Twitter still waits on an account.
+  (`Footer.jsx`, lucide icons). Email-footer icons pulled 2026-08-12 (socials
+  not ready to promote; gray PNGs staged in `public/email/` for later). DOI
+  template 13 deliberately excluded (single-purpose). X/Twitter still waits on an account.
 - [x] **Newsletter signup without membership** (**T5**) — PR #62 (2026-08-07).
   Prominent chip above footer → Brevo DOI → **SAMPA Updates**. Activate DOI with
   Brevo template + Vercel `BREVO_*` ([`email/setup-checklist.md`](email/setup-checklist.md) §5).
