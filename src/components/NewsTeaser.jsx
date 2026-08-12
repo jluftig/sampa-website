@@ -36,7 +36,7 @@ export default function NewsTeaser() {
           New
         </p>
         <p className="text-xl text-text/70 max-w-2xl mb-12">
-          Keep providers current on addiction medicine research, policy, and practice—so care for individuals and communities stays evidence-informed.
+          Original daily coverage of addiction medicine — the developments that matter for your patients and your practice.
         </p>
 
         {loaded && posts.length === 0 && (

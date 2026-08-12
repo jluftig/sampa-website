@@ -222,7 +222,7 @@ export default function Policy() {
               <h3 className="text-xl font-bold mb-2">Nothing in this category yet</h3>
               <p className="text-text/60">
                 Check back as SAMPA publishes additional positions, comments, and
-                statements across the planned levers above.
+                statements across the domains above.
               </p>
             </div>
           ) : (
