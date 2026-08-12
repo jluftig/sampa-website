@@ -27,7 +27,9 @@ export default function Policy() {
   const [filter, setFilter] = useState('all');
 
   const visible = filter === 'all' ? docs : docs.filter((d) => d.type === filter);
-  const featured = docs[0] || null;
+  // Two-up while the corpus is small — both public comments get equal
+  // prominence. Revisit this layout when more materials publish.
+  const latest = docs.slice(0, 2);
 
   return (
     <div className="relative min-h-screen bg-background text-text">
@@ -50,54 +52,50 @@ export default function Policy() {
           <p className="text-xl text-text/70 leading-relaxed">
             {POLICY_HUB.oneLiner}
           </p>
-          {featured && (
-            <Link
-              to={`/policy/${featured.slug}`}
-              className="inline-flex items-center gap-2 mt-8 text-primary-text font-semibold hover:underline"
-            >
-              Read our latest material
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          )}
         </header>
 
-        {featured && (
-          <section className="mb-16 md:mb-20" aria-labelledby="featured-heading">
-            <h2 id="featured-heading" className="sr-only">
-              Featured material
+        {latest.length > 0 && (
+          <section className="mb-16 md:mb-20" aria-labelledby="latest-heading">
+            <h2 id="latest-heading" className="text-2xl md:text-3xl font-drama font-bold mb-8">
+              Read our latest material
             </h2>
-            <Link
-              to={`/policy/${featured.slug}`}
-              className="group block bg-white rounded-4xl border border-primary/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8 md:p-12"
-            >
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                <span className="px-3 py-1 rounded-full bg-primary/10 text-primary-text text-xs font-semibold font-data uppercase tracking-wider">
-                  {typeLabel(featured.type)}
-                </span>
-                {featured.agency && (
-                  <span className="text-sm text-text/50 font-data">
-                    {featured.agency}
-                  </span>
-                )}
-              </div>
-              <h3 className="text-2xl md:text-3xl font-drama font-bold text-text group-hover:text-primary-text transition-colors mb-4 leading-snug">
-                {featured.title}
-              </h3>
-              <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-6">
-                {featured.summary}
-              </p>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-text/50">
-                {featured.submittedAt && (
-                  <span>
-                    Submitted {formatDateOnly(featured.submittedAt)}
-                  </span>
-                )}
-                <span className="inline-flex items-center gap-1.5 text-primary-text font-semibold group-hover:underline">
-                  View material
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </Link>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {latest.map((doc) => (
+                <Link
+                  key={doc.slug}
+                  to={`/policy/${doc.slug}`}
+                  className="group flex flex-col bg-white rounded-4xl border border-primary/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8"
+                >
+                  <div className="flex flex-wrap items-center gap-3 mb-4">
+                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary-text text-xs font-semibold font-data uppercase tracking-wider">
+                      {typeLabel(doc.type)}
+                    </span>
+                    {doc.agency && (
+                      <span className="text-sm text-text/50 font-data">
+                        {doc.agency}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-drama font-bold text-text group-hover:text-primary-text transition-colors mb-3 leading-snug">
+                    {doc.title}
+                  </h3>
+                  <p className="text-text/70 leading-relaxed mb-6">
+                    {doc.summary}
+                  </p>
+                  <div className="mt-auto flex flex-wrap items-center gap-4 text-sm text-text/50">
+                    {doc.submittedAt && (
+                      <span>
+                        Submitted {formatDateOnly(doc.submittedAt)}
+                      </span>
+                    )}
+                    <span className="inline-flex items-center gap-1.5 text-primary-text font-semibold group-hover:underline">
+                      View material
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </section>
         )}
 
