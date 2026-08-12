@@ -62,6 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T21 | No wrong doors + prevalence — site + emails | egg | 2026-08-12 | **Claimed egg.** Widen identity to every PA (hero sub, membership hook, /about anchor sentence w/ co-occurring MH + FQHCs) + new homepage "No wrong doors" band with 2025-NSDUH stats (44.6M · 1 in 6 treated · 73% recovery; sources on-page) + one /donate echo. Emails: identity clause only (welcome + launch preheader), no stats. PR + preview; Josh gates merge. Weekly draft rebuild (Egg/Studio) waits for this to land. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key; pack validated on laptop 2026-08-12). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
