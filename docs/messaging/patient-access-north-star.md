@@ -39,6 +39,8 @@ is hardest to reach. PAs are the how; patients are the why.
 | "nonpartisan" | Policy card | hero, About, chip |
 | "evidence-based treatment" | Policy card | (plain "treatment" elsewhere) |
 | "…patients lose" causal line | Policy card | — |
+| "No wrong doors" + settings list | No-wrong-doors band | hero, About band, cards |
+| Prevalence stats | No-wrong-doors band (one echo on /donate) | everywhere else |
 
 Policy hub page (`/policy`) owns the **full** thesis at depth: patient-problem
 lead, "nonpartisan," "rural and underserved," drug specifics, HHS comment. Plain
@@ -48,9 +50,18 @@ payment systems, workforce rules, everyday practice), not "levers" (Josh 2026-08
 ## Locked V3 copy (as shipped; edit via PR + preview only)
 
 - **Hero H1:** Care that *reaches people* (drama span on "reaches people")
-- **Hero sub:** The society for PAs in addiction medicine. We connect you with
-  peers, keep your practice current, and speak up when policy gets between your
-  patients and treatment.
+- **Hero sub:** The society for PAs treating addiction wherever patients
+  present. We connect you with peers, keep your practice current, and speak up
+  when policy gets between your patients and treatment. (Widened 2026-08-12 —
+  "present," not "walk in" (Josh); the idea only, the settings list lives in
+  the No-wrong-doors band.)
+- **No-wrong-doors band (homepage, 2026-08-12):** H2 "No wrong doors." + the
+  settings as CHIPS (ED / hospitals / primary care / street medicine /
+  telehealth / bridge clinics / OTPs / FQHCs & safety-net) — band stays
+  practice-setting focused, no co-occurring-mental-health clause (that lives
+  in the /about Who-we-are sentence) + prevalence stats + "If you see
+  patients, you see addiction." TAM hook "whether it's your specialty or one
+  patient a shift" also lives on membership surfaces (fresh words each place).
 - **About H3:** Built for the people addiction medicine serves.
 - **Policy card:** "Policy for patient access" — When rules and payment systems
   limit access to evidence-based treatment, patients lose. (Best line in the
@@ -62,6 +73,14 @@ payment systems, workforce rules, everyday practice), not "levers" (Josh 2026-08
 
 ## Decisions (carried from V2 + new)
 
+- **Every-PA audience (Josh 2026-08-12):** the addressable membership is every
+  PA — never frame SAMPA as OTP/specialty-only. Settings list at most once per
+  surface (homepage = doors band; /about = Who-we-are anchor sentence, Josh's
+  wording). Emails carry the identity clause only, no stats.
+- **Prevalence stats (2026-08-12):** 44.6M with SUD · 1 in 6 treated · 73% in
+  recovery — SAMHSA **2025 NSDUH** (released 2026-07-27). Overdose decline in
+  words only (CDC provisional counts revise monthly — no exact death figure in
+  copy). Name sources on-page. Refresh when the next NSDUH lands (~July 2027).
 - **"policy hub" is lowercase in running copy** (Josh 2026-08-12) — capitalize
   only as the first word of a sentence, heading, or standalone link label. The
   nav item stays **Policy**.

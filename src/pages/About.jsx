@@ -58,11 +58,16 @@ export default function AboutPage() {
               education, peer connection, and professional growth.
             </p>
             <p>
-              We serve clinicians across settings—outpatient clinics, hospitals,
-              specialty programs, and community-based care—and, through their
-              work, the patients, families, and communities affected by
-              substance use. Our membership includes practicing PAs, students,
-              and pre-PA learners who share a commitment to this field.
+              Our members deliver evidence-based care for substance use
+              disorders and co-occurring mental health conditions across
+              emergency departments, hospitals, primary care, street medicine,
+              telehealth, bridge clinics, opioid treatment programs (OTPs),
+              and community settings, including Federally Qualified Health
+              Centers (FQHCs) and other safety-net clinics. Through that work
+              we serve the patients, families, and communities affected by
+              substance use.
+              Our membership includes practicing PAs, students, and pre-PA
+              learners who share a commitment to this field.
             </p>
           </section>
 
@@ -229,8 +234,9 @@ export default function AboutPage() {
               How to get involved
             </h2>
             <p className="mb-8">
-              Whether you practice addiction medicine today or are preparing to,
-              you can strengthen this work by reading our{' '}
+              Whether addiction medicine is your specialty, one patient a
+              shift, or a field you&rsquo;re preparing to enter, you can
+              strengthen this work by reading our{' '}
               <Link to="/news" className="text-primary-text font-semibold underline-offset-2 hover:underline">
                 news
               </Link>

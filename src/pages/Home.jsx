@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import About from '../components/About';
+import NoWrongDoors from '../components/NoWrongDoors';
 import ValueProps from '../components/ValueProps';
 import Membership from '../components/Membership';
 import NewsTeaser from '../components/NewsTeaser';
@@ -27,6 +28,7 @@ export default function Home() {
       <main className="w-full">
         <Hero />
         <About />
+        <NoWrongDoors />
         <ValueProps />
         <NewsTeaser />
         <Membership />
