@@ -37,11 +37,10 @@ export default function AboutPage() {
             Society of Addiction Medicine Physician Associates
           </h1>
           <p className="text-lg md:text-xl text-text/70 leading-relaxed font-medium">
-            SAMPA, Inc. is a 501(c)(3) nonprofit organization (EIN 42-2288772)
-            dedicated to improving public health outcomes in addiction medicine
-            by advancing physician associates—so individuals and communities
-            impacted by substance use disorders receive high-quality,
-            accessible, evidence-based care.
+            SAMPA, Inc. is a 501(c)(3) nonprofit organization (EIN 42-2288772).
+            We strengthen the physician associates who deliver addiction
+            medicine—so high-quality care reaches more people and communities,
+            especially where treatment is hardest to find.
           </p>
         </header>
 
@@ -133,13 +132,22 @@ export default function AboutPage() {
                 </span>
                 <span className="text-text/80">. </span>
                 We publish original coverage of research, policy, and practice
-                developments in addiction medicine so physician associates can
-                stay up to date on critical, breaking information—and better
-                support their patients and communities. Browse the{' '}
+                developments in addiction medicine so you can stay on top of
+                critical, breaking information—and better support your patients
+                and communities. Browse the{' '}
                 <Link to="/news" className="text-primary-text font-semibold underline-offset-2 hover:underline">
                   news archive
                 </Link>
                 .
+              </li>
+              <li>
+                <strong className="text-text">Member email updates</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                  New
+                </span>
+                <span className="text-text/80">. </span>
+                Society announcements and a weekly roundup of the news we
+                publish for physician associates.
               </li>
               <li>
                 <strong className="text-text">Member networking directory</strong>
@@ -165,11 +173,12 @@ export default function AboutPage() {
                 Where SAMPA will publish its public voice for expanding access to
                 medications for addiction treatment—including buprenorphine and
                 other MOUD. We are starting with federal public comments and
-                intend to grow into positions and statements across federal,
-                state, payment, and practice levers—not partisan politics.
+                intend to grow into positions and statements across federal and
+                state policy, payment, and everyday practice—not partisan
+                politics.
                 Explore the{' '}
                 <Link to="/policy" className="text-primary-text font-semibold underline-offset-2 hover:underline">
-                  Policy hub
+                  policy hub
                 </Link>
                 .
               </li>
@@ -185,26 +194,13 @@ export default function AboutPage() {
             </p>
             <ul className="list-disc pl-6 space-y-4">
               <li>
-                <strong className="text-text">Member email updates</strong>
-                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
-                  Coming soon
-                </span>
-                <span className="text-text/80">. </span>
-                Society announcements, a weekly roundup of the news we publish
-                for physician associates, and optional lists for policy, jobs,
-                and CME/events. Members will choose topics and can change
-                preferences or unsubscribe anytime. Preference controls already
-                exist on the member dashboard; regular campaigns are rolling out.
-              </li>
-              <li>
                 <strong className="text-text">Practice resources</strong>
                 <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
                   Coming soon
                 </span>
                 <span className="text-text/80">. </span>
-                Curated, evidence-based guidance so PAs can provide current best
-                practices and up-to-date treatments for patients with substance
-                use disorders.
+                Curated clinical guidance so you can bring current best
+                practices and up-to-date treatments to your patients.
               </li>
               <li>
                 <strong className="text-text">CME (continuing medical education)</strong>
@@ -212,8 +208,8 @@ export default function AboutPage() {
                   Coming soon
                 </span>
                 <span className="text-text/80">. </span>
-                Education activities tailored to addiction medicine for
-                physician associates, supporting lifelong clinical competence.
+                Education activities tailored to addiction medicine, built to
+                keep your clinical skills sharp across a career.
               </li>
               <li>
                 <strong className="text-text">Job board</strong>
@@ -221,9 +217,9 @@ export default function AboutPage() {
                   Coming soon
                 </span>
                 <span className="text-text/80">. </span>
-                A mission-aligned board for addiction medicine roles, helping
-                PAs find positions where they can serve individuals and
-                communities affected by substance use.
+                A mission-aligned board for addiction medicine roles—find a
+                position where your work serves individuals and communities
+                affected by substance use.
               </li>
             </ul>
           </section>

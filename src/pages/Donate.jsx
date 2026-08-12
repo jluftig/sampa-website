@@ -64,11 +64,11 @@ export default function Donate() {
             Support better care
           </div>
           <h1 className="text-4xl md:text-6xl font-drama font-bold mb-6">
-            Better care for substance use disorder
+            Put better care within reach
           </h1>
           <p className="text-lg text-text/70">
             Your gift helps physician associates deliver evidence-based, compassionate
-            care to people with substance use disorder — expanding access to treatment
+            care to people with substance use disorders — expanding access to treatment
             and improving health outcomes in communities across the country.
           </p>
         </header>
@@ -95,7 +95,7 @@ export default function Donate() {
             <h2 className="text-2xl font-bold mb-3">Thank you for supporting better care 💛</h2>
             <p className="text-text/70 text-sm mb-6">
               Your gift helps physician associates expand access to treatment for people
-              with substance use disorder. A receipt is on its way by email.
+              with substance use disorders. A receipt is on its way by email.
               {user ? (
                 <> You can see your giving history on your{' '}
                   <Link to="/dashboard" className="text-primary-text font-semibold hover:underline">dashboard</Link>.</>

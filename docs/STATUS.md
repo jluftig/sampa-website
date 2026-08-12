@@ -62,9 +62,10 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T20 | Copy pass — site (src/) + email templates (V3 rules) | egg | 2026-08-12 | **Claimed egg · PR #68 open (preview) — Josh gates merge.** Sweep vs [`messaging/patient-access-north-star.md`](messaging/patient-access-north-star.md) + PARK-brevo-email; sign-offs verified (Shani Wilson, PA-C · President, on behalf of the board). Edits avoid PR #66 hunks (welcome/donation untouched). Member email flipped to **Live** sitewide (launch day, Josh) — card CTA anchors `/#updates-signup`. After merge: rebuild Weekly draft from file before any send. No campaign sends. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST). Sign-off Shani Wilson President (PR #67). |
-| T4 | Socials (site + emails) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx + 4 email templates (not DOI 13); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
-| T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
+| T4 | Socials (site) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx (**site only** — email icons pulled 2026-08-12, Josh: socials too early to promote; re-add once they mature; gray PNGs staged in `public/email/`); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
+| T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
 ### Done (last 5 only — older = git history)
 
@@ -207,7 +208,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   draft+test campaigns through **#5** (From info@ → `luftig@gmail.com`). CLI free-plan
   tag omit + FIRSTNAME map. Decisions locked in PARK + architecture.
   **Import:** 120 contacts on **SAMPA Updates** (2026-08-07; no send). **Still open:** human approve first real send of Weekly #01;
-  site marketing still lists member email **In development** (honest until send).
+  PR #68 flips site copy for member email to **Live** (launch day 2026-08-12).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
@@ -242,8 +243,8 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   / [`PARK-security-review.md`](PARK-security-review.md).
 - [ ] **Email / Brevo (T3 · egg in progress)** — **infra done** 2026-08-07 (API key, domain
   auth SPF/DKIM/DMARC + `em` brand, info@ From, Updates+Test lists, Weekly #01 draft+test).
-  **Still need:** human first production send; then consider flipping site copy from
-  In development → Live. Later: member sync. Public DOI signup UI shipped (T5) — activate
+  **Still need:** human first production send; site copy flip In development → **Live**
+  done in PR #68 (launch day 2026-08-12). Later: member sync. Public DOI signup UI shipped (T5) — activate
   with DOI template + Vercel `BREVO_*`. See [`PARK-brevo-email.md`](PARK-brevo-email.md).
   **Also live:** Supabase auth SMTP via `no-reply@addictionpas.org` (separate from campaigns).
 - [ ] **Sentry account** (free) + `EXPO_PUBLIC_SENTRY_DSN` in mobile/.env.local and the

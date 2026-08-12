@@ -20,32 +20,34 @@ const live = [
   {
     icon: ScrollText,
     title: 'Policy for patient access',
-    desc: 'When rules and payment systems limit access to evidence-based treatment, patients lose. The Policy hub is SAMPA’s nonpartisan voice for quality care and access — starting with federal public comments.',
+    desc: 'When rules and payment systems limit access to evidence-based treatment, patients lose. The policy hub is SAMPA’s nonpartisan voice for quality care and access — starting with federal public comments.',
     href: '/policy',
-    cta: 'See our Policy hub',
+    cta: 'See our policy hub',
+  },
+  {
+    icon: Mail,
+    title: 'Member email updates',
+    desc: 'Society announcements and a weekly roundup of SAMPA’s PA-focused news, delivered by email.',
+    href: '/#updates-signup',
+    cta: 'Get SAMPA Updates',
   },
 ];
 
 const building = [
   {
-    icon: Mail,
-    title: 'Member email updates',
-    desc: 'Society announcements, a weekly roundup of SAMPA’s PA-focused news, and optional lists for policy, jobs, and CME—with preferences members control. Preference controls exist today; regular campaigns are rolling out.',
-  },
-  {
     icon: BookOpen,
     title: 'Practice resources',
-    desc: 'Evidence-based treatment guidance so PAs can apply current best practices when supporting patients with substance use disorders.',
+    desc: 'Practical treatment guidance—current best practices you can bring to the patients in front of you.',
   },
   {
     icon: GraduationCap,
     title: 'CME',
-    desc: 'Continuing medical education tailored to addiction medicine for physician associates—so clinical skills keep pace with the field.',
+    desc: 'Continuing medical education tailored to addiction medicine—so your clinical skills keep pace with the field.',
   },
   {
     icon: Briefcase,
     title: 'Job board',
-    desc: 'A mission-aligned place for openings in addiction medicine, helping PAs find roles where they can serve individuals and communities in need.',
+    desc: 'A mission-aligned place for openings in addiction medicine—find a role serving the patients and communities who need you most.',
   },
 ];
 

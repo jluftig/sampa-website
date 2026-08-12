@@ -20,9 +20,8 @@ export default function Membership() {
         </h2>
         <p className="text-lg text-text/70 max-w-2xl mx-auto">
           Join a national community of physician associates improving care for people and communities impacted by substance use disorders.
-          Members get newly launched benefits: daily news that keeps providers current, a private peer networking directory (you control listing and contact details),
-          and support for SAMPA’s Policy hub—where we will grow a public voice for access to MOUD and MAT across federal, state, payment, and practice levers (starting with federal comments).
-          Member email updates—announcements, a weekly news roundup, and optional topic lists—are coming soon.
+          Members get newly launched benefits: a daily news feed, member email updates (announcements and a weekly news roundup), a private peer networking directory (you control listing and contact details),
+          and support for SAMPA’s policy hub—where we will grow a public voice for access to MOUD and MAT in federal and state policy, payment, and everyday practice (starting with federal comments).
           Choose the level that fits your career stage — then confirm term and pay on the next step.
         </p>
       </div>
@@ -76,7 +75,7 @@ export default function Membership() {
             Make a Donation
           </h2>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">
-            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift sustains daily provider news, member networking, mission-aligned policy work for access to care, and the education, email, and practice resources we are building—so more individuals and communities impacted by substance use disorders receive high-quality, accessible care.
+            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift keeps the news publishing daily, the directory growing, and the policy work moving—and helps build the education, email, and practice resources coming next—so more patients reach high-quality addiction care.
           </p>
         </div>
 

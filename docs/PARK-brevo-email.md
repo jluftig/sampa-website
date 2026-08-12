@@ -71,7 +71,7 @@ Welcome + renewal transactional templates live; webhook wired; **BREVO_MEMBER_EM
 1. ~~Google Group / contacts CSV → **SAMPA Updates**~~ — **done 2026-08-07** (120 unique; SOURCE=google_group_legacy; **no send**)  
 2. Final Weekly #01 polish if needed (logo v3 live)  
 3. **Josh gate:** explicit approve → first production send of Weekly #01 to **Updates** only (never agent `sendNow` without “send campaign N”)  
-4. Flip site copy to Live for member email **only if** accurate after first real send  
+4. Flip site copy to Live for member email — **in PR #68** (Josh launch call 2026-08-12; lands on merge)  
 5. **T5 DOI activate (with Josh):** UI shipped PR #62 — see [`HANDOFF-egg-2026-08-07-t5-doi.md`](HANDOFF-egg-2026-08-07-t5-doi.md) (template + Vercel env).  
 6. Later: member `newsletter_opt_in` sync; Reply-To flip 
 

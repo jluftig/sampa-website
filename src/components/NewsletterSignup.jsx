@@ -34,6 +34,7 @@ export default function NewsletterSignup({ variant = 'banner' }) {
   if (variant === 'banner') {
     return (
       <section
+        id="updates-signup"
         aria-labelledby="newsletter-heading"
         className="bg-background px-4 py-12 md:py-16"
       >
@@ -55,8 +56,7 @@ export default function NewsletterSignup({ variant = 'banner' }) {
                 No membership required.
               </p>
               <p className="text-white/60 text-sm italic leading-relaxed">
-                We respect your privacy and will not share your email. Unsubscribe
-                anytime.
+                We respect your privacy and will not share your email.
               </p>
             </div>
 
