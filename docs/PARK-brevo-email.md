@@ -12,6 +12,17 @@ Site still lists member email **In development**.
 
 ---
 
+
+## Launch gate (2026-08-11 / Josh + President)
+
+| Path | Status |
+|------|--------|
+| **Welcome / renewal / donation** (Stripe → webhook → Brevo transactional) | **LIVE** when `BREVO_API_KEY` on Vercel (kill-switch only if `BREVO_MEMBER_EMAILS_ENABLED=false`) |
+| **DOI / public newsletter signup** | **LIVE** (template 13) |
+| **Weekly / marketing campaign blast** to Updates | **NOT approved** — still requires explicit Josh `send campaign N` |
+| Sign-off | **Shani Wilson, PA-C · President, on behalf of the board** (PR #67) |
+| TEST subject prefix | Session-only for tests; **not** in production env |
+
 ## Goal
 
 Programmatic **draft + test** Brevo campaigns; **one catch-all Updates list**; Google Group Landing A; first send = Weekly / site+membership launch. Flip site copy to **Live** only after real sends. Never auto mass-send.

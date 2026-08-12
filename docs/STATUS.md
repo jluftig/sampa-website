@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-11 (Policy ops grill R1 locked · PARK-policy-ops · parked)
+**Last updated:** 2026-08-11 (lifecycle+DOI live; Weekly blast still Josh-gated)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Updates list loaded. Weekly #01 **draft #15** rebuilt post-Messaging V3. **Josh gate for first production send** (`send campaign 15`). ⚠ T4 adds social icons to `site-membership-launch.html` — rebuild draft #15 from file again before first send. |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST). Sign-off Shani Wilson President (PR #67). |
 | T4 | Socials (site + emails) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx + 4 email templates (not DOI 13); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
 
