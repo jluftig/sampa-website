@@ -171,7 +171,7 @@ export default function Policy() {
           </h2>
           <p className="text-text/70 leading-relaxed max-w-3xl mb-8">
             Over time, materials will fall into these types. We have started with
-            a federal public comment; positions, statements, and related work
+            federal public comments; positions, statements, and related work
             will follow as the corpus grows.
           </p>
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">

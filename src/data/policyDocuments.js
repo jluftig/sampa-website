@@ -89,7 +89,7 @@ export const POLICY_HUB = {
   eyebrow: 'Access to evidence-based addiction care',
   title: 'Policy',
   oneLiner:
-    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments to federal agencies — our first comment to HHS sets the access agenda below — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, payment systems, workforce rules, and everyday practice.',
+    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments to federal agencies — to HHS on the chronic disease of addiction, and to HRSA on the safe rollout of emerging psychedelic therapies — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, payment systems, workforce rules, and everyday practice.',
   leversIntro:
     'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA will work on several fronts—not only federal dockets. These reflect the agenda in our first public comment and the work still ahead:',
   prioritiesIntro:
@@ -120,6 +120,34 @@ export const POLICY_HUB = {
 
 /** @type {PolicyDocument[]} */
 const DOCUMENTS = [
+  {
+    slug: 'hrsa-rfi-psychedelic-therapies-2026',
+    type: 'comment',
+    title:
+      'Response to the HRSA Request for Information on Psychedelic Therapies in Ambulatory Clinical Settings',
+    summary:
+      'SAMPA’s August 2026 public comment to HRSA on training and care-delivery models for potential FDA-approved psychedelic therapies. The comment calls for explicit recognition of PAs as licensed medical providers across the full care continuum — eligibility evaluation, session oversight, and follow-up — so ambulatory and safety-net settings can deliver these therapies safely to the communities that need them most.',
+    themes: [
+      'Explicitly recognize PAs as licensed medical providers in any future guidance — eligibility evaluation, prescribing where authorized, session oversight, follow-up, and team training',
+      'Medical clearance by a licensed medical provider (physician, PA, or NP) — a PA’s eligibility determination should not require a duplicative physician evaluation',
+      'On-site medical capacity during dosing sessions; telehealth supports screening and counseling, not day-of monitoring',
+      'Competency-based training and certification pathways open to PAs on the same terms as other medical providers — including PA participation as research investigators',
+      'Safety-net readiness: continuous observation, secure handling, purity monitoring, and clear interdisciplinary protocols in FQHCs and similar settings',
+      'AI and digital tools can assist screening, training, and follow-up — but never replace clinical judgment or real-time human monitoring',
+    ],
+    agency: 'Health Resources and Services Administration (HRSA)',
+    docket: '91 FR 43103 · Psychedelic therapies training & care delivery',
+    submittedAt: '2026-08-11',
+    publishedAt: '2026-08-11',
+    pdfUrl: '/files/policy/hrsa-rfi-psychedelic-therapies-2026.pdf',
+    onBehalfOfMembers: true,
+    bodyHtml: `
+<p>SAMPA submitted this response to HRSA’s Request for Information on training and care delivery models for the safe administration of potential FDA-approved psychedelic therapies in ambulatory clinical settings (91 FR 43103; July 14, 2026).</p>
+<p>The central message is a workforce message: PAs are licensed medical providers who already deliver complex behavioral health and addiction care in exactly the settings this RFI prioritizes — FQHCs, rural health clinics, and certified community behavioral health clinics. Any future framework should name PAs explicitly as eligible to evaluate patients and determine eligibility (without a duplicative physician evaluation), oversee administration, and lead medical follow-up. Under-recognizing PAs would reduce access in the very communities HRSA seeks to reach.</p>
+<p>The comment recommends competency-based training over degree-based restrictions, certification pathways open to PAs on the same terms as other medical providers, on-site medical capacity during dosing sessions (with telehealth supporting screening and counseling where clinically appropriate), baseline safety requirements for ambulatory and safety-net sites, and human clinical judgment over AI substitution. Many patients who may seek these therapies live with co-occurring substance use disorders — the clinical reality SAMPA’s members manage every day.</p>
+<p>Download the PDF for the complete submitted comment. Questions go to the SAMPA Public Health Policy Committee at policy@addictionpas.org.</p>
+`.trim(),
+  },
   {
     slug: 'hhs-rfi-chronic-disease-addiction-2026',
     type: 'comment',
