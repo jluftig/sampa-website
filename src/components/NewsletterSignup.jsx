@@ -55,8 +55,7 @@ export default function NewsletterSignup({ variant = 'banner' }) {
                 No membership required.
               </p>
               <p className="text-white/60 text-sm italic leading-relaxed">
-                We respect your privacy and will not share your email. Unsubscribe
-                anytime.
+                We respect your privacy and will not share your email.
               </p>
             </div>
 

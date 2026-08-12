@@ -62,8 +62,11 @@ payment systems, workforce rules, everyday practice), not "levers" (Josh 2026-08
 
 ## Decisions (carried from V2 + new)
 
-- **One email for everyone** — no topic lists or preference controls in copy;
-  don't signal them even as roadmap (Josh 2026-08-12). Unsubscribe mentions OK.
+- **Email program copy = content + cadence only** (Josh 2026-08-12). No topic
+  lists or preference controls — and don't advertise their absence ("one email
+  for everyone" stays internal). No unsubscribe mentions in signup or marketing
+  copy either; the footer of every email already carries the link. Privacy page
+  and email footers keep theirs (legal/functional).
 - No AAPA name-check or "not our lane" contrast in public copy
 - PA advocacy within addiction medicine is fine when tied to patient access
 - V3 voice ships in Weekly #01 before first mass send

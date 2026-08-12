@@ -191,9 +191,8 @@ export default function AboutPage() {
                 </span>
                 <span className="text-text/80">. </span>
                 Society announcements and a weekly roundup of the news we
-                publish for physician associates — one email, the same for
-                everyone, and you can unsubscribe anytime. Regular emails are
-                rolling out.
+                publish for physician associates — regular emails are rolling
+                out.
               </li>
               <li>
                 <strong className="text-text">Practice resources</strong>
