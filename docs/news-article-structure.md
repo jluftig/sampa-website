@@ -35,17 +35,33 @@ SAMPA is a **PA** organization. In news posts:
 
 ## Substance language: **misuse**, not **abuse** (Josh 2026-08-12)
 
+**Scope is substance/drug language only.** “Abuse” is somewhat stigmatizing when paired with drugs/substances; house style moves to **misuse** in that context.
+
 In titles, ledes, body, excerpts, and key points:
 
-| Prefer | Avoid (unless direct quote) |
-|--------|------------------------------|
+| Prefer (SUD / drug context) | Avoid (unless direct quote) |
+|-----------------------------|------------------------------|
 | **opioid misuse**, **drug misuse**, **stimulant misuse** | opioid abuse, drug abuse, substance abuse |
 | **substance use disorder** / **SUD** (when clinically accurate) | “substance abuse disorder” |
-| Person-first / clinical framing | Moralizing “abuser” language |
+| Person-first / clinical framing | Moralizing “abuser” language about people who use drugs |
 
-**Exception:** keep **abuse** only inside a **direct quote** or an immutable proper name/title (e.g. a statute or journal title that uses the word). Paraphrase surrounding prose with **misuse** / **SUD**.
+### Preserve **abuse** outside substance-use context
 
-Generator cue: `Misuse not abuse (except quotes).`
+Do **not** rewrite ordinary or legal uses of the word, including:
+
+- **child abuse** / child abuse or neglect / CAPTA  
+- **elder abuse**  
+- domestic, sexual, physical, or emotional **abuse**  
+- other non-drug senses of abuse  
+
+### Also keep **abuse** when
+
+- It is a **direct quote**  
+- It is an **immutable proper name or title** (e.g. Substance Abuse and Mental Health Services Administration, National Institute on Drug Abuse, journal titles that include “Abuse”)  
+
+Paraphrase surrounding substance-use prose with **misuse** / **SUD**.
+
+Generator cue: `Misuse not abuse for drugs/SUD only; keep child/elder abuse and proper names.`
 
 ---
 
@@ -147,7 +163,7 @@ Quotes in `<em>"…"</em>`. Academic Source: AMA + **DOI-only** link.
 - [ ] Agency posts: aim **3–4** H2s; ≥2 H2s if body &gt; ~200 words  
 - [ ] PA section meets **depth bar**  
 - [ ] **PA/PAs** language; never “physician assistants”  
-- [ ] **misuse** not **abuse** (except direct quotes / fixed proper names)  
+- [ ] **misuse** not **abuse** for **drugs/SUD only** (keep child/elder abuse; quotes; proper names)  
 - [ ] Final Source paragraph  
 
 ---

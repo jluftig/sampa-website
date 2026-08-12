@@ -32,9 +32,10 @@ do not need “physician associate(s)” spelled out every time. **Never** write
 - **Never** use **"mid-level," "midlevel," or "mid-level provider/practitioner."** That
   framing is outdated and dismissive; do not put it in titles, body, Key Points, captions,
   or advocacy notes (even if a source uses it — paraphrase without the phrase).
-- **misuse, not abuse** (Josh 2026-08-12): prefer **opioid/drug/stimulant misuse** and
-  **substance use disorder / SUD**. Do **not** write “abuse” in titles, body, excerpt, or
-  key points unless it is a **direct quote** or an immutable proper name/title. See
+- **misuse, not abuse — drugs/SUD only** (Josh 2026-08-12): prefer **opioid/drug/stimulant misuse** and
+  **substance use disorder / SUD**. Do **not** write drug/substance “abuse” in titles, body, excerpt, or
+  key points unless it is a **direct quote** or an immutable proper name/title (e.g. SAMHSA, NIDA).
+  **Preserve** child abuse, elder abuse, and other non-substance uses of “abuse.” See
   `docs/news-article-structure.md` § Substance language.
 - When referring to **PAs and NPs together**, prefer **"PAs and NPs"** (the voice rule
   above applies), or **"advanced practice providers"** (APP) / **"advanced practice

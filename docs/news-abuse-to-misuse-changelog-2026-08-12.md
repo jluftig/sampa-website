@@ -96,3 +96,8 @@
 ### `samhsa-streets-700m-funding-2026-06` (published)
 - [body_html] `Abuse` — …rocess metrics.</p><p>Source: Substance Abuse and Mental Health Services Administrati…
 
+## Clarification (same day)
+
+Rule refined: change **only** substance/drug “abuse” → “misuse” (stigma reduction).  
+**Preserve** child abuse, elder abuse, domestic/sexual/physical abuse, and proper names (SAMHSA, NIDA, CAPTA, journal titles). The 2026-08-12 bulk pass already followed this scope.
+
