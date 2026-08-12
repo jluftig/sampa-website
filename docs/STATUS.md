@@ -135,7 +135,7 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   **ON (2026-07-21):** restored after IRS 501(c)(3) determination for SAMPA, Inc.
   (EIN 42-2288772). `DONATIONS_ENABLED = true` in `src/lib/features.js` **and**
   `api/create-donation-session.js`. Donate page shows tax-deductible boilerplate.
-- **Merch store** — nav/footer links + `/store` redirect to the Printful storefront.
+- **Merch store** — nav/footer links + `/store` redirect to the Printful storefront. Welcome email has a merch card; renewal links the store (T4, 2026-08-10).
 - **Policy hub** — public `/policy` + `/policy/:slug`. **Framing:** where SAMPA
   **will publish** its public voice for **access** to MAT/MOUD—not a “comments only”
   archive and not nav-labeled “Advocacy.” Nav stays **Policy**. Honest scope today:
@@ -268,10 +268,10 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
-- [ ] **Footer social links** — Instagram (and eventually Twitter/X) icons/links in
-  the site footer so visitors can find SAMPA’s social accounts. Need final
-  profile URLs when ready; X can wait until the account exists. Touch
-  `src/components/Footer.jsx` (and optionally nav).
+- [x] **Footer social links** (**T4**) — 2026-08-10. IG + FB icons in site footer
+  (`Footer.jsx`, lucide icons). Email-footer icons pulled 2026-08-12 (socials
+  not ready to promote; gray PNGs staged in `public/email/` for later). DOI
+  template 13 deliberately excluded (single-purpose). X/Twitter still waits on an account.
 - [x] **Newsletter signup without membership** (**T5**) — PR #62 (2026-08-07).
   Prominent chip above footer → Brevo DOI → **SAMPA Updates**. Activate DOI with
   Brevo template + Vercel `BREVO_*` ([`email/setup-checklist.md`](email/setup-checklist.md) §5).

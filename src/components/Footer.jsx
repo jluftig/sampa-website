@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Instagram, Facebook } from 'lucide-react';
 import DonateLink from './DonateLink';
 import NewsletterSignup from './NewsletterSignup';
 
@@ -21,11 +22,32 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/60 max-w-sm text-sm">
-              Improving health outcomes in addiction medicine by advancing physician associates—so individuals and communities impacted by substance use disorders get better care.
+              The national society for PAs in addiction medicine — working toward
+              better addiction care for the people and communities who need it.
             </p>
             <p className="text-white/50 max-w-sm text-xs font-data tracking-wide">
               501(c)(3) nonprofit · EIN 42-2288772
             </p>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://www.instagram.com/societyofaddictionmedicinepas/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="SAMPA on Instagram"
+                className="p-2 -m-2 text-white/60 hover:text-white transition-colors"
+              >
+                <Instagram className="h-5 w-5" aria-hidden="true" />
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61587232361195"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="SAMPA on Facebook"
+                className="p-2 -m-2 text-white/60 hover:text-white transition-colors"
+              >
+                <Facebook className="h-5 w-5" aria-hidden="true" />
+              </a>
+            </div>
           </div>
 
           <div className="flex flex-wrap justify-center md:justify-end items-center gap-x-8 gap-y-3 text-sm font-medium text-white/60">
