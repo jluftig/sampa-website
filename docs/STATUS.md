@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-11 (lifecycle+DOI live; Weekly blast still Josh-gated)
+**Last updated:** 2026-08-12 (PRs #66 + #68 merged: copy pass live, member email Live sitewide, socials site-footer only)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,21 +62,18 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T20 | Copy pass — site (src/) + email templates (V3 rules) | egg | 2026-08-12 | **Claimed egg · PR #68 open (preview) — Josh gates merge.** Sweep vs [`messaging/patient-access-north-star.md`](messaging/patient-access-north-star.md) + PARK-brevo-email; sign-offs verified (Shani Wilson, PA-C · President, on behalf of the board). Edits avoid PR #66 hunks (welcome/donation untouched). Member email flipped to **Live** sitewide (launch day, Josh) — card CTA anchors `/#updates-signup`. After merge: rebuild Weekly draft from file before any send. No campaign sends. |
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST). Sign-off Shani Wilson President (PR #67). |
-| T4 | Socials (site) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx (**site only** — email icons pulled 2026-08-12, Josh: socials too early to promote; re-add once they mature; gray PNGs staged in `public/email/`); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ rebuild from file before send: templates changed in PRs #66/#68 (2026-08-12). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
 ### Done (last 5 only — older = git history)
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T20 | Copy pass — site + email templates (V3 rules) | egg | 2026-08-12 | **Merged PR #68 → Production.** V3 sweep (second-person voice, placement dedupe, no wonk vocab); email program described content+cadence only (no preference/unsubscribe signals — north-star updated); member email flipped **Live** sitewide (launch day; card CTA → `/#updates-signup`); "policy hub" lowercase in running copy; sign-offs verified. |
+| T4 | Socials (site) + merch links (emails) | egg | 2026-08-12 | **Merged PR #66 → Production.** IG + FB icons **site footer only** — email icons pulled 2026-08-12 (socials too early to promote; gray PNGs staged in `public/email/` for later); merch card in welcome, store link in renewal. |
 | T17 | Messaging V3 patient-access voice | egg | 2026-08-10 | **Merged PR #64 → Production.** Patient-first site + emails; rules in docs/messaging/patient-access-north-star.md; V1 snaps in docs/email/templates/v1/. Follow-up → T18. |
 | T18 | Brevo DOI template 13 → Messaging V3 copy | egg | 2026-08-10 | **Done.** PUT template 13; doiTemplate=true; DOIurl intact; V3 weekly intro; smoke site API + alias. Weekly #01 rebuilt draft **campaign #15** (test to Josh). No mass send. |
 | T5 | Public newsletter signup → Brevo DOI → SAMPA Updates | either | 2026-08-08 | **Done · DOI live E2E.** Template id 13 (doiTemplate). Vercel BREVO_* set. Josh confirmed inbox → confirm link → /newsletter-confirmed → Updates. |
-| T15 | Practice settings multi-select chips + directory OR-filter | cursor | 2026-08-07 | Per-org curated slugs; soft chips; web Dashboard edit; directory filter; mobile display; migration applied in prod (2026-08-07) |
-| T12 | Clone **ops-board** on laptop + run `./bin/ops` | cursor | 2026-08-05 | `~/Projects/ops-board`; auto-root `~/Projects` (no config.local); `./bin/ops` → `out/index.html` (1 project, CoS missing on this machine) |
-| T11 | Install Matt Pocock skills for **Cursor** (`npx skills@latest add mattpocock/skills`) | cursor | 2026-08-05 | Global `-g -a cursor`; 21 skills in `~/.agents/skills/` (Egg-matched + `setup-matt-pocock-skills` + `ask-matt`); **no** Claude plugin. T13 deferred (Wayfinder/fog only) |
 
 ### Task workflow (agents + humans)
 
@@ -208,7 +205,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   draft+test campaigns through **#5** (From info@ → `luftig@gmail.com`). CLI free-plan
   tag omit + FIRSTNAME map. Decisions locked in PARK + architecture.
   **Import:** 120 contacts on **SAMPA Updates** (2026-08-07; no send). **Still open:** human approve first real send of Weekly #01;
-  PR #68 flips site copy for member email to **Live** (launch day 2026-08-12).
+  site copy for member email is **Live** (PR #68 merged 2026-08-12).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
