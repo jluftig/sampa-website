@@ -4,7 +4,7 @@
 **Reference posts:**  
 - Structure: DEA 7-OH temporary scheduling (lede + H2s + Source)  
 - **PA section gold standard:** DEA tianeptine Schedule I NPRM (2026-07) — screening prompts, counseling, MOUD/induction, UDT pitfalls  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-08-12
 
 ---
 
@@ -30,6 +30,22 @@ SAMPA is a **PA** organization. In news posts:
 
 - **Never** “physician assistants.”  
 - Spell out “physician associate(s)” only if essential. Default body, H2s, ledes, excerpts, and key points → **PA/PAs**.
+
+---
+
+## Substance language: **misuse**, not **abuse** (Josh 2026-08-12)
+
+In titles, ledes, body, excerpts, and key points:
+
+| Prefer | Avoid (unless direct quote) |
+|--------|------------------------------|
+| **opioid misuse**, **drug misuse**, **stimulant misuse** | opioid abuse, drug abuse, substance abuse |
+| **substance use disorder** / **SUD** (when clinically accurate) | “substance abuse disorder” |
+| Person-first / clinical framing | Moralizing “abuser” language |
+
+**Exception:** keep **abuse** only inside a **direct quote** or an immutable proper name/title (e.g. a statute or journal title that uses the word). Paraphrase surrounding prose with **misuse** / **SUD**.
+
+Generator cue: `Misuse not abuse (except quotes).`
 
 ---
 
@@ -131,6 +147,7 @@ Quotes in `<em>"…"</em>`. Academic Source: AMA + **DOI-only** link.
 - [ ] Agency posts: aim **3–4** H2s; ≥2 H2s if body &gt; ~200 words  
 - [ ] PA section meets **depth bar**  
 - [ ] **PA/PAs** language; never “physician assistants”  
+- [ ] **misuse** not **abuse** (except direct quotes / fixed proper names)  
 - [ ] Final Source paragraph  
 
 ---
