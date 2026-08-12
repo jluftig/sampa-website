@@ -61,7 +61,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Updates list loaded. Weekly #01 **draft #15** rebuilt post-Messaging V3. **Josh gate for first production send** (`send campaign 15`). ⚠ T4 adds social icons to `site-membership-launch.html` — rebuild draft #15 from file again before first send. |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST). Sign-off Shani Wilson President (PR #67). |
 | T4 | Socials (site + emails) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx (site only; email icons pulled 2026-08-12 — promote socials later); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 (2026-08-10) added merch/store links to these templates (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
