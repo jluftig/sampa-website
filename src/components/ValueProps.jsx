@@ -30,7 +30,7 @@ const building = [
   {
     icon: Mail,
     title: 'Member email updates',
-    desc: 'Society announcements, a weekly roundup of SAMPA’s PA-focused news, and optional lists for policy, jobs, and CME—with preferences you control. Preference controls exist today; regular emails are rolling out.',
+    desc: 'Society announcements and a weekly roundup of SAMPA’s PA-focused news—one email for everyone, and you can unsubscribe anytime. Regular emails are rolling out now.',
   },
   {
     icon: BookOpen,

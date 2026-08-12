@@ -62,6 +62,8 @@ payment systems, workforce rules, everyday practice), not "levers" (Josh 2026-08
 
 ## Decisions (carried from V2 + new)
 
+- **One email for everyone** — no topic lists or preference controls in copy;
+  don't signal them even as roadmap (Josh 2026-08-12). Unsubscribe mentions OK.
 - No AAPA name-check or "not our lane" contrast in public copy
 - PA advocacy within addiction medicine is fine when tied to patient access
 - V3 voice ships in Weekly #01 before first mass send

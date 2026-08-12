@@ -190,11 +190,10 @@ export default function AboutPage() {
                   Coming soon
                 </span>
                 <span className="text-text/80">. </span>
-                Society announcements, a weekly roundup of the news we publish
-                for physician associates, and optional lists for policy, jobs,
-                and CME/events. Members will choose topics and can change
-                preferences or unsubscribe anytime. Preference controls already
-                exist on the member dashboard; regular emails are rolling out.
+                Society announcements and a weekly roundup of the news we
+                publish for physician associates — one email, the same for
+                everyone, and you can unsubscribe anytime. Regular emails are
+                rolling out.
               </li>
               <li>
                 <strong className="text-text">Practice resources</strong>
