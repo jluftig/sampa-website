@@ -89,7 +89,7 @@ export const POLICY_HUB = {
   eyebrow: 'Access to evidence-based addiction care',
   title: 'Policy',
   oneLiner:
-    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s Policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments to federal agencies — our first comment to HHS sets the access agenda below — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, payment systems, workforce rules, and everyday practice.',
+    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments to federal agencies — our first comment to HHS sets the access agenda below — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, payment systems, workforce rules, and everyday practice.',
   leversIntro:
     'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA will work on several fronts—not only federal dockets. These reflect the agenda in our first public comment and the work still ahead:',
   prioritiesIntro:
@@ -97,7 +97,7 @@ export const POLICY_HUB = {
   disclaimer:
     'SAMPA, Inc. is a 501(c)(3) public charity. Our policy materials advance our educational and public-health mission. We do not engage in political campaign activity.',
   memberValue:
-    'Members support SAMPA’s Policy hub: the society’s emerging public voice for access to care—starting with public comments, and growing into positions and statements drafted on behalf of addiction-medicine PAs, focused on clinical quality and access—not partisan politics.',
+    'Members support SAMPA’s policy hub: the society’s emerging public voice for access to care—starting with public comments, and growing into positions and statements drafted on behalf of addiction-medicine PAs, focused on clinical quality and access—not partisan politics.',
 };
 
 /** @typedef {'position' | 'comment' | 'statement'} PolicyType */
@@ -145,7 +145,7 @@ const DOCUMENTS = [
 <p>The Society of Addiction Medicine Physician Associates (SAMPA) submitted this response to the HHS Request for Information on the chronic disease of addiction and the Great American Recovery Initiative.</p>
 <p>SAMPA’s central message is a workforce message: federal barriers to PA prescribing of buprenorphine have largely fallen, yet patient-level access has not grown in proportion because state scope restrictions, payment differentials, and unfinished telehealth rulemaking continue to sideline this workforce. Each recommendation identifies steps HHS can take under existing authority to close that gap.</p>
 <p>The full comment answers all five RFI questions—evidence-based interventions (including MOUD and Collaborative Care), federal program changes (telehealth, federal–state MOUD alignment, Part 8 OTP practitioner implementation), stigma mitigation (MATE Act education and peer recovery), practitioner supply and payment, and evaluation/data modernization—with a consistent focus on quality care and equitable access to MOUD for patients and communities, especially in rural and underserved areas.</p>
-<p>Download the PDF for the complete submitted document, including citations and statutory authorities. The Policy hub roadmap below draws its near-term priorities from this comment.</p>
+<p>Download the PDF for the complete submitted document, including citations and statutory authorities. The policy hub roadmap below draws its near-term priorities from this comment.</p>
 `.trim(),
   },
 ];

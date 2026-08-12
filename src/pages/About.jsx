@@ -178,7 +178,7 @@ export default function AboutPage() {
                 politics.
                 Explore the{' '}
                 <Link to="/policy" className="text-primary-text font-semibold underline-offset-2 hover:underline">
-                  Policy hub
+                  policy hub
                 </Link>
                 .
               </li>

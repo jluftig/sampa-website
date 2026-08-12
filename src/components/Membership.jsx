@@ -21,7 +21,7 @@ export default function Membership() {
         <p className="text-lg text-text/70 max-w-2xl mx-auto">
           Join a national community of physician associates improving care for people and communities impacted by substance use disorders.
           Members get newly launched benefits: a daily news feed, member email updates (announcements and a weekly news roundup), a private peer networking directory (you control listing and contact details),
-          and support for SAMPA’s Policy hub—where we will grow a public voice for access to MOUD and MAT in federal and state policy, payment, and everyday practice (starting with federal comments).
+          and support for SAMPA’s policy hub—where we will grow a public voice for access to MOUD and MAT in federal and state policy, payment, and everyday practice (starting with federal comments).
           Choose the level that fits your career stage — then confirm term and pay on the next step.
         </p>
       </div>

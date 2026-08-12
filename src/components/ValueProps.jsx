@@ -20,9 +20,9 @@ const live = [
   {
     icon: ScrollText,
     title: 'Policy for patient access',
-    desc: 'When rules and payment systems limit access to evidence-based treatment, patients lose. The Policy hub is SAMPA’s nonpartisan voice for quality care and access — starting with federal public comments.',
+    desc: 'When rules and payment systems limit access to evidence-based treatment, patients lose. The policy hub is SAMPA’s nonpartisan voice for quality care and access — starting with federal public comments.',
     href: '/policy',
-    cta: 'See our Policy hub',
+    cta: 'See our policy hub',
   },
   {
     icon: Mail,
