@@ -50,16 +50,18 @@ payment systems, workforce rules, everyday practice), not "levers" (Josh 2026-08
 ## Locked V3 copy (as shipped; edit via PR + preview only)
 
 - **Hero H1:** Care that *reaches people* (drama span on "reaches people")
-- **Hero sub:** The society for PAs treating addiction wherever patients walk
-  in. We connect you with peers, keep your practice current, and speak up when
-  policy gets between your patients and treatment. (Widened 2026-08-12 — the
-  idea only; the settings list lives in the No-wrong-doors band.)
+- **Hero sub:** The society for PAs treating addiction wherever patients
+  present. We connect you with peers, keep your practice current, and speak up
+  when policy gets between your patients and treatment. (Widened 2026-08-12 —
+  "present," not "walk in" (Josh); the idea only, the settings list lives in
+  the No-wrong-doors band.)
 - **No-wrong-doors band (homepage, 2026-08-12):** H2 "No wrong doors." + the
-  settings list (ED / hospitals / primary care / community incl. FQHCs and
-  safety-net clinics, with co-occurring mental health named) + prevalence
-  stats + "If you see patients, you see addiction." TAM hook "whether it's
-  your specialty or one patient a shift" also lives on membership surfaces
-  (fresh words each place).
+  settings as CHIPS (ED / hospitals / primary care / street medicine /
+  telehealth / bridge clinics / OTPs / FQHCs & safety-net) — band stays
+  practice-setting focused, no co-occurring-mental-health clause (that lives
+  in the /about Who-we-are sentence) + prevalence stats + "If you see
+  patients, you see addiction." TAM hook "whether it's your specialty or one
+  patient a shift" also lives on membership surfaces (fresh words each place).
 - **About H3:** Built for the people addiction medicine serves.
 - **Policy card:** "Policy for patient access" — When rules and payment systems
   limit access to evidence-based treatment, patients lose. (Best line in the

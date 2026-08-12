@@ -52,7 +52,7 @@ export default function Hero() {
         </h1>
 
         <p className="max-w-2xl mx-auto text-base md:text-xl text-text/70 leading-relaxed font-medium mb-8">
-          The society for PAs treating addiction wherever patients walk in.
+          The society for PAs treating addiction wherever patients present.
           We connect you with peers, keep your practice current, and speak up
           when policy gets between your patients and treatment.
         </p>

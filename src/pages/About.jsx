@@ -60,10 +60,12 @@ export default function AboutPage() {
             <p>
               Our members deliver evidence-based care for substance use
               disorders and co-occurring mental health conditions across
-              emergency departments, hospitals, primary care, and community
-              settings, including Federally Qualified Health Centers (FQHCs)
-              and other safety-net clinics. Through that work we serve the
-              patients, families, and communities affected by substance use.
+              emergency departments, hospitals, primary care, street medicine,
+              telehealth, bridge clinics, opioid treatment programs (OTPs),
+              and community settings, including Federally Qualified Health
+              Centers (FQHCs) and other safety-net clinics. Through that work
+              we serve the patients, families, and communities affected by
+              substance use.
               Our membership includes practicing PAs, students, and pre-PA
               learners who share a commitment to this field.
             </p>

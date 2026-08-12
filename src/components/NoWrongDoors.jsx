@@ -7,6 +7,17 @@ import { Link } from 'react-router-dom';
 // (released 2026-07-27) + CDC provisional overdose data; refresh when the
 // next NSDUH lands (~July 2027).
 
+const SETTINGS = [
+  'Emergency departments',
+  'Hospitals',
+  'Primary care',
+  'Street medicine',
+  'Telehealth',
+  'Bridge clinics',
+  'Opioid treatment programs',
+  'FQHCs & safety-net clinics',
+];
+
 const STATS = [
   { value: '44.6M', label: 'Americans had a substance use disorder in the past year' },
   { value: '1 in 6', label: 'of people needing substance use treatment received any' },
@@ -26,12 +37,19 @@ export default function NoWrongDoors() {
           </h2>
           <p className="text-lg md:text-xl text-white/85 leading-relaxed">
             Addiction shows up in every corner of medicine — so every door a
-            patient walks through should lead to treatment that works. SAMPA
-            members practice in emergency departments, hospitals, primary care,
-            and community settings, including FQHCs and other safety-net
-            clinics — treating substance use disorders and the mental health
-            conditions that so often travel with them.
+            patient walks through should lead to treatment that works. Our
+            members are already behind those doors:
           </p>
+          <ul className="flex flex-wrap gap-2 mt-6" aria-label="Practice settings where SAMPA members work">
+            {SETTINGS.map((s) => (
+              <li
+                key={s}
+                className="rounded-full bg-white/10 border border-white/15 px-4 py-1.5 text-sm text-white/90"
+              >
+                {s}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 my-10 md:my-14">
