@@ -62,6 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T20 | Copy pass — site (src/) + email templates (V3 rules) | egg | 2026-08-12 | **Claimed egg.** Sweep vs [`messaging/patient-access-north-star.md`](messaging/patient-access-north-star.md) + PARK-brevo-email (sign-off Shani Wilson, PA-C · President, on behalf of the board). Scope: src/ + `api/_lib/email-templates/` + `docs/email/templates/`. PR + Vercel preview only — Josh gates merge. Coordinate with open PR #66 on welcome/renewal. No campaign sends. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST). Sign-off Shani Wilson President (PR #67). |
 | T4 | Socials (site + emails) + merch links (emails) | egg | 2026-08-10 | **Claimed egg.** IG + FB (URLs from Josh) → Footer.jsx + 4 email templates (not DOI 13); merch card in welcome, store link in renewal. Branch `feat/social-merch-links`, PR + preview before merge. |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. |
