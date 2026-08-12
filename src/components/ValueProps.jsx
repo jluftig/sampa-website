@@ -24,14 +24,16 @@ const live = [
     href: '/policy',
     cta: 'See our Policy hub',
   },
-];
-
-const building = [
   {
     icon: Mail,
     title: 'Member email updates',
-    desc: 'Society announcements and a weekly roundup of SAMPA’s PA-focused news. Regular emails are rolling out now.',
+    desc: 'Society announcements and a weekly roundup of SAMPA’s PA-focused news, delivered by email.',
+    href: '/#updates-signup',
+    cta: 'Get SAMPA Updates',
   },
+];
+
+const building = [
   {
     icon: BookOpen,
     title: 'Practice resources',

@@ -141,6 +141,15 @@ export default function AboutPage() {
                 .
               </li>
               <li>
+                <strong className="text-text">Member email updates</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                  New
+                </span>
+                <span className="text-text/80">. </span>
+                Society announcements and a weekly roundup of the news we
+                publish for physician associates.
+              </li>
+              <li>
                 <strong className="text-text">Member networking directory</strong>
                 <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
                   New
@@ -184,16 +193,6 @@ export default function AboutPage() {
               program pages will launch when each offering is ready.
             </p>
             <ul className="list-disc pl-6 space-y-4">
-              <li>
-                <strong className="text-text">Member email updates</strong>
-                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
-                  Coming soon
-                </span>
-                <span className="text-text/80">. </span>
-                Society announcements and a weekly roundup of the news we
-                publish for physician associates — regular emails are rolling
-                out.
-              </li>
               <li>
                 <strong className="text-text">Practice resources</strong>
                 <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">

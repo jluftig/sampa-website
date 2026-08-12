@@ -34,6 +34,7 @@ export default function NewsletterSignup({ variant = 'banner' }) {
   if (variant === 'banner') {
     return (
       <section
+        id="updates-signup"
         aria-labelledby="newsletter-heading"
         className="bg-background px-4 py-12 md:py-16"
       >

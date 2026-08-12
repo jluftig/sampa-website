@@ -27,11 +27,11 @@ export default function About() {
           </p>
           <p className="text-lg text-text/70 leading-relaxed mb-8">
             Today that work lives in newly launched programs: daily
-            addiction-medicine news, a private member directory for peer
-            collaboration, and a Policy hub where we make the case for access
-            to addiction care — including medications for opioid use disorder,
-            starting with federal public comments. Member email updates,
-            practice resources, CME, and a job board are coming soon — always
+            addiction-medicine news, member email updates, a private member
+            directory for peer collaboration, and a Policy hub where we make
+            the case for access to addiction care — including medications for
+            opioid use disorder, starting with federal public comments.
+            Practice resources, CME, and a job board are coming soon — always
             in service of better care.
           </p>
           <Link
