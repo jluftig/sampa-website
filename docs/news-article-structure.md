@@ -90,43 +90,54 @@ Skip a section if the source truly has nothing for it; don’t invent filler.
 
 ## “Why this matters for PAs” / practice implications (quality bar)
 
-**Do not** end with a vague “PAs should be aware” paragraph. The last clinical H2 is the **payoff** for busy addiction and primary-care PAs.
+The last clinical H2 is the **payoff**. Keep the heading **Why this matters for PAs** (or **Practice implications for PAs** if that already fits). Do **not** end with “PAs should be aware / stay informed.”
 
-### Required depth (when the story is clinical/regulatory for practice)
+### Thought first, template second (Josh 2026-08-13)
 
-Aim for **most** of these (adapt; omit only if not applicable):
+The section has become **formulaic**: Screening prompts → Counseling → MOUD on every post. That is a **toolbox**, not a required outline.
 
-1. **Street / product reality** — how patients encounter it (names, gas station, online, etc.)  
-2. **When to think of it** — concrete **screening prompts** tied to presentations  
-3. **Key counseling points** — legal/FDA status, risks; from source or carefully framed norms  
-4. **Testing caveats** — e.g. immunoassay cross-reactivity when relevant  
-5. **Treatment continuity** — MOUD, naloxone, don’t abandon evidence-based care  
-6. **Induction / acute management** — only if supportable; **never invent doses**  
-7. **Documentation / polysubstance** — continuity and fentanyl co-use when relevant  
+**Write a real paragraph (or two) that answers: why this specific story changes a PA’s next week.**  
+Then add lists **only** if they earn their keep for *this* topic.
 
-Use lists or bold lead-ins (`<strong>Screening prompts:</strong>`) so the section is skimmable.
+| Topic type | PA section should feel like |
+|------------|-----------------------------|
+| Agency scheduling | Legal/clinical trap (e.g. prescribed tramadol ≠ street O-DSMT); one test caveat if real |
+| Dispensing / maps / access | Geography and the bottle, not another induction checklist |
+| Residential / systems | Handoff and continuity after the stay — not generic MOUD start tips |
+| Trial / epi | What to stop assuming; one practice change |
+| Workforce / payment | Who can bill / who is written out — not screening stems |
 
-### Length
+Vary structure: paragraph-only is OK; one question is OK; a short checklist is OK **when the news is operational**. Do **not** force screening + counseling + MOUD if the news is a map, a waiver, or a handoff failure.
 
-- Simple stories: ~250–500 words overall still OK.  
-- Complex agency rules: longer allowed.  
-- **PA section alone:** typically **120–250 words** for high-impact substance/regulatory stories (not a 2-sentence stub).  
-- Prefer depth over filler.
+Cron/generator cue: `Thoughtful PA payoff — not the screening/counseling/MOUD stencil.`
+
+### Depth (adapt; omit what does not fit)
+
+1. **The judgment** — one specific implication, named  
+2. Street / product reality — only if patients encounter a product  
+3. A screening prompt — only if a *new* question is the point  
+4. Counseling / legal status — when the news is a legal line  
+5. Testing caveats — when assays actually miss the analyte  
+6. Treatment continuity / MOUD / naloxone — when withholding care is the risk  
+7. Systems / documentation — when the story is a metric or handoff  
+
+**PA section:** typically **90–200 words**. Prefer one sharp idea over a complete clinic manual.
 
 ### Accuracy hard rules
 
 - No invented stats, doses, product names, or legal status.  
 - Distinguish **proposed** vs **final** law.  
 - Street names OK when framed as patient-facing vernacular.  
-- Clinical protocols stay **general** (COWS-guided induction, naloxone, continue MOUD) unless source gives numbers.
+- Clinical protocols stay **general** unless source gives numbers.
 
 ### Anti-patterns
 
 | Weak | Strong |
 |------|--------|
-| “PAs should counsel patients and stay informed.” | Specific screening questions + counseling bullets |
-| “This may affect practice.” | How (UDT, induction, retail products) |
-| One vague sentence under the H2 | Structured prompts + lists |
+| “PAs should counsel patients and stay informed.” | A named change in what you do Monday |
+| Same three bold labels on every post | Structure that matches *this* finding |
+| One vague sentence under the H2 | A paragraph with a point of view |
+| Full induction manual on a CDC map story | Pharmacy / fill reality |
 | Only legal summary restated | Earlier H2s hold law; PA section = **clinic actions** |
 
 ### Gold-standard skeleton (tianeptine NPRM)
