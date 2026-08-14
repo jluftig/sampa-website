@@ -229,6 +229,23 @@ export default function AboutPage() {
             </ul>
           </section>
 
+          <section aria-labelledby="leadership">
+            <h2 id="leadership" className="text-2xl md:text-3xl font-drama font-bold text-text mb-4">
+              Leadership
+            </h2>
+            <p className="mb-6">
+              PAs who steer SAMPA so more patients can reach treatment.
+              Profiles from those who have submitted so far — more are
+              still coming.
+            </p>
+            <Link
+              to="/leadership"
+              className="text-primary-text font-semibold underline-offset-2 hover:underline"
+            >
+              Meet the leadership →
+            </Link>
+          </section>
+
           <section aria-labelledby="get-involved">
             <h2 id="get-involved" className="text-2xl md:text-3xl font-drama font-bold text-text mb-4">
               How to get involved

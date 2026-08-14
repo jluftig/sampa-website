@@ -36,6 +36,10 @@ export default function Navbar() {
             <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
           <Link to="/about" className="hover:text-primary-text transition-colors">About</Link>
+          <Link to="/leadership" className="hover:text-primary-text transition-colors">
+            Leadership
+            <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">Preview</span>
+          </Link>
           <a href="/#programs" className="hover:text-primary-text transition-colors">Programs</a>
           <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
@@ -85,6 +89,10 @@ export default function Navbar() {
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
           <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+          <Link to="/leadership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+            Leadership
+            <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">Preview</span>
+          </Link>
           <a href="/#programs" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Programs</a>
           <a href="/#membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>

@@ -172,6 +172,11 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
+- **Public leadership page preview (T23 · cursor)** — `/leadership` from current
+  form submissions (9 people). Initials placeholders until form Drive headshots
+  can be copied into `public/leadership/`. **PR only — do not merge to production**
+  until the roster is complete. Nav + footer + `/about` link so the preview is
+  findable. Data: `src/data/leadership.js`.
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
   keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID,

@@ -23,6 +23,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
 const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const About = lazy(() => import('./pages/About'));
+const Leadership = lazy(() => import('./pages/Leadership'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const NewsletterConfirmed = lazy(() => import('./pages/NewsletterConfirmed'));
 const Terms = lazy(() => import('./pages/Terms'));
@@ -51,6 +52,7 @@ function App() {
           <Route path="/join" element={<Join />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/about" element={<About />} />
+          <Route path="/leadership" element={<Leadership />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/newsletter-confirmed" element={<NewsletterConfirmed />} />
           <Route path="/terms" element={<Terms />} />
