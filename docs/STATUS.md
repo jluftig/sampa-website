@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-12 (PRs #66/#68/#69/#70 merged; policy hub has two public comments, two-up latest-material layout; Weekly rebuild pending on Studio)
+**Last updated:** 2026-08-14 (T23 claimed — public `/leadership` preview from form submissions; PR only, not production)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,6 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T23 | Public About / Leadership page preview (form roster) | cursor | 2026-08-14 | **Claimed cursor.** Preview-only `/leadership` from current form submissions (9 people). Do not merge to production until roster + headshots are complete. Data in `src/data/leadership.js`. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
