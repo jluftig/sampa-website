@@ -108,7 +108,8 @@ export default function AboutPage() {
             <p className="mb-6">
               Contributions to SAMPA are tax-deductible to the extent allowed by
               law. Donations sustain daily provider news, member networking,
-              and the education, email, and practice resources we are building.
+              practice resources, and the education programs we are still
+              building.
             </p>
             <DonateLink className="inline-block bg-gradient-to-r from-primary-text to-accent text-white px-7 py-3 rounded-full text-sm font-semibold shadow-md">
               Make a tax-deductible donation
@@ -187,6 +188,22 @@ export default function AboutPage() {
                 </Link>
                 .
               </li>
+              <li>
+                <strong className="text-text">Practice resources</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                  New
+                </span>
+                <span className="text-text/80">. </span>
+                A first curated set of sources you can open in clinic — SAMPA
+                news and Key Points, our comments on access to MOUD, and public
+                clinical pages from SAMHSA, CDC, FDA, and ASAM. Labeled SAMPA
+                vs external; dated August 2026. Not CME, and not a SAMPA
+                protocol. Start on the{' '}
+                <Link to="/resources" className="text-primary-text font-semibold underline-offset-2 hover:underline">
+                  practice resources
+                </Link>
+                {' '}page.
+              </li>
             </ul>
 
             <h3 className="text-xl font-bold text-text mb-3 tracking-tight">
@@ -198,15 +215,6 @@ export default function AboutPage() {
               program pages will launch when each offering is ready.
             </p>
             <ul className="list-disc pl-6 space-y-4">
-              <li>
-                <strong className="text-text">Practice resources</strong>
-                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
-                  Coming soon
-                </span>
-                <span className="text-text/80">. </span>
-                Curated clinical guidance so you can bring current best
-                practices and up-to-date treatments to your patients.
-              </li>
               <li>
                 <strong className="text-text">CME (continuing medical education)</strong>
                 <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-text/50 font-semibold">

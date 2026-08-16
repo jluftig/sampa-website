@@ -31,14 +31,16 @@ const live = [
     href: '/#updates-signup',
     cta: 'Get SAMPA Updates',
   },
-];
-
-const building = [
   {
     icon: BookOpen,
     title: 'Practice resources',
-    desc: 'Practical treatment guidance—current best practices you can bring to the patients in front of you.',
+    desc: 'A first set of links you can open today — SAMPA news and Key Points, our comments on MOUD access, and public clinical sources from SAMHSA, CDC, FDA, and ASAM.',
+    href: '/resources',
+    cta: 'Open practice resources',
   },
+];
+
+const building = [
   {
     icon: GraduationCap,
     title: 'CME',
