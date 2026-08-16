@@ -37,8 +37,9 @@ export default function Caq() {
           <p className="text-lg md:text-xl text-text/70 leading-relaxed font-medium">
             NCCPA approved <strong className="text-text font-semibold">development</strong> of
             a Certificate of Added Qualifications (CAQ) in Addiction Medicine
-            after a proposal from SAMPA. The exam is not open. This page is the
-            honest status — and what you can do while NCCPA builds it.
+            after a proposal from SAMPA. The exam is not open. This page tracks
+            what NCCPA has published so far — and what you can do while they
+            build it.
           </p>
         </header>
 
