@@ -187,6 +187,21 @@ export default function AboutPage() {
                 </Link>
                 .
               </li>
+              <li>
+                <strong className="text-text">Addiction Medicine CAQ</strong>
+                <span className="ml-2 align-middle text-xs font-data uppercase tracking-wider text-accent font-semibold">
+                  New
+                </span>
+                <span className="text-text/80">. </span>
+                After a SAMPA proposal, NCCPA approved development of a
+                Certificate of Added Qualifications in Addiction Medicine.
+                NCCPA issues the credential; exam dates, eligibility, and fees
+                are not announced yet. Read our{' '}
+                <Link to="/caq" className="text-primary-text font-semibold underline-offset-2 hover:underline">
+                  CAQ page
+                </Link>
+                .
+              </li>
             </ul>
 
             <h3 className="text-xl font-bold text-text mb-3 tracking-tight">
