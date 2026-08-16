@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-13 (T23 claimed cursor: public About/Leadership page preview from form bios; do not merge)
+**Last updated:** 2026-08-16 (T26 claimed cursor: public `/caq` page preview — NCCPA Addiction Medicine CAQ development; do not merge)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,6 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T26 | Public Addiction Medicine CAQ page (`/caq`) | cursor | 2026-08-16 | **Claimed cursor.** Preview PR only — **do not merge / do not ship to production** until Josh reviews the Vercel preview. Honest copy: NCCPA approved **development** after a SAMPA proposal; exam dates, eligibility, fees, and application windows are not announced. NCCPA issues the CAQ. Nav + footer + About link to `/caq`. |
 | T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** Grok 4.6 cloud agent `bc-c065a6db`. Nine current form submissions. PR + Vercel preview only — **do not merge / do not publish.** More bios still coming. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
@@ -172,6 +173,8 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
+- **Addiction Medicine CAQ page preview (T26 · cursor)** — public `/caq` on a preview PR. NCCPA approved **development** of the Addiction Medicine CAQ after a SAMPA proposal (Oncology CAQ approved alongside). Do not merge; do not ship until Josh reviews the Vercel preview.
+
 - **About / Leadership page preview (T23 · cursor)** — public leadership roster from the 2026-08 form (9 submissions so far). Cloud agent Grok 4.6. Preview PR only; do not merge until Josh says the roster/page is ready.
 
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
@@ -271,6 +274,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ### Product — site polish / marketing
 
 - [ ] **About / Leadership page (T23 · cursor in progress)** — preview from current form bios/headshots (9 people as of 2026-08-13). Vercel preview via PR; do not ship to production until more profiles are in and Josh signs off.
+- [ ] **Addiction Medicine CAQ page (T26 · cursor in progress)** — public `/caq` preview. Do not merge until Josh reviews the Vercel preview.
 
 - [x] **Footer social links** (**T4**) — 2026-08-10. IG + FB icons in site footer
   (`Footer.jsx`, lucide icons). Email-footer icons pulled 2026-08-12 (socials
