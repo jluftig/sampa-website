@@ -78,7 +78,7 @@ export default function JoinInvoice() {
 
   const selectedTier = tierByKey(form.tier);
   const termChoices = useMemo(
-    () => (selectedTier ? durationsForTier(selectedTier) : [1]),
+    () => (selectedTier ? durationsForTier(selectedTier) : [1, 2, 3]),
     [selectedTier],
   );
 
