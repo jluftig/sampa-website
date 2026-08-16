@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-13 (T23 claimed cursor: public About/Leadership page preview from form bios; do not merge)
+**Last updated:** 2026-08-16 (T25 claimed cursor: first public Practice resources page — preview PR only; do not merge)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,6 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T25 | First public Practice resources page (`/resources`) | cursor | 2026-08-16 | **Claimed cursor.** Honest first page so About/Programs stop saying Coming soon for this item. Curated SAMPA + public clinical sources. **No bup dosing / COWS tool.** CME and job board stay Coming soon. Preview PR **#75** — **do not merge / do not ship to production** until Josh reviews the Vercel preview. |
 | T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** Grok 4.6 cloud agent `bc-c065a6db`. Nine current form submissions. PR + Vercel preview only — **do not merge / do not publish.** More bios still coming. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
@@ -171,6 +172,8 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ---
 
 ## In flight (branches / active tracks)
+
+- **Practice resources first page (T25 · cursor)** — public `/resources` so the About/Programs “Coming soon” for practice resources can become a real page. Preview PR **#75**; **do not merge / do not ship to production** until Josh reviews the Vercel preview. Does not include the bup dosing / COWS tool (`feature/bup-dosing-tool` remains on clinical hold). CME and job board stay Coming soon.
 
 - **About / Leadership page preview (T23 · cursor)** — public leadership roster from the 2026-08 form (9 submissions so far). Cloud agent Grok 4.6. Preview PR only; do not merge until Josh says the roster/page is ready.
 

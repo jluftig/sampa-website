@@ -35,6 +35,10 @@ export default function Navbar() {
             Policy
             <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
+          <Link to="/resources" className="hover:text-primary-text transition-colors">
+            Resources
+            <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
           <Link to="/about" className="hover:text-primary-text transition-colors">About</Link>
           <a href="/#programs" className="hover:text-primary-text transition-colors">Programs</a>
           <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
@@ -82,6 +86,10 @@ export default function Navbar() {
           </Link>
           <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
             Policy
+            <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
+          <Link to="/resources" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+            Resources
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
           <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</Link>

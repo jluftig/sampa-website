@@ -75,7 +75,7 @@ export default function Membership() {
             Make a Donation
           </h2>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">
-            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift keeps the news publishing daily, the directory growing, and the policy work moving—and helps build the education, email, and practice resources coming next—so more patients reach high-quality addiction care.
+            SAMPA, Inc. is a 501(c)(3) nonprofit. Your tax-deductible gift keeps the news publishing daily, the directory growing, the policy work moving, and the practice resources page current—and helps build the CME and job board still ahead—so more patients reach high-quality addiction care.
           </p>
         </div>
 
