@@ -97,9 +97,7 @@ export default function Caq() {
             </h2>
             <p className="text-lg text-text/80 leading-relaxed mb-4">
               Exam dates, eligibility hours, fees, and application windows have
-              not been published. Nobody can sit this exam yet. Do not plan a
-              test date or collect hours against a requirement NCCPA has not
-              released.
+              not been published. Nobody can sit this exam yet.
             </p>
             <p className="text-lg text-text/80 leading-relaxed">
               We will update this page when NCCPA publishes those details.
