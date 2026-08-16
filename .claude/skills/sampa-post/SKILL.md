@@ -19,8 +19,13 @@ Associates)**, a national specialty organization for PAs in addiction medicine.
 Turn the source below into a publish-ready post for the Supabase-backed SAMPA
 news section (React + TipTap editor, draft -> publish workflow).
 
-Audience: PAs, physicians, and other clinicians in addiction and emergency
-medicine who want the clinical and policy significance quickly and accurately.
+Audience: **all PAs who touch addiction medicine** — emergency, primary care,
+community, telehealth, street medicine, hospitalist, women’s health — plus
+adjacent clinicians. OTP / fellowship is one door, not the reader. Voice test:
+would an ED or primary-care PA who started bup last month act on this?
+
+**Voice trial (ON, 2026-08-16, reversible):** ALiEM’s job · MMWR’s voice · SAMPA’s
+spine. Canonical: `docs/news-article-structure.md`. Revert: `revert news voice`.
 
 **Voice — PA abbreviation (required):** Prefer **PA** / **PAs** throughout the
 post (lede, body, H2s, excerpt, key points). This is a PA organization; readers
@@ -317,8 +322,8 @@ the article:
 
   **Structure (house style — required):** See `docs/news-article-structure.md`.
   - Open with a **lede** of 1–2 short paragraphs (what happened + why it matters to
-    **PAs**). **No heading above the lede.** Prefer the abbreviation **PA/PAs**
-    (not “physician associates”) in lede and body.
+    **PAs**). Last sentence **hints the Monday change**. **No heading above the lede.**
+    Prefer the abbreviation **PA/PAs** (not “physician associates”) in lede and body.
   - Then break the article with **`<h2>` section headings** (major sections only; use
     `<h3>` rarely). Do **not** write the body as one long run of paragraphs.
   - **Agency/policy** posts should usually include H2s in this spirit (adapt labels):
@@ -329,10 +334,13 @@ the article:
     limits* / *Practice implications for PAs*.
   - Aim for **3–4 H2s** on agency posts; **at least 2 H2s** on any post over ~200 words.
   - **Closing PA section (required depth):** `Why this matters for PAs` / `Practice implications for PAs`
-    must be **actionable**, not a vague “be aware” stub. Prefer screening prompts, counseling
-    bullets, testing caveats, MOUD/induction notes when relevant. Gold standard: tianeptine NPRM
-    PA section. Full bar: `docs/news-article-structure.md` (“Why this matters for PAs” quality bar).
-    ~120–250 words for high-impact substance/regulatory stories is OK; never invent doses.
+    must be **actionable**, not a vague “be aware” stub. Open with a **judgment sentence**
+    that would be false on a different paper. Lists only if earned — **not** the
+    Screening / Counseling / MOUD stencil. Gold *shape*: keep the visit; don’t invent
+    a treatment; don’t stop the one you have. Tianeptine NPRM outline is for
+    scheduling/product stories only. Full bar: `docs/news-article-structure.md`.
+    **90–200 words** (over ~220 = fail). Never invent doses. Generalist-PA test:
+    an ED or PC PA who started bup last month can act.
     Ground it in the **PA impact research** step above — never guesswork.
   - **Advocacy subsection (when relevant):** if the advocacy scan found a credible angle,
     add **`<h2>Advocacy opportunities</h2>`** (or `<h3>` under the PA section if the piece

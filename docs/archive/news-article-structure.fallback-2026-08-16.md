@@ -5,14 +5,13 @@
 - Structure: DEA 7-OH temporary scheduling (lede + H2s + Source)  
 - **PA section gold *example* (scheduling / street product):** DEA tianeptine Schedule I NPRM (2026-07) — not the outline for maps, waivers, or handoffs  
 - **PA closer gold *shape* (2026-08-14):** cocaine NMA — keep the visit; don’t invent a treatment; don’t stop the treatment you already have  
-**Last updated:** 2026-08-16  
-**Voice trial (ON, reversible):** ALiEM’s job · MMWR’s voice · SAMPA’s spine. Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`. Revert phrase: `revert news voice`.
+**Last updated:** 2026-08-15
 
 ---
 
 ## Default body pattern
 
-1. **Lede (1–2 short `<p>`)** — what happened, who (agency/journal), when, why **PAs** should care. Last sentence **hints the Monday change**. No H2 yet. Write for an ED or primary-care PA who started bup last month — not a fellowship/OTP guild paper.  
+1. **Lede (1–2 short `<p>`)** — what happened, who (agency/journal), when, why **PAs** in addiction medicine should care. No H2 yet.  
 2. **Section blocks** — each starts with **`<h2>`**, then paragraphs and optional lists.  
 3. **Source line** — final `<p>` starting with `Source:` (citation rules unchanged).
 
@@ -99,9 +98,7 @@ The last clinical H2 is the **payoff**. Keep the heading **Why this matters for 
 The section has become **formulaic**: Screening prompts → Counseling → MOUD on every post. That is a **toolbox**, not a required outline.
 
 **Write a real paragraph (or two) that answers: why this specific story changes a PA’s next week.**  
-Open with a **judgment sentence that would be false on a different paper.** Then add lists **only** if they earn their keep for *this* topic.
-
-**Generalist-PA test (hard):** would an ED or primary-care PA who started bup last month *act*? If only a fellowship / OTP / jail / VHA PA would, rewrite or hedge (“if you work there”).
+Then add lists **only** if they earn their keep for *this* topic.
 
 | Topic type | PA section should feel like |
 |------------|-----------------------------|
@@ -125,7 +122,7 @@ Cron/generator cue: `Thoughtful PA payoff — not the screening/counseling/MOUD 
 6. Treatment continuity / MOUD / naloxone — when withholding care is the risk  
 7. Systems / documentation — when the story is a metric or handoff  
 
-**PA section:** **90–200 words** (hard). Over ~220 is a clinic-manual fail — cut to one sharp idea.
+**PA section:** typically **90–200 words**. Prefer one sharp idea over a complete clinic manual.
 
 ### Accuracy hard rules
 
@@ -165,7 +162,7 @@ No Dunk / `[v2 PA voice]` twins / cover critique-loop unless Josh explicitly ask
 **Write once.** Bake the PA bar into the first draft (judgment, patient-access, one Monday change). Then a **second pass against the primary source** — not a vibe reread:
 
 1. **Claim support** — every number, date, N, CI, affiliation, access status, and causal verb is in the source. Cut or rewrite anything inferred. State COI / single-system / proposed-vs-final when the source has it.  
-2. **Useful to a PA** — one named Monday change. Would this H2 still work on a different paper? If yes, rewrite. **Generalist-PA test** — ED/PC PA who started bup last month can act. PA H2 **90–200 words**.  
+2. **Useful to a PA** — one named Monday change. Would this H2 still work on a different paper? If yes, rewrite.  
 3. **Voice** — dead prose; **PA/PAs**; misuse not abuse (drugs/SUD only); writer-only safety lines stay out of the article; last H2 is **Why this matters for PAs**; **not** the Screening / Counseling / MOUD stencil.
 
 One internal rewrite is allowed. Then insert `status=draft`. Do not narrate the checklist in Telegram.
@@ -176,10 +173,7 @@ One internal rewrite is allowed. Then insert `status=draft`. Do not narrate the 
 
 - [ ] Closing H2 is **Why this matters for PAs** (or **Practice implications for PAs**)  
 - [ ] One named Monday change — not only “be aware / stay informed”  
-- [ ] Lede’s last sentence hints that change  
 - [ ] Not the Screening / Counseling / MOUD stencil  
-- [ ] Generalist-PA test passed (or hedged)  
-- [ ] PA H2 is 90–200 words  
 - [ ] Every number/date/N/CI/affiliation is in the primary  
 - [ ] No invented doses or legal claims  
 

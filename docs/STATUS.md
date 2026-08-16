@@ -63,7 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
 | T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** Grok 4.6 cloud agent `bc-c065a6db`. Nine current form submissions. PR + Vercel preview only — **do not merge / do not publish.** More bios still coming. |
-| T24 | Document news one-shot + internal QC | egg | 2026-08-15 | **Claimed egg.** Branch `docs/news-oneshot-qc`. No Dunk / cover critic loop unless Josh asks. Recipe: `docs/news-article-structure.md` § One-shot. **PR only — do not merge until Josh says merge.** |
+| T24 | Document news one-shot + internal QC | egg | 2026-08-15 | **Claimed egg.** Branch `docs/news-oneshot-qc`. No Dunk / cover critic loop unless Josh asks. **Voice trial ON 2026-08-16** (reversible — `revert news voice`). Recipe: `docs/news-article-structure.md`. **PR only — do not merge until Josh says merge.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
