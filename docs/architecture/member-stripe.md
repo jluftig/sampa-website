@@ -19,7 +19,8 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 
 | Path | Job |
 |------|-----|
-| `/join` | Confirm tier/term → Checkout |
+| `/membership` | Step 1 — benefits, eligibility, one-year vs auto-renew, then checkout or employer invoice |
+| `/join` | Step 2 — confirm tier/term → Checkout |
 | `/join/invoice` | Employer / institutional invoice **request** (staff email; not Stripe Invoicing) |
 | `/dashboard` | Status, portal, profile, directory privacy, saved articles |
 | `/donate` | Public gifts (one-time/monthly) — separate `donations` ledger |

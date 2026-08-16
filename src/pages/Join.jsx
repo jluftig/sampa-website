@@ -8,12 +8,13 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 // Join flow, account-first: sign in (1 click) → confirm tier + term → Stripe
-// Checkout. Homepage is the catalog; this page is step 2 (purchase).
-// `?tier=` from the homepage is honored: that card is highlighted and scrolled
-// into view. Checkout is created server-side with the user's id as
-// client_reference_id so the webhook can activate the right profile without
-// email matching. Terms: 1/2/3-year auto-renewing subscriptions (multi-year
-// at a discount), plus a one-time Lifetime option on Legacy.
+// Checkout. `/membership` is step 1 (catalog + invoice path); this page is
+// step 2 (purchase). `?tier=` from membership/homepage is honored: that card
+// is highlighted and scrolled into view. Checkout is created server-side with
+// the user's id as client_reference_id so the webhook can activate the right
+// profile without email matching. Terms: 1/2/3-year auto-renewing
+// subscriptions (multi-year at a discount), plus a one-time Lifetime option
+// on Legacy.
 export default function Join() {
   const { user, loading, profile, isActiveMember } = useAuth();
   const navigate = useNavigate();
@@ -108,8 +109,8 @@ export default function Join() {
             Step 2 · Checkout
           </div>
           <p className="text-xs font-data tracking-wide text-text/45 mb-4">
-            <Link to="/#membership" className="hover:text-primary-text underline-offset-2 hover:underline">
-              Membership options
+            <Link to="/membership" className="hover:text-primary-text underline-offset-2 hover:underline">
+              Membership
             </Link>
             <span className="mx-2 text-text/25">→</span>
             <span className="text-text/70">Confirm &amp; pay</span>

@@ -23,6 +23,10 @@ export default function Membership() {
           Members get newly launched benefits: a daily news feed, member email updates (announcements and a weekly news roundup), a private peer networking directory (you control listing and contact details),
           and support for SAMPA’s policy hub—where we will grow a public voice for access to MOUD and MAT in federal and state policy, payment, and everyday practice (starting with federal comments).
           Choose the level that fits your career stage — then confirm term and pay on the next step.
+          Full benefits, eligibility, and employer-invoice details live on the{' '}
+          <Link to="/membership" className="text-primary-text font-semibold underline-offset-2 hover:underline">
+            membership page
+          </Link>.
         </p>
       </div>
 

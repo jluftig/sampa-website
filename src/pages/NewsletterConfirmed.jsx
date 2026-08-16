@@ -31,7 +31,7 @@ export default function NewsletterConfirmed() {
             Read the news
           </Link>
           <Link
-            to="/join"
+            to="/membership"
             className="px-5 py-2.5 rounded-full border border-primary/30 text-primary hover:bg-primary/5 transition-colors"
           >
             Explore membership

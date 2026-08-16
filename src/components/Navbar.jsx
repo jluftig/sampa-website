@@ -37,7 +37,7 @@ export default function Navbar() {
           </Link>
           <Link to="/about" className="hover:text-primary-text transition-colors">About</Link>
           <a href="/#programs" className="hover:text-primary-text transition-colors">Programs</a>
-          <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
+          <Link to="/membership" className="hover:text-primary-text transition-colors">Membership</Link>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
           <DonateLink className="hover:text-primary-text transition-colors">Donate</DonateLink>
           {canAccessMemberDirectory && (
@@ -86,7 +86,7 @@ export default function Navbar() {
           </Link>
           <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
           <a href="/#programs" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Programs</a>
-          <a href="/#membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
+          <Link to="/membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</Link>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
           <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</DonateLink>
           {canAccessMemberDirectory && (

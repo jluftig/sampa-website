@@ -168,7 +168,7 @@ scripts/run-brevo.sh member-email-test --kind donation --email you@example.com -
 
 ## Employer / institutional invoice request (T24)
 
-Public form at `/join/invoice` (linked from `/join`). Staff notification is
+Public form at `/join/invoice` (linked from `/membership` and `/join`). Staff notification is
 **transactional** `POST /smtp/email` — not a marketing campaign and not Stripe
 Invoicing. From is always **SAMPA** `<info@addictionpas.org>`.
 

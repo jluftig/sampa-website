@@ -44,7 +44,7 @@ src/
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
   pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
-                            Login, Join, JoinInvoice, Donate, Dashboard, MemberDirectory, MemberProfile,
+                            Login, Membership, Join, JoinInvoice, Donate, Dashboard, MemberDirectory, MemberProfile,
                             Privacy, Terms, EditorDashboard, PostEditor, AdminTags,
                             AdminPeople, AdminMembers
 public/
@@ -73,7 +73,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/membership`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |

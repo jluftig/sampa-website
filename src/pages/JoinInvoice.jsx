@@ -131,8 +131,8 @@ export default function JoinInvoice() {
             Employer invoice
           </div>
           <p className="text-xs font-data tracking-wide text-text/45 mb-4">
-            <Link to="/#membership" className="hover:text-primary-text underline-offset-2 hover:underline">
-              Membership options
+            <Link to="/membership" className="hover:text-primary-text underline-offset-2 hover:underline">
+              Membership
             </Link>
             <span className="mx-2 text-text/25">→</span>
             <Link to="/join" className="hover:text-primary-text underline-offset-2 hover:underline">
@@ -173,7 +173,7 @@ export default function JoinInvoice() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
-                to="/join"
+                to="/membership"
                 className="px-6 py-3 rounded-full bg-gradient-to-r from-primary-text to-accent text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
               >
                 Back to membership

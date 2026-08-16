@@ -14,8 +14,8 @@ const live = [
     icon: Users,
     title: 'Member networking directory',
     desc: 'A private national peer directory for PAs in addiction medicine—collaborate on mission-related projects, share experience, and reduce isolation in the work.',
-    href: '/join',
-    cta: 'Join to connect',
+    href: '/membership',
+    cta: 'See membership',
   },
   {
     icon: ScrollText,

@@ -41,7 +41,7 @@ export default function Terms() {
       <ul>
         <li>Membership dues are billed through <strong>Stripe</strong> as a subscription for the term you choose at checkout (for example 1, 2, or 3 years, depending on tier), and renew automatically at the end of that term until canceled. Some legacy options may be one-time (lifetime) rather than a subscription.</li>
         <li>You can cancel anytime from the billing portal on your <Link to="/dashboard">dashboard</Link>; cancellation takes effect at the end of the current paid term.</li>
-        <li>Membership tiers are based on your career stage and certification status, as described on the <Link to="/join">join page</Link> — please pick the tier that honestly matches your situation.</li>
+        <li>Membership tiers are based on your career stage and certification status, as described on the <Link to="/membership">membership page</Link> — please pick the tier that honestly matches your situation.</li>
         <li>For billing questions or refund requests, contact us via the <a href={CONTACT_FORM_URL} target="_blank" rel="noopener noreferrer">contact form</a>.</li>
       </ul>
 

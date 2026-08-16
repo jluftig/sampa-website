@@ -164,8 +164,8 @@ export default function AboutPage() {
                 colleagues, collaborate on mission-related projects, and reduce
                 professional isolation in addiction medicine. Members control
                 listing and contact preferences. Membership starts on our{' '}
-                <Link to="/join" className="text-primary-text font-semibold underline-offset-2 hover:underline">
-                  join page
+                <Link to="/membership" className="text-primary-text font-semibold underline-offset-2 hover:underline">
+                  membership page
                 </Link>
                 .
               </li>
