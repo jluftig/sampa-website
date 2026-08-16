@@ -165,3 +165,20 @@ scripts/run-brevo.sh member-email-test --kind donation --email you@example.com -
 ```
 
 **Default:** **LIVE** when `BREVO_API_KEY` is set. Kill-switch: `BREVO_MEMBER_EMAILS_ENABLED=false`.
+
+## Employer / institutional invoice request (T24)
+
+Public form at `/join/invoice` (linked from `/join`). Staff notification is
+**transactional** `POST /smtp/email` — not a marketing campaign and not Stripe
+Invoicing. From is always **SAMPA** `<info@addictionpas.org>`.
+
+| | |
+|--|--|
+| Endpoint | `api/request-membership-invoice.js` |
+| To | `treasurer@addictionpas.org` (`INVOICE_REQUEST_TO`, comma-separated override) |
+| Cc | `josh@addictionpas.org` (`INVOICE_REQUEST_CC`) |
+| Reply-To (staff mail) | requester, or billing contact if different |
+| Confirm | same transactional send to requester (+ billing contact if different) |
+| Gate | `BREVO_API_KEY` only — does **not** use the member-lifecycle kill-switch |
+
+No news/Supabase insert. No Brevo list attach.

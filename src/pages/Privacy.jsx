@@ -45,6 +45,14 @@ export default function Privacy() {
         Email delivery and list management are handled by{' '}
         <strong>Brevo</strong> (see Service providers).
       </p>
+      <p>
+        If you request an employer or institutional membership invoice, we
+        collect the name, email, employer, billing contact, address, membership
+        level, term, and any notes you submit so staff can send a SAMPA invoice.
+        That request is emailed to SAMPA officers (treasurer, with a copy to
+        the site operator). It is not a payment and does not create a Stripe
+        charge.
+      </p>
 
       <h3>Accounts</h3>
       <p>
@@ -151,7 +159,7 @@ export default function Privacy() {
         <li>To run the member networking directory under the listing and contact choices you set.</li>
         <li>To operate membership (staff roster) for people authorized to manage memberships.</li>
         <li>To send <strong>SAMPA Updates</strong> and related organizational email — only if you've opted in (public double opt-in or member preference), and you can unsubscribe anytime.</li>
-        <li>To respond when you contact us.</li>
+        <li>To respond when you contact us, including employer or institutional invoice requests.</li>
         <li>To keep the site secure and understand aggregate (not individual) usage.</li>
       </ul>
       <p>

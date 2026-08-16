@@ -112,6 +112,41 @@ async function brevoPost(path, body) {
 }
 
 /**
+ * Generic transactional send (POST /smtp/email). Not a marketing campaign.
+ * From is always SAMPA / info@ — never a personal mailbox.
+ *
+ * @param {{
+ *   to: { email: string, name?: string }[],
+ *   cc?: { email: string, name?: string }[],
+ *   replyTo?: { email: string, name?: string },
+ *   subject: string,
+ *   htmlContent: string,
+ *   tags?: string[],
+ * }} opts
+ */
+export async function sendSmtpEmail(opts) {
+  const to = (opts.to || []).filter((r) => r?.email);
+  if (!to.length) throw new Error('sendSmtpEmail: at least one to[] address is required');
+  const payload = {
+    sender: sender(),
+    to,
+    subject: opts.subject,
+    htmlContent: opts.htmlContent,
+    tags: opts.tags || [],
+  };
+  const cc = (opts.cc || []).filter((r) => r?.email);
+  if (cc.length) payload.cc = cc;
+  if (opts.replyTo?.email) {
+    payload.replyTo = {
+      email: opts.replyTo.email,
+      name: opts.replyTo.name || undefined,
+    };
+  }
+  const data = await brevoPost('/smtp/email', payload);
+  return { messageId: data?.messageId || null };
+}
+
+/**
  * @param {'welcome'|'renewal'|'donation'} kind
  * @param {{ email: string, firstName?: string, lastName?: string, amountCents?: number, currency?: string, frequency?: string }} to
  * @param {{ force?: boolean }} [opts]

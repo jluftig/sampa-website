@@ -292,6 +292,23 @@ export default function Join() {
           })}
         </div>
 
+        <div className="max-w-3xl mx-auto mt-12 bg-white border border-primary/15 rounded-3xl p-6 md:p-8 text-center shadow-sm">
+          <h2 className="text-xl font-bold mb-2">Need an invoice for your employer?</h2>
+          <p className="text-sm text-text/70 leading-relaxed mb-5 max-w-xl mx-auto">
+            Card checkout on this page emails a receipt after you pay. If your
+            institution needs a SAMPA invoice first — so it can evaluate
+            reimbursement — request one here. You will not be charged on that
+            form. Invoices can be written for a single year, or for membership
+            that auto-renews until cancelled.
+          </p>
+          <Link
+            to={focusedKey ? `/join/invoice?tier=${focusedKey}` : '/join/invoice'}
+            className="inline-block px-6 py-3 rounded-full border-2 border-primary-text text-primary-text font-bold text-sm hover:bg-primary-text/5 transition-colors"
+          >
+            Request an employer invoice
+          </Link>
+        </div>
+
         <p className="text-center text-text/40 text-xs mt-10 max-w-xl mx-auto">
           Payments are processed by Stripe — SAMPA never sees or stores your card
           details. You'll get a receipt by email, and you can manage billing anytime

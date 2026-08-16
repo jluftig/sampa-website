@@ -18,6 +18,7 @@ const TagView = lazy(() => import('./pages/TagView'));
 const Search = lazy(() => import('./pages/Search'));
 const Login = lazy(() => import('./pages/Login'));
 const Join = lazy(() => import('./pages/Join'));
+const JoinInvoice = lazy(() => import('./pages/JoinInvoice'));
 const Donate = lazy(() => import('./pages/Donate'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
@@ -49,6 +50,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/join/invoice" element={<JoinInvoice />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />

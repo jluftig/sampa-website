@@ -20,6 +20,7 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 | Path | Job |
 |------|-----|
 | `/join` | Confirm tier/term → Checkout |
+| `/join/invoice` | Employer / institutional invoice **request** (staff email; not Stripe Invoicing) |
 | `/dashboard` | Status, portal, profile, directory privacy, saved articles |
 | `/donate` | Public gifts (one-time/monthly) — separate `donations` ledger |
 | `/members` | Peer directory (active members / staff), not staff roster |

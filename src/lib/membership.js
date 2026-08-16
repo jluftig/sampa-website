@@ -72,3 +72,9 @@ export function durationLabel(duration) {
   if (duration === 'lifetime') return 'Lifetime';
   return duration === 1 ? '1 year' : `${duration} years`;
 }
+
+export function publishedDues(tier, duration) {
+  if (!tier) return null;
+  if (duration === 'lifetime') return tier.lifetime ?? null;
+  return tier.prices[duration] ?? null;
+}

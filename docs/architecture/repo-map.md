@@ -20,6 +20,10 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             JWT). Supabase DB webhook "push-on-publish" on posts INSERT/UPDATE;
                             only when a post BECOMES published → Expo Push; prunes dead tokens.
                             Manual re-send: {slug}.
+  newsletter-signup.js      POST {email} → Brevo DOI → SAMPA Updates (public)
+  request-membership-invoice.js
+                            POST public employer-invoice request → Brevo transactional
+                            email to treasurer@ (cc josh@). Not Stripe Invoicing.
   stripe-webhook.js         Stripe events → membership columns on profiles (ONLY writer) +
                             donations table. type='donation' segregates gift vs dues flows.
   share.js                  GET ?slug= → OG/Twitter meta HTML for social crawlers (anon key,
@@ -40,7 +44,7 @@ src/
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
   pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
-                            Login, Join, Donate, Dashboard, MemberDirectory, MemberProfile,
+                            Login, Join, JoinInvoice, Donate, Dashboard, MemberDirectory, MemberProfile,
                             Privacy, Terms, EditorDashboard, PostEditor, AdminTags,
                             AdminPeople, AdminMembers
 public/
@@ -69,7 +73,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |

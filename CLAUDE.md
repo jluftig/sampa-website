@@ -60,7 +60,7 @@ optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOO
 
 | Path | Job |
 |------|-----|
-| `api/` | Checkout, portal, webhook, donate session, delete-account, send-push, share OG |
+| `api/` | Checkout, portal, webhook, donate session, delete-account, send-push, share OG, newsletter DOI, employer-invoice request |
 | `src/lib/` | Supabase client, auth context, membership tiers, comments (shared w/ mobile) |
 | `src/pages/` | Public, member, editor, admin routes |
 | `supabase/schema.sql` | **DDL + RLS source of truth** |
