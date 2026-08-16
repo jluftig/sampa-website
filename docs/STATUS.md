@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-13 (T23 claimed cursor: public About/Leadership page preview from form bios; do not merge)
+**Last updated:** 2026-08-15 (T24 claimed egg: document news one-shot + internal QC — PR only, do not merge until Josh says)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -63,6 +63,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
 | T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** Grok 4.6 cloud agent `bc-c065a6db`. Nine current form submissions. PR + Vercel preview only — **do not merge / do not publish.** More bios still coming. |
+| T24 | Document news one-shot + internal QC | egg | 2026-08-15 | **Claimed egg.** Branch `docs/news-oneshot-qc`. No Dunk / cover critic loop unless Josh asks. Recipe: `docs/news-article-structure.md` § One-shot. **PR only — do not merge until Josh says merge.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -195,11 +196,14 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   **Next P0 when resumed:** Vercel Production Stripe/webhook/Supabase elevated keys;
   E2E join → webhook → directory; non-member blocked; no self-admin.
   Resume: *Resume SAMPA security review*.
-- **News scout → auto-draft pipeline (Hermes / Egg)** — **Operational.**
-  Daily cron **6:00 AM PT, 7 days/week** (job `1f55242ea122`): scout → up to **3**
-  OA-preferred drafts → editor briefing + menu on Telegram → human Publish only
-  (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
-  Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
+- **News scout → auto-draft pipeline (Hermes / Egg)** — **Operational · one-shot as of 2026-08-15.**
+  Daily cron **6:00 AM PT, 7 days/week** (job `1f55242ea122`): scout → write once
+  (PA H2 baked in) → **internal QC vs primary** → up to **3** OA-preferred drafts →
+  editor briefing + menu on Telegram → human Publish only (**never auto-publish**).
+  Covers: A/B/C once + vision QA; no Dunk / R1/R2 critic loop unless Josh asks.
+  Recipe: [`news-article-structure.md`](news-article-structure.md) § One-shot.
+  Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
+  Resume: *Resume SAMPA news pipeline*. Docs PR: **T24** (`docs/news-oneshot-qc`).
 - **Email / Brevo campaigns (Hermes + repo)** — **Active 2026-08-07 (T3 · egg).**
   **Done this session:** `BREVO_API_KEY`; domain **authenticated + verified** (Porkbun DNS:
   SPF + DKIM + DMARC + `em` branded links); From/Reply-To **`info@`** (Workspace group

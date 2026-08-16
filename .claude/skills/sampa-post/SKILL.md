@@ -211,9 +211,14 @@ Typical content (adapt; use `<h3>` subheads when the analysis is multi-part):
 - Practical takeaways (bullets are fine)
 
 The section must also meet the **quality bar** in `docs/news-article-structure.md`
-(screening prompts, counseling bullets, testing caveats, MOUD/induction notes when
-relevant — typically ~120–250 words, never a "be aware" stub, never invented doses).
-Link to primary docs in the Source line or inline when useful.
+(thought first — not the Screening / Counseling / MOUD stencil; one Monday change;
+patient-access north star; typically ~90–200 words; never a "be aware" stub; never
+invented doses). Link to primary docs in the Source line or inline when useful.
+
+**One-shot + internal QC (Josh 2026-08-15):** after the draft is written, do a second
+pass against the **primary source** before insert/presenting. Every number/date/N/CI/
+affiliation must be in the source. One rewrite max. Do **not** spawn Dunk / `[v2 PA
+voice]` twins or a cover critique-loop unless Josh explicitly asks.
 
 ### Optional Key Point
 
@@ -439,14 +444,20 @@ Always produce **exactly three** options in one batch so the user can choose.
    - `drafts/<slug>-cover-b.jpg`
    - `drafts/<slug>-cover-c.jpg`
    Use Bash if needed (`mkdir -p drafts` and `cp` from each tool output path).
-4. **Present for choice:** label A/B/C with a one-line scene blurb and paths; ask which
-   cover to keep. Do not upload to Supabase. If the user picks one later, that path is
-   what they upload in `/editor` (they may delete or ignore the other two).
-5. **If `image_gen` is not available** (e.g. Claude Code without Imagine): do **not**
+4. **Look at each image** (`vision_analyze` or equivalent). Hard fail → regenerate
+   **that letter only** (readable text/letters/numbers, seals, accidental pills or
+   medical crosses, unwanted people unless Josh asked for people). Max two retries
+   per code. Soft fail: note it in the pick table; do not open a second generation
+   round or a critic loop.
+5. **Present for choice:** label A/B/C with a one-line scene blurb, QA pass/fail, and
+   paths; ask which cover to keep. Do not upload to Supabase. If the user picks one
+   later, that path is what they upload in `/editor` (they may delete or ignore the
+   other two).
+6. **If `image_gen` is not available** (e.g. Claude Code without Imagine): do **not**
    invent images. Put **three ready-to-paste** Imagine prompts (A/B/C scenes) in Editor
    notes under **Cover prompts (run in Grok)** and tell the user to generate in Grok
    Build / Grok Imagine. Still complete all text fields.
-6. **Reject wrong orientation:** if any variation is portrait or square, regenerate that
+7. **Reject wrong orientation:** if any variation is portrait or square, regenerate that
    slot once with the same scene + explicit "horizontal landscape 16:9 only".
 
 ### SAMPA house style (non-negotiable)

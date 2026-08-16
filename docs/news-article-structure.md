@@ -3,8 +3,9 @@
 **Purpose:** Keep post bodies scannable for busy clinicians — and make the **PA practice section** deep enough to act on.  
 **Reference posts:**  
 - Structure: DEA 7-OH temporary scheduling (lede + H2s + Source)  
-- **PA section gold standard:** DEA tianeptine Schedule I NPRM (2026-07) — screening prompts, counseling, MOUD/induction, UDT pitfalls  
-**Last updated:** 2026-08-12
+- **PA section gold *example* (scheduling / street product):** DEA tianeptine Schedule I NPRM (2026-07) — not the outline for maps, waivers, or handoffs  
+- **PA closer gold *shape* (2026-08-14):** cocaine NMA — keep the visit; don’t invent a treatment; don’t stop the treatment you already have  
+**Last updated:** 2026-08-15
 
 ---
 
@@ -140,7 +141,9 @@ Cron/generator cue: `Thoughtful PA payoff — not the screening/counseling/MOUD 
 | Full induction manual on a CDC map story | Pharmacy / fill reality |
 | Only legal summary restated | Earlier H2s hold law; PA section = **clinic actions** |
 
-### Gold-standard skeleton (tianeptine NPRM)
+### Gold-standard skeleton (tianeptine NPRM — *scheduling / product stories only*)
+
+Do **not** copy this outline onto maps, waivers, NMAs, or handoff stories.
 
 ```html
 <h2>Why this matters for PAs</h2>
@@ -152,11 +155,26 @@ Cron/generator cue: `Thoughtful PA payoff — not the screening/counseling/MOUD 
 <p><strong>Additional vigilance:</strong> …</p>
 ```
 
+### One-shot + internal QC (Josh 2026-08-15)
+
+No Dunk / `[v2 PA voice]` twins / cover critique-loop unless Josh explicitly asks.
+
+**Write once.** Bake the PA bar into the first draft (judgment, patient-access, one Monday change). Then a **second pass against the primary source** — not a vibe reread:
+
+1. **Claim support** — every number, date, N, CI, affiliation, access status, and causal verb is in the source. Cut or rewrite anything inferred. State COI / single-system / proposed-vs-final when the source has it.  
+2. **Useful to a PA** — one named Monday change. Would this H2 still work on a different paper? If yes, rewrite.  
+3. **Voice** — dead prose; **PA/PAs**; misuse not abuse (drugs/SUD only); writer-only safety lines stay out of the article; last H2 is **Why this matters for PAs**; **not** the Screening / Counseling / MOUD stencil.
+
+One internal rewrite is allowed. Then insert `status=draft`. Do not narrate the checklist in Telegram.
+
+**Covers:** generate A/B/C once; look at each image; regenerate **that code only** on hard fail (readable text, seals, accidental pills/crosses, unwanted people). No R1/R2 critic loop.
+
 ### Pipeline self-check before insert
 
 - [ ] Closing H2 is **Why this matters for PAs** (or **Practice implications for PAs**)  
-- [ ] Section has **≥2** concrete practice elements (e.g. screening + counseling, or findings + Monday-morning change)  
-- [ ] Not only “be aware / stay informed”  
+- [ ] One named Monday change — not only “be aware / stay informed”  
+- [ ] Not the Screening / Counseling / MOUD stencil  
+- [ ] Every number/date/N/CI/affiliation is in the primary  
 - [ ] No invented doses or legal claims  
 
 ---
