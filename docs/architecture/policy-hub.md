@@ -76,7 +76,7 @@ of state scope, payment differentials, and unfinished telehealth rulemaking.
 | Federal–state MOUD alignment; repeal stranded waiver language & MOUD-specific PA barriers | State practice law |
 | Fully implement Part 8 OTP practitioner provisions; state methadone / OTP alignment | Federal + State |
 | MATE Act clinical stigma education; peer recovery support alongside MOUD | Workforce & professional voice + Systems |
-| Recognize/recruit PAs in NHSC / HRSA workforce programs; addiction CAQ visibility | Workforce & professional voice |
+| Recognize/recruit PAs in NHSC / HRSA workforce programs; addiction CAQ visibility (public home: `/caq`) | Workforce & professional voice |
 | Medicaid pay parity; PA participation in CoCM/BHI billing; Medicare differential | Payment |
 | Prescriber-type outcome measures; near-real-time MOUD access dashboards / learning system | Evidence → standards |
 
