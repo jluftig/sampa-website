@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-17 (T27 claimed cursor — homepage CAQ card + membership line; preview PR only)
+**Last updated:** 2026-08-17 (T27 merged PR #76 → Production: homepage CAQ card + membership line)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T27 | Homepage CAQ card + membership CAQ line | cursor | 2026-08-17 | **Claimed cursor.** Cloud agent Grok 4.6. In-development CAQ card → live `/caq`; one careful membership line (stay in the loop — not “join to get the CAQ”). PR + Vercel preview only — **do not merge / do not publish.** |
 | T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** Grok 4.6 cloud agent `bc-c065a6db`. Nine current form submissions. PR + Vercel preview only — **do not merge / do not publish.** More bios still coming. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
@@ -71,11 +70,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T27 | Homepage CAQ card + membership CAQ line | cursor | 2026-08-17 | **Merged PR #76 → Production.** In-development CAQ card on homepage programs row → live `/caq`. One careful membership line on home + `/join`: members stay in the loop as the CAQ takes shape (not “join to get the CAQ”; SAMPA does not award it). |
 | T26 | Public Addiction Medicine CAQ page (`/caq`) | cursor | 2026-08-16 | **Merged PR #74 → Production.** Public `/caq`: NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ. Nav + footer + About link to the page. |
 | T22 | Policy hub: HRSA psychedelic-therapies RFI comment | egg | 2026-08-12 | **Merged PR #70 → Production.** Second comment live (submitted 2026-08-11, 91 FR 43103; PDF from final docx). /policy opens with two-up "Read our latest material" (both comments, equal weight; auto-takes newest two). Welcome + Weekly policy cards widened: "from MOUD and MAT to emerging therapies." ⚠ Weekly draft rebuild must run AFTER this (T3 note). |
 | T21 | No wrong doors + prevalence — site + emails | egg | 2026-08-12 | **Merged PR #69 → Production.** Hero: "PAs treating addiction wherever patients present"; homepage No-wrong-doors band (8 setting chips incl. street medicine / telehealth / bridge clinics / OTPs; 2025-NSDUH stats 44.6M · 1 in 6 · 73% w/ on-page sources; stats refresh ~July 2027); /about anchor sentence (co-occurring MH lives there); /donate echo; welcome + launch identity clause. |
 | T20 | Copy pass — site + email templates (V3 rules) | egg | 2026-08-12 | **Merged PR #68 → Production.** V3 sweep (second-person voice, placement dedupe, no wonk vocab); email program described content+cadence only (no preference/unsubscribe signals — north-star updated); member email flipped **Live** sitewide (launch day; card CTA → `/#updates-signup`); "policy hub" lowercase in running copy; sign-offs verified. |
-| T4 | Socials (site) + merch links (emails) | egg | 2026-08-12 | **Merged PR #66 → Production.** IG + FB icons **site footer only** — email icons pulled 2026-08-12 (socials too early to promote; gray PNGs staged in `public/email/` for later); merch card in welcome, store link in renewal. |
 
 ### Task workflow (agents + humans)
 
@@ -99,9 +98,9 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   (effective **July 11, 2026**; member directory fully disclosed; self-published
   for a small nonprofit — no outside counsel). **Ad Grants pass (2026-08-04):**
   501(c)(3) + EIN prominent on hero/about; mission + programs (live news/directory;
-  in-development member email, practice resources, CME, job board — no empty landing pages);
+  in-development practice resources, CME, job board, and Addiction Medicine CAQ card → `/caq`);
   Join/Donate CTAs in hero; nav About → `/about`, Programs → `/#programs`,
-  CAQ → `/caq` (T26, 2026-08-16).
+  CAQ → `/caq` (T26, 2026-08-16). Homepage CAQ card + membership line (T27, 2026-08-17).
 - **Homepage hero (2026-08-04)** — **static** wordmark + nonprofit line + Join/Donate
   CTAs for Ad Grants PageSpeed. Particle “Assembly” effect (PR #49) parked until
   after approval; scroll cue retained. Earlier: scroll cue (PR #50), news icon
@@ -174,7 +173,6 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
-- **Homepage CAQ card + membership line (T27 · cursor)** — in-development card linking to live `/caq`; one careful membership line on home + `/join`. Preview PR only; do not merge to production.
 - **About / Leadership page preview (T23 · cursor)** — public leadership roster from the 2026-08 form (9 submissions so far). Cloud agent Grok 4.6. Preview PR only; do not merge until Josh says the roster/page is ready.
 
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
@@ -274,7 +272,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ### Product — site polish / marketing
 
 - [ ] **About / Leadership page (T23 · cursor in progress)** — preview from current form bios/headshots (9 people as of 2026-08-13). Vercel preview via PR; do not ship to production until more profiles are in and Josh signs off.
-- [ ] **Homepage CAQ card + membership line (T27 · cursor in progress)** — in-development card → `/caq`; one careful membership line on home + `/join`. Vercel preview via PR; do not ship to production until Josh signs off.
+- [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
 - [x] **Footer social links** (**T4**) — 2026-08-10. IG + FB icons in site footer
@@ -344,6 +342,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-17 · **Homepage CAQ card + membership line (T27)** — PR #76. In-development CAQ card on homepage programs row links to live `/caq`. Membership copy on home + `/join`: members stay in the loop as the CAQ takes shape.
 - 2026-08-16 · **Addiction Medicine CAQ page (T26)** — PR #74. Public `/caq` (nav, footer, About). NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ.
 - 2026-08-07 · **Public newsletter signup (T5)** — PR #62. Large **SAMPA Updates**
   chip above footer sitewide; `api/newsletter-signup.js` → Brevo DOI → Updates
