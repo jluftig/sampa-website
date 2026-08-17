@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-17 (T27 merged PR #76 → Production: homepage CAQ card + membership line)
+**Last updated:** 2026-08-17 (T24 merged PR #72 → main: news one-shot QC + reversible voice trial)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -70,11 +70,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T24 | Document news one-shot + internal QC + voice trial | egg | 2026-08-17 | **Merged PR #72 → main.** One-shot QC; Dunk/critic loops retired. **Voice trial ON** (ALiEM job / MMWR voice / generalist-PA; revert: `revert news voice`). Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`. |
 | T27 | Homepage CAQ card + membership CAQ line | cursor | 2026-08-17 | **Merged PR #76 → Production.** In-development CAQ card on homepage programs row → live `/caq`. One careful membership line on home + `/join`: members stay in the loop as the CAQ takes shape (not “join to get the CAQ”; SAMPA does not award it). |
 | T26 | Public Addiction Medicine CAQ page (`/caq`) | cursor | 2026-08-16 | **Merged PR #74 → Production.** Public `/caq`: NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ. Nav + footer + About link to the page. |
 | T22 | Policy hub: HRSA psychedelic-therapies RFI comment | egg | 2026-08-12 | **Merged PR #70 → Production.** Second comment live (submitted 2026-08-11, 91 FR 43103; PDF from final docx). /policy opens with two-up "Read our latest material" (both comments, equal weight; auto-takes newest two). Welcome + Weekly policy cards widened: "from MOUD and MAT to emerging therapies." ⚠ Weekly draft rebuild must run AFTER this (T3 note). |
 | T21 | No wrong doors + prevalence — site + emails | egg | 2026-08-12 | **Merged PR #69 → Production.** Hero: "PAs treating addiction wherever patients present"; homepage No-wrong-doors band (8 setting chips incl. street medicine / telehealth / bridge clinics / OTPs; 2025-NSDUH stats 44.6M · 1 in 6 · 73% w/ on-page sources; stats refresh ~July 2027); /about anchor sentence (co-occurring MH lives there); /donate echo; welcome + launch identity clause. |
-| T20 | Copy pass — site + email templates (V3 rules) | egg | 2026-08-12 | **Merged PR #68 → Production.** V3 sweep (second-person voice, placement dedupe, no wonk vocab); email program described content+cadence only (no preference/unsubscribe signals — north-star updated); member email flipped **Live** sitewide (launch day; card CTA → `/#updates-signup`); "policy hub" lowercase in running copy; sign-offs verified. |
 
 ### Task workflow (agents + humans)
 
@@ -196,11 +196,14 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   **Next P0 when resumed:** Vercel Production Stripe/webhook/Supabase elevated keys;
   E2E join → webhook → directory; non-member blocked; no self-admin.
   Resume: *Resume SAMPA security review*.
-- **News scout → auto-draft pipeline (Hermes / Egg)** — **Operational.**
-  Daily cron **6:00 AM PT, 7 days/week** (job `1f55242ea122`): scout → up to **3**
-  OA-preferred drafts → editor briefing + menu on Telegram → human Publish only
-  (**never auto-publish**). Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
-  Resume: *Resume SAMPA news pipeline* (tuning/bugs only unless reopened).
+- **News scout → auto-draft pipeline (Hermes / Egg)** — **Operational · one-shot as of 2026-08-15.**
+  Daily cron **6:00 AM PT, 7 days/week** (job `1f55242ea122`): scout → write once
+  (PA H2 baked in) → **internal QC vs primary** → up to **3** OA-preferred drafts →
+  editor briefing + menu on Telegram → human Publish only (**never auto-publish**).
+  Covers: A/B/C once + vision QA; no Dunk / R1/R2 critic loop unless Josh asks.
+  Recipe: [`news-article-structure.md`](news-article-structure.md) § One-shot.
+  Sticky: [`PARK-news-pipeline.md`](PARK-news-pipeline.md).
+  Resume: *Resume SAMPA news pipeline*. **Voice trial ON** (merged PR #72). Revert: `revert news voice`.
 - **Email / Brevo campaigns (Hermes + repo)** — **Active 2026-08-07 (T3 · egg).**
   **Done this session:** `BREVO_API_KEY`; domain **authenticated + verified** (Porkbun DNS:
   SPF + DKIM + DMARC + `em` branded links); From/Reply-To **`info@`** (Workspace group

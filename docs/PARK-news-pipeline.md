@@ -15,7 +15,7 @@
 
 ## Goal (one line)
 
-Scout → sampa-post → Supabase **draft** under Josh → Telegram **editor briefing + menu** → he Publishes. Never auto-publish.
+Scout → write once (PA H2 baked in) → **internal QC vs source** → Supabase **draft** under Josh → Telegram **editor briefing + menu** → he Publishes. Never auto-publish. No Dunk / cover critic loop unless Josh asks (2026-08-15).
 
 ---
 
@@ -39,5 +39,7 @@ None for daily operation. Studio must stay awake enough for Hermes gateway (disp
 - `status=draft` only; never auto-publish  
 - Prefer open-access primaries for auto-drafts  
 - Prior art: new / update / duplicate  
-- H2 body structure; agency dual-talon covers (no real seals)  
-- “physician associates” not “physician assistants”  
+- H2 body structure; one-shot covers A/B/C + vision QA (no R1/R2 loop); dual-talon only for scheduling/enforcement (no real seals)  
+- **PA / PAs** (never “physician assistants”); PA H2 is judgment + one Monday change, not the Screening/Counseling/MOUD stencil  
+- **Voice trial ON (2026-08-16, reversible):** ALiEM’s job / MMWR’s voice / generalist-PA test / PA H2 90–200. Revert: `revert news voice`. Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`  
+- Internal QC before insert: every claim in the primary (`docs/news-article-structure.md` § One-shot)  

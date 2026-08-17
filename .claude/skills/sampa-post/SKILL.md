@@ -19,8 +19,13 @@ Associates)**, a national specialty organization for PAs in addiction medicine.
 Turn the source below into a publish-ready post for the Supabase-backed SAMPA
 news section (React + TipTap editor, draft -> publish workflow).
 
-Audience: PAs, physicians, and other clinicians in addiction and emergency
-medicine who want the clinical and policy significance quickly and accurately.
+Audience: **all PAs who touch addiction medicine** — emergency, primary care,
+community, telehealth, street medicine, hospitalist, women’s health — plus
+adjacent clinicians. OTP / fellowship is one door, not the reader. Voice test:
+would an ED or primary-care PA who started bup last month act on this?
+
+**Voice trial (ON, 2026-08-16, reversible):** ALiEM’s job · MMWR’s voice · SAMPA’s
+spine. Canonical: `docs/news-article-structure.md`. Revert: `revert news voice`.
 
 **Voice — PA abbreviation (required):** Prefer **PA** / **PAs** throughout the
 post (lede, body, H2s, excerpt, key points). This is a PA organization; readers
@@ -211,9 +216,14 @@ Typical content (adapt; use `<h3>` subheads when the analysis is multi-part):
 - Practical takeaways (bullets are fine)
 
 The section must also meet the **quality bar** in `docs/news-article-structure.md`
-(screening prompts, counseling bullets, testing caveats, MOUD/induction notes when
-relevant — typically ~120–250 words, never a "be aware" stub, never invented doses).
-Link to primary docs in the Source line or inline when useful.
+(thought first — not the Screening / Counseling / MOUD stencil; one Monday change;
+patient-access north star; typically ~90–200 words; never a "be aware" stub; never
+invented doses). Link to primary docs in the Source line or inline when useful.
+
+**One-shot + internal QC (Josh 2026-08-15):** after the draft is written, do a second
+pass against the **primary source** before insert/presenting. Every number/date/N/CI/
+affiliation must be in the source. One rewrite max. Do **not** spawn Dunk / `[v2 PA
+voice]` twins or a cover critique-loop unless Josh explicitly asks.
 
 ### Optional Key Point
 
@@ -312,8 +322,8 @@ the article:
 
   **Structure (house style — required):** See `docs/news-article-structure.md`.
   - Open with a **lede** of 1–2 short paragraphs (what happened + why it matters to
-    **PAs**). **No heading above the lede.** Prefer the abbreviation **PA/PAs**
-    (not “physician associates”) in lede and body.
+    **PAs**). Last sentence **hints the Monday change**. **No heading above the lede.**
+    Prefer the abbreviation **PA/PAs** (not “physician associates”) in lede and body.
   - Then break the article with **`<h2>` section headings** (major sections only; use
     `<h3>` rarely). Do **not** write the body as one long run of paragraphs.
   - **Agency/policy** posts should usually include H2s in this spirit (adapt labels):
@@ -324,10 +334,13 @@ the article:
     limits* / *Practice implications for PAs*.
   - Aim for **3–4 H2s** on agency posts; **at least 2 H2s** on any post over ~200 words.
   - **Closing PA section (required depth):** `Why this matters for PAs` / `Practice implications for PAs`
-    must be **actionable**, not a vague “be aware” stub. Prefer screening prompts, counseling
-    bullets, testing caveats, MOUD/induction notes when relevant. Gold standard: tianeptine NPRM
-    PA section. Full bar: `docs/news-article-structure.md` (“Why this matters for PAs” quality bar).
-    ~120–250 words for high-impact substance/regulatory stories is OK; never invent doses.
+    must be **actionable**, not a vague “be aware” stub. Open with a **judgment sentence**
+    that would be false on a different paper. Lists only if earned — **not** the
+    Screening / Counseling / MOUD stencil. Gold *shape*: keep the visit; don’t invent
+    a treatment; don’t stop the one you have. Tianeptine NPRM outline is for
+    scheduling/product stories only. Full bar: `docs/news-article-structure.md`.
+    **90–200 words** (over ~220 = fail). Never invent doses. Generalist-PA test:
+    an ED or PC PA who started bup last month can act.
     Ground it in the **PA impact research** step above — never guesswork.
   - **Advocacy subsection (when relevant):** if the advocacy scan found a credible angle,
     add **`<h2>Advocacy opportunities</h2>`** (or `<h3>` under the PA section if the piece
@@ -439,14 +452,20 @@ Always produce **exactly three** options in one batch so the user can choose.
    - `drafts/<slug>-cover-b.jpg`
    - `drafts/<slug>-cover-c.jpg`
    Use Bash if needed (`mkdir -p drafts` and `cp` from each tool output path).
-4. **Present for choice:** label A/B/C with a one-line scene blurb and paths; ask which
-   cover to keep. Do not upload to Supabase. If the user picks one later, that path is
-   what they upload in `/editor` (they may delete or ignore the other two).
-5. **If `image_gen` is not available** (e.g. Claude Code without Imagine): do **not**
+4. **Look at each image** (`vision_analyze` or equivalent). Hard fail → regenerate
+   **that letter only** (readable text/letters/numbers, seals, accidental pills or
+   medical crosses, unwanted people unless Josh asked for people). Max two retries
+   per code. Soft fail: note it in the pick table; do not open a second generation
+   round or a critic loop.
+5. **Present for choice:** label A/B/C with a one-line scene blurb, QA pass/fail, and
+   paths; ask which cover to keep. Do not upload to Supabase. If the user picks one
+   later, that path is what they upload in `/editor` (they may delete or ignore the
+   other two).
+6. **If `image_gen` is not available** (e.g. Claude Code without Imagine): do **not**
    invent images. Put **three ready-to-paste** Imagine prompts (A/B/C scenes) in Editor
    notes under **Cover prompts (run in Grok)** and tell the user to generate in Grok
    Build / Grok Imagine. Still complete all text fields.
-6. **Reject wrong orientation:** if any variation is portrait or square, regenerate that
+7. **Reject wrong orientation:** if any variation is portrait or square, regenerate that
    slot once with the same scene + explicit "horizontal landscape 16:9 only".
 
 ### SAMPA house style (non-negotiable)
