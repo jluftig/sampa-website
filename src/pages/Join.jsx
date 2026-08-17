@@ -116,6 +116,15 @@ export default function Join() {
           </p>
           <h1 className="text-4xl md:text-5xl font-drama font-bold mb-6">{stepLabel}</h1>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">{headerSub}</p>
+          {!isActiveMember && (
+            <p className="text-text/60 text-sm mt-4 max-w-xl mx-auto">
+              Members stay in the loop as the{' '}
+              <Link to="/caq" className="text-primary-text font-semibold hover:underline">
+                Addiction Medicine CAQ
+              </Link>
+              {' '}takes shape.
+            </p>
+          )}
           {user && !isActiveMember && (
             <p className="text-text/40 text-xs mt-4 max-w-xl mx-auto">
               You're signed in as <strong className="text-text/60">{user.email}</strong>.
