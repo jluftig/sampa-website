@@ -18,7 +18,7 @@ export const LEADERSHIP_PAGE = {
   eyebrow: '2026–2027',
   title: 'Leadership',
   oneLiner:
-    'Officers, directors, committee chairs, and advisors for this working year.',
+    'The people leading this working year — officers, directors, chairs, and advisors.',
   previewNote:
     'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio and the submitted photo. Photos on other cards still come from public sources and need each person’s okay.',
   alsoServing:

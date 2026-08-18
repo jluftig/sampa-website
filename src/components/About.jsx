@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// Homepage mission / nonprofit band. Full narrative lives on /about.
+// Homepage mission / nonprofit band. Who we are + who leads lives on /about.
 
 export default function About() {
   return (
@@ -35,10 +35,10 @@ export default function About() {
             in service of better care.
           </p>
           <Link
-            to="/about"
+            to="/about#leadership"
             className="inline-block px-7 py-3 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
           >
-            Learn more about SAMPA
+            Meet the people who lead SAMPA
           </Link>
         </div>
 

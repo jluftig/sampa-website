@@ -122,7 +122,7 @@ export default function LeadershipRoster() {
     <section
       id="leadership"
       aria-labelledby="leadership-heading"
-      className="mt-20 md:mt-24"
+      className="mt-4 md:mt-6"
     >
       <header className="max-w-3xl mb-10 md:mb-12">
         <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -135,7 +135,7 @@ export default function LeadershipRoster() {
         </div>
         <h2
           id="leadership-heading"
-          className="text-2xl md:text-3xl font-drama font-bold text-text mb-4"
+          className="text-3xl md:text-5xl font-drama font-bold text-text mb-4"
         >
           {LEADERSHIP_PAGE.title}
         </h2>
