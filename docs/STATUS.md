@@ -62,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** First-pass **on `/about#leadership`**. Official 2026–27 roles + submitted bios/photos for 11 form submitters. **Now in scope (2026-08-18):** rewrite `/about` so leadership is more prominent and thin value-prop redundancies with home / join / programs / CAQ / policy. Still preview-only. Danielle omitted. **Draft PR #77** — **do not merge / do not publish.** |
+| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** `/about` rewrite on **draft PR #77**: identity + 501(c)(3)/EIN short; leadership is the star (`#leadership`); program catalog / no-wrong-doors / mission essay removed (pointers to home / join / CAQ / policy). Submitted bios/photos unchanged. Danielle omitted. Preview only — **do not merge / do not publish.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -173,7 +173,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
-- **About / Leadership section preview (T23 · cursor)** — first-pass roster on existing `/about` (`#leadership`). Official 2026–27 roles + submitted form bios/photos for the 11 who gave website permission. **Rewrite now in scope:** leadership more prominent; thin value-prop redundancies with home / join / programs; still preview-only. **Draft PR #77**; do not merge. Separate-page draft remains at PR #71.
+- **About / Leadership section preview (T23 · cursor)** — `/about` rewrite on **draft PR #77**: who we are + who leads; leadership prominent; program catalog thinned to pointers. Submitted bios/photos unchanged. Do not merge. Separate-page draft remains at PR #71.
 
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
@@ -274,7 +274,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
-- [ ] **About / Leadership section (T23 · cursor in progress)** — form bios/photos on `/about#leadership` (2026-08-18). About rewrite now in scope on PR #77: leadership more prominent; thin home/join/programs redundancies; preview only, do not ship.
+- [ ] **About / Leadership section (T23 · cursor in progress)** — `/about` rewrite on PR #77 (2026-08-18): leadership prominent; catalog/value-prop redundancies thinned. Vercel preview only; do not ship to production.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
