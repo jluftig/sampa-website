@@ -62,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** First-pass **on `/about#leadership`** (not a new `/leadership` route). Official 2026–27 roles + form bios + researched directory copy. Danielle Schmeling omitted. **Draft PR #77** — preview only, **do not merge / do not publish.** |
+| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** First-pass **on `/about#leadership`** (not a new `/leadership` route). Official 2026–27 roles + form bios + researched directory copy. Danielle Schmeling omitted. Cohen + Kelsy LinkedIn headshots added on the same draft. **Draft PR #77** — preview only, **do not merge / do not publish.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
