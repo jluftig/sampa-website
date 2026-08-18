@@ -20,7 +20,7 @@ export const LEADERSHIP_PAGE = {
   oneLiner:
     'Officers, directors, committee chairs, and advisors for this working year.',
   previewNote:
-    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio, and the submitted photo when we have the file. Shani, Josh (survey file), Eric, and Edward still show initials or a public photo until the survey file is available. Photos on other cards still come from public sources and need each person’s okay.',
+    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio and the submitted photo. Photos on other cards still come from public sources and need each person’s okay.',
   alsoServing:
     'Ad hoc work this year: public health / public policy statements (Tasha Seliski, Arianna Campbell, Josh Luftig); certification (Arianna Campbell, Kerith Hartmann, Debra Newman); membership news and newsletter (Kerith Hartmann, Arianna Campbell, Josh Luftig).',
 };
@@ -54,7 +54,7 @@ export const LEADERSHIP = [
     also: ['Education chair', 'AAPA HOD Chief Delegate', 'Bylaws and Policy member'],
     location: 'Chicago, IL',
     bio: 'Shani Wilson, PA-C, practices addiction medicine, specializing in the treatment of substance use disorders with a particular focus on opioid use disorder and MOUD. Her clinical background also includes primary care, LGBTQ+ health, HIV prevention and treatment, and hepatitis C care. Her involvement with SAMPA reflects a broader commitment to advancing PA practice and leadership in addiction medicine. Shani has served in leadership roles across several PA and community organizations and brings a strong interest in organizational leadership and health equity to her work. A recent professional highlight has been contributing to SAMPA’s advocacy efforts to expand recognition of addiction medicine as an area of advanced PA practice.',
-    photo: null,
+    photo: '/leadership/shani-wilson.jpg',
   },
   {
     id: 'josh-luftig',
@@ -141,7 +141,7 @@ export const LEADERSHIP = [
     location: 'Los Angeles, CA',
     // Submitted wording “physician assistant” and “California Physician Assistant Board” kept.
     bio: 'Eric Bergersen, PA-C, MHA, is a board-certified physician assistant specializing in emergency medicine and addiction medicine. He earned his bachelor’s degree from Northeastern University in Boston before moving to Washington, D.C., to complete a master’s degree at The George Washington University. He later earned a master\'s degree in healthcare administration from Oklahoma State University and is currently pursuing a doctorate in AI applications at Northeastern University. Throughout his work in emergency medicine, Eric has found it deeply rewarding to serve as the first point of contact for individuals living with substance use disorders. This firsthand clinical experience drives his mission to eliminate barriers to accessible, equitable treatment for opioid use disorder within acute care environments. In his current role, Eric focuses on bridging the gaps between emergency care, the criminal justice system, and addiction recovery. He also serves as a member of the California Physician Assistant Board.',
-    photo: null,
+    photo: '/leadership/eric-bergersen.jpg',
     linkedin: 'https://www.linkedin.com/in/ericbergersen/',
   },
   {
@@ -166,7 +166,7 @@ export const LEADERSHIP = [
     location: 'Richland, WA',
     // Dropped submitter note "Feel free to trim it down!" Light grammar only.
     bio: 'My background of working as a mental health counselor in inpatient psychiatry and eventually training in addiction during psychiatry residency led to my passion for bringing addiction treatment to the forefront of my practice. During my time as a provider I have worked in community care where I have helped integrate dual-diagnosis care from Yakima, to the Tri-Cities, and beyond. Currently I practice outpatient at the VA in Boise. Additionally I lead an addiction treatment program at Benton County Corrections where I am working to implement a grant-funded program to expand access to addiction and detoxification treatment for at-risk individuals during incarceration and support their transition to ongoing care. One of my professional highlights has been helping implement new advancements in addiction care, including rapid-access injection policies, to make effective treatment more accessible. Outside of medicine, I am passionate about music and travel.',
-    photo: null,
+    photo: '/leadership/edward-traverso.jpg',
   },
   {
     id: 'clarissa-peterson',
