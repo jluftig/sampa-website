@@ -20,7 +20,7 @@ export const LEADERSHIP_PAGE = {
   oneLiner:
     'Officers, directors, committee chairs, and advisors for this working year.',
   previewNote:
-    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio, and the submitted photo when we have the file. Photos on other cards still come from public sources and need each person’s okay.',
+    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio, and the submitted photo when we have the file. Shani, Josh (survey file), Eric, and Edward still show initials or a public photo until the survey file is available. Photos on other cards still come from public sources and need each person’s okay.',
   alsoServing:
     'Ad hoc work this year: public health / public policy statements (Tasha Seliski, Arianna Campbell, Josh Luftig); certification (Arianna Campbell, Kerith Hartmann, Debra Newman); membership news and newsletter (Kerith Hartmann, Arianna Campbell, Josh Luftig).',
 };
@@ -86,7 +86,7 @@ export const LEADERSHIP = [
     also: ['Education member'],
     location: 'Pittsburgh, PA',
     bio: 'Kala Klug is a senior PA specializing in addiction medicine with the UPMC Internal Medicine Recovery Engagement Program. She provides compassionate, evidence-based treatment to patients with substance use disorders. Her clinical leadership includes initiatives in harm reduction, contingency management, buprenorphine induction, direct admission, and xylazine-associated wound care. Driven by a commitment to training the next generation of PAs, Kala developed and implemented UPMC’s first addiction medicine elective rotation for PA students. She also serves as Board Secretary and Education Committee Member for the Society of Addiction Medicine PAs. She holds a Master of Science in Health Sciences from George Washington University and a Bachelor of Science in Emergency Medicine from University of Pittsburgh.',
-    photo: null,
+    photo: '/leadership/kala-klug.jpg',
   },
   {
     id: 'jonathan-s-cohen',
@@ -177,7 +177,7 @@ export const LEADERSHIP = [
     role: 'Membership chair',
     location: 'Provo, Utah',
     bio: 'Clarissa Peterson, MPAS, PA-C graduated from the University of Utah Physician Assistant Program in 2009 and has dedicated her career to community health, providing care for underserved populations. Her clinical interests include addiction medicine, women\'s health, global health, mental health, and hepatitis C, with a particular focus on caring for unhoused individuals and immigrant communities. In addition to her clinical practice, Clarissa serves as clinical faculty for several physician assistant programs, precepts PA students, and frequently presents continuing medical education lectures on addiction medicine and related topics. She has served as Chair of the SAMPA Membership Committee since 2025 and is committed to advancing the PA profession through education, mentorship, and professional service.',
-    photo: null,
+    photo: '/leadership/clarissa-peterson.jpg',
   },
   {
     id: 'deanna-bridge-najera',
@@ -188,7 +188,7 @@ export const LEADERSHIP = [
     role: 'Bylaws and Policy chair',
     location: 'Maryland',
     bio: 'PA Najera splits her time between a suburban emergency department, a county health department, and a community mental health agency. She holds CAQs in Psychiatry and Emergency Medicine, as well as a Master’s degree in Clinical Mental Health Counseling. She previously served on the ASAM Clinical Guideline Committee for Benzodiazepine Tapering. Regardless of the role she is serving in, PA Najera strives to care for each individual while remaining mindful of the social drivers of health at play and addressing population-level challenges whenever possible.',
-    photo: null,
+    photo: '/leadership/deanna-bridge-najera.jpg',
     linkedin: 'https://www.linkedin.com/in/deanna-bridge-najera-417a944/',
   },
   {

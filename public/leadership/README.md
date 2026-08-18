@@ -10,8 +10,11 @@ find. Never hotlink private Drive URLs.
 |------|--------|--------|
 | `arianna-campbell.jpg` | Arianna Campbell | Same July 2026 headshot as the Leadership Profile attachment (also on Bridge team page) |
 | `cheryl-vanderford.jpg` | Cheryl Vanderford | Same studio headshot as the Leadership Profile attachment (UK Healthcare provider photo) |
+| `clarissa-peterson.jpg` | Clarissa Peterson | Same 150×183 likeness she submitted (Mountainlands clinician photo). Upscaled; she chose the small file. |
+| `deanna-bridge-najera.jpg` | Deanna Bridge Najera | Same sage-blazer studio likeness as the Leadership Profile attachment (MdAPA speaker photo) |
 | `diane-bruessow.jpg` | Diane Bruessow | Same indoor headshot as the Leadership Profile attachment (Doximity full-resolution file) |
 | `harrison-keyes.jpg` | Harrison Paul Keyes | Survey / board-folder HEIC (`IMG_1766.HEIC`, 2026-08-12) matching the attached lanyard portrait |
+| `kala-klug.jpg` | Kala Klug | Same blonde / black-blazer / teal-top studio likeness as the Leadership Profile attachment (UPMC provider photo) |
 | `josh-luftig.jpg` | Josh Luftig | Public professional photo (Dialogue4Health / Bridge). Form Drive upload was not readable from this environment. |
 | `tasha-seliski.jpg` | Natasha “Tasha” Seliski | University of Utah Health faculty page |
 | `debra-newman.jpg` | Debra Newman | PCSS-MOUD lead-mentor page |
@@ -26,6 +29,6 @@ find. Never hotlink private Drive URLs.
 
 Not in this folder (initials placeholder on the page):
 
-- Shani Wilson, Kala Klug, Eric Bergersen, Edward Traverso, Clarissa Peterson, Deanna Bridge Najera — form Drive files are not readable from this environment (Google Forms-owned folder). Clarissa’s submitted file is 150×183; still use it when the binary is available.
+- Shani Wilson, Eric Bergersen, Edward Traverso — form Drive files are not readable from this environment (Google Forms-owned folder). Josh’s card still uses the public Dialogue4Health / Bridge photo until the survey file is available. Do not substitute a different researched likeness.
 
 Do not hotlink private Drive URLs.
