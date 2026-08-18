@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import DonateLink from '../components/DonateLink';
+import LeadershipRoster from '../components/LeadershipRoster';
 
 // Public About Us page — mission, nonprofit status, programs (live + in development).
 // Written for Ad Grants reviewers and new visitors who need substantial HTML content.
@@ -28,8 +29,8 @@ export default function AboutPage() {
       <div className="noise-overlay pointer-events-none" />
       <Navbar />
 
-      <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
-        <header className="mb-14">
+      <main className="max-w-6xl mx-auto px-4 pt-32 pb-24">
+        <header className="max-w-3xl mb-14">
           <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-4 uppercase">
             About SAMPA
           </div>
@@ -44,7 +45,7 @@ export default function AboutPage() {
           </p>
         </header>
 
-        <div className="space-y-14 text-lg text-text/80 leading-relaxed">
+        <div className="max-w-3xl space-y-14 text-lg text-text/80 leading-relaxed">
           <section aria-labelledby="who-we-are">
             <h2 id="who-we-are" className="text-2xl md:text-3xl font-drama font-bold text-text mb-4">
               Who we are
@@ -243,7 +244,11 @@ export default function AboutPage() {
               </li>
             </ul>
           </section>
+        </div>
 
+        <LeadershipRoster />
+
+        <div className="max-w-3xl mt-14 text-lg text-text/80 leading-relaxed">
           <section aria-labelledby="get-involved">
             <h2 id="get-involved" className="text-2xl md:text-3xl font-drama font-bold text-text mb-4">
               How to get involved
