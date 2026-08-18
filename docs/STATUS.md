@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-18 (T23 first-pass About leadership section — preview PR only)
+**Last updated:** 2026-08-18 (T23 leadership form bios + matched survey photos — preview PR only)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** First-pass **on `/about#leadership`** (not a new `/leadership` route). Official 2026–27 roles + form bios + researched directory copy. Danielle Schmeling omitted. Cohen + Kelsy LinkedIn headshots added on the same draft. **Draft PR #77** — preview only, **do not merge / do not publish.** |
+| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** First-pass **on `/about#leadership`**. Official 2026–27 roles. Eleven form submitters now have submitted bios; photos for Arianna, Cheryl, Diane, Harrison match the attached survey likenesses. Form Drive files still unread for Shani, Josh (survey), Kala, Eric, Edward, Clarissa, Deanna. Danielle omitted. **Draft PR #77** — preview only, **do not merge / do not publish.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -173,7 +173,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
-- **About / Leadership section preview (T23 · cursor)** — first-pass roster on existing `/about` (`#leadership`). Official 2026–27 roles + form bios + researched directory copy. **Draft PR #77**; do not merge until Josh says the roster is ready. Separate-page draft remains at PR #71.
+- **About / Leadership section preview (T23 · cursor)** — first-pass roster on existing `/about` (`#leadership`). Official 2026–27 roles + submitted form bios for the 11 who gave website permission. Survey-matched photos for Arianna, Cheryl, Diane, Harrison. **Draft PR #77**; do not merge. Separate-page draft remains at PR #71.
 
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
@@ -274,7 +274,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
-- [ ] **About / Leadership section (T23 · cursor in progress)** — first-pass on `/about#leadership` (2026-08-18). Vercel preview via PR; do not ship to production until photos are cleared and Josh signs off.
+- [ ] **About / Leadership section (T23 · cursor in progress)** — form bios on `/about#leadership` (2026-08-18). Four survey-matched photos in; remaining form Drive uploads still blocked. Vercel preview via PR #77; do not ship to production.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
