@@ -2,11 +2,17 @@
 
 Public-page photos for the first-pass About leadership section.
 
-Sources (still need each person’s okay before production):
+Survey photos win when we have the submitted file (or the same likeness
+the person attached). Do not replace a survey photo with a later public
+find. Never hotlink private Drive URLs.
 
 | File | Person | Source |
 |------|--------|--------|
-| `josh-luftig.jpg` | Josh Luftig | Public professional photo (Dialogue4Health). Form Drive upload was not readable from this environment. |
+| `arianna-campbell.jpg` | Arianna Campbell | Same July 2026 headshot as the Leadership Profile attachment (also on Bridge team page) |
+| `cheryl-vanderford.jpg` | Cheryl Vanderford | Same studio headshot as the Leadership Profile attachment (UK Healthcare provider photo) |
+| `diane-bruessow.jpg` | Diane Bruessow | Same indoor headshot as the Leadership Profile attachment (Doximity full-resolution file) |
+| `harrison-keyes.jpg` | Harrison Paul Keyes | Survey / board-folder HEIC (`IMG_1766.HEIC`, 2026-08-12) matching the attached lanyard portrait |
+| `josh-luftig.jpg` | Josh Luftig | Public professional photo (Dialogue4Health / Bridge). Form Drive upload was not readable from this environment. |
 | `tasha-seliski.jpg` | Natasha “Tasha” Seliski | University of Utah Health faculty page |
 | `debra-newman.jpg` | Debra Newman | PCSS-MOUD lead-mentor page |
 | `jim-anderson.jpg` | James E. Anderson | AAPA News Central (2017 headshot) |
@@ -20,7 +26,6 @@ Sources (still need each person’s okay before production):
 
 Not in this folder (initials placeholder on the page):
 
-- Form Drive headshots from the 2026-08 leadership form (this environment cannot read them)
-- Shani Wilson, Kala Klug, and other form submitters whose Drive files are not in the repo
+- Shani Wilson, Kala Klug, Eric Bergersen, Edward Traverso, Clarissa Peterson, Deanna Bridge Najera — form Drive files are not readable from this environment (Google Forms-owned folder). Clarissa’s submitted file is 150×183; still use it when the binary is available.
 
 Do not hotlink private Drive URLs.

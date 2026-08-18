@@ -20,7 +20,7 @@ export const LEADERSHIP_PAGE = {
   oneLiner:
     'Officers, directors, committee chairs, and advisors for this working year.',
   previewNote:
-    'First-pass preview for review — not a production ship. Some roles are still internal. Photos from employer pages, society pages, or other public sources still need each person’s okay.',
+    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio, and the submitted photo when we have the file. Photos on other cards still come from public sources and need each person’s okay.',
   alsoServing:
     'Ad hoc work this year: public health / public policy statements (Tasha Seliski, Arianna Campbell, Josh Luftig); certification (Arianna Campbell, Kerith Hartmann, Debra Newman); membership news and newsletter (Kerith Hartmann, Arianna Campbell, Josh Luftig).',
 };
@@ -52,7 +52,8 @@ export const LEADERSHIP = [
     credentials: 'PA-C',
     role: 'President',
     also: ['Education chair', 'AAPA HOD Chief Delegate', 'Bylaws and Policy member'],
-    bio: '',
+    location: 'Chicago, IL',
+    bio: 'Shani Wilson, PA-C, practices addiction medicine, specializing in the treatment of substance use disorders with a particular focus on opioid use disorder and MOUD. Her clinical background also includes primary care, LGBTQ+ health, HIV prevention and treatment, and hepatitis C care. Her involvement with SAMPA reflects a broader commitment to advancing PA practice and leadership in addiction medicine. Shani has served in leadership roles across several PA and community organizations and brings a strong interest in organizational leadership and health equity to her work. A recent professional highlight has been contributing to SAMPA’s advocacy efforts to expand recognition of addiction medicine as an area of advanced PA practice.',
     photo: null,
   },
   {
@@ -80,10 +81,11 @@ export const LEADERSHIP = [
     sort: 30,
     group: 'board',
     name: 'Kala Klug',
-    credentials: 'PA-C',
+    credentials: 'PA-C, MSHS',
     role: 'Secretary',
     also: ['Education member'],
-    bio: '',
+    location: 'Pittsburgh, PA',
+    bio: 'Kala Klug is a senior PA specializing in addiction medicine with the UPMC Internal Medicine Recovery Engagement Program. She provides compassionate, evidence-based treatment to patients with substance use disorders. Her clinical leadership includes initiatives in harm reduction, contingency management, buprenorphine induction, direct admission, and xylazine-associated wound care. Driven by a commitment to training the next generation of PAs, Kala developed and implemented UPMC’s first addiction medicine elective rotation for PA students. She also serves as Board Secretary and Education Committee Member for the Society of Addiction Medicine PAs. She holds a Master of Science in Health Sciences from George Washington University and a Bachelor of Science in Emergency Medicine from University of Pittsburgh.',
     photo: null,
   },
   {
@@ -112,7 +114,7 @@ export const LEADERSHIP = [
     ],
     location: 'Placerville, CA',
     bio: 'Arianna is an Emergency and Addiction Medicine PA with more than 26 years of clinical experience. She works in Emergency and Addiction Psychiatry with an administrative role in buprenorphine access for the VA Northern California Healthcare System. She serves as Senior Director and Multiple Principal Investigator for The Bridge Center at PHI and CA Bridge, a program for which she is a cofounder. She is President-elect for the California Academy of PAs and is a CE committee member and Presidential Taskforce member for ASAM. She also serves on the Board of Directors for the Society of Addiction Medicine PAs (SAMPA) and the Medical Education Research Foundation. She has authored and co-authored multiple publications, the most recent detailing rural substance use navigation in her local rural hospital.',
-    photo: null,
+    photo: '/leadership/arianna-campbell.jpg',
   },
   {
     id: 'tasha-seliski',
@@ -137,8 +139,8 @@ export const LEADERSHIP = [
     credentials: 'PA-C, MHA',
     role: 'Director at large',
     location: 'Los Angeles, CA',
-    // Submitted bio said “physician assistant”; house voice is PA / physician associate.
-    bio: 'Eric Bergersen, PA-C, MHA, is a board-certified physician associate specializing in emergency medicine and addiction medicine. He earned his bachelor’s degree from Northeastern University in Boston before moving to Washington, D.C., to complete a master’s degree at The George Washington University. He later earned a master\'s degree in healthcare administration from Oklahoma State University and is currently pursuing a doctorate in AI applications at Northeastern University. Throughout his work in emergency medicine, Eric has found it deeply rewarding to serve as the first point of contact for individuals living with substance use disorders. This firsthand clinical experience drives his mission to eliminate barriers to accessible, equitable treatment for opioid use disorder within acute care environments. In his current role, Eric focuses on bridging the gaps between emergency care, the criminal justice system, and addiction recovery. He also serves as a member of the California Physician Assistant Board.',
+    // Submitted wording “physician assistant” and “California Physician Assistant Board” kept.
+    bio: 'Eric Bergersen, PA-C, MHA, is a board-certified physician assistant specializing in emergency medicine and addiction medicine. He earned his bachelor’s degree from Northeastern University in Boston before moving to Washington, D.C., to complete a master’s degree at The George Washington University. He later earned a master\'s degree in healthcare administration from Oklahoma State University and is currently pursuing a doctorate in AI applications at Northeastern University. Throughout his work in emergency medicine, Eric has found it deeply rewarding to serve as the first point of contact for individuals living with substance use disorders. This firsthand clinical experience drives his mission to eliminate barriers to accessible, equitable treatment for opioid use disorder within acute care environments. In his current role, Eric focuses on bridging the gaps between emergency care, the criminal justice system, and addiction recovery. He also serves as a member of the California Physician Assistant Board.',
     photo: null,
     linkedin: 'https://www.linkedin.com/in/ericbergersen/',
   },
@@ -152,7 +154,7 @@ export const LEADERSHIP = [
     location: 'Boston, MA',
     // Form bio dropped the leading H ("arrison Keyes…"); restored here.
     bio: 'Harrison Keyes currently practices in primary care at Boston Health Care for the Homeless Program. He started in the respite program following his graduation from the MGH Institute of Health Professions in 2018. During the COVID-19 pandemic, Harrison conducted the program’s COVID testing and screening endeavors across Boston’s shelter system. He now works as the medical director of the JYP clinic, overseeing the program’s largest outpatient site, offering primary care, psychiatry, Hep C and HIV care as well as addiction and recovery support. Harrison also volunteers as the Chief Delegate for the Massachusetts Association of PAs.',
-    photo: null,
+    photo: '/leadership/harrison-keyes.jpg',
   },
   {
     id: 'edward-traverso',
@@ -174,7 +176,7 @@ export const LEADERSHIP = [
     credentials: 'MPAS, PA-C',
     role: 'Membership chair',
     location: 'Provo, Utah',
-    bio: 'Clarissa Peterson, MPAS, PA-C graduated from the University of Utah Physician Assistant Program in 2009 and has dedicated her career to community health, providing care for underserved populations. Her clinical interests include addiction medicine, women\'s health, global health, mental health, and hepatitis C, with a particular focus on caring for unhoused individuals and immigrant communities. In addition to her clinical practice, Clarissa serves as clinical faculty for several PA programs, precepts PA students, and frequently presents continuing medical education lectures on addiction medicine and related topics. She has served as Chair of the SAMPA Membership Committee since 2025 and is committed to advancing the PA profession through education, mentorship, and professional service.',
+    bio: 'Clarissa Peterson, MPAS, PA-C graduated from the University of Utah Physician Assistant Program in 2009 and has dedicated her career to community health, providing care for underserved populations. Her clinical interests include addiction medicine, women\'s health, global health, mental health, and hepatitis C, with a particular focus on caring for unhoused individuals and immigrant communities. In addition to her clinical practice, Clarissa serves as clinical faculty for several physician assistant programs, precepts PA students, and frequently presents continuing medical education lectures on addiction medicine and related topics. She has served as Chair of the SAMPA Membership Committee since 2025 and is committed to advancing the PA profession through education, mentorship, and professional service.',
     photo: null,
   },
   {
@@ -208,7 +210,7 @@ export const LEADERSHIP = [
     role: 'Education member',
     location: 'Lexington, KY',
     bio: 'Cheryl Vanderford, MSPAS, PA-C, is an Associate Professor at the University of Kentucky in the Department of Physician Assistant Studies (UKPA). She currently practices clinically in the Student Behavioral Health Clinic at UK. Prior to joining UK as faculty, she served as a PA in the Mental Health Service at the Lexington Veterans Affairs HealthCare System where she provided care to Veterans in a variety of settings including an outpatient walk-in/crisis clinic, emergency department, and residential PTSD/Substance Use Treatment program. Cheryl completed a fellowship with the VA National Center for Patient Safety with specific training on quality improvement, research, and teaching. Her research focuses on substance use disorders, on topics related to mental health, and on topics related to pedagogy in higher education. She served as a principal investigator for a SAMHSA funded grant, implementing medication for opioid use disorder (MOUD) training in UKPA curricula, and developing and coordinating continuing medical education conferences to reach interprofessional providers on a national scale. Cheryl’s involvement in SAMPA reflects her passion for advancing PA education related to substance use disorders and equipping students to become transformative leaders who provide evidence based, compassionate care in their communities.',
-    photo: null,
+    photo: '/leadership/cheryl-vanderford.jpg',
   },
   {
     id: 'diane-bruessow',
@@ -220,7 +222,7 @@ export const LEADERSHIP = [
     location: null,
     omitLocation: true,
     bio: 'Dr. Diane Bruessow, DMSc, PA-C, CPXP, DFAAPA, FCPP, earned her Doctor of Medical Science degree from Shenandoah University and is an alumna of the Long Island University/Brooklyn Hospital PA Program. She is an academic clinician serving as principal faculty in Touro University’s Hybrid PA Program (MT) and practicing clinically with an affiliate of Mass General Brigham (MA). Her professional work centers on healthcare distribution, access, and quality, with a focus on improving systems of care. Dr. Bruessow previously served as assistant professor adjunct in the Department of Internal Medicine at Yale School of Medicine and director of justice, equity, diversity, and inclusion for the PA Online Program. She has served on elected and appointed boards and on finance and audit committees for multiple national medical associations, including the AAPA, and serves on SAMPA’s Finance Committee. Beyond medicine, Dr. Bruessow’s interests include the performing arts and the occasional full night’s sleep.',
-    photo: null,
+    photo: '/leadership/diane-bruessow.jpg',
     linkedin: 'https://www.linkedin.com/in/dianebruessow',
   },
   {
