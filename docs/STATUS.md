@@ -62,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** First-pass **on `/about#leadership`** (not a new `/leadership` route). Official 2026–27 roles from Josh’s 13 Aug org doc + form bios from PR #71 + researched directory copy. Danielle Schmeling omitted. Preview PR only — **do not merge / do not publish.** |
+| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** First-pass **on `/about#leadership`** (not a new `/leadership` route). Official 2026–27 roles + form bios + researched directory copy. Danielle Schmeling omitted. **Draft PR #77** — preview only, **do not merge / do not publish.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -173,7 +173,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
-- **About / Leadership section preview (T23 · cursor)** — first-pass roster on existing `/about` (`#leadership`). Official 2026–27 roles + form bios + researched directory copy. Preview PR only; do not merge until Josh says the roster is ready. Separate-page draft remains at PR #71.
+- **About / Leadership section preview (T23 · cursor)** — first-pass roster on existing `/about` (`#leadership`). Official 2026–27 roles + form bios + researched directory copy. **Draft PR #77**; do not merge until Josh says the roster is ready. Separate-page draft remains at PR #71.
 
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
