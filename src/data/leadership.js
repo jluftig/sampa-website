@@ -95,7 +95,7 @@ export const LEADERSHIP = [
     role: 'Treasurer',
     also: ['Finance chair', 'Bylaws and Policy member'],
     bio: 'Jonathan S. Cohen, PA-C, is an emergency-medicine PA at Johns Hopkins Bayview Medical Center. He trained at the Yale PA program (2004) and holds an MBA from Johns Hopkins (2010). He is SAMPA’s treasurer and serves on the finance and bylaws-and-policy committees.',
-    photo: null,
+    photo: '/leadership/jonathan-s-cohen.jpg',
   },
   {
     id: 'arianna-campbell',
@@ -251,7 +251,7 @@ export const LEADERSHIP = [
     credentials: 'PA-C',
     role: 'Membership committee',
     bio: 'Kelsy Babbitt Ruggiero, PA-C, is a street-medicine PA at Akido Labs in Bakersfield, California, and serves on SAMPA’s membership committee. She trained at the Duke PA program (2023).',
-    photo: null,
+    photo: '/leadership/kelsy-babbitt-ruggiero.jpg',
   },
   {
     id: 'megan-zawacki',

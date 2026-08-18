@@ -15,11 +15,12 @@ Sources (still need each person’s okay before production):
 | `kerith-hartmann.jpg` | Kerith Hartmann | Crop from OHSU News OSPA PA of the Year photo (lanyard visible) |
 | `lamont-scott.jpg` | Lamont Scott | MEDEX Northwest magazine, 2016 student-era |
 | `megan-zawacki.jpg` | Megan Zawacki | St. Peter’s Health clinician page |
+| `jonathan-s-cohen.jpg` | Jonathan S. Cohen | Public LinkedIn profile photo (same headshot Josh attached for this preview) |
+| `kelsy-babbitt-ruggiero.jpg` | Kelsy Babbitt Ruggiero | Public LinkedIn profile photo (same headshot Josh attached for this preview) |
 
 Not in this folder (initials placeholder on the page):
 
-- Form Drive headshots from the 2026-08 leadership form (Josh’s Drive IDs are stored on the records in `src/data/leadership.js` as `photoDriveId`; this environment cannot read them)
-- LinkedIn-only photos named in the task for Jonathan S. Cohen and Kelsy Babbitt Ruggiero
+- Form Drive headshots from the 2026-08 leadership form (this environment cannot read them)
 - Shani Wilson, Kala Klug, and other form submitters whose Drive files are not in the repo
 
 Do not hotlink private Drive URLs.
