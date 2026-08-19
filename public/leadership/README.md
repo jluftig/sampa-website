@@ -24,7 +24,7 @@ find. Never hotlink private Drive URLs.
 | `jim-anderson.jpg` | James E. Anderson | AAPA News Central 2017 headshot (bald, tan shirt, striped tie) — same likeness Josh provided |
 | `jonathan-baker.jpg` | Jonathan Baker | AAPA 2025 presenter page. Do not replace with the NYU anorectal/LGBTQ Jonathan Baker photo. |
 | `jordan-vold.jpg` | Jordan Vold | Illinois Society of Addiction Medicine board photo (beard, wave-pattern shirt). Replaces the earlier UI Health clean-shaven / light-blue-shirt file. |
-| `kerith-hartmann.jpg` | Kerith Hartmann | Head-and-shoulders crop from the OHSU News OSPA PA of the Year photo (black blazer, lanyard) |
+| `kerith-hartmann.jpg` | Kerith Hartmann | 2026-08-19 Leadership Profile form upload (Kerith Hartmann) |
 | `lamont-scott.jpg` | Lamont Scott | MEDEX Northwest magazine, 2016 (light green checked shirt) — public photo Josh provided |
 | `megan-zawacki.jpg` | Megan Zawacki | St. Peter’s Health clinician page (blonde, black top) — public photo Josh provided |
 | `jonathan-s-cohen.jpg` | Jonathan S. Cohen | Public LinkedIn profile photo (same headshot Josh attached for this preview) |
