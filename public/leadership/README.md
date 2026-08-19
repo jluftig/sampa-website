@@ -19,14 +19,14 @@ find. Never hotlink private Drive URLs.
 | `josh-luftig.jpg` | Josh Luftig | Submitted Leadership Profile photo (salt-and-pepper / navy blazer / light-blue open shirt). Replaces the earlier Dialogue4Health / Bridge quilted-jacket file. |
 | `kala-klug.jpg` | Kala Klug | Same blonde / black-blazer / teal-top studio likeness as the Leadership Profile attachment (UPMC provider photo) |
 | `shani-wilson.jpg` | Shani Wilson | Submitted Leadership Profile photo (locs / black rectangular glasses / forest-green V-neck / black blazer) |
-| `tasha-seliski.jpg` | Natasha “Tasha” Seliski | University of Utah Health faculty page |
-| `debra-newman.jpg` | Debra Newman | PCSS-MOUD lead-mentor page |
-| `jim-anderson.jpg` | James E. Anderson | AAPA News Central (2017 headshot) |
-| `jonathan-baker.jpg` | Jonathan Baker | AAPA 2025 presenter page |
-| `jordan-vold.jpg` | Jordan Vold | UI Health / Mile Square clinician page |
-| `kerith-hartmann.jpg` | Kerith Hartmann | Crop from OHSU News OSPA PA of the Year photo (lanyard visible) |
-| `lamont-scott.jpg` | Lamont Scott | MEDEX Northwest magazine, 2016 student-era |
-| `megan-zawacki.jpg` | Megan Zawacki | St. Peter’s Health clinician page |
+| `tasha-seliski.jpg` | Natasha “Tasha” Seliski | University of Utah Health faculty page (dark blazer, pearl earrings) — public photo Josh provided |
+| `debra-newman.jpg` | Debra Newman | PCSS-MOUD lead-mentor page; recropped so the embroidered “Debra Newman, PA-C, MPH” on the coat is visible |
+| `jim-anderson.jpg` | James E. Anderson | AAPA News Central 2017 headshot (bald, tan shirt, striped tie) — same likeness Josh provided |
+| `jonathan-baker.jpg` | Jonathan Baker | AAPA 2025 presenter page. Do not replace with the NYU anorectal/LGBTQ Jonathan Baker photo. |
+| `jordan-vold.jpg` | Jordan Vold | Illinois Society of Addiction Medicine board photo (beard, wave-pattern shirt). Replaces the earlier UI Health clean-shaven / light-blue-shirt file. |
+| `kerith-hartmann.jpg` | Kerith Hartmann | Head-and-shoulders crop from the OHSU News OSPA PA of the Year photo (black blazer, lanyard) |
+| `lamont-scott.jpg` | Lamont Scott | MEDEX Northwest magazine, 2016 (light green checked shirt) — public photo Josh provided |
+| `megan-zawacki.jpg` | Megan Zawacki | St. Peter’s Health clinician page (blonde, black top) — public photo Josh provided |
 | `jonathan-s-cohen.jpg` | Jonathan S. Cohen | Public LinkedIn profile photo (same headshot Josh attached for this preview) |
 | `kelsy-babbitt-ruggiero.jpg` | Kelsy Babbitt Ruggiero | Public LinkedIn profile photo (same headshot Josh attached for this preview) |
 
