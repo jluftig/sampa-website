@@ -124,7 +124,8 @@ export const LEADERSHIP = [
       'AMERSA liaison',
       'Education member',
     ],
-    bio: 'Natasha “Tasha” Seliski, MPAS, PA-C, is University of Utah PA faculty and a general internal medicine clinician at Sugar House Health Center. She is a SAMPA director at large, AMERSA liaison, and co-lead of the public health / public policy statements workgroup.',
+    // Emailed to Josh (not the leadership form). Keep as written.
+    bio: 'Natasha Seliski, PA-C, is an Assistant Professor at the University of Utah whose work focuses on improving outcomes for individuals with substance use and substance use disorders through research, clinical care, and education. She is a PhD candidate in Population Health Sciences, where her research examines healthcare systems, implementation science, and strategies to improve the delivery of evidence-based substance use disorder care across healthcare settings. Clinically, she practices as part of a multidisciplinary primary care team and an inpatient addiction medicine service. Natasha serves as Director-at-Large and co-chairs the Public Health Policy Committee for SAMPA.',
     photo: '/leadership/tasha-seliski.jpg',
   },
   {
