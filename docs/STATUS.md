@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-19 (T23 About/leadership merged to Production via PR #77)
+**Last updated:** 2026-08-19 (T28 Josh About bio naloxone figure — PR open, do not merge until Josh says)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,6 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T28 | Josh About bio: naloxone doses 1.15 million | cursor | 2026-08-19 | **Claimed cursor.** Copy-only: `src/data/leadership.js` `josh-luftig`. 600,000 → more than 1.15 million (DHCS NDP 2026-08-10 kits × 2 sprays). PR open; do not merge until Josh says. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -172,6 +173,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
+- **Josh About bio naloxone figure (T28 · cursor)** — PR open (`cursor/josh-bio-naloxone-doses-89a5`). Copy-only update to Josh’s public bio: more than **1.15 million** doses. Do not merge until Josh says.
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
   keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID,
