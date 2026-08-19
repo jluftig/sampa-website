@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-19 (T28 Josh About bio naloxone figure — [PR #78](https://github.com/jluftig/sampa-website/pull/78) open, do not merge until Josh says)
+**Last updated:** 2026-08-19 (T28 Josh About bio naloxone figure merged via PR #78)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T28 | Josh About bio: naloxone doses 1.15 million | cursor | 2026-08-19 | **Claimed cursor.** Copy-only: `src/data/leadership.js` `josh-luftig`. 600,000 → more than 1.15 million (DHCS NDP 2026-08-10 kits × 2 sprays). [PR #78](https://github.com/jluftig/sampa-website/pull/78) open; do not merge until Josh says. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -70,11 +69,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T28 | Josh About bio: naloxone doses 1.15 million | cursor | 2026-08-19 | **Merged PR #78 → Production.** Josh Luftig public bio: more than **1.15 million** doses at no cost (was 600,000). Copy-only; `src/data/leadership.js` `josh-luftig`. |
 | T23 | Public About/Leadership page | cursor | 2026-08-19 | **Merged PR #77 → Production.** `/about#leadership` is the 2026–27 roster. Kerith form bio + form headshot (Certification Co-Chair, committees, Portland, OR). About nav has the New badge. Danielle omitted. Separate-page experiment remains at draft PR #71. |
 | T24 | Document news one-shot + internal QC + voice trial | egg | 2026-08-17 | **Merged PR #72 → main.** One-shot QC; Dunk/critic loops retired. **Voice trial ON** (ALiEM job / MMWR voice / generalist-PA; revert: `revert news voice`). Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`. |
 | T27 | Homepage CAQ card + membership CAQ line | cursor | 2026-08-17 | **Merged PR #76 → Production.** In-development CAQ card on homepage programs row → live `/caq`. One careful membership line on home + `/join`: members stay in the loop as the CAQ takes shape (not “join to get the CAQ”; SAMPA does not award it). |
 | T26 | Public Addiction Medicine CAQ page (`/caq`) | cursor | 2026-08-16 | **Merged PR #74 → Production.** Public `/caq`: NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ. Nav + footer + About link to the page. |
-| T22 | Policy hub: HRSA psychedelic-therapies RFI comment | egg | 2026-08-12 | **Merged PR #70 → Production.** Second comment live (submitted 2026-08-11, 91 FR 43103; PDF from final docx). /policy opens with two-up "Read our latest material" (both comments, equal weight; auto-takes newest two). Welcome + Weekly policy cards widened: "from MOUD and MAT to emerging therapies." ⚠ Weekly draft rebuild must run AFTER this (T3 note). |
 
 ### Task workflow (agents + humans)
 
@@ -173,7 +172,6 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
-- **Josh About bio naloxone figure (T28 · cursor)** — [PR #78](https://github.com/jluftig/sampa-website/pull/78) (`cursor/josh-bio-naloxone-doses-89a5`). Copy-only update to Josh’s public bio: more than **1.15 million** doses. Do not merge until Josh says.
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
   keywords/search/saved, auth (Apple + Google + email code via Brevo, Face ID,
@@ -273,7 +271,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
-- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot.
+- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
