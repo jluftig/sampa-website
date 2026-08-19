@@ -295,10 +295,10 @@ export const LEADERSHIP = [
     group: 'committees',
     name: 'Kerith Hartmann',
     credentials: 'PA-C',
-    role: 'Certification Member',
+    role: 'Certification Co-Chair',
     also: ['News and Newsletter Member'],
     location: 'Portland, OR',
-    bio: 'Kerith Hartmann, PA-C, practices primary care and addiction medicine at OHSU. She was named the 2025 Oregon Society of Physician Associates PA of the Year. She serves on SAMPA’s Certification and News and Newsletter committees.',
+    bio: 'Kerith Hartmann, PA-C, practices primary care and addiction medicine at OHSU. She was named the 2025 Oregon Society of Physician Associates PA of the Year. She co-chairs SAMPA’s Certification and serves on News and Newsletter.',
     photo: '/leadership/kerith-hartmann.jpg',
   },
   {
