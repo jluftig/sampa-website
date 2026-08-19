@@ -144,8 +144,8 @@ export default function ValueProps() {
         </div>
 
         <p className="text-center mt-12 text-text/60">
-          <Link to="/about#programs" className="font-semibold text-primary-text hover:underline">
-            Full program details on our About page
+          <Link to="/about" className="font-semibold text-primary-text hover:underline">
+            Meet the people who lead SAMPA
           </Link>
         </p>
 
