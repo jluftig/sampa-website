@@ -169,10 +169,6 @@ export default function LeadershipRoster() {
           </div>
         );
       })}
-
-      <p className="text-sm text-text/60 leading-relaxed max-w-3xl">
-        {LEADERSHIP_PAGE.alsoServing}
-      </p>
     </section>
   );
 }

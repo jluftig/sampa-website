@@ -21,8 +21,6 @@ export const LEADERSHIP_PAGE = {
     'The people leading this working year — officers, directors, chairs, and advisors.',
   previewNote:
     'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio and the submitted photo. Photos on other cards still come from public sources and need each person’s okay.',
-  alsoServing:
-    'Ad hoc work this year: public health / public policy statements (Tasha Seliski, Arianna Campbell, Josh Luftig); certification (Arianna Campbell, Kerith Hartmann, Debra Newman); membership news and newsletter (Kerith Hartmann, Arianna Campbell, Josh Luftig).',
 };
 
 /**
@@ -294,7 +292,7 @@ export const LEADERSHIP = [
     credentials: 'PA-C, MSPAS, MPH',
     role: 'Certification ad-hoc workgroup',
     bio: 'Debra Newman, PA-C, MSPAS, MPH, leads outpatient SUD services at Encompass Community Services in Santa Cruz County, California, and is a PCSS-MOUD lead mentor. She previously practiced in New Mexico treatment courts and served as a co-editor of ASAM Weekly.',
-    bioLong: 'Debra R. Newman, PA-C, MSPAS, MPH, is lead provider for outpatient substance use disorder services at Encompass Community Services in Santa Cruz County, California. A later PCSS lead-mentor biography also states that she provides psychiatric care to Encompass residential treatment patients. She is a lead mentor for the Providers Clinical Support System and the only PA listed in that lead-mentor cohort. Newman previously served as medical practitioner for adult drug and mental health treatment courts in Santa Fe County, New Mexico, and as a co-editor of ASAM Weekly. She helped develop ASAM courses on treating opioid use disorder and on integrating addiction medicine with treatment courts. She trained at the University of St. Francis and holds an MPH. She received a 2017–2018 PA Foundation/NIDA-CTN Mentored Outreach Award.',
+    bioLong: 'Debra R. Newman, PA-C, MSPAS, MPH, is lead provider for outpatient substance use disorder services at Encompass Community Services in Santa Cruz County, California. She is a lead mentor for the Providers Clinical Support System and the only PA listed in that lead-mentor cohort. Newman previously served as medical practitioner for adult drug and mental health treatment courts in Santa Fe County, New Mexico, and as a co-editor of ASAM Weekly. She helped develop ASAM courses on treating opioid use disorder and on integrating addiction medicine with treatment courts. She trained at the University of St. Francis and holds an MPH. She received a 2017–2018 PA Foundation/NIDA-CTN Mentored Outreach Award.',
     photo: '/leadership/debra-newman.jpg',
   },
 ];
@@ -303,7 +301,7 @@ export const LEADERSHIP_GROUPS = [
   {
     id: 'board',
     title: 'Board and officers',
-    intro: 'Voting officers and fellow directors at large for 2026–2027.',
+    intro: 'Voting officers and directors at large for 2026–2027.',
   },
   {
     id: 'committees',

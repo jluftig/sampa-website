@@ -69,7 +69,7 @@ export default function AboutPage() {
               Elsewhere on the site
             </h2>
             <p className="mb-6">
-              This page is the society and the people who lead it. Daily news,
+              This page is who we are and who leads. Daily news,
               the program catalog, the Addiction Medicine CAQ, policy comments,
               membership, and giving each have their own home.
             </p>
@@ -115,8 +115,8 @@ export default function AboutPage() {
               Join the work
             </h2>
             <p className="mb-8">
-              Membership opens the peer directory. A gift keeps the society
-              building. Both serve the same end: patients reaching care.
+              Membership opens the peer directory. A gift keeps the work going.
+              Both serve the same end: patients reaching care.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Link
