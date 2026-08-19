@@ -20,7 +20,7 @@ export const LEADERSHIP_PAGE = {
   oneLiner:
     'The people leading this working year — officers, directors, chairs, and advisors.',
   previewNote:
-    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio and the submitted photo. Photos on other cards still come from public sources and need each person’s okay.',
+    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio and the submitted photo. Other cards use public-source photos Josh provided for this preview.',
 };
 
 /**
@@ -162,8 +162,8 @@ export const LEADERSHIP = [
     credentials: 'PA-C, CAQ-Psychiatry',
     role: 'Director at large',
     location: 'Richland, WA',
-    // Dropped submitter note "Feel free to trim it down!" Light grammar only.
-    bio: 'My background of working as a mental health counselor in inpatient psychiatry and eventually training in addiction during psychiatry residency led to my passion for bringing addiction treatment to the forefront of my practice. During my time as a provider I have worked in community care where I have helped integrate dual-diagnosis care from Yakima, to the Tri-Cities, and beyond. Currently I practice outpatient at the VA in Boise. Additionally I lead an addiction treatment program at Benton County Corrections where I am working to implement a grant-funded program to expand access to addiction and detoxification treatment for at-risk individuals during incarceration and support their transition to ongoing care. One of my professional highlights has been helping implement new advancements in addiction care, including rapid-access injection policies, to make effective treatment more accessible. Outside of medicine, I am passionate about music and travel.',
+    // Dropped submitter note "Feel free to trim it down!" First person → third person only.
+    bio: 'His background of working as a mental health counselor in inpatient psychiatry and eventually training in addiction during psychiatry residency led to his passion for bringing addiction treatment to the forefront of his practice. During his time as a provider he has worked in community care where he has helped integrate dual-diagnosis care from Yakima, to the Tri-Cities, and beyond. Currently he practices outpatient at the VA in Boise. Additionally he leads an addiction treatment program at Benton County Corrections where he is working to implement a grant-funded program to expand access to addiction and detoxification treatment for at-risk individuals during incarceration and support their transition to ongoing care. One of his professional highlights has been helping implement new advancements in addiction care, including rapid-access injection policies, to make effective treatment more accessible. Outside of medicine, he is passionate about music and travel.',
     photo: '/leadership/edward-traverso.jpg',
   },
   {
