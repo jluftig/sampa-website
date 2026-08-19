@@ -125,13 +125,8 @@ export default function LeadershipRoster() {
       className="mt-4 md:mt-6"
     >
       <header className="max-w-3xl mb-10 md:mb-12">
-        <div className="flex flex-wrap items-center gap-3 mb-4">
-          <div className="text-primary-text font-bold font-data tracking-widest text-xs uppercase">
-            {LEADERSHIP_PAGE.eyebrow}
-          </div>
-          <span className="text-xs font-data uppercase tracking-wider text-accent font-semibold">
-            Preview
-          </span>
+        <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-4 uppercase">
+          {LEADERSHIP_PAGE.eyebrow}
         </div>
         <h2
           id="leadership-heading"
@@ -143,10 +138,6 @@ export default function LeadershipRoster() {
           {LEADERSHIP_PAGE.oneLiner}
         </p>
       </header>
-
-      <div className="rounded-3xl border border-primary/15 bg-primary/5 p-5 md:p-6 mb-10 md:mb-12 max-w-3xl">
-        <p className="text-text/80 leading-relaxed">{LEADERSHIP_PAGE.previewNote}</p>
-      </div>
 
       {LEADERSHIP_GROUPS.map((group) => {
         const people = listLeadershipByGroup(group.id);

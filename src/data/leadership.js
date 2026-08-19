@@ -1,9 +1,9 @@
 /**
- * Public SAMPA leadership roster for the About page — first-pass preview.
+ * Public SAMPA leadership roster for the About page.
  *
  * Roles: Josh’s 2026–2027 working org-structure doc (13 Aug 2026).
- * Bios: leadership-form submissions when present; otherwise the researched
- * directory copy supplied for this preview. Do not invent a clinical bio.
+ * Bios: leadership-form submissions when present; otherwise researched
+ * directory copy. Do not invent a clinical bio.
  *
  * Danielle Schmeling is not joining — do not add her.
  * ASIO, Immediate Past President, and Student DAL are vacant this year —
@@ -19,8 +19,6 @@ export const LEADERSHIP_PAGE = {
   title: 'Leadership',
   oneLiner:
     'The people leading this working year — officers, directors, chairs, and advisors.',
-  previewNote:
-    'First-pass preview for review — not a production ship. Eleven people submitted a Leadership Profile with website permission; those cards use the submitted bio and the submitted photo. Other cards use public-source photos Josh provided for this preview.',
 };
 
 /**
@@ -270,7 +268,7 @@ export const LEADERSHIP = [
     name: 'Lamont Andante Scott',
     credentials: 'PA-C',
     role: 'Membership committee',
-    bio: 'Lamont Andante Scott, PA-C, is a Washington PA at the didgʷálič Wellness Center in Anacortes. He trained at MEDEX Northwest (Seattle Class 49) and serves on SAMPA’s membership committee.',
+    bio: 'Lamont Andante Scott, PA-C, is a Washington PA at the Didgwalic Wellness Center in Anacortes. He trained at MEDEX Northwest (Seattle Class 49) and serves on SAMPA’s membership committee.',
     photo: '/leadership/lamont-scott.jpg',
   },
   {

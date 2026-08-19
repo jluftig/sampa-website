@@ -7,7 +7,7 @@ import LeadershipRoster from '../components/LeadershipRoster';
 
 // About's job: who we are + who leads. Programs, CAQ, news, join, donate,
 // and the no-wrong-doors pitch already have homes. Keep 501(c)(3) + EIN
-// findable for Ad Grants. Written for the T23 preview — do not ship yet.
+// findable for Ad Grants.
 
 export default function AboutPage() {
   const { hash } = useLocation();
