@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-19 (T23 Kerith submitted form bio on PR #77)
+**Last updated:** 2026-08-19 (T23 Kerith form headshot on PR #77)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** `/about` rewrite on **draft PR #77**. 2026-08-19: Kerith submitted Leadership Profile bio on her card (Certification Co-Chair, committees, Portland, OR). Photo unchanged pending submitted jpg. Danielle omitted. **Do not merge / do not publish.** |
+| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** `/about` rewrite on **draft PR #77**. 2026-08-19: Kerith submitted Leadership Profile bio on her card (Certification Co-Chair, committees, Portland, OR). Photo is her 2026-08-19 form JPEG (navy collar / gray studio), not the OHSU News crop. Danielle omitted. **Do not merge / do not publish.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -173,7 +173,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ## In flight (branches / active tracks)
 
-- **About / Leadership section (T23 · cursor)** — `/about` rewrite on **draft PR #77**. 2026-08-19 Kerith submitted form bio. Do not merge. Separate-page experiment remains at PR #71.
+- **About / Leadership section (T23 · cursor)** — `/about` rewrite on **draft PR #77**. 2026-08-19 Kerith submitted form bio and form headshot. Do not merge. Separate-page experiment remains at PR #71.
 
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
@@ -274,7 +274,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
-- [ ] **About / Leadership section (T23 · cursor in progress)** — `/about` rewrite on PR #77. 2026-08-19 Kerith submitted form bio. Vercel preview only; do not ship to production.
+- [ ] **About / Leadership section (T23 · cursor in progress)** — `/about` rewrite on PR #77. 2026-08-19 Kerith submitted form bio and form headshot. Vercel preview only; do not ship to production.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
