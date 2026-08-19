@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-19 (T23 Kerith form headshot on PR #77)
+**Last updated:** 2026-08-19 (T23 About/leadership merged to Production via PR #77)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T23 | Public About/Leadership page (form bios preview) | cursor | 2026-08-13 | **Claimed cursor.** `/about` rewrite on **draft PR #77**. 2026-08-19: Kerith submitted Leadership Profile bio on her card (Certification Co-Chair, committees, Portland, OR). Photo is her 2026-08-19 form JPEG (navy collar / gray studio), not the OHSU News crop. Danielle omitted. **Do not merge / do not publish.** |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -70,11 +69,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T23 | Public About/Leadership page | cursor | 2026-08-19 | **Merged PR #77 → Production.** `/about#leadership` is the 2026–27 roster. Kerith form bio + form headshot (Certification Co-Chair, committees, Portland, OR). About nav has the New badge. Danielle omitted. Separate-page experiment remains at draft PR #71. |
 | T24 | Document news one-shot + internal QC + voice trial | egg | 2026-08-17 | **Merged PR #72 → main.** One-shot QC; Dunk/critic loops retired. **Voice trial ON** (ALiEM job / MMWR voice / generalist-PA; revert: `revert news voice`). Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`. |
 | T27 | Homepage CAQ card + membership CAQ line | cursor | 2026-08-17 | **Merged PR #76 → Production.** In-development CAQ card on homepage programs row → live `/caq`. One careful membership line on home + `/join`: members stay in the loop as the CAQ takes shape (not “join to get the CAQ”; SAMPA does not award it). |
 | T26 | Public Addiction Medicine CAQ page (`/caq`) | cursor | 2026-08-16 | **Merged PR #74 → Production.** Public `/caq`: NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ. Nav + footer + About link to the page. |
 | T22 | Policy hub: HRSA psychedelic-therapies RFI comment | egg | 2026-08-12 | **Merged PR #70 → Production.** Second comment live (submitted 2026-08-11, 91 FR 43103; PDF from final docx). /policy opens with two-up "Read our latest material" (both comments, equal weight; auto-takes newest two). Welcome + Weekly policy cards widened: "from MOUD and MAT to emerging therapies." ⚠ Weekly draft rebuild must run AFTER this (T3 note). |
-| T21 | No wrong doors + prevalence — site + emails | egg | 2026-08-12 | **Merged PR #69 → Production.** Hero: "PAs treating addiction wherever patients present"; homepage No-wrong-doors band (8 setting chips incl. street medicine / telehealth / bridge clinics / OTPs; 2025-NSDUH stats 44.6M · 1 in 6 · 73% w/ on-page sources; stats refresh ~July 2027); /about anchor sentence (co-occurring MH lives there); /donate echo; welcome + launch identity clause. |
 
 ### Task workflow (agents + humans)
 
@@ -172,8 +171,6 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ---
 
 ## In flight (branches / active tracks)
-
-- **About / Leadership section (T23 · cursor)** — `/about` rewrite on **draft PR #77**. 2026-08-19 Kerith submitted form bio and form headshot. Do not merge. Separate-page experiment remains at PR #71.
 
 - **Mobile app — TestFlight / App Store path** (`mobile/` on main; not a separate
   long-lived feature branch anymore). Built and device-verified: news/Key Points/
@@ -274,7 +271,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
-- [ ] **About / Leadership section (T23 · cursor in progress)** — `/about` rewrite on PR #77. 2026-08-19 Kerith submitted form bio and form headshot. Vercel preview only; do not ship to production.
+- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
