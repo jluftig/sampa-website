@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-19 (T28 Josh About bio naloxone figure merged via PR #78)
+**Last updated:** 2026-08-19 (T29 Jonathan Baker Leadership Profile form card — preview only)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,6 +62,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T29 | Jonathan Baker About card from 2026-08-19 Leadership Profile form | cursor | 2026-08-19 | **Claimed cursor. Preview only — do not merge / do not deploy Production.** Form bio + `PA-C` + LinkedIn + Membership advisor seat shipped. Chat-attached PNG (`Baker_Headshot2025 Square`, 525×502) did not arrive as bytes on the VM — AAPA scrape still at `/leadership/jonathan-baker.jpg` until the file is dropped on the branch. Email internal only. Danielle stays off the page. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
