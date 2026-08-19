@@ -298,7 +298,8 @@ export const LEADERSHIP = [
     role: 'Certification Co-Chair',
     also: ['News and Newsletter Member'],
     location: 'Portland, OR',
-    bio: 'Kerith Hartmann, PA-C, practices primary care and addiction medicine at OHSU. She was named the 2025 Oregon Society of Physician Associates PA of the Year. She co-chairs SAMPA’s Certification and serves on News and Newsletter.',
+    // Submitted Leadership Profile 2026-08-19. Keep as written.
+    bio: 'Kerith Hartmann, PA-C, finds meaning in work through therapeutic relationships with patients as they navigate change. Her academic interests include teaching, interprofessional dialogue and supporting best practices. She leans on approaches based on patient-centered, trauma-informed and evidence-based care.',
     photo: '/leadership/kerith-hartmann.jpg',
   },
   {
