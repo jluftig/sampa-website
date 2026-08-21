@@ -174,8 +174,8 @@ export default function Join() {
             <Star className="w-6 h-6 fill-primary/10" />
           </div>
           <p className="text-text/80 text-sm">
-            <strong>Choose your term on the card:</strong> save ~10% on 2 years and up
-            to ~20% on 3 years. Memberships auto-renew at the end of the term and are easy to cancel.
+            <strong>Choose your term on the card:</strong> save 10–13% on 2 years and
+            17–20% on 3 years. Memberships auto-renew at the end of the term and are easy to cancel.
             <span className="block mt-1 text-xs text-text/50">
               Student and Pre-PA cap at 2 years. Legacy members can choose a one-time lifetime option.
             </span>

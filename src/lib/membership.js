@@ -8,7 +8,7 @@
 // `prices` is keyed by term length in years; a missing duration means that
 // tier can't buy it (Student/Pre-PA cap at 2 years). `lifetime` is a one-time
 // payment (Legacy only). Multi-year terms are Stripe subscriptions billed
-// every N years (auto-renewing), at ~10% (2yr) to ~17-20% (3yr) discounts.
+// every N years (auto-renewing), at 10–13% (2yr) / 17–20% (3yr) discounts.
 export const MEMBERSHIP_TIERS = [
   {
     key: 'fellow',
