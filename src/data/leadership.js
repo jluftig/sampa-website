@@ -283,11 +283,12 @@ export const LEADERSHIP = [
     id: 'lamont-scott',
     sort: 190,
     group: 'committees',
-    name: 'Lamont Andante Scott',
+    name: 'Lamont Scott',
     credentials: 'PA-C',
     role: 'Membership committee',
-    location: 'Anacortes, WA',
-    bio: 'Lamont Andante Scott, PA-C, is a Washington PA at the Didgwalic Wellness Center in Anacortes. He trained at MEDEX Northwest (Seattle Class 49) and serves on SAMPA’s membership committee.',
+    location: 'Seattle, WA',
+    // Submitted Leadership Profile 2026-08-19. Third person from form.
+    bio: 'Lamont Scott, PA-C, began his healthcare career as a U.S. Army combat medic serving in OIF/OEF. After the Army he trained at the University of Washington MEDEX PA Program in 2015. His first job was in family medicine at a community health center, and he now specializes in addiction medicine. He is a medical provider at a tribal-owned opioid treatment program and at a nonprofit low-barrier organization specializing in acute post-overdose care in downtown Seattle. He is completing doctorate studies at the University of Pittsburgh’s DMSc program, with expected completion in 2027. His research interests include the intersection of current methadone patients and their transition to LAI Buprenorphine. In his free time he enjoys traveling and trying new food spots. He is blessed to have a beautiful supportive wife and three wonderful children.',
     photo: '/leadership/lamont-scott.jpg',
   },
   {
