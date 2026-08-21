@@ -31,7 +31,7 @@ export default function AboutPage() {
       <Navbar />
 
       <main className="max-w-6xl mx-auto px-4 pt-32 pb-24">
-        <header className="max-w-3xl mb-10 md:mb-12" id="who-we-are">
+        <header className="max-w-3xl mb-10 md:mb-12 scroll-mt-32" id="who-we-are">
           <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-4 uppercase">
             About SAMPA
           </div>
@@ -61,7 +61,7 @@ export default function AboutPage() {
         <LeadershipRoster />
 
         <div className="max-w-3xl mt-16 md:mt-20 space-y-12 text-lg text-text/80 leading-relaxed">
-          <section id="programs" aria-labelledby="elsewhere-heading">
+          <section id="programs" aria-labelledby="elsewhere-heading" className="scroll-mt-32">
             <h2
               id="elsewhere-heading"
               className="text-2xl md:text-3xl font-drama font-bold text-text mb-4"
@@ -107,7 +107,7 @@ export default function AboutPage() {
             </ul>
           </section>
 
-          <section id="get-involved" aria-labelledby="get-involved-heading">
+          <section id="get-involved" aria-labelledby="get-involved-heading" className="scroll-mt-32">
             <h2
               id="get-involved-heading"
               className="text-2xl md:text-3xl font-drama font-bold text-text mb-4"
