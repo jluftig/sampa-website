@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-21 (T30 claimed — 2026-08-21 night click-through preview PR)
+**Last updated:** 2026-08-21 (T30 night click-through fixes merged via PR #80 → Production)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -62,7 +62,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T30 | Public-site click-through fixes (2026-08-21 night pass) | cursor | 2026-08-21 | **Claimed cursor · preview PR only — not Production.** Four public-site fixes from www.addictionpas.org click-through: Eric Bergersen house-voice PA; `/join` intro vs real multi-year percents; sticky-header hash offset (`#leadership`, `#programs`); home SAMHSA citation label. Josh walks Vercel preview first. Do not merge / do not mark Done until Josh says. Open PR #80. T29 is the Jonathan Baker preview (PR #79). |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -70,11 +69,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T30 | Public-site click-through fixes (2026-08-21 night pass) | cursor | 2026-08-21 | **Merged PR #80 → Production.** Josh walked the Vercel preview and said ship. Eric Bergersen “board-certified PA”; `/join` intro 10–13% / 17–20% matching stored prices; sticky-header hash offset; home SAMHSA citation by survey name. |
 | T28 | Josh About bio: naloxone doses 1.15 million | cursor | 2026-08-19 | **Merged PR #78 → Production.** Josh Luftig public bio: more than **1.15 million** doses at no cost (was 600,000). Copy-only; `src/data/leadership.js` `josh-luftig`. |
 | T23 | Public About/Leadership page | cursor | 2026-08-19 | **Merged PR #77 → Production.** `/about#leadership` is the 2026–27 roster. Kerith form bio + form headshot (Certification Co-Chair, committees, Portland, OR). About nav has the New badge. Danielle omitted. Separate-page experiment remains at draft PR #71. |
 | T24 | Document news one-shot + internal QC + voice trial | egg | 2026-08-17 | **Merged PR #72 → main.** One-shot QC; Dunk/critic loops retired. **Voice trial ON** (ALiEM job / MMWR voice / generalist-PA; revert: `revert news voice`). Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`. |
 | T27 | Homepage CAQ card + membership CAQ line | cursor | 2026-08-17 | **Merged PR #76 → Production.** In-development CAQ card on homepage programs row → live `/caq`. One careful membership line on home + `/join`: members stay in the loop as the CAQ takes shape (not “join to get the CAQ”; SAMPA does not award it). |
-| T26 | Public Addiction Medicine CAQ page (`/caq`) | cursor | 2026-08-16 | **Merged PR #74 → Production.** Public `/caq`: NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ. Nav + footer + About link to the page. |
 
 ### Task workflow (agents + humans)
 
@@ -272,6 +271,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 ### Product — site polish / marketing
 
+- [x] **Night click-through fixes (T30)** — 2026-08-21. PR #80. Eric Bergersen house-voice PA; `/join` intro 10–13% / 17–20%; hash targets clear the sticky header; home SAMHSA citation is the survey name.
 - [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
@@ -343,6 +343,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-21 · **Public-site click-through fixes (T30)** — PR #80. Eric Bergersen “board-certified PA”; `/join` + homepage multi-year intro 10–13% / 17–20%; `scroll-padding-top` so `#leadership` / `#programs` clear the floating nav; home SAMHSA source labeled by survey name.
 - 2026-08-17 · **Homepage CAQ card + membership line (T27)** — PR #76. In-development CAQ card on homepage programs row links to live `/caq`. Membership copy on home + `/join`: members stay in the loop as the CAQ takes shape.
 - 2026-08-16 · **Addiction Medicine CAQ page (T26)** — PR #74. Public `/caq` (nav, footer, About). NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ.
 - 2026-08-07 · **Public newsletter signup (T5)** — PR #62. Large **SAMPA Updates**
