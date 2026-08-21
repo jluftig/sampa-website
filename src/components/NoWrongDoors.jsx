@@ -80,9 +80,9 @@ export default function NoWrongDoors() {
               href="https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health/national-releases/2025"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-white/70"
+              className="underline underline-offset-2 hover:text-white/70 break-words"
             >
-              SAMHSA, 2025 National Survey on Drug Use and Health
+              National Survey on Drug Use and Health (SAMHSA, 2025)
             </a>
             {' '}·{' '}
             <a

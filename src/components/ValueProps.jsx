@@ -61,7 +61,7 @@ const building = [
 
 export default function ValueProps() {
   return (
-    <section id="programs" className="py-24 bg-gradient-to-b from-transparent to-primary/5 px-4">
+    <section id="programs" className="scroll-mt-32 py-24 bg-gradient-to-b from-transparent to-primary/5 px-4">
       <div className="max-w-7xl mx-auto">
 
         <div className="text-center mb-16 md:mb-20">

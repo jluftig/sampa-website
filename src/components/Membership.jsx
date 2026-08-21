@@ -8,7 +8,7 @@ export default function Membership() {
   const membershipTiers = MEMBERSHIP_TIERS;
 
   return (
-    <section id="membership" className="py-24 px-4 max-w-7xl mx-auto">
+    <section id="membership" className="scroll-mt-32 py-24 px-4 max-w-7xl mx-auto">
 
       {/* MEMBERSHIP SECTION */}
       <div className="text-center mb-16">
@@ -40,7 +40,7 @@ export default function Membership() {
           <h3 className="font-bold text-xl text-primary-text mb-2">Multi-year savings when you join</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
             Annual prices shown below. On the next step you can choose a longer term and save{' '}
-            <strong>~10% for 2 years</strong> or <strong>up to ~20% for 3 years</strong>.
+            <strong>10–13% for 2 years</strong> or <strong>17–20% for 3 years</strong>.
             <span className="block mt-1 text-xs opacity-70 italic">
               (Student and Pre-PA: up to 2 years. Legacy: optional $125 lifetime.)
             </span>

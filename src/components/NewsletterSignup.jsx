@@ -36,7 +36,7 @@ export default function NewsletterSignup({ variant = 'banner' }) {
       <section
         id="updates-signup"
         aria-labelledby="newsletter-heading"
-        className="bg-background px-4 py-12 md:py-16"
+        className="scroll-mt-32 bg-background px-4 py-12 md:py-16"
       >
         <div className="max-w-6xl mx-auto bg-primary-text text-white rounded-[2rem] md:rounded-[2.75rem] px-6 py-10 sm:px-10 sm:py-12 md:px-14 md:py-14 shadow-xl shadow-primary-text/15">
           <div className="grid md:grid-cols-2 gap-10 md:gap-14 items-center">

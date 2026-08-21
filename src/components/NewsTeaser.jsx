@@ -27,7 +27,7 @@ export default function NewsTeaser() {
   }, []);
 
   return (
-    <section id="news" className="py-24 px-4">
+    <section id="news" className="scroll-mt-32 py-24 px-4">
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
         <h2 className="text-3xl md:text-5xl font-drama font-bold text-text mb-3">
           Daily News

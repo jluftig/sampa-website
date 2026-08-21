@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 export default function About() {
   return (
-    <section id="about" className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
+    <section id="about" className="scroll-mt-32 py-24 px-4 md:px-8 max-w-7xl mx-auto">
       <div className="bg-white rounded-5xl p-10 md:p-16 lg:p-24 shadow-sm border border-primary/5 flex flex-col md:flex-row gap-12 lg:gap-24 items-center">
 
         <div className="w-full md:w-1/2">

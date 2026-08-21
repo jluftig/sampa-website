@@ -67,7 +67,7 @@ function LeaderCard({ person }) {
   return (
     <article
       id={person.id}
-      className="bg-white rounded-4xl shadow-sm border border-primary/10 p-6 md:p-8"
+      className="scroll-mt-32 bg-white rounded-4xl shadow-sm border border-primary/10 p-6 md:p-8"
     >
       <div className="flex flex-col sm:flex-row gap-5 md:gap-6">
         <Headshot person={person} />
@@ -122,7 +122,7 @@ export default function LeadershipRoster() {
     <section
       id="leadership"
       aria-labelledby="leadership-heading"
-      className="mt-4 md:mt-6"
+      className="mt-4 md:mt-6 scroll-mt-32"
     >
       <header className="max-w-3xl mb-10 md:mb-12">
         <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-4 uppercase">
