@@ -21,7 +21,7 @@ find. Never hotlink private Drive URLs.
 | `shani-wilson.jpg` | Shani Wilson | Submitted Leadership Profile photo (locs / black rectangular glasses / forest-green V-neck / black blazer) |
 | `tasha-seliski.jpg` | Natasha “Tasha” Seliski | University of Utah Health faculty page (dark blazer, pearl earrings) — public photo Josh provided |
 | `debra-newman.jpg` | Debra Newman | PCSS-MOUD lead-mentor page; recropped so the embroidered “Debra Newman, PA-C, MPH” on the coat is visible |
-| `jim-anderson.jpg` | James E. Anderson | AAPA News Central 2017 headshot (bald, tan shirt, striped tie) — same likeness Josh provided |
+| `jim-anderson.jpg` | James E. Anderson | 2026-08-21 Aragon / Leadership Profile form photo (`Aragon-Headshot-Jim-Anderson-2026-08-21-1.jpeg`) |
 | `jonathan-baker.jpg` | Jonathan Baker | AAPA 2025 presenter page. Do not replace with the NYU anorectal/LGBTQ Jonathan Baker photo. |
 | `jordan-vold.jpg` | Jordan Vold | Illinois Society of Addiction Medicine board photo (beard, wave-pattern shirt). Replaces the earlier UI Health clean-shaven / light-blue-shirt file. |
 | `kerith-hartmann.jpg` | Kerith Hartmann | 2026-08-19 Leadership Profile form upload (Kerith Hartmann) |
