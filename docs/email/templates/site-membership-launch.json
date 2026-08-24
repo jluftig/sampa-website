@@ -7,5 +7,5 @@
     "test"
   ],
   "tag": "sampa-weekly-01",
-  "notes": "Greeting uses Brevo {{ contact.FIRSTNAME | default: \"there\" }}. Ensure contacts have FIRSTNAME before prod. Feedback test: add emails to Test list or campaign-test --email."
+  "notes": "Launch announcement (site was stealth). Greeting {{ contact.FIRSTNAME | default: \"there\" }}. News desk = published slugs only. Rebuild after site copy changes. No mass send without Josh send campaign N."
 }
