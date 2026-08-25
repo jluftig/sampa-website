@@ -8,6 +8,7 @@ import {
   isPaPathTier,
   parseAapaParam,
   parseDurationParam,
+  PATRON_ADDON_BLURB,
   patronDollars,
   tierByKey,
 } from '../lib/membership';
@@ -296,7 +297,7 @@ export default function JoinInvoice() {
                     className="mt-1 h-4 w-4 rounded border-primary/30 accent-accent"
                   />
                   <span>
-                    Patron add-on — same membership, no extra benefits.
+                    Patron add-on — {PATRON_ADDON_BLURB}
                     <span className="block text-xs text-text/50 mt-1">
                       Adds ${patronDollars(duration)}
                       {duration === 'lifetime' ? ' once' : duration === 1 ? ' for this year' : ` for this ${duration}-year term`}.

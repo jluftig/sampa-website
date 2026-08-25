@@ -45,7 +45,7 @@ export function patronLineItem(duration) {
       unit_amount: dollars * 100,
       product_data: {
         name: 'Patron add-on',
-        description: 'Same membership, no extra benefits. Just more support for SAMPA.',
+        description: 'Patron badge on your directory listing. No extra membership benefits beyond the badge.',
         metadata: { sampa_addon: 'patron' },
       },
       // Matching-term so renewals keep Fellow+$25 (= $75/yr). Lifetime is one-time.

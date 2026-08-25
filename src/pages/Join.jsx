@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
-import { MEMBERSHIP_TIERS, tierByKey, savingsPercent, durationsForTier, durationLabel, patronDollars, isPaPathTier, suggestedTierForAapa, parseAapaParam } from '../lib/membership';
+import { MEMBERSHIP_TIERS, tierByKey, savingsPercent, durationsForTier, durationLabel, patronDollars, PATRON_ADDON_BLURB, isPaPathTier, suggestedTierForAapa, parseAapaParam } from '../lib/membership';
 import { apiPost } from '../lib/api';
 import { supabase } from '../lib/supabaseClient';
 import Navbar from '../components/Navbar';
@@ -412,7 +412,7 @@ export default function Join() {
                       className="mt-1 h-4 w-4 shrink-0 rounded border-primary/30 accent-accent"
                     />
                     <span className="text-xs leading-relaxed">
-                      Patron — same membership, no extra benefits. Just more support for SAMPA.
+                      Patron — {PATRON_ADDON_BLURB}
                       <span className={`block mt-1 ${darkCard ? 'text-white/55' : 'text-text/50'}`}>
                         Adds ${patronDollars(duration)}
                         {isLifetime ? ' once' : duration === 1 ? ' for this year' : ` for this ${duration}-year term`}.
