@@ -56,7 +56,17 @@ export default function Membership() {
               <div className="absolute top-6 -right-10 w-40 text-center bg-accent rotate-45 py-1 text-xs font-bold font-data tracking-wider uppercase shadow-md text-white">Featured</div>
             )}
             <div className="relative z-10">
-              <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
+              {tier.lede && (
+                <p className={`text-xs font-semibold mb-1.5 ${tier.highlight ? 'text-white/85' : 'text-primary-text'}`}>
+                  {tier.lede}
+                </p>
+              )}
+              <h3 className={`text-xl tracking-tight font-bold ${tier.secondaryLabel ? 'mb-1' : 'mb-2'}`}>{tier.name}</h3>
+              {tier.secondaryLabel && (
+                <p className={`text-[11px] font-data tracking-wide mb-2 ${tier.highlight ? 'text-white/45' : 'text-text/40'}`}>
+                  {tier.secondaryLabel}
+                </p>
+              )}
               <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-6 min-h-10`}>{tier.desc}</p>
               <div className={`text-4xl font-bold font-sans mb-8 ${tier.highlight ? 'text-white' : 'text-primary-text'}`}>
                 ${tier.prices[1]}<span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>/yr</span>

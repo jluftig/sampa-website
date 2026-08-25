@@ -13,16 +13,19 @@ export const MEMBERSHIP_TIERS = [
   {
     key: 'fellow',
     name: 'Fellow',
+    // Eligibility first on home + /join cards — AAPA members were skipping it.
+    lede: 'AAPA members start here',
     desc: 'NCCPA certification + AAPA member',
     highlight: true,
     prices: { 1: 50, 2: 90, 3: 125 },
   },
   {
-    // Stripe / profiles key stays `sustaining`. Public UI never says Sustaining —
-    // AAPA members were picking it thinking it meant extra support.
+    // Stripe / profiles key stays `sustaining`. Public name is the eligibility
+    // label so AAPA members do not read this as extra support.
     key: 'sustaining',
-    name: 'PA Member',
-    desc: 'The non-AAPA PA path — NCCPA certified, not an AAPA member.',
+    name: 'Certified PA (not AAPA)',
+    secondaryLabel: 'Sustaining rate',
+    desc: 'The NCCPA-certified rate if you are not an AAPA member. AAPA members belong on Fellow. This is not extra support.',
     prices: { 1: 75, 2: 135, 3: 185 },
   },
   {
@@ -89,7 +92,7 @@ export function patronDollars(duration) {
 }
 
 // PA-path tiers ask the honor-system AAPA question on /join. Student / Pre-PA /
-// Associate skip it. Yes → suggest Fellow; No → suggest PA Member (sustaining).
+// Associate skip it. Yes → suggest Fellow; No → suggest Certified PA (sustaining).
 export const PA_PATH_TIER_KEYS = ['fellow', 'sustaining', 'legacy'];
 
 export function isPaPathTier(key) {

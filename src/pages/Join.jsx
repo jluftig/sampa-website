@@ -18,7 +18,7 @@ import Footer from '../components/Footer';
 // Optional Patron add-on (+$25 × term years) appears after a real tier is
 // selected — default off, not a seventh card, never a membership_tier.
 // Honor-system AAPA yes/no for PA-path tiers (fellow / sustaining / legacy)
-// suggests Fellow vs PA Member; we do not verify with AAPA.
+// suggests Fellow vs Certified PA (not AAPA); we do not verify with AAPA.
 export default function Join() {
   const { user, loading, profile, isActiveMember } = useAuth();
   const navigate = useNavigate();
@@ -333,7 +333,17 @@ export default function Join() {
                   </div>
                 )}
                 <div className={`relative z-10 ${isFocused ? 'mt-4' : ''}`}>
-                  <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
+                  {tier.lede && (
+                    <p className={`text-xs font-semibold mb-1.5 ${darkCard ? 'text-white/85' : 'text-primary-text'}`}>
+                      {tier.lede}
+                    </p>
+                  )}
+                  <h3 className={`text-xl tracking-tight font-bold ${tier.secondaryLabel ? 'mb-1' : 'mb-2'}`}>{tier.name}</h3>
+                  {tier.secondaryLabel && (
+                    <p className={`text-[11px] font-data tracking-wide mb-2 ${darkCard ? 'text-white/45' : 'text-text/40'}`}>
+                      {tier.secondaryLabel}
+                    </p>
+                  )}
                   <p className={`${darkCard ? 'text-white/70' : 'text-text/60'} text-sm mb-5 min-h-10`}>
                     {tier.desc}
                   </p>
