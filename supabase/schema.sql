@@ -133,6 +133,10 @@ alter table public.profiles add column if not exists cancel_at_period_end boolea
 -- Purchased term length in years (1/2/3; null = lifetime or pre-term data).
 -- Webhook-written from the subscription's price interval, shown on the roster.
 alter table public.profiles add column if not exists membership_years int;
+-- Optional extra support on top of a real membership_tier (fellow / sustaining / …).
+-- Never a tier key. Webhook-written from checkout metadata.patron. Default off.
+-- There is no AAPA column on profiles — do not infer AAPA from this flag.
+alter table public.profiles add column if not exists patron boolean not null default false;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
@@ -392,6 +396,7 @@ begin
     or new.renews_on          is distinct from old.renews_on
     or new.cancel_at_period_end is distinct from old.cancel_at_period_end
     or new.membership_years   is distinct from old.membership_years
+    or new.patron             is distinct from old.patron
     or new.can_edit_news      is distinct from old.can_edit_news
     or new.can_view_members   is distinct from old.can_view_members
     or new.is_board           is distinct from old.is_board

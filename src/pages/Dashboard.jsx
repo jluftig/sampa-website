@@ -343,6 +343,7 @@ export default function Dashboard() {
             <>
               <p className="text-text/70 text-sm mb-6">
                 {tier ? `${tier.name} membership` : 'SAMPA membership'}
+                {profile.patron ? ' · Patron' : ''}
                 {profile.membership_status === 'active' && !profile.renews_on
                   ? ' — lifetime, no renewal needed'
                   : ''}
