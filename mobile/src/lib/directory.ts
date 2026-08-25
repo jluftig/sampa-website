@@ -30,6 +30,7 @@ export type DirectoryMember = {
   state: string | null;
   organizations: DirectoryOrganization[] | null;
   is_board: boolean;
+  patron?: boolean; // optional until 2026-08-25-directory-patron.sql is applied
   email: string | null; // null unless that member shares it
   phone: string | null; // null unless that member shares it
 };

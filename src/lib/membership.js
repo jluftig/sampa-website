@@ -15,7 +15,7 @@ export const MEMBERSHIP_TIERS = [
     name: 'Fellow',
     // Eligibility first on home + /join cards — AAPA members were skipping it.
     lede: 'AAPA members start here',
-    desc: 'NCCPA certification + AAPA member',
+    desc: 'NCCPA certification + AAPA member. Optional Patron add-on puts a Patron badge on your directory listing.',
     highlight: true,
     prices: { 1: 50, 2: 90, 3: 125 },
   },
@@ -25,7 +25,7 @@ export const MEMBERSHIP_TIERS = [
     key: 'sustaining',
     name: 'Certified PA (not AAPA)',
     secondaryLabel: 'Sustaining rate',
-    desc: 'The NCCPA-certified rate if you are not an AAPA member. AAPA members belong on Fellow. This is not extra support.',
+    desc: 'The NCCPA-certified rate if you are not an AAPA member. AAPA members belong on Fellow.',
     prices: { 1: 75, 2: 135, 3: 185 },
   },
   {
@@ -82,6 +82,10 @@ export function durationLabel(duration) {
 // same math (api/_lib/tiers.js patronDollars). +$25 per year of the selected
 // term (Fellow $50 + Patron $25 = $75). Legacy lifetime
 // is +$25 once.
+// Directory-badge reward — not extra membership benefits, never a membership_tier.
+export const PATRON_ADDON_BLURB =
+  'adds a Patron badge on your directory listing. No extra membership benefits beyond the badge.';
+
 export const PATRON_DOLLARS_PER_YEAR = 25;
 
 export function patronDollars(duration) {
@@ -89,6 +93,23 @@ export function patronDollars(duration) {
   const years = Number(duration);
   if (!Number.isFinite(years) || years < 1) return PATRON_DOLLARS_PER_YEAR;
   return PATRON_DOLLARS_PER_YEAR * years;
+}
+
+// Quiet dashboard upgrade: only signed-in active members who are not already
+// Patron and who have a Stripe customer (so we can charge). Join owns first-time.
+export function canAddPatron(profile) {
+  if (!profile) return false;
+  if (profile.membership_status !== 'active') return false;
+  if (profile.patron) return false;
+  if (!profile.stripe_customer_id) return false;
+  return true;
+}
+
+export function patronUpgradeDuration(profile) {
+  if (!profile) return 1;
+  if (profile.membership_status === 'active' && !profile.renews_on) return 'lifetime';
+  const years = Number(profile.membership_years);
+  return Number.isFinite(years) && years >= 1 ? years : 1;
 }
 
 // PA-path tiers ask the honor-system AAPA question on /join. Student / Pre-PA /

@@ -19,6 +19,9 @@ api/                        Vercel serverless functions (Web-handler signature: 
   create-donation-session.js POST {amount,frequency} -> {url}; NO auth (public donate);
                             metadata.type='donation' keeps gifts OUT of membership columns
   create-portal-session.js  POST -> {url} of Stripe Customer Portal; JWT required
+  add-patron.js             POST -> {url} of Checkout to add Patron on an existing
+                            active membership (dashboard only; hidden if already
+                            patron). metadata.addon=patron_upgrade.
   delete-account.js         POST; JWT required. Cancels Stripe subscriptions FIRST (aborts on
                             failure), then auth.admin.deleteUser (profile + favorites cascade;
                             posts.author_id SET NULL). App Store 5.1.1(v).

@@ -830,6 +830,7 @@ returns table (
   state text,
   organizations jsonb,
   is_board boolean,
+  patron boolean,
   email text,
   phone text
 )
@@ -854,6 +855,7 @@ begin
     p.state,
     p.organizations,
     p.is_board,
+    p.patron,
     case
       when not p.share_email then null
       when coalesce(p.directory_use_account_contact, true) then p.email
@@ -936,6 +938,7 @@ returns table (
   state text,
   organizations jsonb,
   is_board boolean,
+  patron boolean,
   email text,
   phone text
 )
@@ -956,6 +959,7 @@ begin
     p.state,
     p.organizations,
     p.is_board,
+    p.patron,
     case
       when not p.share_email then null
       when coalesce(p.directory_use_account_contact, true) then p.email

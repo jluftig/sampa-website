@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:invoice-pdf": "node scripts/verify-invoice-pdf.mjs"
+    "test:invoice-pdf": "node scripts/verify-invoice-pdf.mjs",
+    "test:patron-copy": "node scripts/verify-patron-copy.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",

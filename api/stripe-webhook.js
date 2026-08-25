@@ -1,4 +1,5 @@
 import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
+import { patronLineItem, subscriptionHasPatronItem } from './_lib/tiers.js';
 import {
   memberEmailsEnabled,
   profileForEmail,
@@ -136,6 +137,37 @@ function idOf(v) {
   return typeof v === 'string' ? v : v?.id ?? null;
 }
 
+// After an existing member pays the dashboard Patron upgrade, attach the
+// matching-term recurring item to their current membership subscription so
+// renewals keep the charge. Do not prorate — they just paid the current term.
+async function attachPatronRecurringItem(stripe, customerId, duration) {
+  if (!customerId || duration === 'lifetime') return;
+  const years = Number(duration);
+  const term = Number.isFinite(years) && years >= 1 ? years : 1;
+  const listed = await stripe.subscriptions.list({
+    customer: customerId,
+    status: 'active',
+    limit: 20,
+    expand: ['data.items.data.price.product'],
+  });
+  const sub = listed.data.find((s) => s.metadata?.type !== 'donation');
+  if (!sub) return;
+
+  if (!subscriptionHasPatronItem(sub)) {
+    const line = patronLineItem(term);
+    await stripe.subscriptionItems.create({
+      subscription: sub.id,
+      price_data: line.price_data,
+      quantity: 1,
+      proration_behavior: 'none',
+    });
+  }
+
+  await stripe.subscriptions.update(sub.id, {
+    metadata: { ...sub.metadata, patron: 'true' },
+  });
+}
+
 // Insert a donation, ignoring duplicates so Stripe's event retries are safe.
 // One-time gifts conflict on stripe_session_id; recurring cycles on
 // stripe_invoice_id (both unique). Donations NEVER touch the membership columns.
@@ -198,6 +230,23 @@ export async function POST(request) {
         // supabase_user_id (+ tier / duration / patron) so this is one path.
         const userId = session.client_reference_id || session.metadata?.supabase_user_id;
         if (!userId) break;
+
+        // Dashboard Patron upgrade: write the flag only. Do not rewrite tier /
+        // status / years and do not send a welcome email.
+        if (session.metadata?.addon === 'patron_upgrade') {
+          if (session.payment_status && session.payment_status !== 'paid') break;
+          await updateProfileMembership(admin, 'id', userId, { patron: true });
+          try {
+            await attachPatronRecurringItem(
+              stripe,
+              idOf(session.customer),
+              session.metadata.duration
+            );
+          } catch (err) {
+            console.error('stripe-webhook: attach patron item failed:', err.message || err);
+          }
+          break;
+        }
 
         let update;
         // membership_tier comes only from metadata.tier (fellow / sustaining / …).

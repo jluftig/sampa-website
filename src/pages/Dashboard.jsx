@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { BookmarkX, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
-import { tierByKey } from '../lib/membership';
+import { canAddPatron, patronDollars, patronUpgradeDuration, PATRON_ADDON_BLURB, tierByKey } from '../lib/membership';
 import { US_STATES } from '../lib/usStates';
 import {
   emptyOrganization,
@@ -38,10 +38,13 @@ export default function Dashboard() {
   const { user, profile, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
+  const justAddedPatron = justPaid && searchParams.get('addon') === 'patron';
 
   // ---- membership -----------------------------------------------------------
   const [portalBusy, setPortalBusy] = useState(false);
   const [portalError, setPortalError] = useState(null);
+  const [patronBusy, setPatronBusy] = useState(false);
+  const [patronError, setPatronError] = useState(null);
 
   // The webhook usually lands within seconds of checkout; re-fetch the profile
   // a few times so the new status appears without a manual reload.
@@ -61,6 +64,18 @@ export default function Dashboard() {
     } catch (err) {
       setPortalError(err.message);
       setPortalBusy(false);
+    }
+  };
+
+  const startPatronUpgrade = async () => {
+    setPatronBusy(true);
+    setPatronError(null);
+    try {
+      const { url } = await apiPost('/api/add-patron');
+      window.location.assign(url);
+    } catch (err) {
+      setPatronError(err.message);
+      setPatronBusy(false);
     }
   };
 
@@ -275,6 +290,8 @@ export default function Dashboard() {
 
   const badge = STATUS_BADGES[profile?.membership_status] || null;
   const tier = tierByKey(profile?.membership_tier);
+  const showPatronUpgrade = canAddPatron(profile);
+  const patronDuration = showPatronUpgrade ? patronUpgradeDuration(profile) : null;
   const needsOnboarding = profile && !profile.onboarded_at;
   const firstName = (profile?.full_name || '').split(' ')[0];
 
@@ -317,9 +334,18 @@ export default function Dashboard() {
 
         {justPaid && (
           <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-5 mb-8 text-sm text-green-800">
-            <strong>Thanks for joining SAMPA!</strong> Your payment went through —
-            your membership status below updates automatically (it can take a
-            few seconds).{' '}
+            {justAddedPatron ? (
+              <>
+                <strong>Patron badge added.</strong> It will show on your directory
+                listing in a few seconds.
+              </>
+            ) : (
+              <>
+                <strong>Thanks for joining SAMPA!</strong> Your payment went through —
+                your membership status below updates automatically (it can take a
+                few seconds).
+              </>
+            )}{' '}
             <button
               onClick={() => setSearchParams({}, { replace: true })}
               className="underline font-semibold"
@@ -378,6 +404,27 @@ export default function Dashboard() {
                 )}
               </div>
               {portalError && <p className="text-red-500 text-xs mt-3">{portalError}</p>}
+              {showPatronUpgrade && (
+                <div className="mt-5 pt-5 border-t border-primary/10">
+                  <button
+                    type="button"
+                    onClick={startPatronUpgrade}
+                    disabled={patronBusy}
+                    className="px-5 py-2.5 rounded-full border border-primary/25 text-primary-text text-sm font-semibold hover:bg-primary-text/5 transition-colors disabled:opacity-50"
+                  >
+                    {patronBusy ? 'Opening…' : 'Add Patron'}
+                  </button>
+                  <p className="text-text/50 text-xs mt-2 max-w-md">
+                    Patron badge — {PATRON_ADDON_BLURB} Adds ${patronDollars(patronDuration)}
+                    {patronDuration === 'lifetime'
+                      ? ' once'
+                      : patronDuration === 1
+                        ? ' for this year'
+                        : ` for your ${patronDuration}-year term`}.
+                  </p>
+                  {patronError && <p className="text-red-500 text-xs mt-2">{patronError}</p>}
+                </div>
+              )}
               <p className="text-text/40 text-xs mt-4">
                 {profile.stripe_customer_id
                   ? 'Card updates, tier changes, cancellation, and receipts are all handled securely in the Stripe billing portal.'
