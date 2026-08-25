@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T35 + T37 Done → Production; T36 parked)
+**Last updated:** 2026-08-25 (T34 Baker form headshot merged via PR #84 → Production; T36 parked)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -72,11 +72,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T34 | Jonathan Baker form headshot on About | cursor | 2026-08-25 | **Merged PR #84 → Production** (`75af7d1`). House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg`. Path unchanged. Thank-you draft stays unsent. |
 | T37 | AAPA status on staff members list | cursor | 2026-08-25 | **Merged PR #86 → Production.** Honor-system `aapa_member` Yes / No / — on `/editor/members` only. Not on peer directory `/members`. |
 | T35 | Frictionless Join onboarding | cursor | 2026-08-25 | **Merged PR #85 → Production** (`4547d6bc`). Follow-up on main: Sustaining card → **Certified PA (not AAPA)** + quiet “Sustaining rate”; Fellow eligibility first. AAPA yes/no; Patron +$25 add-on. SQL applied in prod SQL Editor before merge. |
-| T29 | Jonathan Baker About card from 2026-08-19 form | cursor | 2026-08-25 | **Merged PR #79 → Production.** Baker form card live. Photo still existing `jonathan-baker.jpg`. |
+| T29 | Jonathan Baker About card from 2026-08-19 form | cursor | 2026-08-25 | **Merged PR #79 → Production.** Baker form card live. Photo later replaced by T34 / PR #84. |
 | T31 | Close leftover PRs #71 and #63 | cursor | 2026-08-25 | **Closed, not merged.** #71 superseded by live `/about#leadership` (T23/PR #77). #63 is a stale Aug 9 board-agenda markdown, not a site feature. Do not reopen. |
-| T30 | Public-site click-through fixes (2026-08-21 night pass) | cursor | 2026-08-21 | **Merged PR #80 → Production.** Josh walked the Vercel preview and said ship. Eric Bergersen “board-certified PA”; `/join` intro 10–13% / 17–20% matching stored prices; sticky-header hash offset; home SAMHSA citation by survey name. |
 
 ### Task workflow (agents + humans)
 
@@ -220,7 +220,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice — parked), **#83** (T3 Weekly #01 email copy; no production send). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice — parked), **#83** (T3 Weekly #01 email copy; no production send). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -280,7 +280,8 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 - [x] **Night click-through fixes (T30)** — 2026-08-21. PR #80. Eric Bergersen house-voice PA; `/join` intro 10–13% / 17–20%; hash targets clear the sticky header; home SAMHSA citation is the survey name.
 - [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closed, not merged (T31).
-- [x] **Jonathan Baker About card (T29)** — 2026-08-25. PR #79. Form bio + PA-C + LinkedIn live. Photo still existing `jonathan-baker.jpg`.
+- [x] **Jonathan Baker About card (T29)** — 2026-08-25. PR #79. Form bio + PA-C + LinkedIn live.
+- [x] **Jonathan Baker form headshot (T34)** — 2026-08-25. PR #84 → Production. House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg`.
 - [x] **Frictionless Join onboarding (T35)** — 2026-08-25. PR #85 → Production. One-page `/join`: no Step 2; Membership nav → `/join`; Certified PA (not AAPA) display name; AAPA yes/no; Patron +$25 add-on. SQL applied in prod SQL Editor before merge.
 - [x] **AAPA status on staff members list (T37)** — 2026-08-25. PR #86 → Production. Honor-system AAPA Yes / No / — on `/editor/members` only.
 - [ ] **Sustaining accident cleanup (T36)** — parked. Fellow + `patron` + Stripe item for people who picked Sustaining as extra support. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Do not run the rest until Josh says.
@@ -356,6 +357,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-25 · **Jonathan Baker form headshot (T34)** — PR #84. House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg` (replaces AAPA scrape).
 - 2026-08-25 · **AAPA status on staff members list (T37)** — PR #86. Honor-system AAPA Yes / No / — on `/editor/members` only; not on `/members`.
 - 2026-08-25 · **Frictionless Join onboarding (T35)** — PR #85. One-page `/join`; Certified PA (not AAPA) display name; AAPA yes/no; Patron +$25 add-on. Production SQL applied before merge. Sustaining-card follow-up cherry-picked to main after merge.
 - 2026-08-25 · **Jonathan Baker About card (T29)** — PR #79. Form bio + PA-C + LinkedIn; photo still existing `jonathan-baker.jpg`.
