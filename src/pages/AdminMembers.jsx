@@ -29,9 +29,10 @@ const STATUS_BADGES = {
 function tierLabel(p) {
   const name = tierByKey(p.membership_tier)?.name || p.membership_tier;
   if (!name) return '—';
-  if (p.membership_years) return `${name}, ${p.membership_years} yr`;
-  if (p.membership_status === 'active' && !p.renews_on) return `${name}, lifetime`;
-  return name;
+  const patron = p.patron ? ' + Patron' : '';
+  if (p.membership_years) return `${name}, ${p.membership_years} yr${patron}`;
+  if (p.membership_status === 'active' && !p.renews_on) return `${name}, lifetime${patron}`;
+  return `${name}${patron}`;
 }
 
 // Active: "Renews <date>" | "Ends <date>" (canceled at period end) | "Lifetime".
@@ -46,11 +47,33 @@ function renewalLabel(p) {
   return '';
 }
 
+// Honor-system AAPA answer. Null / missing column → not answered, not "No".
+function AapaStatusBadge({ value }) {
+  if (value === true) {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+        Yes
+      </span>
+    );
+  }
+  if (value === false) {
+    return (
+      <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-text/10 text-text/60">
+        No
+      </span>
+    );
+  }
+  return <span className="text-text/30">—</span>;
+}
+
 const CSV_COLUMNS = [
   ['Name', (p) => p.full_name],
   ['Email', (p) => p.email],
   ['Role', (p) => p.role],
   ['Membership tier', (p) => tierByKey(p.membership_tier)?.name || p.membership_tier],
+  ['Patron', (p) => (p.patron ? 'yes' : '')],
+  ['AAPA member (honor system)', (p) => (p.aapa_member === true ? 'yes' : p.aapa_member === false ? 'no' : '')],
   ['Term (years)', (p) => p.membership_years || (p.membership_status === 'active' && !p.renews_on ? 'lifetime' : '')],
   ['Status', (p) => p.membership_status],
   ['Renews/ends', (p) => (p.renews_on ? p.renews_on.slice(0, 10) : p.membership_status === 'active' ? 'lifetime' : '')],
@@ -121,7 +144,7 @@ export default function AdminMembers() {
     (async () => {
       // Prefer multi-org columns; fall back if the migration hasn't been applied.
       const profileSelect =
-        'id, full_name, email, role, credentials, organization, practice_setting, city, state, organizations, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
+        'id, full_name, email, role, credentials, organization, practice_setting, city, state, organizations, phone, newsletter_opt_in, sms_opt_in, membership_tier, patron, aapa_member, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
       const profileSelectLegacy =
         'id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
 
@@ -129,6 +152,12 @@ export default function AdminMembers() {
         .from('profiles')
         .select(profileSelect)
         .order('full_name', { ascending: true, nullsFirst: false });
+      if (profilesRes.error && /aapa_member|patron/i.test(profilesRes.error.message || '')) {
+        profilesRes = await supabase
+          .from('profiles')
+          .select(profileSelect.replace(', patron, aapa_member', ''))
+          .order('full_name', { ascending: true, nullsFirst: false });
+      }
       if (profilesRes.error && (profilesRes.error.code === 'PGRST204' || /city|organizations/i.test(profilesRes.error.message || ''))) {
         profilesRes = await supabase
           .from('profiles')
@@ -413,6 +442,7 @@ export default function AdminMembers() {
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Email</th>
                     <th className="px-4 py-3">Tier</th>
+                    <th className="px-4 py-3" title="Honor system — we do not verify with AAPA">AAPA</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Renewal</th>
                     <th className="px-4 py-3">Donor</th>
@@ -426,6 +456,9 @@ export default function AdminMembers() {
                       <td className="px-4 py-3 font-semibold whitespace-nowrap">{p.full_name || '—'}</td>
                       <td className="px-4 py-3 text-text/60">{p.email}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{tierLabel(p)}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <AapaStatusBadge value={p.aapa_member} />
+                      </td>
                       <td className="px-4 py-3">
                         {p.membership_status ? (
                           <span className={`text-xs font-data font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGES[p.membership_status] || 'bg-text/10 text-text/60'}`}>
@@ -454,7 +487,7 @@ export default function AdminMembers() {
                   ))}
                   {filtered.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="px-4 py-8 text-center text-text/40">
+                      <td colSpan={9} className="px-4 py-8 text-center text-text/40">
                         No accounts match this view.
                       </td>
                     </tr>
@@ -464,9 +497,11 @@ export default function AdminMembers() {
             </div>
 
             <p className="text-text/40 text-xs mt-4">
-              The CSV export includes additional columns: credentials,
-              organizations (city/state), practice setting, phone, and newsletter/SMS
-              preferences. Permissions are managed by administrators on{' '}
+              AAPA is the honor-system answer from Join or the dashboard (Yes / No /
+              — if not answered). We do not verify with AAPA. The CSV export includes
+              additional columns: credentials, organizations (city/state), practice
+              setting, phone, and newsletter/SMS preferences. Permissions are managed
+              by administrators on{' '}
               <Link to="/editor/people" className="underline hover:text-primary-text">People & permissions</Link>.
             </p>
           </>

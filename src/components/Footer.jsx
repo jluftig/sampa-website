@@ -56,7 +56,7 @@ export default function Footer() {
             <Link to="/policy" className="hover:text-white transition-colors">Policy</Link>
             <Link to="/caq" className="hover:text-white transition-colors">CAQ</Link>
             <a href="/#programs" className="hover:text-white transition-colors">Programs</a>
-            <a href="/#membership" className="hover:text-white transition-colors">Membership</a>
+            <Link to="/join" className="hover:text-white transition-colors">Membership</Link>
             <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Store</a>
             <DonateLink className="hover:text-white transition-colors">Donate</DonateLink>
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>

@@ -13,14 +13,19 @@ export const MEMBERSHIP_TIERS = [
   {
     key: 'fellow',
     name: 'Fellow',
+    // Eligibility first on home + /join cards — AAPA members were skipping it.
+    lede: 'AAPA members start here',
     desc: 'NCCPA certification + AAPA member',
     highlight: true,
     prices: { 1: 50, 2: 90, 3: 125 },
   },
   {
+    // Stripe / profiles key stays `sustaining`. Public name is the eligibility
+    // label so AAPA members do not read this as extra support.
     key: 'sustaining',
-    name: 'Sustaining Member',
-    desc: 'NCCPA certification, not an AAPA member',
+    name: 'Certified PA (not AAPA)',
+    secondaryLabel: 'Sustaining rate',
+    desc: 'The NCCPA-certified rate if you are not an AAPA member. AAPA members belong on Fellow. This is not extra support.',
     prices: { 1: 75, 2: 135, 3: 185 },
   },
   {
@@ -71,4 +76,35 @@ export function durationsForTier(tier) {
 export function durationLabel(duration) {
   if (duration === 'lifetime') return 'Lifetime';
   return duration === 1 ? '1 year' : `${duration} years`;
+}
+
+// Optional Patron add-on on /join — not a membership tier. Server charges the
+// same math (api/_lib/tiers.js patronDollars). +$25 per year of the selected
+// term (Fellow $50 + Patron $25 = $75). Legacy lifetime
+// is +$25 once.
+export const PATRON_DOLLARS_PER_YEAR = 25;
+
+export function patronDollars(duration) {
+  if (duration === 'lifetime') return PATRON_DOLLARS_PER_YEAR;
+  const years = Number(duration);
+  if (!Number.isFinite(years) || years < 1) return PATRON_DOLLARS_PER_YEAR;
+  return PATRON_DOLLARS_PER_YEAR * years;
+}
+
+// PA-path tiers ask the honor-system AAPA question on /join. Student / Pre-PA /
+// Associate skip it. Yes → suggest Fellow; No → suggest Certified PA (sustaining).
+export const PA_PATH_TIER_KEYS = ['fellow', 'sustaining', 'legacy'];
+
+export function isPaPathTier(key) {
+  return PA_PATH_TIER_KEYS.includes(key);
+}
+
+export function suggestedTierForAapa(isAapaMember) {
+  return isAapaMember ? 'fellow' : 'sustaining';
+}
+
+export function parseAapaParam(value) {
+  if (value === '1' || value === 'yes' || value === 'true') return true;
+  if (value === '0' || value === 'no' || value === 'false') return false;
+  return null;
 }
