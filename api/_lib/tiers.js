@@ -21,3 +21,35 @@ export function priceIdFor(tier, duration) {
   const suffix = duration === 'lifetime' ? 'LIFETIME' : `${duration}Y`;
   return process.env[`STRIPE_PRICE_${tier.toUpperCase()}_${suffix}`] || null;
 }
+
+// Optional Patron add-on — not a tier, never a required STRIPE_PRICE_* env.
+// Keep in sync with src/lib/membership.js patronDollars.
+// +$25 per year of the selected term; lifetime +$25 once.
+export const PATRON_DOLLARS_PER_YEAR = 25;
+
+export function patronDollars(duration) {
+  if (duration === 'lifetime') return PATRON_DOLLARS_PER_YEAR;
+  const years = Number(duration);
+  if (!Number.isFinite(years) || years < 1) return PATRON_DOLLARS_PER_YEAR;
+  return PATRON_DOLLARS_PER_YEAR * years;
+}
+
+export function patronLineItem(duration) {
+  const dollars = patronDollars(duration);
+  const isLifetime = duration === 'lifetime';
+  const years = isLifetime ? 1 : Number(duration) || 1;
+  return {
+    quantity: 1,
+    price_data: {
+      currency: 'usd',
+      unit_amount: dollars * 100,
+      product_data: {
+        name: 'Patron add-on',
+        description: 'Same membership, no extra benefits. Just more support for SAMPA.',
+        metadata: { sampa_addon: 'patron' },
+      },
+      // Matching-term so renewals keep Fellow+$25 (= $75/yr). Lifetime is one-time.
+      ...(isLifetime ? {} : { recurring: { interval: 'year', interval_count: years } }),
+    },
+  };
+}

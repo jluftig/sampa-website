@@ -103,8 +103,33 @@ function willCancel(subscription) {
 // actually on (interval_count of a yearly price) — robust to portal plan
 // switches, where checkout metadata would go stale.
 function termYears(subscription) {
-  const recurring = subscription.items?.data?.[0]?.price?.recurring;
+  const items = subscription.items?.data || [];
+  const membershipItem = items.find((item) => {
+    const product = item.price?.product;
+    const name = typeof product === 'object' && product?.name ? product.name : '';
+    return !/patron add-on/i.test(name);
+  }) || items[0];
+  const recurring = membershipItem?.price?.recurring;
   return recurring?.interval === 'year' ? recurring.interval_count ?? 1 : null;
+}
+
+function patronFromMetadata(meta) {
+  if (!meta) return undefined;
+  if (meta.patron === 'true') return true;
+  if (meta.patron === 'false') return false;
+  return undefined;
+}
+
+// Shared DB is live before this migration is pasted. If `patron` is missing,
+// still write the membership columns so checkout cannot fail open.
+async function updateProfileMembership(admin, matchCol, matchVal, update) {
+  let result = await admin.from('profiles').update(update).eq(matchCol, matchVal).select('id');
+  if (result.error && update.patron !== undefined && /patron/i.test(result.error.message || '')) {
+    const { patron: _ignored, ...rest } = update;
+    result = await admin.from('profiles').update(rest).eq(matchCol, matchVal).select('id');
+  }
+  if (result.error) throw result.error;
+  return result.data;
 }
 
 function idOf(v) {
@@ -173,8 +198,12 @@ export async function POST(request) {
         if (!userId) break;
 
         let update;
+        // membership_tier comes only from metadata.tier (fellow / sustaining / …).
+        // metadata.patron is an add-on flag and must never be stored as a tier.
         if (session.mode === 'subscription') {
-          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          const subscription = await stripe.subscriptions.retrieve(session.subscription, {
+            expand: ['items.data.price.product'],
+          });
           update = {
             stripe_customer_id: session.customer,
             membership_tier: session.metadata?.tier || subscription.metadata?.tier || null,
@@ -182,6 +211,7 @@ export async function POST(request) {
             renews_on: renewsOn(subscription),
             cancel_at_period_end: willCancel(subscription),
             membership_years: termYears(subscription),
+            patron: patronFromMetadata(session.metadata) ?? patronFromMetadata(subscription.metadata) ?? false,
           };
         } else if (session.mode === 'payment' && session.metadata?.duration === 'lifetime') {
           // Lifetime membership (Legacy): one-time payment, never expires.
@@ -192,13 +222,13 @@ export async function POST(request) {
             renews_on: null,
             cancel_at_period_end: false,
             membership_years: null, // lifetime — no term
+            patron: patronFromMetadata(session.metadata) ?? false,
           };
         } else {
           break; // some other one-time payment (e.g. future donations) — not membership
         }
 
-        const { error } = await admin.from('profiles').update(update).eq('id', userId);
-        if (error) throw error;
+        await updateProfileMembership(admin, 'id', userId, update);
         // New paid membership (subscription or lifetime) → welcome once.
         // Renewals are handled on invoice.paid (billing_reason=subscription_cycle).
         if (update.membership_status === 'active') {
@@ -237,13 +267,10 @@ export async function POST(request) {
           membership_years: termYears(subscription),
         };
         if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
+        const patronFlag = patronFromMetadata(subscription.metadata);
+        if (patronFlag !== undefined) update.patron = patronFlag;
 
-        const { data: updated, error } = await admin
-          .from('profiles')
-          .update(update)
-          .eq(matchCol, matchVal)
-          .select('id');
-        if (error) throw error;
+        const updated = await updateProfileMembership(admin, matchCol, matchVal, update);
         // A zero-row match is silent data loss — make it visible in the logs.
         if (!updated?.length) {
           console.error(`stripe-webhook: ${event.type}: no profile matched ${matchCol}=${matchVal}`);

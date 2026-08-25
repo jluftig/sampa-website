@@ -18,9 +18,11 @@ export const MEMBERSHIP_TIERS = [
     prices: { 1: 50, 2: 90, 3: 125 },
   },
   {
+    // Stripe / profiles key stays `sustaining`. Public UI never says Sustaining —
+    // AAPA members were picking it thinking it meant extra support.
     key: 'sustaining',
-    name: 'Sustaining Member',
-    desc: 'NCCPA certification, not an AAPA member',
+    name: 'PA Member',
+    desc: 'The non-AAPA PA path — NCCPA certified, not an AAPA member.',
     prices: { 1: 75, 2: 135, 3: 185 },
   },
   {
@@ -71,4 +73,35 @@ export function durationsForTier(tier) {
 export function durationLabel(duration) {
   if (duration === 'lifetime') return 'Lifetime';
   return duration === 1 ? '1 year' : `${duration} years`;
+}
+
+// Optional Patron add-on on /join — not a membership tier. Server charges the
+// same math (api/_lib/tiers.js patronDollars). +$25 per year of the selected
+// term (Fellow $50 + Patron $25 = $75). Legacy lifetime
+// is +$25 once.
+export const PATRON_DOLLARS_PER_YEAR = 25;
+
+export function patronDollars(duration) {
+  if (duration === 'lifetime') return PATRON_DOLLARS_PER_YEAR;
+  const years = Number(duration);
+  if (!Number.isFinite(years) || years < 1) return PATRON_DOLLARS_PER_YEAR;
+  return PATRON_DOLLARS_PER_YEAR * years;
+}
+
+// PA-path tiers ask the honor-system AAPA question on /join. Student / Pre-PA /
+// Associate skip it. Yes → suggest Fellow; No → suggest PA Member (sustaining).
+export const PA_PATH_TIER_KEYS = ['fellow', 'sustaining', 'legacy'];
+
+export function isPaPathTier(key) {
+  return PA_PATH_TIER_KEYS.includes(key);
+}
+
+export function suggestedTierForAapa(isAapaMember) {
+  return isAapaMember ? 'fellow' : 'sustaining';
+}
+
+export function parseAapaParam(value) {
+  if (value === '1' || value === 'yes' || value === 'true') return true;
+  if (value === '0' || value === 'no' || value === 'false') return false;
+  return null;
 }
