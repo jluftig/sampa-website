@@ -54,9 +54,7 @@ Stripe product / env keys stay `sustaining`.
 Optional extra support on `/join` after a real tier is selected. Default **off**.
 Not a seventh card, not Platinum, not Associate, not `/donate`.
 
-- Copy: “Patron — adds a Patron badge on your directory listing. No extra
-  membership benefits beyond the badge.” Visible reward is the `/members`
-  directory badge (`profiles.patron`). Not a membership benefit beyond that.
+- Copy: extra support + badge flex + gratitude (same sentence on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description). Directory badge is `profiles.patron`.
 - Amount: **+$25 × term years** (1yr +$25, 2yr +$50, 3yr +$75). Legacy lifetime **+$25 once**.
   Fellow $50 + Patron $25 = $75.
 - Checkout body: `{ tier, duration, patron: true }`. Server adds a matching-term
