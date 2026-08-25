@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T29 claimed; merging PR #79; T31 Done — #71/#63 closed, not merged)
+**Last updated:** 2026-08-25 (T29 merged PR #79 → Production; T31 Done — #71/#63 closed, not merged)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -64,7 +64,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T29 | Jonathan Baker About card from 2026-08-19 form | cursor | 2026-08-25 | **Claimed cursor.** Merging PR #79 (form bio + PA-C + LinkedIn). Photo still the existing `/leadership/jonathan-baker.jpg` (form PNG never landed). Preview lock lifted by Josh. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -72,11 +71,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
-| T31 | Close leftover PRs #71 and #63 | cursor | 2026-08-25 | **Closed, not merged.** #71 superseded by live `/about#leadership` (T23/PR #77). #63 is a stale Aug 9 board-agenda markdown, not a site feature. Do not reopen. Leave #79 #75 #73 #83 as they were. |
+| T29 | Jonathan Baker About card from 2026-08-19 form | cursor | 2026-08-25 | **Merged PR #79 → Production.** Baker form card live. Photo still existing `jonathan-baker.jpg`. |
+| T31 | Close leftover PRs #71 and #63 | cursor | 2026-08-25 | **Closed, not merged.** #71 superseded by live `/about#leadership` (T23/PR #77). #63 is a stale Aug 9 board-agenda markdown, not a site feature. Do not reopen. |
 | T30 | Public-site click-through fixes (2026-08-21 night pass) | cursor | 2026-08-21 | **Merged PR #80 → Production.** Josh walked the Vercel preview and said ship. Eric Bergersen “board-certified PA”; `/join` intro 10–13% / 17–20% matching stored prices; sticky-header hash offset; home SAMHSA citation by survey name. |
 | T28 | Josh About bio: naloxone doses 1.15 million | cursor | 2026-08-19 | **Merged PR #78 → Production.** Josh Luftig public bio: more than **1.15 million** doses at no cost (was 600,000). Copy-only; `src/data/leadership.js` `josh-luftig`. |
 | T23 | Public About/Leadership page | cursor | 2026-08-19 | **Merged PR #77 → Production.** `/about#leadership` is the 2026–27 roster. Kerith form bio + form headshot (Certification Co-Chair, committees, Portland, OR). About nav has the New badge. Danielle omitted. **2026-08-25:** Josh confirmed the live About roster is current (21 people); leftover draft PR #71 closed, not merged (T31). |
-| T24 | Document news one-shot + internal QC + voice trial | egg | 2026-08-17 | **Merged PR #72 → main.** One-shot QC; Dunk/critic loops retired. **Voice trial ON** (ALiEM job / MMWR voice / generalist-PA; revert: `revert news voice`). Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`. |
 
 ### Task workflow (agents + humans)
 
@@ -217,7 +216,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice), **#83** (T3 Weekly #01 email copy; no production send). **#79** (T29 Baker form card) is merging — Josh lifted the preview lock. **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice), **#83** (T3 Weekly #01 email copy; no production send). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -277,7 +276,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 
 - [x] **Night click-through fixes (T30)** — 2026-08-21. PR #80. Eric Bergersen house-voice PA; `/join` intro 10–13% / 17–20%; hash targets clear the sticky header; home SAMHSA citation is the survey name.
 - [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closed, not merged (T31).
-- [ ] **Jonathan Baker About card (T29)** — merging PR #79 (Josh lifted preview lock). Photo stays existing `jonathan-baker.jpg`.
+- [x] **Jonathan Baker About card (T29)** — 2026-08-25. PR #79. Form bio + PA-C + LinkedIn live. Photo still existing `jonathan-baker.jpg`.
 - [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
 - [ ] **Employer / institutional membership invoice (T33)** — preview-only PR #73 (`/membership`); live `/join` stays; do not merge until Josh reviews.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
@@ -350,6 +349,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-25 · **Jonathan Baker About card (T29)** — PR #79. Form bio + PA-C + LinkedIn; photo still existing `jonathan-baker.jpg`.
 - 2026-08-21 · **Public-site click-through fixes (T30)** — PR #80. Eric Bergersen “board-certified PA”; `/join` + homepage multi-year intro 10–13% / 17–20%; `scroll-padding-top` so `#leadership` / `#programs` clear the floating nav; home SAMHSA source labeled by survey name.
 - 2026-08-17 · **Homepage CAQ card + membership line (T27)** — PR #76. In-development CAQ card on homepage programs row links to live `/caq`. Membership copy on home + `/join`: members stay in the loop as the CAQ takes shape.
 - 2026-08-16 · **Addiction Medicine CAQ page (T26)** — PR #74. Public `/caq` (nav, footer, About). NCCPA approved **development** after a SAMPA proposal; exam not open; dates/eligibility/fees unpublished. NCCPA issues the CAQ.
