@@ -6,6 +6,7 @@ import { US_STATES } from '../lib/usStates';
 import { displayOrganizations, formatOrgLocation } from '../lib/organizations';
 import { PRACTICE_SETTINGS } from '../lib/practiceSettings';
 import { PersonPracticeSettings } from '../components/PracticeSettingChips';
+import { DirectoryBadges } from '../components/DirectoryBadges';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -30,11 +31,7 @@ function MemberCard({ person }) {
             <span className="font-normal text-text/50 text-sm ml-2">{person.credentials}</span>
           )}
         </h2>
-        {person.is_board && (
-          <span className="shrink-0 px-2.5 py-0.5 rounded-full bg-primary-text/10 text-primary-text text-xs font-data font-semibold uppercase tracking-wider">
-            Board
-          </span>
-        )}
+        <DirectoryBadges person={person} />
       </div>
       <div className="space-y-1 text-sm text-text/60">
         {primary?.name && (
