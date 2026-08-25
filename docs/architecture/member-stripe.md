@@ -41,9 +41,11 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 
 Student/Pre-PA cap at 2-year; Legacy lifetime = active + `renews_on` null.
 
-Public display name for key `sustaining` is **PA Member** (non-AAPA PA path).
-Never show the word Sustaining on home cards or `/join`. Stripe product / env
-keys stay `sustaining`.
+Public display name for key `sustaining` is **Certified PA (not AAPA)**.
+Quiet secondary label **Sustaining rate** maps to the board doc. Do not present
+this card as extra support — Associate and Donate are the support paths.
+Fellow card leads with eligibility: AAPA members start here / NCCPA + AAPA.
+Stripe product / env keys stay `sustaining`.
 
 ## Patron add-on (not a tier)
 

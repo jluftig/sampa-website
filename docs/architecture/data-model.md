@@ -26,7 +26,7 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
   false — extra support add-on, **never** a tier key)
 - `aapa_member` (nullable boolean) — honor-system “current AAPA member?” Self-writable
   (not in `guard_profile_role`). We do not verify with AAPA. `aapa_member_id` is not
-  collected. Helps suggest Fellow vs PA Member (`sustaining`) on `/join`.
+  collected. Helps suggest Fellow vs Certified PA (`sustaining`) on `/join`.
 - `role` enum `user_role` = member|editor|admin (default member; `editor` legacy — UI
   normalizes to member + flags)
 - Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`, `is_board`
