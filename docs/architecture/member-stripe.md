@@ -19,7 +19,7 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 
 | Path | Job |
 |------|-----|
-| `/join` | Pick a tier and term → optional Patron add-on → Stripe Checkout |
+| `/join` | Honor-system AAPA yes/no (PA-path) → pick a tier and term → optional Patron → Stripe Checkout |
 | `/dashboard` | Status, portal, profile, directory privacy, saved articles |
 | `/donate` | Public gifts (one-time/monthly) — separate `donations` ledger |
 | `/members` | Peer directory (active members / staff), not staff roster |

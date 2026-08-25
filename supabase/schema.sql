@@ -135,8 +135,10 @@ alter table public.profiles add column if not exists cancel_at_period_end boolea
 alter table public.profiles add column if not exists membership_years int;
 -- Optional extra support on top of a real membership_tier (fellow / sustaining / …).
 -- Never a tier key. Webhook-written from checkout metadata.patron. Default off.
--- There is no AAPA column on profiles — do not infer AAPA from this flag.
 alter table public.profiles add column if not exists patron boolean not null default false;
+-- Honor-system AAPA membership (nullable). Self-writable — not in guard_profile_role.
+-- We do not verify with AAPA. aapa_member_id is NOT in this change.
+alter table public.profiles add column if not exists aapa_member boolean;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
