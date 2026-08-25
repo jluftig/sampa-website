@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T38 boarded — employer invoice side door on `/join`; T33 stays killed; T36 parked; T34/T37/T35 Done)
+**Last updated:** 2026-08-25 (T38 In Progress — cursor claimed employer invoice side door)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -44,7 +44,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | ID | Task | Owner | Notes |
 |----|------|-------|-------|
 | T32 | Practice resources public /resources | either | Preview-only draft PR #75. Not on live site. About still treats practice resources as in-development. Preview only; do not merge until Josh reviews Vercel. |
-| T38 | Employer invoice side door on /join | either | Next unused T## is T38. Quiet link on live one-page `/join` after they pick a tier: “Need an invoice for your employer?” Form collects member, employer, AP contact, address, PO, term. Submit does not charge or activate membership. Routine: generate no-SVG PDF (UK could not open the SVG invoice we sent Cheryl Vanderford), verify the PDF opens, attach to an admin@ draft (To member + AP, cc treasurer@), then Chief of Staff shows Josh the email text and a send chip. Human in the loop: nothing sends until Josh clicks Send. Invoice should include a Stripe pay link so the existing webhook can activate membership. Do not put `/membership` back as Step 1. #73 was killed 2026-08-25 for that reason. Known case: Cheryl Vanderford / UK (cheryl.vanderford@uky.edu), Aug 2026. |
 | T36 | Sustaining accident cleanup (Fellow + Patron) | either | **Parked.** People who picked Sustaining thinking it was extra support. Shift those members to `fellow` + `patron` flag + Stripe item. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Rest still parked until Josh says. Not in T35 / PR #85 / T37. |
 | T19 | Policy ops tracker + open windows (hub) | either | Grill R1 locked 2026-08-10. [`PARK-policy-ops.md`](PARK-policy-ops.md) · *Resume SAMPA policy ops*. No build until Round 2. |
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
@@ -67,6 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T38 | Employer invoice side door on /join | cursor | 2026-08-25 | **Claimed cursor.** Quiet link on live one-page `/join` after they pick a tier — not a catalog/Step 1, not `/membership`. #73 stays killed. Submit stores the request, creates a Stripe pay link (existing webhook activates when paid), generates a no-SVG PDF, emails josh@ + admin@ only. Do not email the member or AP from the API. Human outbound invoice remains Chief of Staff. Feature PR next. Known case: Cheryl Vanderford / UK, Aug 2026. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -288,7 +288,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **AAPA status on staff members list (T37)** — 2026-08-25. PR #86 → Production. Honor-system AAPA Yes / No / — on `/editor/members` only.
 - [ ] **Sustaining accident cleanup (T36)** — parked. Fellow + `patron` + Stripe item for people who picked Sustaining as extra support. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Do not run the rest until Josh says.
 - [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
-- [ ] **Employer invoice side door on `/join` (T38)** — T33 stays killed; T38 is the replacement invoice idea. Quiet link on live one-page `/join` after they pick a tier. Do not put `/membership` back as Step 1. #73 was killed 2026-08-25.
+- [ ] **Employer invoice side door on `/join` (T38)** — **Claimed cursor 2026-08-25.** Quiet link on live one-page `/join` after they pick a tier. Do not put `/membership` back as Step 1. #73 stays killed.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
