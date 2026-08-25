@@ -47,6 +47,26 @@ function renewalLabel(p) {
   return '';
 }
 
+// Honor-system AAPA answer. Null / missing column → not answered, not "No".
+function AapaStatusBadge({ value }) {
+  if (value === true) {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+        Yes
+      </span>
+    );
+  }
+  if (value === false) {
+    return (
+      <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-text/10 text-text/60">
+        No
+      </span>
+    );
+  }
+  return <span className="text-text/30">—</span>;
+}
+
 const CSV_COLUMNS = [
   ['Name', (p) => p.full_name],
   ['Email', (p) => p.email],
@@ -422,6 +442,7 @@ export default function AdminMembers() {
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Email</th>
                     <th className="px-4 py-3">Tier</th>
+                    <th className="px-4 py-3" title="Honor system — we do not verify with AAPA">AAPA</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Renewal</th>
                     <th className="px-4 py-3">Donor</th>
@@ -435,6 +456,9 @@ export default function AdminMembers() {
                       <td className="px-4 py-3 font-semibold whitespace-nowrap">{p.full_name || '—'}</td>
                       <td className="px-4 py-3 text-text/60">{p.email}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{tierLabel(p)}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <AapaStatusBadge value={p.aapa_member} />
+                      </td>
                       <td className="px-4 py-3">
                         {p.membership_status ? (
                           <span className={`text-xs font-data font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGES[p.membership_status] || 'bg-text/10 text-text/60'}`}>
@@ -463,7 +487,7 @@ export default function AdminMembers() {
                   ))}
                   {filtered.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="px-4 py-8 text-center text-text/40">
+                      <td colSpan={9} className="px-4 py-8 text-center text-text/40">
                         No accounts match this view.
                       </td>
                     </tr>
@@ -473,9 +497,11 @@ export default function AdminMembers() {
             </div>
 
             <p className="text-text/40 text-xs mt-4">
-              The CSV export includes additional columns: credentials,
-              organizations (city/state), practice setting, phone, and newsletter/SMS
-              preferences. Permissions are managed by administrators on{' '}
+              AAPA is the honor-system answer from Join or the dashboard (Yes / No /
+              — if not answered). We do not verify with AAPA. The CSV export includes
+              additional columns: credentials, organizations (city/state), practice
+              setting, phone, and newsletter/SMS preferences. Permissions are managed
+              by administrators on{' '}
               <Link to="/editor/people" className="underline hover:text-primary-text">People & permissions</Link>.
             </p>
           </>
