@@ -82,9 +82,9 @@ export function durationLabel(duration) {
 // same math (api/_lib/tiers.js patronDollars). +$25 per year of the selected
 // term (Fellow $50 + Patron $25 = $75). Legacy lifetime
 // is +$25 once.
-// Directory-badge reward — not extra membership benefits, never a membership_tier.
+// Extra support + badge flex + gratitude. Never a membership_tier.
 export const PATRON_ADDON_BLURB =
-  'adds a Patron badge on your directory listing. No extra membership benefits beyond the badge.';
+  'Additional support for SAMPA, a Patron badge to flex on your directory listing, and our genuine gratitude.';
 
 export const PATRON_DOLLARS_PER_YEAR = 25;
 
