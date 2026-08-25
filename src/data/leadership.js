@@ -238,11 +238,13 @@ export const LEADERSHIP = [
     sort: 150,
     group: 'committees',
     name: 'Jonathan Baker',
-    credentials: 'PA-C, MPAS, DFAAPA',
+    credentials: 'PA-C',
     role: 'Membership advisor',
     location: 'New York, NY',
-    bio: 'Jonathan Baker, PA-C, MPAS, DFAAPA, practices at NYU Langone Health and is SAMPA’s membership advisor.',
+    // Submitted Leadership Profile 2026-08-19. Keep as written.
+    bio: 'Jonathan Baker, PA-C (he/him), practices in New York City with a focus on anorectal pathology, HPV, and other sexually transmitted infections. A nationally recognized educator and advocate, he has contributed to landmark research in anal cancer prevention, published in peer-reviewed journals, and served as President of both NYSSPA and the LGBT PA Caucus.',
     photo: '/leadership/jonathan-baker.jpg',
+    linkedin: 'https://www.linkedin.com/in/jonathan-baker-00b186107',
   },
   {
     id: 'james-anderson',
