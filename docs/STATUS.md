@@ -65,7 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T37 | AAPA status on staff members list | cursor | 2026-08-25 | **Claimed cursor.** Honor-system `aapa_member` Yes / No / — on `/editor/members` only (staff / member-viewer+). Do **not** add to peer directory `/members`. Preview only; do not merge until Josh reviews. |
+| T37 | AAPA status on staff members list | cursor | 2026-08-25 | **Claimed cursor.** Honor-system `aapa_member` Yes / No / — on `/editor/members` only (staff / member-viewer+). Do **not** add to peer directory `/members`. Preview-only draft PR #86; do not merge until Josh reviews. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -221,7 +221,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice — parked), **#83** (T3 Weekly #01 email copy; no production send). **#85** merged (**T35** Done → Production). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#86** (T37 AAPA on staff members list), **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice — parked), **#83** (T3 Weekly #01 email copy; no production send). **#85** merged (**T35** Done → Production). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
