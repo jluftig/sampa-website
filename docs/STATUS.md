@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T40 In Progress — cursor claimed Patron directory badge on Join)
+**Last updated:** 2026-08-25 (T40 Done — Patron directory badge + Join copy merged PR #91 → Production)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Claimed cursor.** Preview-only draft **PR #91** — do not merge. Fellow card + Patron checkbox mention the directory badge; drop leftover “This is not extra support.” from Certified PA. Quiet `/dashboard` “Add Patron” for existing active non-Patron members (hidden if already Patron). SQL ready: `2026-08-25-directory-patron.sql`. Separate from T39 (merged PR #90). |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -74,11 +73,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Merged PR #91 → Production** (`da74fa4`). Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron for existing active non-Patron members. Peer `/members` Patron chip when `profiles.patron`. SQL applied in prod SQL Editor before merge. |
 | T39 | About intro copy + drop in-page leadership jump | cursor | 2026-08-25 | **Merged PR #90 → Production** (`2bda82e`). Josh's two-sentence intro (all settings / house of medicine) on `/about`; in-page “Meet 2026–27 leadership” jump removed. Roster/bios/photos unchanged. |
 | T38 | Employer invoice side door on /join | cursor | 2026-08-25 | **Merged PR #89 → Production** (`fd63647`). Quiet link on `/join` after a real tier — not a catalog/Step 1, not `/membership`. #73 stays killed. SQL applied in prod SQL Editor before merge. Submit stores the request, Stripe pay link, no-SVG PDF; emails josh@ + admin@ only. |
 | T34 | Jonathan Baker form headshot on About | cursor | 2026-08-25 | **Merged PR #84 → Production** (`75af7d1`). House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg`. Path unchanged. Thank-you draft stays unsent. |
 | T37 | AAPA status on staff members list | cursor | 2026-08-25 | **Merged PR #86 → Production.** Honor-system `aapa_member` Yes / No / — on `/editor/members` only. Not on peer directory `/members`. |
-| T35 | Frictionless Join onboarding | cursor | 2026-08-25 | **Merged PR #85 → Production** (`4547d6bc`). Follow-up on main: Sustaining card → **Certified PA (not AAPA)** + quiet “Sustaining rate”; Fellow eligibility first. AAPA yes/no; Patron +$25 add-on. SQL applied in prod SQL Editor before merge. |
 
 ### Task workflow (agents + humans)
 
@@ -168,10 +167,7 @@ Operator confirmed the directory stack SQL was run in Supabase (shared DB):
 4. `supabase/migrations/2026-08-07-practice-settings-directory.sql` — applied **2026-08-07** (`settings_filter` on `member_directory`)
 5. `supabase/migrations/2026-08-25-patron-addon.sql` + `2026-08-25-aapa-member.sql` — applied **2026-08-25** (Josh; `profiles.patron`, `profiles.aapa_member`, `guard_profile_role`) before PR #85 merge
 6. `supabase/migrations/2026-08-25-invoice-requests.sql` — applied **2026-08-25** (Josh; `membership_invoice_requests`) before PR #89 merge
-
-### DB migrations to apply (T40 — before merge)
-
-1. `supabase/migrations/2026-08-25-directory-patron.sql` — add `patron` to `member_directory*` so `/members` can show a Patron badge. `profiles.patron` already exists. Ready for SQL Editor. Preview degrades (no badge) until applied.
+7. `supabase/migrations/2026-08-25-directory-patron.sql` — applied **2026-08-25** (Josh; `patron` on `member_directory*`) before PR #91 merge
 
 ### DB migrations to verify (code already on main)
 
@@ -228,7 +224,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#91** (T40 Patron directory badge — this claim), **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -296,7 +292,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **About intro copy + drop leadership jump (T39)** — 2026-08-25. PR #90 → Production. Josh's two-sentence intro on `/about`; in-page Meet 2026–27 leadership jump removed. Roster unchanged.
 - [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
 - [x] **Employer invoice side door on `/join` (T38)** — 2026-08-25. PR #89 → Production. Quiet link on live one-page `/join` after they pick a tier. SQL applied before merge. #73 stays killed.
-- [ ] **Patron directory badge + Join copy (T40)** — **Claimed cursor 2026-08-25.** Preview-only **PR #91**. Fellow / checkbox / invoice copy + `/members` badge + quiet dashboard Add Patron for existing members. Separate from T39.
+- [x] **Patron directory badge + Join copy (T40)** — 2026-08-25. PR #91 → Production. Fellow / checkbox / invoice copy + `/members` Patron badge + quiet dashboard Add Patron. SQL applied before merge.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
@@ -367,6 +363,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-25 · **Patron directory badge + Join copy (T40)** — PR #91. Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron. Peer `/members` Patron chip. SQL applied before merge.
 - 2026-08-25 · **About intro + drop in-page leadership jump (T39)** — PR #90. Josh's two-sentence intro (all settings / house of medicine) on `/about`. In-page Meet 2026–27 leadership jump removed. Roster unchanged.
 - 2026-08-25 · **Employer invoice side door on `/join` (T38)** — PR #89. Quiet “Need an invoice for your employer?” after a real tier. Stores the request, Stripe pay link, no-SVG PDF; emails josh@ + admin@ only. SQL applied before merge. #73 stays killed.
 - 2026-08-25 · **Jonathan Baker form headshot (T34)** — PR #84. House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg` (replaces AAPA scrape).
