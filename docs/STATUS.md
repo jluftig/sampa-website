@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-21 (T30 night click-through fixes merged via PR #80 → Production)
+**Last updated:** 2026-08-25 (leftover open-PR review; T31 + T29/T32/T33 claimed on the board)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -43,6 +43,9 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 
 | ID | Task | Owner | Notes |
 |----|------|-------|-------|
+| T29 | Jonathan Baker About card from 2026-08-19 form | cursor | Preview-only draft PR #79. Live card still NYU Langone / MPAS, DFAAPA. Form bio: PA-C, NYC, anorectal/HPV/STI, NYSSPA + LGBT PA Caucus president; add LinkedIn. Photo (Baker_Headshot2025 Square) never landed on the branch — do not merge until photo + Josh preview. T29 was claimed on that preview branch only; now on the main board. |
+| T32 | Practice resources public /resources | either | Preview-only draft PR #75. Not on live site. About still treats practice resources as in-development. Preview only; do not merge until Josh reviews Vercel. |
+| T33 | Employer / institutional membership invoice (/membership) | either | Preview-only draft PR #73. Live `/join` checkout exists; `/membership` 404s. Do not reuse T24 (that ID is the news one-shot, already Done). Preview only; do not merge until Josh reviews. |
 | T19 | Policy ops tracker + open windows (hub) | either | Grill R1 locked 2026-08-10. [`PARK-policy-ops.md`](PARK-policy-ops.md) · *Resume SAMPA policy ops*. No build until Round 2. |
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
 | T2 | Pre-membership security P0 (Vercel Stripe/webhook/keys + E2E join) | either | [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) · *Resume SAMPA security review* |
@@ -62,7 +65,8 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). |
+| T31 | Close leftover PRs #71 and #63 | cursor | 2026-08-25 | Josh confirmed 2026-08-25. #71 superseded by live `/about#leadership` (T23/PR #77). #63 is a stale Aug 9 board-agenda markdown, not a site feature. Do not merge. Close only. Leave #79 #75 #73 #83 open. |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
 ### Done (last 5 only — older = git history)
@@ -71,7 +75,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 |----|------|-------|------|-------|
 | T30 | Public-site click-through fixes (2026-08-21 night pass) | cursor | 2026-08-21 | **Merged PR #80 → Production.** Josh walked the Vercel preview and said ship. Eric Bergersen “board-certified PA”; `/join` intro 10–13% / 17–20% matching stored prices; sticky-header hash offset; home SAMHSA citation by survey name. |
 | T28 | Josh About bio: naloxone doses 1.15 million | cursor | 2026-08-19 | **Merged PR #78 → Production.** Josh Luftig public bio: more than **1.15 million** doses at no cost (was 600,000). Copy-only; `src/data/leadership.js` `josh-luftig`. |
-| T23 | Public About/Leadership page | cursor | 2026-08-19 | **Merged PR #77 → Production.** `/about#leadership` is the 2026–27 roster. Kerith form bio + form headshot (Certification Co-Chair, committees, Portland, OR). About nav has the New badge. Danielle omitted. Separate-page experiment remains at draft PR #71. |
+| T23 | Public About/Leadership page | cursor | 2026-08-19 | **Merged PR #77 → Production.** `/about#leadership` is the 2026–27 roster. Kerith form bio + form headshot (Certification Co-Chair, committees, Portland, OR). About nav has the New badge. Danielle omitted. **2026-08-25:** Josh confirmed the live About roster is current (21 people) and asked to close leftover draft PR #71 (superseded by T23/PR #77; close tracked as T31). |
 | T24 | Document news one-shot + internal QC + voice trial | egg | 2026-08-17 | **Merged PR #72 → main.** One-shot QC; Dunk/critic loops retired. **Voice trial ON** (ALiEM job / MMWR voice / generalist-PA; revert: `revert news voice`). Fallback: `docs/archive/news-article-structure.fallback-2026-08-16.md`. |
 | T27 | Homepage CAQ card + membership CAQ line | cursor | 2026-08-17 | **Merged PR #76 → Production.** In-development CAQ card on homepage programs row → live `/caq`. One careful membership line on home + `/join`: members stay in the loop as the CAQ takes shape (not “join to get the CAQ”; SAMPA does not award it). |
 
@@ -214,6 +218,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#79** (T29 Baker form card), **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice), **#83** (T3 Weekly #01 email copy; no production send). **#71** and **#63** are closing as **T31** (close only; do not merge). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -272,7 +277,10 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ### Product — site polish / marketing
 
 - [x] **Night click-through fixes (T30)** — 2026-08-21. PR #80. Eric Bergersen house-voice PA; `/join` intro 10–13% / 17–20%; hash targets clear the sticky header; home SAMHSA citation is the survey name.
-- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses.
+- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closes as T31.
+- [ ] **Jonathan Baker About card (T29)** — preview-only PR #79; do not merge until photo + Josh preview.
+- [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
+- [ ] **Employer / institutional membership invoice (T33)** — preview-only PR #73 (`/membership`); live `/join` stays; do not merge until Josh reviews.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
