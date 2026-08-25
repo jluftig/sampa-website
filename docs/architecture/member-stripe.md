@@ -45,7 +45,8 @@ Student/Pre-PA cap at 2-year; Legacy lifetime = active + `renews_on` null.
 Public display name for key `sustaining` is **Certified PA (not AAPA)**.
 Quiet secondary label **Sustaining rate** maps to the board doc. Do not present
 this card as extra support — Associate and Donate are the support paths.
-Fellow card leads with eligibility: AAPA members start here / NCCPA + AAPA.
+Fellow card leads with eligibility: AAPA members start here / NCCPA + AAPA,
+plus a short line that optional Patron puts a Patron badge on the directory listing.
 Stripe product / env keys stay `sustaining`.
 
 ## Patron add-on (not a tier)
@@ -53,7 +54,9 @@ Stripe product / env keys stay `sustaining`.
 Optional extra support on `/join` after a real tier is selected. Default **off**.
 Not a seventh card, not Platinum, not Associate, not `/donate`.
 
-- Copy: “Patron — same membership, no extra benefits. Just more support for SAMPA.”
+- Copy: “Patron — adds a Patron badge on your directory listing. No extra
+  membership benefits beyond the badge.” Visible reward is the `/members`
+  directory badge (`profiles.patron`). Not a membership benefit beyond that.
 - Amount: **+$25 × term years** (1yr +$25, 2yr +$50, 3yr +$75). Legacy lifetime **+$25 once**.
   Fellow $50 + Patron $25 = $75.
 - Checkout body: `{ tier, duration, patron: true }`. Server adds a matching-term

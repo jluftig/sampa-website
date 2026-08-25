@@ -169,6 +169,10 @@ Operator confirmed the directory stack SQL was run in Supabase (shared DB):
 5. `supabase/migrations/2026-08-25-patron-addon.sql` + `2026-08-25-aapa-member.sql` — applied **2026-08-25** (Josh; `profiles.patron`, `profiles.aapa_member`, `guard_profile_role`) before PR #85 merge
 6. `supabase/migrations/2026-08-25-invoice-requests.sql` — applied **2026-08-25** (Josh; `membership_invoice_requests`) before PR #89 merge
 
+### DB migrations to apply (T40 — before merge)
+
+1. `supabase/migrations/2026-08-25-directory-patron.sql` — add `patron` to `member_directory*` so `/members` can show a Patron badge. `profiles.patron` already exists. Ready for SQL Editor. Preview degrades (no badge) until applied.
+
 ### DB migrations to verify (code already on main)
 
 If co-authors or comments misbehave in prod, re-run (idempotent) in Supabase SQL Editor:

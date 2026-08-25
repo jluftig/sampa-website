@@ -23,7 +23,8 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 - Membership (webhook-written, guarded): `stripe_customer_id`, `membership_tier`,
   `membership_status` (`active`|`past_due`|`canceled`), `renews_on` (null + active = lifetime),
   `cancel_at_period_end`, `membership_years` (1/2/3 or null), `patron` (boolean, default
-  false — extra support add-on, **never** a tier key)
+  false — add-on, **never** a tier key; peer `/members` shows a Patron badge when true
+  via `member_directory*` RPCs)
 - `aapa_member` (nullable boolean) — honor-system “current AAPA member?” Self-writable
   (not in `guard_profile_role`). We do not verify with AAPA. `aapa_member_id` is not
   collected. Helps suggest Fellow vs Certified PA (`sustaining`) on `/join`.
