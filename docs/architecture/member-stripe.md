@@ -66,6 +66,12 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
   `type=donation` on this session (that would skip the membership write).
 - Webhook writes `metadata.tier` to `membership_tier` and `metadata.patron` to
   `profiles.patron` on **new** checkouts. Patron is never a `membership_tier`.
+- Existing members add Patron later from **`/dashboard` only** (quiet “Add
+  Patron” under Membership). Hidden if `patron` is already true or membership
+  is not active. `POST /api/add-patron` starts a **payment-mode** Checkout for
+  the current-term amount; webhook `addon=patron_upgrade` writes `patron` and
+  attaches the recurring Patron item to the existing subscription (`proration
+  none`) so renewals keep it. Does not send welcome. Not a campaign or banner.
 - Existing Sustaining accident cleanup is parked as STATUS **T36** — not this track.
 
 ## Employer invoice (T38 — quiet side door)

@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 // Assert T40 Join / invoice / directory-badge copy. No leftover Sustaining disclaimer.
 import { readFileSync } from 'node:fs';
-import { MEMBERSHIP_TIERS, PATRON_ADDON_BLURB } from '../src/lib/membership.js';
+import {
+  MEMBERSHIP_TIERS,
+  PATRON_ADDON_BLURB,
+  canAddPatron,
+  patronUpgradeDuration,
+} from '../src/lib/membership.js';
 import { directoryBadgeLabels } from '../src/lib/directoryBadges.js';
 
 const fellow = MEMBERSHIP_TIERS.find((t) => t.key === 'fellow');
@@ -44,6 +49,25 @@ if (JSON.stringify(directoryBadgeLabels({ is_board: true, patron: true })) !== '
 }
 if (directoryBadgeLabels({ membership_tier: 'patron' }).length !== 0) {
   fail('Patron must never be inferred from membership_tier');
+}
+
+if (canAddPatron({ membership_status: 'active', patron: false, stripe_customer_id: 'cus_x' }) !== true) {
+  fail('active non-patron with Stripe should see Add Patron');
+}
+if (canAddPatron({ membership_status: 'active', patron: true, stripe_customer_id: 'cus_x' })) {
+  fail('already Patron must hide Add Patron');
+}
+if (canAddPatron({ membership_status: 'canceled', patron: false, stripe_customer_id: 'cus_x' })) {
+  fail('non-active must hide Add Patron');
+}
+if (canAddPatron({ membership_status: 'active', patron: false, stripe_customer_id: null })) {
+  fail('no Stripe customer must hide Add Patron');
+}
+if (patronUpgradeDuration({ membership_status: 'active', renews_on: null }) !== 'lifetime') {
+  fail('lifetime upgrade duration');
+}
+if (patronUpgradeDuration({ membership_status: 'active', renews_on: '2027-01-01', membership_years: 3 }) !== 3) {
+  fail('term upgrade duration uses membership_years');
 }
 
 console.log('verify-patron-copy: ok');

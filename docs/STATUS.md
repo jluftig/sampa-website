@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Claimed cursor.** Preview-only draft **PR #91** — do not merge. Optional Patron add-on shows a Patron badge on peer `/members` (not a membership_tier). Fellow card mentions the badge; drop leftover “This is not extra support.” from Certified PA (not AAPA). Patron checkbox + `/join/invoice` copy: badge reward, not extra membership benefits. Stripe keys / Sustaining public name stay as-is. Separate from T39 About intro (merged PR #90) — do not touch About.jsx. SQL ready: `2026-08-25-directory-patron.sql`. |
+| T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Claimed cursor.** Preview-only draft **PR #91** — do not merge. Fellow card + Patron checkbox mention the directory badge; drop leftover “This is not extra support.” from Certified PA. Quiet `/dashboard` “Add Patron” for existing active non-Patron members (hidden if already Patron). SQL ready: `2026-08-25-directory-patron.sql`. Separate from T39 (merged PR #90). |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -296,7 +296,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **About intro copy + drop leadership jump (T39)** — 2026-08-25. PR #90 → Production. Josh's two-sentence intro on `/about`; in-page Meet 2026–27 leadership jump removed. Roster unchanged.
 - [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
 - [x] **Employer invoice side door on `/join` (T38)** — 2026-08-25. PR #89 → Production. Quiet link on live one-page `/join` after they pick a tier. SQL applied before merge. #73 stays killed.
-- [ ] **Patron directory badge + Join copy (T40)** — **Claimed cursor 2026-08-25.** Preview-only. Fellow card + Patron checkbox mention the directory badge; drop “This is not extra support.” from Certified PA. Separate from T39 About.
+- [ ] **Patron directory badge + Join copy (T40)** — **Claimed cursor 2026-08-25.** Preview-only **PR #91**. Fellow / checkbox / invoice copy + `/members` badge + quiet dashboard Add Patron for existing members. Separate from T39.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 

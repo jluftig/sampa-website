@@ -95,6 +95,23 @@ export function patronDollars(duration) {
   return PATRON_DOLLARS_PER_YEAR * years;
 }
 
+// Quiet dashboard upgrade: only signed-in active members who are not already
+// Patron and who have a Stripe customer (so we can charge). Join owns first-time.
+export function canAddPatron(profile) {
+  if (!profile) return false;
+  if (profile.membership_status !== 'active') return false;
+  if (profile.patron) return false;
+  if (!profile.stripe_customer_id) return false;
+  return true;
+}
+
+export function patronUpgradeDuration(profile) {
+  if (!profile) return 1;
+  if (profile.membership_status === 'active' && !profile.renews_on) return 'lifetime';
+  const years = Number(profile.membership_years);
+  return Number.isFinite(years) && years >= 1 ? years : 1;
+}
+
 // PA-path tiers ask the honor-system AAPA question on /join. Student / Pre-PA /
 // Associate skip it. Yes → suggest Fellow; No → suggest Certified PA (sustaining).
 export const PA_PATH_TIER_KEYS = ['fellow', 'sustaining', 'legacy'];

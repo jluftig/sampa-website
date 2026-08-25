@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { BookmarkX, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
-import { tierByKey } from '../lib/membership';
+import { canAddPatron, patronDollars, patronUpgradeDuration, PATRON_ADDON_BLURB, tierByKey } from '../lib/membership';
 import { US_STATES } from '../lib/usStates';
 import {
   emptyOrganization,
@@ -42,6 +42,8 @@ export default function Dashboard() {
   // ---- membership -----------------------------------------------------------
   const [portalBusy, setPortalBusy] = useState(false);
   const [portalError, setPortalError] = useState(null);
+  const [patronBusy, setPatronBusy] = useState(false);
+  const [patronError, setPatronError] = useState(null);
 
   // The webhook usually lands within seconds of checkout; re-fetch the profile
   // a few times so the new status appears without a manual reload.
@@ -61,6 +63,18 @@ export default function Dashboard() {
     } catch (err) {
       setPortalError(err.message);
       setPortalBusy(false);
+    }
+  };
+
+  const startPatronUpgrade = async () => {
+    setPatronBusy(true);
+    setPatronError(null);
+    try {
+      const { url } = await apiPost('/api/add-patron');
+      window.location.assign(url);
+    } catch (err) {
+      setPatronError(err.message);
+      setPatronBusy(false);
     }
   };
 
@@ -275,6 +289,8 @@ export default function Dashboard() {
 
   const badge = STATUS_BADGES[profile?.membership_status] || null;
   const tier = tierByKey(profile?.membership_tier);
+  const showPatronUpgrade = canAddPatron(profile);
+  const patronDuration = showPatronUpgrade ? patronUpgradeDuration(profile) : null;
   const needsOnboarding = profile && !profile.onboarded_at;
   const firstName = (profile?.full_name || '').split(' ')[0];
 
@@ -378,6 +394,27 @@ export default function Dashboard() {
                 )}
               </div>
               {portalError && <p className="text-red-500 text-xs mt-3">{portalError}</p>}
+              {showPatronUpgrade && (
+                <div className="mt-5 pt-5 border-t border-primary/10">
+                  <button
+                    type="button"
+                    onClick={startPatronUpgrade}
+                    disabled={patronBusy}
+                    className="px-5 py-2.5 rounded-full border border-primary/25 text-primary-text text-sm font-semibold hover:bg-primary-text/5 transition-colors disabled:opacity-50"
+                  >
+                    {patronBusy ? 'Opening…' : 'Add Patron'}
+                  </button>
+                  <p className="text-text/50 text-xs mt-2 max-w-md">
+                    Patron badge — {PATRON_ADDON_BLURB} Adds ${patronDollars(patronDuration)}
+                    {patronDuration === 'lifetime'
+                      ? ' once'
+                      : patronDuration === 1
+                        ? ' for this year'
+                        : ` for your ${patronDuration}-year term`}.
+                  </p>
+                  {patronError && <p className="text-red-500 text-xs mt-2">{patronError}</p>}
+                </div>
+              )}
               <p className="text-text/40 text-xs mt-4">
                 {profile.stripe_customer_id
                   ? 'Card updates, tier changes, cancellation, and receipts are all handled securely in the Stripe billing portal.'
