@@ -40,9 +40,10 @@ export default function AboutPage() {
           </h1>
           <p className="text-lg md:text-xl text-text/70 leading-relaxed font-medium mb-5">
             SAMPA is the national society for physician associates who practice
-            — or are preparing to practice — in addiction medicine. We exist so
-            people with substance use disorders reach current, compassionate,
-            evidence-based care, and so the PAs who deliver it have a home.
+            — or are preparing to practice — addiction medicine in all settings,
+            from OTPs to emergency departments to street medicine to FQHCs and
+            everything in between. Enter any door in the house of medicine and
+            PAs are there ready to help.
           </p>
           <p
             id="nonprofit-status"
@@ -50,12 +51,6 @@ export default function AboutPage() {
           >
             SAMPA, Inc. is a 501(c)(3) nonprofit organization · EIN 42-2288772
           </p>
-          <a
-            href="#leadership"
-            className="text-sm font-semibold text-primary-text hover:underline"
-          >
-            Meet 2026–27 leadership
-          </a>
         </header>
 
         <LeadershipRoster />
