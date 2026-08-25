@@ -26,8 +26,8 @@ Gate future member-only content (e.g. CME) on `is_active_member()`
 ## Privilege escalation
 
 `guard_profile_role()` BEFORE UPDATE blocks non-admins from changing `role` or any
-membership/billing column. Bypass only when `auth.uid() IS NULL` (SQL editor /
-service_role / Stripe webhook).
+membership/billing column (including `patron`). Bypass only when `auth.uid() IS NULL`
+(SQL editor / service_role / Stripe webhook).
 
 **`api/stripe-webhook.js` (service role) is the ONLY writer of membership columns.**
 

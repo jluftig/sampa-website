@@ -9,7 +9,10 @@ Source of truth for DDL: `supabase/schema.sql`.
 api/                        Vercel serverless functions (Web-handler signature: export POST)
   _lib/clients.js           stripeClient(), supabaseAdmin() (service role), requireUser(JWT), json()
   _lib/tiers.js             tier key -> STRIPE_PRICE_* env mapping
-  create-checkout-session.js POST {tier} -> {url}; JWT required; client_reference_id = user id
+  create-checkout-session.js POST {tier, duration, patron?} -> {url}; JWT required;
+                            client_reference_id = user id. `patron: true` adds a
+                            matching-term price_data line item (+$25 × years);
+                            metadata.tier stays the real membership key.
   create-donation-session.js POST {amount,frequency} -> {url}; NO auth (public donate);
                             metadata.type='donation' keeps gifts OUT of membership columns
   create-portal-session.js  POST -> {url} of Stripe Customer Portal; JWT required

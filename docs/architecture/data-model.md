@@ -22,7 +22,8 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 - Peer contact **only** via `member_directory*` RPCs — never by opening profiles SELECT
 - Membership (webhook-written, guarded): `stripe_customer_id`, `membership_tier`,
   `membership_status` (`active`|`past_due`|`canceled`), `renews_on` (null + active = lifetime),
-  `cancel_at_period_end`, `membership_years` (1/2/3 or null)
+  `cancel_at_period_end`, `membership_years` (1/2/3 or null), `patron` (boolean, default
+  false — extra support add-on, **never** a tier key; no AAPA column on profiles)
 - `role` enum `user_role` = member|editor|admin (default member; `editor` legacy — UI
   normalizes to member + flags)
 - Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`, `is_board`
