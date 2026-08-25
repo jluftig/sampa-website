@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T39 In Progress — cursor claimed About intro + drop leadership jump)
+**Last updated:** 2026-08-25 (T39 Done — About intro + drop leadership jump merged PR #90 → Production)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T39 | About intro copy + drop in-page leadership jump | cursor | 2026-08-25 | **Claimed cursor.** Preview-only PR **#90**. Josh's two-sentence intro (all settings / house of medicine) on live `/about`; remove in-page “Meet 2026–27 leadership” jump. Roster/bios/photos unchanged. Do not merge until Josh reviews Vercel. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -74,11 +73,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T39 | About intro copy + drop in-page leadership jump | cursor | 2026-08-25 | **Merged PR #90 → Production** (`2bda82e`). Josh's two-sentence intro (all settings / house of medicine) on `/about`; in-page “Meet 2026–27 leadership” jump removed. Roster/bios/photos unchanged. |
 | T38 | Employer invoice side door on /join | cursor | 2026-08-25 | **Merged PR #89 → Production** (`fd63647`). Quiet link on `/join` after a real tier — not a catalog/Step 1, not `/membership`. #73 stays killed. SQL applied in prod SQL Editor before merge. Submit stores the request, Stripe pay link, no-SVG PDF; emails josh@ + admin@ only. |
 | T34 | Jonathan Baker form headshot on About | cursor | 2026-08-25 | **Merged PR #84 → Production** (`75af7d1`). House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg`. Path unchanged. Thank-you draft stays unsent. |
 | T37 | AAPA status on staff members list | cursor | 2026-08-25 | **Merged PR #86 → Production.** Honor-system `aapa_member` Yes / No / — on `/editor/members` only. Not on peer directory `/members`. |
 | T35 | Frictionless Join onboarding | cursor | 2026-08-25 | **Merged PR #85 → Production** (`4547d6bc`). Follow-up on main: Sustaining card → **Certified PA (not AAPA)** + quiet “Sustaining rate”; Fellow eligibility first. AAPA yes/no; Patron +$25 add-on. SQL applied in prod SQL Editor before merge. |
-| T29 | Jonathan Baker About card from 2026-08-19 form | cursor | 2026-08-25 | **Merged PR #79 → Production.** Baker form card live. Photo later replaced by T34 / PR #84. |
 
 ### Task workflow (agents + humans)
 
@@ -224,7 +223,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#90** (T39 About intro + drop leadership jump), **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -289,7 +288,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **Frictionless Join onboarding (T35)** — 2026-08-25. PR #85 → Production. One-page `/join`: no Step 2; Membership nav → `/join`; Certified PA (not AAPA) display name; AAPA yes/no; Patron +$25 add-on. SQL applied in prod SQL Editor before merge.
 - [x] **AAPA status on staff members list (T37)** — 2026-08-25. PR #86 → Production. Honor-system AAPA Yes / No / — on `/editor/members` only.
 - [ ] **Sustaining accident cleanup (T36)** — parked. Fellow + `patron` + Stripe item for people who picked Sustaining as extra support. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Do not run the rest until Josh says.
-- [ ] **About intro copy + drop leadership jump (T39)** — **Claimed cursor 2026-08-25.** Preview-only PR **#90**. Josh's two-sentence intro on live `/about`; remove in-page Meet 2026–27 leadership jump. Roster unchanged. Do not merge until Josh reviews Vercel.
+- [x] **About intro copy + drop leadership jump (T39)** — 2026-08-25. PR #90 → Production. Josh's two-sentence intro on `/about`; in-page Meet 2026–27 leadership jump removed. Roster unchanged.
 - [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
 - [x] **Employer invoice side door on `/join` (T38)** — 2026-08-25. PR #89 → Production. Quiet link on live one-page `/join` after they pick a tier. SQL applied before merge. #73 stays killed.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
@@ -362,6 +361,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-08-25 · **About intro + drop in-page leadership jump (T39)** — PR #90. Josh's two-sentence intro (all settings / house of medicine) on `/about`. In-page Meet 2026–27 leadership jump removed. Roster unchanged.
 - 2026-08-25 · **Employer invoice side door on `/join` (T38)** — PR #89. Quiet “Need an invoice for your employer?” after a real tier. Stores the request, Stripe pay link, no-SVG PDF; emails josh@ + admin@ only. SQL applied before merge. #73 stays killed.
 - 2026-08-25 · **Jonathan Baker form headshot (T34)** — PR #84. House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg` (replaces AAPA scrape).
 - 2026-08-25 · **AAPA status on staff members list (T37)** — PR #86. Honor-system AAPA Yes / No / — on `/editor/members` only; not on `/members`.
