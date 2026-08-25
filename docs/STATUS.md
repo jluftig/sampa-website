@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T35 In Progress — `/join` + PA Member + Patron +$25 + `aapa_member`; T33/#73 parked)
+**Last updated:** 2026-08-25 (T35 In Progress — new-signup `/join` only; T36 parked Sustaining cleanup)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -45,6 +45,7 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 |----|------|-------|-------|
 | T32 | Practice resources public /resources | either | Preview-only draft PR #75. Not on live site. About still treats practice resources as in-development. Preview only; do not merge until Josh reviews Vercel. |
 | T33 | Employer / institutional membership invoice (/membership) | either | **Parked preview-only** draft PR #73. Live onboarding is T35 (`/join` only — no catalog page). `/membership` 404s on main. Do not reuse T24 (news one-shot, already Done). Do not merge #73 as the join path. Invoice stays a later side door. |
+| T36 | Sustaining accident cleanup (Fellow + Patron) | either | **Parked.** People who picked Sustaining thinking it was extra support. Shift those members to `fellow` + `patron` flag + Stripe item. Needs AAPA signal or a short list review. Do not run until Josh says. Not in T35 / PR #85. |
 | T19 | Policy ops tracker + open windows (hub) | either | Grill R1 locked 2026-08-10. [`PARK-policy-ops.md`](PARK-policy-ops.md) · *Resume SAMPA policy ops*. No build until Round 2. |
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
 | T2 | Pre-membership security P0 (Vercel Stripe/webhook/keys + E2E join) | either | [`SECURITY-REVIEW-2026-07-12.md`](SECURITY-REVIEW-2026-07-12.md) · *Resume SAMPA security review* |
@@ -64,7 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T35 | Frictionless Join onboarding | cursor | 2026-08-25 | **Claimed cursor.** Live `/join` polish; no `/membership` page; T33/#73 stays parked. Drop Step 2 / fake-wizard chrome; Membership + Join nav both land on `/join`; homepage `#membership` stays a scroll tease. **Also this PR:** Sustaining public name → **PA Member** (key `sustaining` unchanged); optional Patron add-on after a real tier (default off, **+$25**/year of term, not a seventh tier); `profiles.patron` + gated dry-run Sustaining→Fellow+Patron (not applied); honor-system `aapa_member` on `/join` + dashboard (nullable; not verified). |
+| T35 | Frictionless Join onboarding | cursor | 2026-08-25 | **Claimed cursor.** New-signup `/join` polish only: no Step 2 chrome; Membership nav → `/join`; Sustaining public name → **PA Member** (key `sustaining`); honor-system `aapa_member` on `/join` + dashboard; optional Patron add-on after a real tier (default off, **+$25**/year of term). No `/membership` page. T33/#73 parked. Existing Sustaining accident cleanup is **T36**, not this PR. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -278,7 +279,8 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **Night click-through fixes (T30)** — 2026-08-21. PR #80. Eric Bergersen house-voice PA; `/join` intro 10–13% / 17–20%; hash targets clear the sticky header; home SAMHSA citation is the survey name.
 - [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closed, not merged (T31).
 - [x] **Jonathan Baker About card (T29)** — 2026-08-25. PR #79. Form bio + PA-C + LinkedIn live. Photo still existing `jonathan-baker.jpg`.
-- [ ] **Frictionless Join onboarding (T35)** — 2026-08-25, In Progress (cursor). Live `/join` is the one-page checkout; no Step 2 chrome; Membership nav → `/join`. Sustaining public name → PA Member. Optional Patron add-on **+$25**/year (not a tier). Honor-system `aapa_member` on join + dashboard. `profiles.patron` + dry-run Sustaining→Fellow+Patron (not applied). No `/membership` page. T33/#73 stays parked.
+- [ ] **Frictionless Join onboarding (T35)** — 2026-08-25, In Progress (cursor). New-signup `/join` only: no Step 2 chrome; Membership nav → `/join`; PA Member rename; AAPA yes/no; Patron +$25 add-on. No existing-member cleanup. T33/#73 parked.
+- [ ] **Sustaining accident cleanup (T36)** — parked. Fellow + `patron` + Stripe item for people who picked Sustaining as extra support. Do not run until Josh says.
 - [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
 - [ ] **Employer / institutional membership invoice (T33)** — parked preview-only PR #73 (`/membership`); live onboarding is T35 `/join`; do not merge #73 as the join path.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.

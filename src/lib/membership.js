@@ -77,7 +77,7 @@ export function durationLabel(duration) {
 
 // Optional Patron add-on on /join — not a membership tier. Server charges the
 // same math (api/_lib/tiers.js patronDollars). +$25 per year of the selected
-// term (Fellow $50 + Patron $25 = accidental Sustaining $75). Legacy lifetime
+// term (Fellow $50 + Patron $25 = $75). Legacy lifetime
 // is +$25 once.
 export const PATRON_DOLLARS_PER_YEAR = 25;
 
