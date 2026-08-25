@@ -20,6 +20,7 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 | Path | Job |
 |------|-----|
 | `/join` | Honor-system AAPA yes/no (PA-path) → pick a tier and term → optional Patron → Stripe Checkout |
+| `/join/invoice` | Quiet employer-invoice side door (T38). Not a catalog, not Step 1. Sign-in required to submit so the pay link carries `supabase_user_id`. Does not charge or activate. |
 | `/dashboard` | Status, portal, profile, directory privacy, saved articles |
 | `/donate` | Public gifts (one-time/monthly) — separate `donations` ledger |
 | `/members` | Peer directory (active members / staff), not staff roster |
@@ -63,3 +64,25 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
 - Webhook writes `metadata.tier` to `membership_tier` and `metadata.patron` to
   `profiles.patron` on **new** checkouts. Patron is never a `membership_tier`.
 - Existing Sustaining accident cleanup is parked as STATUS **T36** — not this track.
+
+## Employer invoice (T38 — quiet side door)
+
+Academic / hospital PAs sometimes need a pre-payment invoice for employer
+reimbursement. This is **not** a `/membership` catalog and **not** a Step 1 in
+front of `/join`. Card payers never see a form unless they click the quiet
+“Need an invoice for your employer?” link after picking a real tier.
+
+1. `/join/invoice?tier=&term=` collects member, employer, AP, address, optional PO,
+   term, honor-system AAPA, Patron yes/no.
+2. `POST /api/create-invoice-request` (JWT required) stores
+   `membership_invoice_requests`, creates a Stripe **Payment Link** for the same
+   Price ids as `/join` checkout (+ Patron via lookup-key prices), and emails
+   **josh@** + **admin@** only (PDF + .docx attached). Do **not** email the
+   member or AP from this API.
+3. PDF is a real `%PDF` (pdf-lib Helvetica, no SVG, no webfonts). UK could not
+   open an SVG-based invoice in Aug 2026.
+4. When the link is paid, `checkout.session.completed` fires with
+   `metadata.supabase_user_id` / `tier` / `duration` / `patron` — the existing
+   webhook activates the profile. No second membership path.
+
+Do not revive PR #73 (`/membership` Step 1).

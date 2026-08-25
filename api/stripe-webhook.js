@@ -194,6 +194,8 @@ export async function POST(request) {
           break;
         }
 
+        // Checkout from /join and Payment Links from /join/invoice both stamp
+        // supabase_user_id (+ tier / duration / patron) so this is one path.
         const userId = session.client_reference_id || session.metadata?.supabase_user_id;
         if (!userId) break;
 

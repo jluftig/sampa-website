@@ -202,6 +202,36 @@ create unique index if not exists donations_invoice_uidx on public.donations (st
 create index if not exists donations_user_id_idx    on public.donations (user_id);
 create index if not exists donations_created_at_idx on public.donations (created_at desc);
 
+-- Employer invoice requests (T38). Quiet /join side door. Written ONLY by
+-- api/create-invoice-request.js (service role). Submit does not charge or
+-- activate membership. Staff may read; no client writes.
+create table if not exists public.membership_invoice_requests (
+  id                       uuid primary key default gen_random_uuid(),
+  created_at               timestamptz not null default now(),
+  user_id                  uuid references public.profiles(id) on delete set null,
+  invoice_number           text not null unique,
+  member_name              text not null,
+  member_email             text not null,
+  credentials              text,
+  employer                 text not null,
+  ap_name                  text not null,
+  ap_email                 text not null,
+  billing_address          text not null,
+  po_number                text,
+  tier                     text not null,
+  duration                 text not null,
+  aapa_member              boolean,
+  patron                   boolean not null default false,
+  amount_cents             integer not null,
+  stripe_payment_link_id   text,
+  stripe_payment_url       text,
+  status                   text not null default 'requested'
+);
+create index if not exists membership_invoice_requests_user_id_idx
+  on public.membership_invoice_requests (user_id);
+create index if not exists membership_invoice_requests_created_at_idx
+  on public.membership_invoice_requests (created_at desc);
+
 -- One-time staging for members who signed up via the pre-Stripe Google Form.
 -- Rows are matched by email at first login (see claim_member_import) to
 -- pre-fill the profile and grandfather paid memberships. Data is inserted
@@ -438,6 +468,11 @@ alter table public.member_import enable row level security;
 -- management group (can_view_members) and admins may read ALL for cultivation.
 -- No write policies — only the Stripe webhook (service role) inserts.
 alter table public.donations enable row level security;
+alter table public.membership_invoice_requests enable row level security;
+
+drop policy if exists membership_invoice_requests_select on public.membership_invoice_requests;
+create policy membership_invoice_requests_select on public.membership_invoice_requests
+  for select using ( public.is_admin() or public.is_member_viewer() );
 
 drop policy if exists donations_select on public.donations;
 create policy donations_select on public.donations
