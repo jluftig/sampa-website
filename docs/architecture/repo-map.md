@@ -13,6 +13,9 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             client_reference_id = user id. `patron: true` adds a
                             matching-term price_data line item (+$25 × years);
                             metadata.tier stays the real membership key.
+  create-invoice-request.js  POST employer invoice (JWT); stores row, Stripe Payment
+                            Link with same metadata as checkout, no-SVG PDF; emails
+                            josh@ + admin@ only. Does not charge or activate.
   create-donation-session.js POST {amount,frequency} -> {url}; NO auth (public donate);
                             metadata.type='donation' keeps gifts OUT of membership columns
   create-portal-session.js  POST -> {url} of Stripe Customer Portal; JWT required
@@ -44,7 +47,7 @@ src/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
     leadership.js           About-page leadership roster (preview; not a CMS)
   pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
-                            Login, Join, Donate, About, Caq, Dashboard, MemberDirectory,
+                            Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,
                             MemberProfile, Privacy, Terms, EditorDashboard, PostEditor,
                             AdminTags, AdminPeople, AdminMembers
 public/
@@ -73,7 +76,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about` (`#leadership`), `/caq`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about` (`#leadership`), `/caq`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |

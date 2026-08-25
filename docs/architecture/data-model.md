@@ -46,6 +46,9 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 
 ### Money & ops
 - `donations` — gifts only; webhook-written; no client write policy
+- `membership_invoice_requests` — employer invoice side door; service-role insert
+  from `api/create-invoice-request.js`; staff SELECT; no client writes. Does not
+  grant membership.
 - `audit_log` — permissions_changed + member_csv_export
 - `member_import` — pledge tracking; no client writes
 
