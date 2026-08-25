@@ -1,4 +1,5 @@
 import React from 'react';
+import { directoryBadgeLabels } from '../lib/directoryBadges';
 
 const SIZE = {
   sm: 'px-2.5 py-0.5',
@@ -7,9 +8,7 @@ const SIZE = {
 
 // Board + Patron chips on the peer directory. Patron is never a membership_tier.
 export function DirectoryBadges({ person, size = 'sm', className = '' }) {
-  const labels = [];
-  if (person?.is_board) labels.push('Board');
-  if (person?.patron) labels.push('Patron');
+  const labels = directoryBadgeLabels(person);
   if (labels.length === 0) return null;
 
   return (
