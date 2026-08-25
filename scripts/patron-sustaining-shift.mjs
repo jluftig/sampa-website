@@ -2,9 +2,9 @@
 // Dry-run list of active Sustaining members for a possible shift to
 // Fellow + Patron. Patron is NOT a membership_tier.
 //
-// There is no AAPA column on profiles. This script LISTS credentials and
-// weak AAPA-ish signals (DFAAPA / FAAPA / AAPA in credentials). It does
-// NOT classify anyone as accidental. Josh reviews the list.
+// Lists honor-system `aapa_member` when the column exists, plus weak
+// credentials signals (DFAAPA / FAAPA / AAPA). Does NOT classify anyone
+// as accidental. Josh reviews the list. Never auto-apply.
 //
 // Default: read-only list. Never writes Supabase or Stripe.
 //
@@ -41,12 +41,15 @@ const SELECT_COLS = [
   'renews_on',
   'stripe_customer_id',
   'patron',
+  'aapa_member',
 ].join(', ');
 
-// Weak signals only — not a decision. No aapa boolean on profiles.
-function aapaSignals(credentials) {
-  const text = credentials || '';
+// Signals only — not a decision. aapa_member is honor-system, not verified.
+function aapaSignals(row) {
   const hits = [];
+  if (row.aapa_member === true) hits.push('aapa_member=true');
+  if (row.aapa_member === false) hits.push('aapa_member=false');
+  const text = row.credentials || '';
   if (/\bDFAAPA\b/i.test(text)) hits.push('DFAAPA');
   if (/\bFAAPA\b/i.test(text) && !/\bDFAAPA\b/i.test(text)) hits.push('FAAPA');
   if (/\bAAPA\b/i.test(text)) hits.push('AAPA-in-credentials');
@@ -93,10 +96,10 @@ let { data: rows, error } = await admin
   .eq('membership_status', 'active')
   .order('email', { ascending: true });
 
-if (error && /patron/i.test(error.message || '')) {
+if (error && /aapa_member|patron/i.test(error.message || '')) {
   ({ data: rows, error } = await admin
     .from('profiles')
-    .select(SELECT_COLS.replace(', patron', ''))
+    .select(SELECT_COLS.replace(', patron, aapa_member', ''))
     .eq('membership_tier', 'sustaining')
     .eq('membership_status', 'active')
     .order('email', { ascending: true }));
@@ -109,7 +112,7 @@ if (error) {
 
 const members = rows || [];
 console.log(`Active sustaining members: ${members.length}`);
-console.log('No AAPA field on profiles — signals below are credentials-only, not a shift decision.\n');
+console.log('aapa_member is honor-system (not verified). Signals are not a shift decision.\n');
 
 let stripe = null;
 if (process.env.STRIPE_SECRET_KEY) {
@@ -119,7 +122,7 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 const listed = [];
 for (const p of members) {
-  const signals = aapaSignals(p.credentials);
+  const signals = aapaSignals(p);
   const years = p.membership_years || 1;
   const gap = priceGap(years);
   const entry = {
@@ -132,6 +135,7 @@ for (const p of members) {
     renews_on: p.renews_on,
     stripe_customer_id: p.stripe_customer_id,
     patron: p.patron === true,
+    aapa_member: p.aapa_member ?? null,
     aapa_signals: signals,
     same_total_happy_path: gap.delta === 0,
     price_note:

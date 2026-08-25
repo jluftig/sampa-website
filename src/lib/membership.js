@@ -87,3 +87,21 @@ export function patronDollars(duration) {
   if (!Number.isFinite(years) || years < 1) return PATRON_DOLLARS_PER_YEAR;
   return PATRON_DOLLARS_PER_YEAR * years;
 }
+
+// PA-path tiers ask the honor-system AAPA question on /join. Student / Pre-PA /
+// Associate skip it. Yes → suggest Fellow; No → suggest PA Member (sustaining).
+export const PA_PATH_TIER_KEYS = ['fellow', 'sustaining', 'legacy'];
+
+export function isPaPathTier(key) {
+  return PA_PATH_TIER_KEYS.includes(key);
+}
+
+export function suggestedTierForAapa(isAapaMember) {
+  return isAapaMember ? 'fellow' : 'sustaining';
+}
+
+export function parseAapaParam(value) {
+  if (value === '1' || value === 'yes' || value === 'true') return true;
+  if (value === '0' || value === 'no' || value === 'false') return false;
+  return null;
+}

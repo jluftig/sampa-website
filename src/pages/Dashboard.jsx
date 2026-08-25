@@ -127,6 +127,7 @@ export default function Dashboard() {
         directory_phone: profile.directory_phone || '',
         share_email: profile.share_email ?? true,
         share_phone: profile.share_phone ?? false,
+        aapa_member: typeof profile.aapa_member === 'boolean' ? profile.aapa_member : null,
       });
     }
   }, [profile, form]);
@@ -197,7 +198,7 @@ export default function Dashboard() {
       const msg = error.message || '';
       const missingCol =
         error.code === 'PGRST204'
-        || /organizations|city|directory_use_account_contact|directory_email|directory_phone/i.test(msg);
+        || /organizations|city|directory_use_account_contact|directory_email|directory_phone|aapa_member/i.test(msg);
       if (missingCol) {
         const primary = primaryOrgFields(organizations);
         const base = {
@@ -488,6 +489,38 @@ export default function Dashboard() {
                     </span>
                   </span>
                 </label>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="text-sm font-bold mb-1">AAPA membership</h3>
+                <p className="text-text/50 text-xs mb-4 max-w-xl">
+                  Honor system — we do not verify with AAPA. This helps us put you on the right dues.
+                  Optional; you can save the rest of your profile without answering.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, aapa_member: true })}
+                    className={`px-5 py-2 rounded-full text-sm font-semibold border-2 transition-colors ${
+                      form.aapa_member === true
+                        ? 'bg-primary-text border-primary-text text-white'
+                        : 'border-primary-text text-primary-text hover:bg-primary-text/5'
+                    }`}
+                  >
+                    Yes, current AAPA member
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, aapa_member: false })}
+                    className={`px-5 py-2 rounded-full text-sm font-semibold border-2 transition-colors ${
+                      form.aapa_member === false
+                        ? 'bg-primary-text border-primary-text text-white'
+                        : 'border-primary-text text-primary-text hover:bg-primary-text/5'
+                    }`}
+                  >
+                    No
+                  </button>
+                </div>
               </div>
 
               {/* ---- 2. Directory profile (peer networking) ---- */}

@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
-import { MEMBERSHIP_TIERS, tierByKey, savingsPercent, durationsForTier, durationLabel, patronDollars } from '../lib/membership';
+import { MEMBERSHIP_TIERS, tierByKey, savingsPercent, durationsForTier, durationLabel, patronDollars, isPaPathTier, suggestedTierForAapa, parseAapaParam } from '../lib/membership';
 import { apiPost } from '../lib/api';
+import { supabase } from '../lib/supabaseClient';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -16,6 +17,8 @@ import Footer from '../components/Footer';
 // at a discount), plus a one-time Lifetime option on Legacy.
 // Optional Patron add-on (+$25 × term years) appears after a real tier is
 // selected — default off, not a seventh card, never a membership_tier.
+// Honor-system AAPA yes/no for PA-path tiers (fellow / sustaining / legacy)
+// suggests Fellow vs PA Member; we do not verify with AAPA.
 export default function Join() {
   const { user, loading, profile, isActiveMember } = useAuth();
   const navigate = useNavigate();
@@ -55,6 +58,13 @@ export default function Join() {
   const termFor = (tier) => terms[tier.key] ?? 1;
 
   const wantPatron = searchParams.get('patron') === '1';
+  const aapaFromQuery = parseAapaParam(searchParams.get('aapa'));
+  const [aapaAnswer, setAapaAnswer] = useState(
+    aapaFromQuery ?? (typeof profile?.aapa_member === 'boolean' ? profile.aapa_member : null)
+  );
+  const showAapaQuestion = !isActiveMember && (!focusedKey || isPaPathTier(focusedKey));
+  const aapaRef = useRef(null);
+  const didInitAapa = useRef(false);
 
   const focusTier = (tierKey) => {
     setFocusedKey(tierKey);
@@ -70,17 +80,76 @@ export default function Join() {
     setSearchParams(next, { replace: true });
   };
 
+  const persistAapaMember = async (value) => {
+    if (!user || typeof value !== 'boolean') return;
+    const { error: writeError } = await supabase
+      .from('profiles')
+      .update({ aapa_member: value })
+      .eq('id', user.id);
+    if (writeError && !/aapa_member/i.test(writeError.message || '')) {
+      console.warn('Could not save AAPA answer:', writeError.message);
+    }
+  };
+
+  const answerAapa = (isAapaMember) => {
+    setAapaAnswer(isAapaMember);
+    const next = new URLSearchParams(searchParams);
+    next.set('aapa', isAapaMember ? '1' : '0');
+    const suggested = suggestedTierForAapa(isAapaMember);
+    next.set('tier', suggested);
+    setFocusedKey(suggested);
+    setSearchParams(next, { replace: true });
+    persistAapaMember(isAapaMember);
+  };
+
+  // URL ?aapa= wins; else hydrate from the signed-in profile once.
+  useEffect(() => {
+    if (aapaFromQuery !== null) {
+      setAapaAnswer(aapaFromQuery);
+      return;
+    }
+    if (didInitAapa.current) return;
+    if (typeof profile?.aapa_member !== 'boolean') return;
+    didInitAapa.current = true;
+    setAapaAnswer(profile.aapa_member);
+    if (!searchParams.get('tier')) {
+      const suggested = suggestedTierForAapa(profile.aapa_member);
+      setFocusedKey(suggested);
+      const next = new URLSearchParams(searchParams);
+      next.set('tier', suggested);
+      next.set('aapa', profile.aapa_member ? '1' : '0');
+      setSearchParams(next, { replace: true });
+    }
+  }, [aapaFromQuery, profile?.aapa_member, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (user && typeof aapaAnswer === 'boolean') persistAapaMember(aapaAnswer);
+  }, [user?.id]); // persist when sign-in lands; answer may already be in the URL
+
+  const joinQuery = (tierKey) => {
+    const params = new URLSearchParams();
+    params.set('tier', tierKey);
+    if (wantPatron) params.set('patron', '1');
+    if (typeof aapaAnswer === 'boolean') params.set('aapa', aapaAnswer ? '1' : '0');
+    return `/join?${params.toString()}`;
+  };
+
   const selectTier = async (tierKey) => {
     setError(null);
     focusTier(tierKey);
+    if (isPaPathTier(tierKey) && aapaAnswer === null) {
+      setError('Please tell us whether you are a current AAPA member — it helps us put you on the right dues. We do not verify this with AAPA.');
+      aapaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     const duration = terms[tierKey] ?? 1;
     if (!user) {
-      const next = `/join?tier=${tierKey}${wantPatron ? '&patron=1' : ''}`;
-      navigate(`/login?next=${encodeURIComponent(next)}`);
+      navigate(`/login?next=${encodeURIComponent(joinQuery(tierKey))}`);
       return;
     }
     setBusyTier(tierKey);
     try {
+      await persistAapaMember(aapaAnswer);
       const { url } = await apiPost('/api/create-checkout-session', {
         tier: tierKey,
         duration,
@@ -190,6 +259,43 @@ export default function Join() {
             </span>
           </p>
         </div>
+
+        {showAapaQuestion && (
+          <div
+            ref={aapaRef}
+            className="max-w-3xl mx-auto bg-white border border-primary/15 rounded-3xl p-6 mb-12 text-center"
+          >
+            <p className="font-semibold text-text mb-1">Are you a current AAPA member?</p>
+            <p className="text-sm text-text/60 mb-5 max-w-xl mx-auto">
+              Honor system — we do not verify with AAPA. This helps us put you on the right dues.
+              You can still pick a different card.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => answerAapa(true)}
+                className={`px-6 py-2.5 rounded-full text-sm font-semibold border-2 transition-colors ${
+                  aapaAnswer === true
+                    ? 'bg-primary-text border-primary-text text-white'
+                    : 'border-primary-text text-primary-text hover:bg-primary-text/5'
+                }`}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                onClick={() => answerAapa(false)}
+                className={`px-6 py-2.5 rounded-full text-sm font-semibold border-2 transition-colors ${
+                  aapaAnswer === false
+                    ? 'bg-primary-text border-primary-text text-white'
+                    : 'border-primary-text text-primary-text hover:bg-primary-text/5'
+                }`}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {MEMBERSHIP_TIERS.map((tier) => {

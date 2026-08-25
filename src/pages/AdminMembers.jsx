@@ -53,6 +53,7 @@ const CSV_COLUMNS = [
   ['Role', (p) => p.role],
   ['Membership tier', (p) => tierByKey(p.membership_tier)?.name || p.membership_tier],
   ['Patron', (p) => (p.patron ? 'yes' : '')],
+  ['AAPA member (honor system)', (p) => (p.aapa_member === true ? 'yes' : p.aapa_member === false ? 'no' : '')],
   ['Term (years)', (p) => p.membership_years || (p.membership_status === 'active' && !p.renews_on ? 'lifetime' : '')],
   ['Status', (p) => p.membership_status],
   ['Renews/ends', (p) => (p.renews_on ? p.renews_on.slice(0, 10) : p.membership_status === 'active' ? 'lifetime' : '')],
@@ -123,7 +124,7 @@ export default function AdminMembers() {
     (async () => {
       // Prefer multi-org columns; fall back if the migration hasn't been applied.
       const profileSelect =
-        'id, full_name, email, role, credentials, organization, practice_setting, city, state, organizations, phone, newsletter_opt_in, sms_opt_in, membership_tier, patron, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
+        'id, full_name, email, role, credentials, organization, practice_setting, city, state, organizations, phone, newsletter_opt_in, sms_opt_in, membership_tier, patron, aapa_member, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
       const profileSelectLegacy =
         'id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
 
@@ -131,10 +132,10 @@ export default function AdminMembers() {
         .from('profiles')
         .select(profileSelect)
         .order('full_name', { ascending: true, nullsFirst: false });
-      if (profilesRes.error && /patron/i.test(profilesRes.error.message || '')) {
+      if (profilesRes.error && /aapa_member|patron/i.test(profilesRes.error.message || '')) {
         profilesRes = await supabase
           .from('profiles')
-          .select(profileSelect.replace(', patron', ''))
+          .select(profileSelect.replace(', patron, aapa_member', ''))
           .order('full_name', { ascending: true, nullsFirst: false });
       }
       if (profilesRes.error && (profilesRes.error.code === 'PGRST204' || /city|organizations/i.test(profilesRes.error.message || ''))) {
