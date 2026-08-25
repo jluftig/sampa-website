@@ -448,6 +448,22 @@ export default function Join() {
           })}
         </div>
 
+        {focusedTier && !isActiveMember && (
+          <p className="text-center text-sm mt-8">
+            <Link
+              to={`/join/invoice?${new URLSearchParams({
+                tier: focusedTier.key,
+                term: String(termFor(focusedTier)),
+                ...(wantPatron ? { patron: '1' } : {}),
+                ...(typeof aapaAnswer === 'boolean' ? { aapa: aapaAnswer ? '1' : '0' } : {}),
+              }).toString()}`}
+              className="text-text/45 hover:text-primary-text underline underline-offset-4 decoration-text/25 hover:decoration-primary-text"
+            >
+              Need an invoice for your employer?
+            </Link>
+          </p>
+        )}
+
         <p className="text-center text-text/40 text-xs mt-10 max-w-xl mx-auto">
           Payments are processed by Stripe — SAMPA never sees or stores your card
           details. You'll get a receipt by email, and you can manage billing anytime
