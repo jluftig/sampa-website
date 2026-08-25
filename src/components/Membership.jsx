@@ -27,7 +27,7 @@ export default function Membership() {
             Addiction Medicine CAQ
           </Link>
           {' '}takes shape.
-          Choose the level that fits your career stage — then confirm term and pay on the next step.
+          Choose the level that fits your career stage. On Join, pick a term and pay.
         </p>
       </div>
 
@@ -39,7 +39,7 @@ export default function Membership() {
         <div>
           <h3 className="font-bold text-xl text-primary-text mb-2">Multi-year savings when you join</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
-            Annual prices shown below. On the next step you can choose a longer term and save{' '}
+            Annual prices shown below. On Join you can choose a longer term and save{' '}
             <strong>10–13% for 2 years</strong> or <strong>17–20% for 3 years</strong>.
             <span className="block mt-1 text-xs opacity-70 italic">
               (Student and Pre-PA: up to 2 years. Legacy: optional $125 lifetime.)
@@ -63,7 +63,7 @@ export default function Membership() {
               </div>
             </div>
             <Link to={`/join?tier=${tier.key}`} className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 ${tier.highlight ? 'bg-gradient-to-r from-primary-text to-accent text-white hover:shadow-lg hover:scale-[1.02]' : 'border-2 border-primary-text text-primary-text hover:bg-primary-text/5'}`}>
-              Continue with {tier.name}
+              Join as {tier.name}
             </Link>
           </div>
         ))}

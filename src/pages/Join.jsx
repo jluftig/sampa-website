@@ -7,10 +7,10 @@ import { apiPost } from '../lib/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-// Join flow, account-first: sign in (1 click) → confirm tier + term → Stripe
-// Checkout. Homepage is the catalog; this page is step 2 (purchase).
-// `?tier=` from the homepage is honored: that card is highlighted and scrolled
-// into view. Checkout is created server-side with the user's id as
+// Join flow, one page: pick a tier and term, one-click sign-in, then Stripe
+// Checkout. Homepage `#membership` is a scroll tease only — not a required
+// first step. `?tier=` from homepage cards is honored: that card is highlighted
+// and scrolled into view. Checkout is created server-side with the user's id as
 // client_reference_id so the webhook can activate the right profile without
 // email matching. Terms: 1/2/3-year auto-renewing subscriptions (multi-year
 // at a discount), plus a one-time Lifetime option on Legacy.
@@ -79,9 +79,9 @@ export default function Join() {
 
   const currentTier = tierByKey(profile?.membership_tier);
 
-  const stepLabel = focusedTier
-    ? `Confirm ${focusedTier.name} · choose term & pay`
-    : 'Confirm tier, term & pay';
+  const pageTitle = focusedTier
+    ? `Join as ${focusedTier.name}`
+    : 'Join SAMPA';
 
   const headerSub = (() => {
     if (isActiveMember) {
@@ -89,8 +89,8 @@ export default function Join() {
     }
     if (focusedTier) {
       return user
-        ? `You chose ${focusedTier.name}. Pick a term below, then continue to secure payment via Stripe. Need a different level? Select another card.`
-        : `You chose ${focusedTier.name}. Sign in (one click, no password), then choose a term and pay. Need a different level? Select another card.`;
+        ? `${focusedTier.name} is selected. Pick a term below, then continue to secure payment via Stripe. Need a different level? Select another card.`
+        : `${focusedTier.name} is selected. Sign in (one click, no password), then choose a term and pay. Need a different level? Select another card.`;
     }
     return user
       ? 'Choose the level that fits your career stage, pick a term, then continue to secure payment via Stripe.'
@@ -105,16 +105,9 @@ export default function Join() {
       <main className="max-w-6xl mx-auto px-4 pt-32 pb-24">
         <header className="text-center mb-12">
           <div className="inline-block px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-accent text-xs font-semibold mb-4 font-data uppercase tracking-wider">
-            Step 2 · Checkout
+            Membership
           </div>
-          <p className="text-xs font-data tracking-wide text-text/45 mb-4">
-            <Link to="/#membership" className="hover:text-primary-text underline-offset-2 hover:underline">
-              Membership options
-            </Link>
-            <span className="mx-2 text-text/25">→</span>
-            <span className="text-text/70">Confirm &amp; pay</span>
-          </p>
-          <h1 className="text-4xl md:text-5xl font-drama font-bold mb-6">{stepLabel}</h1>
+          <h1 className="text-4xl md:text-5xl font-drama font-bold mb-6">{pageTitle}</h1>
           <p className="text-lg text-text/70 max-w-2xl mx-auto">{headerSub}</p>
           {!isActiveMember && (
             <p className="text-text/60 text-sm mt-4 max-w-xl mx-auto">
@@ -137,7 +130,7 @@ export default function Join() {
 
         {canceled && (
           <div className="max-w-2xl mx-auto bg-text/5 border border-text/10 rounded-2xl p-5 mb-10 text-center text-sm text-text/70">
-            Checkout was canceled — no charge was made. Confirm a tier and term whenever you're ready.
+            Checkout was canceled — no charge was made. Pick a tier and term whenever you're ready.
           </div>
         )}
 
