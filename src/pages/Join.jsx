@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
-import { MEMBERSHIP_TIERS, tierByKey, savingsPercent, durationsForTier, durationLabel } from '../lib/membership';
+import { MEMBERSHIP_TIERS, tierByKey, savingsPercent, durationsForTier, durationLabel, patronDollars } from '../lib/membership';
 import { apiPost } from '../lib/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -14,6 +14,8 @@ import Footer from '../components/Footer';
 // client_reference_id so the webhook can activate the right profile without
 // email matching. Terms: 1/2/3-year auto-renewing subscriptions (multi-year
 // at a discount), plus a one-time Lifetime option on Legacy.
+// Optional Patron add-on (+$25 × term years) appears after a real tier is
+// selected — default off, not a seventh card, never a membership_tier.
 export default function Join() {
   const { user, loading, profile, isActiveMember } = useAuth();
   const navigate = useNavigate();
@@ -52,10 +54,19 @@ export default function Join() {
 
   const termFor = (tier) => terms[tier.key] ?? 1;
 
+  const wantPatron = searchParams.get('patron') === '1';
+
   const focusTier = (tierKey) => {
     setFocusedKey(tierKey);
     const next = new URLSearchParams(searchParams);
     next.set('tier', tierKey);
+    setSearchParams(next, { replace: true });
+  };
+
+  const setWantPatron = (on) => {
+    const next = new URLSearchParams(searchParams);
+    if (on) next.set('patron', '1');
+    else next.delete('patron');
     setSearchParams(next, { replace: true });
   };
 
@@ -64,12 +75,17 @@ export default function Join() {
     focusTier(tierKey);
     const duration = terms[tierKey] ?? 1;
     if (!user) {
-      navigate(`/login?next=${encodeURIComponent(`/join?tier=${tierKey}`)}`);
+      const next = `/join?tier=${tierKey}${wantPatron ? '&patron=1' : ''}`;
+      navigate(`/login?next=${encodeURIComponent(next)}`);
       return;
     }
     setBusyTier(tierKey);
     try {
-      const { url } = await apiPost('/api/create-checkout-session', { tier: tierKey, duration });
+      const { url } = await apiPost('/api/create-checkout-session', {
+        tier: tierKey,
+        duration,
+        ...(wantPatron ? { patron: true } : {}),
+      });
       window.location.assign(url);
     } catch (err) {
       setError(err.message);
@@ -212,7 +228,7 @@ export default function Join() {
                 )}
                 <div className={`relative z-10 ${isFocused ? 'mt-4' : ''}`}>
                   <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
-                  <p className={`${darkCard ? 'text-white/70' : 'text-text/60'} text-sm mb-5 h-10`}>
+                  <p className={`${darkCard ? 'text-white/70' : 'text-text/60'} text-sm mb-5 min-h-10`}>
                     {tier.desc}
                   </p>
 
@@ -266,6 +282,28 @@ export default function Join() {
                         : ''}
                   </p>
                 </div>
+                {isFocused && !isActiveMember && (
+                  <label
+                    className={`flex items-start gap-3 mb-4 relative z-10 text-left cursor-pointer ${
+                      darkCard ? 'text-white/85' : 'text-text/80'
+                    }`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={wantPatron}
+                      onChange={(e) => setWantPatron(e.target.checked)}
+                      className="mt-1 h-4 w-4 shrink-0 rounded border-primary/30 accent-accent"
+                    />
+                    <span className="text-xs leading-relaxed">
+                      Patron — same membership, no extra benefits. Just more support for SAMPA.
+                      <span className={`block mt-1 ${darkCard ? 'text-white/55' : 'text-text/50'}`}>
+                        Adds ${patronDollars(duration)}
+                        {isLifetime ? ' once' : duration === 1 ? ' for this year' : ` for this ${duration}-year term`}.
+                      </span>
+                    </span>
+                  </label>
+                )}
                 <button
                   type="button"
                   onClick={(e) => {

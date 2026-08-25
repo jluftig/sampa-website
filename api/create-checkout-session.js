@@ -1,12 +1,14 @@
 import { stripeClient, supabaseAdmin, requireUser, json } from './_lib/clients.js';
-import { priceIdFor } from './_lib/tiers.js';
+import { priceIdFor, patronLineItem } from './_lib/tiers.js';
 
-// POST { tier, duration } → { url } of a Stripe Checkout session.
+// POST { tier, duration, patron? } → { url } of a Stripe Checkout session.
 // duration: 1 | 2 | 3 (years; a subscription billed every N years) or
-// 'lifetime' (one-time payment, Legacy only). Sign-in first: the Supabase
-// user id rides along as client_reference_id and metadata, so the webhook can
-// update exactly the right profiles row — the Stripe↔Supabase link is never
-// inferred from email.
+// 'lifetime' (one-time payment, Legacy only). Optional `patron: true` adds a
+// matching-term price_data line item (+$25 × term years; lifetime +$25 once)
+// — not a seventh tier, not a required STRIPE_PRICE_* env, never written as
+// membership_tier. Sign-in first: the Supabase user id rides along as
+// client_reference_id and metadata, so the webhook can update exactly the
+// right profiles row — the Stripe↔Supabase link is never inferred from email.
 export async function POST(request) {
   try {
     const user = await requireUser(request);
@@ -15,6 +17,7 @@ export async function POST(request) {
     const body = await request.json().catch(() => ({}));
     const tier = body.tier;
     const duration = body.duration === 'lifetime' ? 'lifetime' : Number(body.duration) || 1;
+    const wantPatron = body.patron === true;
     const price = priceIdFor(tier, duration);
     if (!price) return json({ error: `Unknown or unconfigured tier/term: ${tier} / ${duration}` }, 400);
 
@@ -25,12 +28,26 @@ export async function POST(request) {
       .maybeSingle();
 
     const isLifetime = duration === 'lifetime';
-    const metadata = { supabase_user_id: user.id, tier, duration: String(duration) };
+    const metadata = {
+      supabase_user_id: user.id,
+      tier,
+      duration: String(duration),
+      // Never set type=donation here — that would skip the membership write.
+      // patron is an add-on flag only; webhook writes `tier`, not this.
+      ...(wantPatron ? { patron: 'true' } : {}),
+    };
     const origin = new URL(request.url).origin;
+    const line_items = [{ price, quantity: 1 }];
+    if (wantPatron) line_items.push(patronLineItem(duration));
+
+    const cancel = new URL('/join', origin);
+    cancel.searchParams.set('checkout', 'canceled');
+    cancel.searchParams.set('tier', tier);
+    if (wantPatron) cancel.searchParams.set('patron', '1');
 
     const session = await stripeClient().checkout.sessions.create({
       mode: isLifetime ? 'payment' : 'subscription',
-      line_items: [{ price, quantity: 1 }],
+      line_items,
       client_reference_id: user.id,
       // Reuse the Stripe customer on renewals/tier changes; otherwise prefill
       // their account email so Checkout is one screen of card details.
@@ -44,7 +61,7 @@ export async function POST(request) {
       ...(isLifetime ? {} : { subscription_data: { metadata } }),
       allow_promotion_codes: true,
       success_url: `${origin}/dashboard?checkout=success`,
-      cancel_url: `${origin}/join?checkout=canceled`,
+      cancel_url: cancel.toString(),
     });
 
     return json({ url: session.url });

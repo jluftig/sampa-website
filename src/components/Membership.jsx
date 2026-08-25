@@ -57,7 +57,7 @@ export default function Membership() {
             )}
             <div className="relative z-10">
               <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
-              <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-6 h-10`}>{tier.desc}</p>
+              <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-6 min-h-10`}>{tier.desc}</p>
               <div className={`text-4xl font-bold font-sans mb-8 ${tier.highlight ? 'text-white' : 'text-primary-text'}`}>
                 ${tier.prices[1]}<span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>/yr</span>
               </div>
