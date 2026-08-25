@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T40 Done — Patron directory badge + Join copy merged PR #91 → Production)
+**Last updated:** 2026-08-25 (T41 In Progress — Josh live Patron copy on Join / invoice / dashboard / Stripe)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,6 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T41 | Josh live Patron copy (Join / invoice / dashboard / Stripe) | cursor | 2026-08-25 | **Claimed cursor.** Replace T40 disclaimer-style Patron blurb with Josh’s exact sentence (extra support + badge flex + gratitude). Surfaces: Join checkbox, `/join/invoice`, dashboard Add Patron, Stripe Checkout `price_data` description. Preview-only draft PR; do not merge. No SQL / email / About / Stripe Dashboard product edits. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
