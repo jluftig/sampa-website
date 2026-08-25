@@ -22,7 +22,7 @@ find. Never hotlink private Drive URLs.
 | `tasha-seliski.jpg` | Natasha “Tasha” Seliski | University of Utah Health faculty page (dark blazer, pearl earrings) — public photo Josh provided |
 | `debra-newman.jpg` | Debra Newman | PCSS-MOUD lead-mentor page; recropped so the embroidered “Debra Newman, PA-C, MPH” on the coat is visible |
 | `jim-anderson.jpg` | James E. Anderson | 2026-08-21 Aragon / Leadership Profile form photo (`Aragon-Headshot-Jim-Anderson-2026-08-21-1.jpeg`) |
-| `jonathan-baker.jpg` | Jonathan Baker | AAPA 2025 presenter page. Do not replace with the NYU anorectal/LGBTQ Jonathan Baker photo. |
+| `jonathan-baker.jpg` | Jonathan Baker | 2026-08-19 Leadership Profile form upload (`Baker_Headshot2025(Square) - Jonathan Baker.png`), house-style 640×640 JPG. Replaces the earlier AAPA 2025 presenter scrape. |
 | `jordan-vold.jpg` | Jordan Vold | Illinois Society of Addiction Medicine board photo (beard, wave-pattern shirt). Replaces the earlier UI Health clean-shaven / light-blue-shirt file. |
 | `kerith-hartmann.jpg` | Kerith Hartmann | 2026-08-19 Leadership Profile form upload (Kerith Hartmann) |
 | `lamont-scott.jpg` | Lamont Scott | 2026-08-19 Leadership Profile form upload (`IMG_2124 - Lamont Scott.jpeg`) |
