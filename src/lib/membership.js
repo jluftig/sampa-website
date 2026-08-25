@@ -108,3 +108,30 @@ export function parseAapaParam(value) {
   if (value === '0' || value === 'no' || value === 'false') return false;
   return null;
 }
+
+// Employer-invoice helpers (T38). Duration comes from /join as 1 | 2 | 3 | 'lifetime'.
+export function parseDurationParam(raw, tier) {
+  if (!tier) return null;
+  const allowed = durationsForTier(tier);
+  if (raw === 'lifetime' || raw === 'Lifetime') {
+    return allowed.includes('lifetime') ? 'lifetime' : null;
+  }
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  return allowed.includes(n) ? n : null;
+}
+
+export function tierAmountDollars(tier, duration) {
+  if (!tier) return null;
+  if (duration === 'lifetime') {
+    return Number.isFinite(tier.lifetime) ? tier.lifetime : null;
+  }
+  const amount = tier.prices?.[duration];
+  return Number.isFinite(amount) ? amount : null;
+}
+
+export function invoiceTotalDollars(tier, duration, wantPatron) {
+  const base = tierAmountDollars(tier, duration);
+  if (base == null) return null;
+  return base + (wantPatron ? patronDollars(duration) : 0);
+}

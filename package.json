@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:invoice-pdf": "node scripts/verify-invoice-pdf.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
@@ -14,9 +15,11 @@
     "@tiptap/pm": "^3.27.1",
     "@tiptap/react": "^3.27.1",
     "@tiptap/starter-kit": "^3.27.1",
+    "docx": "^9.5.1",
     "dompurify": "^3.4.11",
     "gsap": "^3.12.5",
     "lucide-react": "^0.360.0",
+    "pdf-lib": "^1.17.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.18.1",
