@@ -51,7 +51,7 @@ export async function POST(request) {
       line_items: [patronOneTimeLineItem(duration)],
       client_reference_id: user.id,
       metadata,
-      success_url: `${origin}/dashboard?checkout=success`,
+      success_url: `${origin}/dashboard?checkout=success&addon=patron`,
       cancel_url: `${origin}/dashboard`,
     });
 

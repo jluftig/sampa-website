@@ -38,6 +38,7 @@ export default function Dashboard() {
   const { user, profile, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
+  const justAddedPatron = justPaid && searchParams.get('addon') === 'patron';
 
   // ---- membership -----------------------------------------------------------
   const [portalBusy, setPortalBusy] = useState(false);
@@ -333,9 +334,18 @@ export default function Dashboard() {
 
         {justPaid && (
           <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-5 mb-8 text-sm text-green-800">
-            <strong>Thanks for joining SAMPA!</strong> Your payment went through —
-            your membership status below updates automatically (it can take a
-            few seconds).{' '}
+            {justAddedPatron ? (
+              <>
+                <strong>Patron badge added.</strong> It will show on your directory
+                listing in a few seconds.
+              </>
+            ) : (
+              <>
+                <strong>Thanks for joining SAMPA!</strong> Your payment went through —
+                your membership status below updates automatically (it can take a
+                few seconds).
+              </>
+            )}{' '}
             <button
               onClick={() => setSearchParams({}, { replace: true })}
               className="underline font-semibold"
