@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T34 Baker form headshot merged via PR #84 → Production; T36 parked)
+**Last updated:** 2026-08-25 (T33 killed — PR #73 closed, not merged; live onboarding stays T35 `/join`; T34/T37/T35 Done)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -44,7 +44,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | ID | Task | Owner | Notes |
 |----|------|-------|-------|
 | T32 | Practice resources public /resources | either | Preview-only draft PR #75. Not on live site. About still treats practice resources as in-development. Preview only; do not merge until Josh reviews Vercel. |
-| T33 | Employer / institutional membership invoice (/membership) | either | **Parked preview-only** draft PR #73. Live onboarding is T35 (`/join` only — no catalog page). `/membership` 404s on main. Do not reuse T24 (news one-shot, already Done). Do not merge #73 as the join path. Invoice stays a later side door. |
 | T36 | Sustaining accident cleanup (Fellow + Patron) | either | **Parked.** People who picked Sustaining thinking it was extra support. Shift those members to `fellow` + `patron` flag + Stripe item. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Rest still parked until Josh says. Not in T35 / PR #85 / T37. |
 | T19 | Policy ops tracker + open windows (hub) | either | Grill R1 locked 2026-08-10. [`PARK-policy-ops.md`](PARK-policy-ops.md) · *Resume SAMPA policy ops*. No build until Round 2. |
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
@@ -52,6 +51,8 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | T6 | News cover pipeline polish (daily cron covers) | egg | *Resume SAMPA news pipeline*; dual-talon rules in news skill |
 | T7 | Mobile: Sentry DSN + delete-account E2E | either | Ops; code mostly shipped |
 | T8 | D-U-N-S → Apple org conversion (before public App Store) | josh | External / Apple |
+
+T33 killed 2026-08-25 — PR **#73 closed, not merged**. Live onboarding stays T35 `/join` only. Invoice can return later as a small door on `/join`, not a catalog page. Dropped from Done so today’s T34 / T37 / T35 stay in the last-5.
 
 ### Deferred
 
@@ -220,7 +221,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#73** (T33 `/membership` + employer invoice — parked), **#83** (T3 Weekly #01 email copy; no production send). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#73** closed, not merged (**T33** killed — catalog `/membership` Step 1 would undo live T35 `/join`; invoice can return later as a small door on `/join`). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about#leadership` (full 2026–27 roster) and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -286,7 +287,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **AAPA status on staff members list (T37)** — 2026-08-25. PR #86 → Production. Honor-system AAPA Yes / No / — on `/editor/members` only.
 - [ ] **Sustaining accident cleanup (T36)** — parked. Fellow + `patron` + Stripe item for people who picked Sustaining as extra support. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Do not run the rest until Josh says.
 - [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
-- [ ] **Employer / institutional membership invoice (T33)** — parked preview-only PR #73 (`/membership`); live onboarding is T35 `/join`; do not merge #73 as the join path.
+- [ ] **Employer invoice door on `/join` (later)** — T33 / PR #73 **closed, not merged** (2026-08-25). Catalog `/membership` Step 1 killed; live onboarding is T35 `/join` only. Invoice can return later as a small door on `/join`, not a catalog page.
 - [x] **Homepage CAQ card + membership line (T27)** — 2026-08-17. PR #76. In-development card → `/caq`; one careful membership line on home + `/join`.
 - [x] **Addiction Medicine CAQ page (T26)** — 2026-08-16. Public `/caq` live (PR #74). NCCPA development approved after SAMPA proposal; exam not open.
 
