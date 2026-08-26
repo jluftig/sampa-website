@@ -4,6 +4,7 @@ import {
   memberEmailsEnabled,
   profileForEmail,
   sendMemberLifecycleEmail,
+  addMemberToUpdatesList,
   donorFromStripeFields,
 } from './_lib/brevo-member-email.js';
 
@@ -18,19 +19,30 @@ import {
 // the webhook (DB write always wins).
 
 async function maybeMemberEmail(kind, admin, userId) {
-  if (!memberEmailsEnabled()) return;
   try {
     const profile = await profileForEmail(admin, userId);
     if (!profile?.email) {
       console.warn(`stripe-webhook: member ${kind} email skipped — no email for user ${userId}`);
       return;
     }
-    const result = await sendMemberLifecycleEmail(kind, {
-      email: profile.email,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-    });
-    console.log(`stripe-webhook: member ${kind} email`, result);
+    if (memberEmailsEnabled()) {
+      const result = await sendMemberLifecycleEmail(kind, {
+        email: profile.email,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+      });
+      console.log(`stripe-webhook: member ${kind} email`, result);
+    }
+    if (kind === 'welcome' || kind === 'renewal') {
+      const sync = await addMemberToUpdatesList({
+        email: profile.email,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        newsletterOptIn: profile.newsletterOptIn,
+        source: 'membership',
+      });
+      console.log(`stripe-webhook: member Updates sync`, sync);
+    }
   } catch (err) {
     console.error(`stripe-webhook: member ${kind} email failed:`, err.message || err);
   }

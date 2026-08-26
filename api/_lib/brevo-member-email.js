@@ -112,6 +112,29 @@ async function brevoPost(path, body) {
 }
 
 /**
+ * Add an opted-in member to SAMPA Updates (list BREVO_LIST_UPDATES).
+ * Membership already verified the address — no DOI. Failures throw (caller logs).
+ */
+export async function addMemberToUpdatesList(to) {
+  if (!to?.email) return { skipped: true, reason: 'no email' };
+  if (to.newsletterOptIn === false) return { skipped: true, reason: 'newsletter_opt_in false' };
+  const listId = Number(process.env.BREVO_LIST_UPDATES);
+  if (!Number.isFinite(listId) || listId <= 0) {
+    return { skipped: true, reason: 'BREVO_LIST_UPDATES missing' };
+  }
+  const attributes = { MEMBER_STATUS: 'active', SOURCE: to.source || 'membership' };
+  if (to.firstName) attributes.FIRSTNAME = to.firstName;
+  if (to.lastName) attributes.LASTNAME = to.lastName;
+  await brevoPost('/contacts', {
+    email: to.email,
+    updateEnabled: true,
+    attributes,
+    listIds: [listId],
+  });
+  return { skipped: false, email: to.email, listId };
+}
+
+/**
  * @param {'welcome'|'renewal'|'donation'} kind
  * @param {{ email: string, firstName?: string, lastName?: string, amountCents?: number, currency?: string, frequency?: string }} to
  * @param {{ force?: boolean }} [opts]
@@ -206,7 +229,7 @@ export async function profileForEmail(admin, userId) {
   if (!userId) return null;
   const { data, error } = await admin
     .from('profiles')
-    .select('id, email, full_name')
+    .select('id, email, full_name, newsletter_opt_in')
     .eq('id', userId)
     .maybeSingle();
   if (error) {
@@ -233,5 +256,5 @@ export async function profileForEmail(admin, userId) {
     lastName = parts.slice(1).join(' ') || '';
   }
 
-  return { email, firstName, lastName, id: data.id };
+  return { email, firstName, lastName, id: data.id, newsletterOptIn: data.newsletter_opt_in !== false };
 }
