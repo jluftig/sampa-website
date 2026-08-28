@@ -1,11 +1,11 @@
 {
   "name": "SAMPA Weekly \u2014 Issue 01 (FIRSTNAME + feedback ready)",
-  "subject": "addictionpas.org is live \u2014 addiction medicine PAs have a home",
+  "subject": "addictionpas.org is live \u2014 PAs with an interest in addiction medicine have a home",
   "previewText": "Daily news, a national peer directory, and a policy hub \u2014 built for PAs. Here's what's ready today.",
   "htmlPath": "site-membership-launch.html",
   "listKeys": [
     "test"
   ],
   "tag": "sampa-weekly-01",
-  "notes": "Greeting uses Brevo {{ contact.FIRSTNAME | default: \"there\" }}. Ensure contacts have FIRSTNAME before prod. Feedback test: add emails to Test list or campaign-test --email."
+  "notes": "Launch announcement (site was stealth). Greeting {{ contact.FIRSTNAME | default: \"there\" }}. News desk = published slugs only. Rebuild after site copy changes. No mass send without Josh send campaign N."
 }
