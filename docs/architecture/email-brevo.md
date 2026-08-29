@@ -75,6 +75,8 @@ Unsubscribe
   → exit interview = backlog (never block unsub)
 ```
 
+**Admin roster:** `/editor/members` **Member roster** = Supabase accounts. **Newsletter (Updates)** tab (T42) reads Brevo list 3 live — DOI + import + members on the list. Same `can_view_members` gate. Not the `profiles.newsletter_opt_in` column.
+
 **Source of truth**
 
 | Concern | System |

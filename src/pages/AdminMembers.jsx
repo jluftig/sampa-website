@@ -137,6 +137,11 @@ export default function AdminMembers() {
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [rosterTab, setRosterTab] = useState('members');
+  const [nlContacts, setNlContacts] = useState([]);
+  const [nlLoading, setNlLoading] = useState(false);
+  const [nlError, setNlError] = useState(null);
+  const [nlSearch, setNlSearch] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -195,6 +200,32 @@ export default function AdminMembers() {
     })();
     return () => { active = false; };
   }, [accepted]);
+
+  useEffect(() => {
+    let active = true;
+    if (!accepted || rosterTab !== 'newsletter') return undefined;
+    (async () => {
+      setNlLoading(true);
+      setNlError(null);
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        if (!token) throw new Error('Sign in required');
+        const res = await fetch('/api/admin-updates-list', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!active) return;
+        if (!res.ok) throw new Error(body.error || `Could not load Updates (${res.status})`);
+        setNlContacts(body.contacts || []);
+      } catch (e) {
+        if (active) setNlError(e.message || 'Could not load Updates list');
+      } finally {
+        if (active) setNlLoading(false);
+      }
+    })();
+    return () => { active = false; };
+  }, [accepted, rosterTab]);
 
   const counts = useMemo(() => {
     const byStatus = { active: 0, past_due: 0, canceled: 0, none: 0 };
@@ -264,12 +295,57 @@ export default function AdminMembers() {
     a.download = `sampa-members-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    // Governance: exports are logged (fire-and-forget; visible to admins).
     supabase.from('audit_log').insert({
       actor_id: user.id,
       actor_email: profile?.email || user.email,
       action: 'member_csv_export',
       detail: { rows: filtered.length, filter: statusFilter, search: search.trim() || null },
+    }).then(() => {});
+  };
+
+  const memberEmails = useMemo(
+    () => new Set(people.map((p) => (p.email || '').toLowerCase()).filter(Boolean)),
+    [people],
+  );
+
+  const nlFiltered = useMemo(() => {
+    const q = nlSearch.trim().toLowerCase();
+    return nlContacts.filter((c) => {
+      if (!q) return true;
+      return [c.email, c.firstName, c.lastName, c.source]
+        .some((v) => v && String(v).toLowerCase().includes(q));
+    });
+  }, [nlContacts, nlSearch]);
+
+  const downloadNlCsv = () => {
+    const esc = (v) => {
+      const s = v == null ? '' : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const header = ['Email', 'First name', 'Last name', 'Source', 'On member roster', 'Blacklisted'];
+    const lines = [
+      header.join(','),
+      ...nlFiltered.map((c) => [
+        esc(c.email),
+        esc(c.firstName),
+        esc(c.lastName),
+        esc(c.source),
+        memberEmails.has((c.email || '').toLowerCase()) ? 'yes' : 'no',
+        c.blacklisted ? 'yes' : 'no',
+      ].join(',')),
+    ];
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sampa-updates-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    supabase.from('audit_log').insert({
+      actor_id: user.id,
+      actor_email: profile?.email || user.email,
+      action: 'newsletter_csv_export',
+      detail: { rows: nlFiltered.length, search: nlSearch.trim() || null },
     }).then(() => {});
   };
 
@@ -289,28 +365,60 @@ export default function AdminMembers() {
           </div>
         ) : (
         <>
-        <div className="flex flex-wrap items-end justify-between gap-4 mt-4 mb-8">
+        <div className="flex flex-wrap items-end justify-between gap-4 mt-4 mb-4">
           <div>
             <h1 className="text-3xl font-drama font-bold mb-2">Members</h1>
             <p className="text-text/60">
-              Everyone with an account. Membership status is kept in sync by
-              Stripe — billing changes belong in the Stripe dashboard, not here.
+              {rosterTab === 'newsletter'
+                ? 'SAMPA Updates — footer DOI, imports, and members who are on the list. Live from Brevo, not this database.'
+                : 'Everyone with an account. Membership status is kept in sync by Stripe — billing changes belong in the Stripe dashboard, not here.'}
             </p>
           </div>
-          <button
-            onClick={downloadCsv}
-            disabled={loading || filtered.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
-          >
-            <Download className="w-4 h-4" />
-            Download CSV ({filtered.length})
-          </button>
+          {rosterTab === 'newsletter' ? (
+            <button
+              onClick={downloadNlCsv}
+              disabled={nlLoading || nlFiltered.length === 0}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              <Download className="w-4 h-4" />
+              Download CSV ({nlFiltered.length})
+            </button>
+          ) : (
+            <button
+              onClick={downloadCsv}
+              disabled={loading || filtered.length === 0}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              <Download className="w-4 h-4" />
+              Download CSV ({filtered.length})
+            </button>
+          )}
         </div>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {loading && <p className="text-text/50 font-data">Loading…</p>}
+        <div className="flex gap-2 mb-8">
+          {[
+            ['members', 'Member roster'],
+            ['newsletter', 'Newsletter (Updates)'],
+          ].map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setRosterTab(key)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                rosterTab === key
+                  ? 'bg-primary-text text-white'
+                  : 'bg-white border border-primary/20 text-text/70 hover:border-primary'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
-        {!loading && !error && (
+        {rosterTab === 'members' && error && <p className="text-red-500 mb-4">{error}</p>}
+        {rosterTab === 'members' && loading && <p className="text-text/50 font-data">Loading…</p>}
+
+        {rosterTab === 'members' && !loading && !error && (
           <>
             {/* Status summary */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -504,6 +612,95 @@ export default function AdminMembers() {
               by administrators on{' '}
               <Link to="/editor/people" className="underline hover:text-primary-text">People & permissions</Link>.
             </p>
+          </>
+        )}
+
+        {rosterTab === 'newsletter' && (
+          <>
+            {nlError && <p className="text-red-500 mb-4">{nlError}</p>}
+            {nlLoading && <p className="text-text/50 font-data">Loading Updates list…</p>}
+            {!nlLoading && !nlError && (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                  <div className="bg-white rounded-2xl border border-primary/10 p-5">
+                    <div className="text-3xl font-bold">{nlContacts.length}</div>
+                    <div className="text-text/50 text-xs font-data uppercase tracking-wider mt-1">On Updates</div>
+                  </div>
+                  <div className="bg-white rounded-2xl border border-primary/10 p-5">
+                    <div className="text-3xl font-bold text-green-700">
+                      {nlContacts.filter((c) => memberEmails.has((c.email || '').toLowerCase())).length}
+                    </div>
+                    <div className="text-text/50 text-xs font-data uppercase tracking-wider mt-1">Also on member roster</div>
+                  </div>
+                  <div className="bg-white rounded-2xl border border-primary/10 p-5">
+                    <div className="text-3xl font-bold">
+                      {nlContacts.filter((c) => !memberEmails.has((c.email || '').toLowerCase())).length}
+                    </div>
+                    <div className="text-text/50 text-xs font-data uppercase tracking-wider mt-1">Newsletter only</div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <input
+                    type="search"
+                    value={nlSearch}
+                    onChange={(e) => setNlSearch(e.target.value)}
+                    placeholder="Search email, name, source…"
+                    className="flex-1 min-w-[220px] px-4 py-2.5 rounded-full border border-primary/20 focus:outline-none focus:border-primary text-sm bg-white"
+                  />
+                </div>
+                <div className="bg-white rounded-2xl border border-primary/10 overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-text/40 font-data text-xs uppercase tracking-wider border-b border-primary/10">
+                        <th className="px-4 py-3">Email</th>
+                        <th className="px-4 py-3">Name</th>
+                        <th className="px-4 py-3">Source</th>
+                        <th className="px-4 py-3">Member roster</th>
+                        <th className="px-4 py-3">Blacklisted</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-primary/10">
+                      {nlFiltered.map((c) => {
+                        const onRoster = memberEmails.has((c.email || '').toLowerCase());
+                        return (
+                          <tr key={c.email}>
+                            <td className="px-4 py-3 text-text/80">{c.email}</td>
+                            <td className="px-4 py-3 font-semibold whitespace-nowrap">
+                              {[c.firstName, c.lastName].filter(Boolean).join(' ') || '—'}
+                            </td>
+                            <td className="px-4 py-3 text-text/60">{c.source || '—'}</td>
+                            <td className="px-4 py-3">
+                              {onRoster ? (
+                                <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-green-500/10 text-green-700">Yes</span>
+                              ) : (
+                                <span className="text-text/30">Newsletter only</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              {c.blacklisted ? (
+                                <span className="text-xs font-data font-semibold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600">Yes</span>
+                              ) : (
+                                <span className="text-text/30">—</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {nlFiltered.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="px-4 py-8 text-center text-text/40">
+                            No contacts match this view.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-text/40 text-xs mt-4">
+                  This is Brevo list SAMPA Updates (footer double opt-in, Google Group import, and members added on join). Unsubscribes show as blacklisted. It is not the same as the member-account Newsletter yes/no column.
+                </p>
+              </>
+            )}
           </>
         )}
         </>
