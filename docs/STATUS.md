@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-08-25 (T41 Done — Josh live Patron copy merged PR #92 → Production)
+**Last updated:** 2026-09-02 (T42 claimed — ASAM correctional settings on /policy)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,6 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Claimed cursor.** Cleaned public PDF + hub detail with `[P## L##]` capsules from Final/2026-08 Correctional Settings; also alwaysApply Cursor rule for STATUS pull→create/claim. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -81,8 +82,8 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 ### Task workflow (agents + humans)
 
-1. **`git pull`** on the machine you’re using (always before claim or code).
-2. **Claim:** pick a **Todo** row → set **Owner** to `egg` / `cursor` / `josh` → move that row to **In Progress** with **Started** = today’s date (`YYYY-MM-DD`) → **commit + push STATUS** *before* heavy work (so the other side sees the claim).
+1. **`git pull`** on the machine you’re using if not already current this session (always before claim or code). Re-read this file after pull.
+2. **Create or claim:** if no matching row, **create** a Todo with the next free `T##`; otherwise pick the Todo → set **Owner** to `egg` / `cursor` / `josh` → move that row to **In Progress** with **Started** = today’s date (`YYYY-MM-DD`) → **commit + push STATUS** *before* heavy work (so the other side sees the claim). STATUS claim push is allowed without waiting for a separate “please commit” ask.
 3. **Work** on that task only (use PARK/spec linked in Notes). Don’t start a second claimed task without releasing or finishing the first unless Josh says parallel OK.
 4. **Update:** if blocked or notes change, edit the In Progress row → commit+push.
 5. **Complete:** move row to **Done** with **Done** date; keep **Done** to **5 rows max** (delete oldest); clear related PARK if track fully shipped; commit+push.

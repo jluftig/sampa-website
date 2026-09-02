@@ -1,0 +1,20 @@
+---
+description: STATUS pull → create/claim before addictionpas.org executable work
+alwaysApply: true
+---
+
+# STATUS claim workflow (sampa-website)
+
+Before any executable work on this repo (code, public files, STATUS edits that ship work):
+
+1. **`git pull` if not already current this session** (`git fetch` + `git pull` on the tracking branch). Re-read `docs/STATUS.md` after pull.
+2. **Create or claim a Tasks row** in `docs/STATUS.md` → `## Tasks`:
+   - If no matching Todo/In Progress row → **create** one with the next free `T##`.
+   - Set **Owner** = `cursor` (this machine) · move to **In Progress** · **Started** = today (`YYYY-MM-DD`).
+   - Notes: one line on scope + links.
+3. **Commit + push `docs/STATUS.md` immediately** so Egg sees the claim. This STATUS-only claim push is **allowed without waiting for Josh** (narrow exception to “don’t commit unless asked”).
+4. Then do the work. On finish: move row to **Done** (max 5 Done rows), update **Last updated**, commit/push per Josh’s ask for the feature PR.
+
+Never invent `TASKS.md` or a second board. Never claim only in chat. First push to `origin/main` wins claim races.
+
+Tiny unsolicited typo fixes need no ticket; anything that will become a PR does.

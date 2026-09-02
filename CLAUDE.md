@@ -37,7 +37,7 @@ Repo: `jluftig/sampa-website`. Supabase ref: `xbzzawjnphpnexwfjtif`.
 
 **Write path:** STATUS first → architecture/CLAUDE if design/security changed → PARK only if mid-flight → HANDOFF only if bus-factor/accounts list changed.
 
-**Multi-machine / multi-agent:** GitHub `main` is SoR. Before executable work: `git pull`, claim a **Tasks** row in STATUS (`Owner` = `egg` \| `cursor` \| `josh`), move to **In Progress**, **commit+push immediately**, then code. No `TASKS.md`. First push wins on claim races. See STATUS **Task workflow**.
+**Multi-machine / multi-agent:** GitHub `main` is SoR. Before executable work: `git pull` if not current, **create** a **Tasks** row if none matches (next `T##`) or claim an existing Todo, set `Owner` = `egg` \| `cursor` \| `josh`, move to **In Progress**, **commit+push STATUS immediately**, then code. No `TASKS.md`. First push wins on claim races. See STATUS **Task workflow** + `.cursor/rules/status-claim-workflow.mdc`.
 
 ## Commands
 
