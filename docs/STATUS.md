@@ -365,6 +365,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-09-02 · **ASAM policy polish (T43)** — “Download the PDF” links to ASAM’s official standards PDF; SAMPA logo top-left on the comment PDF.
 - 2026-09-02 · **ASAM correctional settings on `/policy` (T42)** — Public comment PDF + hub detail with `[P## L##]` rounded-rect capsules (`lineComments`). Hub one-liner names ASAM. Cursor alwaysApply STATUS claim rule.
 - 2026-08-25 · **Josh live Patron copy (T41)** — PR #92. Same sentence on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout: extra support + badge flex + gratitude. No SQL.
 - 2026-08-25 · **Patron directory badge + Join copy (T40)** — PR #91. Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron. Peer `/members` Patron chip. SQL applied before merge.
