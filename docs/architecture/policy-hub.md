@@ -88,6 +88,9 @@ clusters.
 
 - PDFs live under `public/files/policy/` (not `/policy/…pdf`) so they do not collide
   with the SPA route `/policy/:slug`.
+- Optional **`lineComments`** on a document (ASAM correctional standards, 2026-08-31)
+  render as a “Submitted comments” list on `/policy/:slug` with `[P## L##]` citation
+  capsules via `formatCitationCapsule`. HHS/HRSA entries omit the field.
 - 501(c)(3) disclaimer stays on hub + detail pages: educational / public-health
   mission; no political campaign activity.
 - First published artifact is an HHS public comment; empty Position/Statement

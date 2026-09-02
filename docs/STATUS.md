@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-02 (T42 claimed — ASAM correctional settings on /policy)
+**Last updated:** 2026-09-02 (T42 Done — ASAM correctional settings comment on `/policy`)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Claimed cursor.** Cleaned public PDF + hub detail with `[P## L##]` capsules from Final/2026-08 Correctional Settings; also alwaysApply Cursor rule for STATUS pull→create/claim. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -74,11 +73,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Merged → Production** (direct `main`). PDF + hub detail with `[P## L##]` rounded-rect capsules; `lineComments` in seed data; alwaysApply Cursor STATUS claim rule. |
 | T41 | Josh live Patron copy (Join / invoice / dashboard / Stripe) | cursor | 2026-08-25 | **Merged PR #92 → Production** (`be1a28d`). Josh’s exact sentence (extra support + badge flex + gratitude) on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description. No SQL / email / About / Stripe Dashboard product edits. |
 | T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Merged PR #91 → Production** (`da74fa4`). Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron for existing active non-Patron members. Peer `/members` Patron chip when `profiles.patron`. SQL applied in prod SQL Editor before merge. |
 | T39 | About intro copy + drop in-page leadership jump | cursor | 2026-08-25 | **Merged PR #90 → Production** (`2bda82e`). Josh's two-sentence intro (all settings / house of medicine) on `/about`; in-page “Meet 2026–27 leadership” jump removed. Roster/bios/photos unchanged. |
 | T38 | Employer invoice side door on /join | cursor | 2026-08-25 | **Merged PR #89 → Production** (`fd63647`). Quiet link on `/join` after a real tier — not a catalog/Step 1, not `/membership`. #73 stays killed. SQL applied in prod SQL Editor before merge. Submit stores the request, Stripe pay link, no-SVG PDF; emails josh@ + admin@ only. |
-| T34 | Jonathan Baker form headshot on About | cursor | 2026-08-25 | **Merged PR #84 → Production** (`75af7d1`). House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg`. Path unchanged. Thank-you draft stays unsent. |
 
 ### Task workflow (agents + humans)
 
@@ -146,8 +145,9 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 - **Policy hub** — public `/policy` + `/policy/:slug`. **Framing:** where SAMPA
   **will publish** its public voice for **access** to MAT/MOUD—not a “comments only”
   archive and not nav-labeled “Advocacy.” Nav stays **Policy**. Honest scope today:
-  two public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
-  91 FR 43103); levers table + Position/Statement
+  three public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
+  91 FR 43103; ASAM correctional settings & reentry **2026-08-31** with `[P## L##]`
+  capsules); levers table + Position/Statement
   types are **roadmap / intent** (“How we will improve access”, “What we will publish”).
   `/policy` also shows **Roadmap from our first comment** priorities seeded by that
   HHS RFI (telehealth, state/OTP alignment, workforce, payment, stigma/peers, data).
@@ -365,6 +365,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-09-02 · **ASAM correctional settings on `/policy` (T42)** — Public comment PDF + hub detail with `[P## L##]` rounded-rect capsules (`lineComments`). Hub one-liner names ASAM. Cursor alwaysApply STATUS claim rule.
 - 2026-08-25 · **Josh live Patron copy (T41)** — PR #92. Same sentence on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout: extra support + badge flex + gratitude. No SQL.
 - 2026-08-25 · **Patron directory badge + Join copy (T40)** — PR #91. Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron. Peer `/members` Patron chip. SQL applied before merge.
 - 2026-08-25 · **About intro + drop in-page leadership jump (T39)** — PR #90. Josh's two-sentence intro (all settings / house of medicine) on `/about`. In-page Meet 2026–27 leadership jump removed. Roster unchanged.

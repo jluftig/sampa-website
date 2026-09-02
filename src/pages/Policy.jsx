@@ -27,8 +27,7 @@ export default function Policy() {
   const [filter, setFilter] = useState('all');
 
   const visible = filter === 'all' ? docs : docs.filter((d) => d.type === filter);
-  // Two-up while the corpus is small — both public comments get equal
-  // prominence. Revisit this layout when more materials publish.
+  // Two newest documents on the hub; full archive listed below.
   const latest = docs.slice(0, 2);
 
   return (

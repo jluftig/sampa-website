@@ -8,6 +8,7 @@ import {
   getPolicyDocument,
   typeLabel,
   POLICY_HUB,
+  formatCitationCapsule,
 } from '../data/policyDocuments';
 import { formatDateOnly } from '../lib/format';
 
@@ -148,11 +149,56 @@ export default function PolicyView() {
 
         {safeBody && (
           <section
-            className="prose prose-lg max-w-none text-text/80 mb-16
+            className="prose prose-lg max-w-none text-text/80 mb-12
               prose-headings:font-drama prose-headings:text-text
               prose-a:text-primary-text"
             dangerouslySetInnerHTML={{ __html: safeBody }}
           />
+        )}
+
+        {doc.lineComments?.length > 0 && (
+          <section className="mb-16" aria-labelledby="line-comments-heading">
+            <h2
+              id="line-comments-heading"
+              className="text-xl font-drama font-bold mb-6"
+            >
+              Submitted comments
+            </h2>
+            <ol className="space-y-8">
+              {doc.lineComments.map((item) => (
+                <li key={`${item.page}-${item.line}-${item.title}`}>
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2 mb-3">
+                    <span className="inline-flex items-center shrink-0 rounded bg-primary/10 text-primary-text font-data text-[11px] font-semibold tracking-wide px-2 py-0.5 leading-none">
+                      {formatCitationCapsule(item.page, item.line)}
+                    </span>
+                    <h3 className="text-base md:text-lg font-drama font-bold text-text leading-snug">
+                      {item.title}
+                    </h3>
+                  </div>
+                  {item.guideline && (
+                    <p className="text-sm text-text/55 italic leading-relaxed mb-2">
+                      <span className="not-italic font-semibold text-primary-text">
+                        Guideline:{' '}
+                      </span>
+                      {item.guideline}
+                    </p>
+                  )}
+                  <p className="text-text/75 leading-relaxed mb-2">
+                    <span className="font-semibold text-primary-text">Comment: </span>
+                    {item.comment}
+                  </p>
+                  {item.revision && (
+                    <p className="text-sm text-text/65 leading-relaxed border-l-2 border-primary/25 pl-4">
+                      <span className="font-semibold text-primary-text">
+                        Suggested revision:{' '}
+                      </span>
+                      {item.revision}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
         )}
 
         <p className="text-sm text-text/45 leading-relaxed border-t border-text/10 pt-8">
