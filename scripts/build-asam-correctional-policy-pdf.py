@@ -283,9 +283,9 @@ def build_pdf(comments: list[dict], path: Path):
             "permanent exemptions; distinguish jail/prison health-system medical "
             "directors (state law) from OTP medical directors (physician under 42 CFR "
             "§8.2); and treat peer/recovery support as complementary to MOUD—not a "
-            "substitute or contingency. Language that quietly physician-gates care is "
-            "operationally unworkable in APP-staffed jails and raises post-release "
-            "overdose risk.",
+            "substitute or contingency. Naming PAs and other APPs as prescribers is how "
+            "more people stay on treatment in APP-staffed facilities — a standard they "
+            "cannot run is a standard that stops MOUD.",
             styles["body"],
         )
     )
