@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-02 (T44 claimed egg — ASAM hub APP-access tone)
+**Last updated:** 2026-09-02 (T44 Done — ASAM hub APP-access tone, PR #96)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T44 | ASAM hub copy: pro-APP access tone (drop physician-gate) | egg | 2026-09-02 | **Claimed egg** (Josh 2026-09-02, parallel with T3/T16). Live `/policy/asam-correctional-settings-2026` hub `bodyHtml` says “quietly physician-gates care.” Rewrite to name PAs/APPs so more people stay on MOUD. **Do not edit** filed `asam-correctional-line-comments-2026.json` (submitted record). PR + preview; no Production until Josh says merge. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -74,11 +73,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T44 | ASAM hub copy: pro-APP access tone (drop physician-gate) | egg | 2026-09-02 | **Merged PR #96 → Production** (`f40d7af`). Hub + comment PDF cover letter: name PAs/APPs so more people stay on MOUD. Filed 17 line comments unchanged. |
 | T43 | ASAM policy polish: source PDF link + SAMPA logo on comment PDF | cursor | 2026-09-02 | **Merged → Production.** Hub “Download the PDF” → ASAM official standards URL; SAMPA logo top-left on comment PDF. |
 | T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Merged → Production** (direct `main`). PDF + hub detail with `[P## L##]` rounded-rect capsules; `lineComments` in seed data; alwaysApply Cursor STATUS claim rule. |
 | T41 | Josh live Patron copy (Join / invoice / dashboard / Stripe) | cursor | 2026-08-25 | **Merged PR #92 → Production** (`be1a28d`). Josh’s exact sentence (extra support + badge flex + gratitude) on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description. No SQL / email / About / Stripe Dashboard product edits. |
 | T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Merged PR #91 → Production** (`da74fa4`). Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron for existing active non-Patron members. Peer `/members` Patron chip when `profiles.patron`. SQL applied in prod SQL Editor before merge. |
-| T39 | About intro copy + drop in-page leadership jump | cursor | 2026-08-25 | **Merged PR #90 → Production** (`2bda82e`). Josh's two-sentence intro (all settings / house of medicine) on `/about`; in-page “Meet 2026–27 leadership” jump removed. Roster/bios/photos unchanged. |
 
 ### Task workflow (agents + humans)
 
