@@ -16,6 +16,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import (
     Flowable,
+    Image as RLImage,
     KeepTogether,
     Paragraph,
     SimpleDocTemplate,
@@ -25,6 +26,13 @@ from reportlab.platypus import (
 ROOT = Path(__file__).resolve().parents[1]
 COMMENTS_JSON = ROOT / "src/data/asam-correctional-line-comments-2026.json"
 OUT_PDF = ROOT / "public/files/policy/asam-correctional-settings-2026.pdf"
+LOGO_PATH = ROOT / "public/email/sampa-logo-v3.png"
+ASAM_SOURCE_PDF_URL = (
+    "https://downloads.asam.org/sitefinity-production-blobs/docs/default-source/"
+    "quality-science/correctional-criteria/"
+    "correctional-settings-and-reentry-standards-for-public-comment_final-for-public-comment.pdf"
+    "?sfvrsn=cc9e9d21_3"
+)
 
 TEAL = HexColor("#0F766E")
 TEAL_FILL = HexColor("#E6F5F3")
@@ -224,6 +232,14 @@ def build_pdf(comments: list[dict], path: Path):
     content_width = letter[0] - doc.leftMargin - doc.rightMargin
     story = []
 
+    # SAMPA wordmark — top left, above site URL
+    logo_w = 2.05 * inch
+    logo_h = logo_w * (171 / 560)
+    logo = RLImage(str(LOGO_PATH), width=logo_w, height=logo_h)
+    logo.hAlign = "LEFT"
+    story.append(logo)
+    story.append(Spacer(1, 8))
+
     story.append(Paragraph("www.addictionpas.org", styles["site"]))
     story.append(Paragraph("August 31, 2026", styles["meta"]))
     story.append(Paragraph("Submitted via ASAM public-comment survey", styles["meta"]))
@@ -276,7 +292,9 @@ def build_pdf(comments: list[dict], path: Path):
     story.append(
         Paragraph(
             "Citations use a single page and line from the official ASAM PDF, shown as "
-            "small rounded capsules in the form [P63 L24].",
+            "small rounded capsules in the form [P63 L24]. "
+            f'<link href="{ASAM_SOURCE_PDF_URL}" color="#0F766E">'
+            "<u>Download the PDF</u></link>.",
             styles["note"],
         )
     )
