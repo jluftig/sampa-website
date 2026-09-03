@@ -23,6 +23,9 @@ if (!/active SAMPA membership/i.test(BOARD_HUB.oneLiner)) {
 }
 if (!/monthly/i.test(BOARD_HUB.cadence)) fail('Cadence must mention monthly meetings');
 if (!/calendar invite/i.test(BOARD_HUB.cadence)) fail('Cadence must point join links at the calendar invite');
+if (!/after the Board approves/i.test(BOARD_HUB.recordsIntro || '')) {
+  fail('Records intro must say minutes post after Board approval');
+}
 
 const meetings = listBoardMeetings();
 const slugs = meetings.map((m) => m.slug);
@@ -59,7 +62,30 @@ if (!july.minutes.bodyHtml.includes('Shani Wilson')) fail('July minutes must nam
 if (!july.minutes.bodyHtml.includes('Directors-at-Large')) fail('July minutes missing ASIO motion');
 if (!july.minutes.bodyHtml.includes('Kala Klug')) fail('July minutes must credit the secretary');
 
-const stubAgendas = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-08', '2026-09'];
+const sep = getBoardMeeting('2026-09');
+if (sep.status !== 'upcoming') fail('September 2026 must be upcoming');
+if (!hasFullBody(sep.agenda)) fail('September 2026 agenda must have full posted HTML');
+if (sep.minutes.status !== 'not_yet') fail('September 2026 minutes are not posted yet');
+if (hasFullBody(sep.minutes)) fail('September 2026 minutes must stay empty');
+if (!sep.agenda.bodyHtml.includes('Motion to Approve ASIO')) fail('September agenda missing ASIO motion');
+if (!sep.agenda.bodyHtml.includes('October 14, 2026')) fail('September agenda must name the next meeting');
+if (!sep.agenda.bodyHtml.includes('Newsletter Sub Committee')) fail('September agenda missing Newsletter Sub Committee');
+
+const aug = getBoardMeeting('2026-08');
+if (!hasListedDoc(aug.agenda) || hasFullBody(aug.agenda)) fail('August 2026 agenda stays on file (minutes were filed under Agenda)');
+if (!hasFullBody(aug.minutes)) fail('August 2026 minutes must have full posted HTML');
+if (!aug.minutes.bodyHtml.includes('Elections and Vacancies')) fail('August minutes missing Elections and Vacancies');
+if (!aug.minutes.bodyHtml.includes('ASIO')) fail('August minutes missing ASIO vacancy');
+if (!aug.minutes.bodyHtml.includes('Conflict of Interest')) fail('August minutes missing COI policy');
+
+const apr = getBoardMeeting('2026-04');
+if (apr.date !== '2026-04-08') fail('April 2026 date must be April 8');
+if (!hasListedDoc(apr.agenda) || hasFullBody(apr.agenda)) fail('April 2026 agenda stays on file');
+if (!hasFullBody(apr.minutes)) fail('April 2026 minutes must have full posted HTML');
+if (!apr.minutes.bodyHtml.includes('501(c)(3)')) fail('April minutes missing 501(c)(3) motion');
+if (!apr.minutes.bodyHtml.includes('Wyoming')) fail('April minutes must name Wyoming incorporation');
+
+const stubAgendas = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-08'];
 for (const slug of stubAgendas) {
   const m = getBoardMeeting(slug);
   if (!hasListedDoc(m.agenda)) fail(`${slug} agenda must be listed (on file or posted)`);
@@ -67,18 +93,11 @@ for (const slug of stubAgendas) {
   if (!/on file/i.test(m.agenda.bodyHtml || '')) fail(`${slug} agenda stub must say on file`);
 }
 
-const stubMinutes2026 = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06'];
+const stubMinutes2026 = ['2026-01', '2026-02', '2026-03', '2026-05', '2026-06'];
 for (const slug of stubMinutes2026) {
   const m = getBoardMeeting(slug);
   if (!hasListedDoc(m.minutes)) fail(`${slug} minutes must be on file`);
   if (hasFullBody(m.minutes)) fail(`${slug} minutes should stay a stub until CoS pastes`);
-}
-
-if (getBoardMeeting('2026-08').minutes.status !== 'not_yet') {
-  fail('August 2026 minutes are not posted yet');
-}
-if (getBoardMeeting('2026-09').minutes.status !== 'not_yet') {
-  fail('September 2026 minutes are not posted yet');
 }
 
 for (const slug of ['2025-02', '2025-06', '2025-07', '2025-08', '2025-09']) {
@@ -109,6 +128,11 @@ if (!viewSrc.includes('DOMPurify')) fail('Meeting HTML must be sanitized');
 const hubSrc = readFileSync('src/pages/BoardMeetings.jsx', 'utf8');
 if (!hubSrc.includes('meetingsWithAgenda')) fail('Hub must list agendas from seed');
 if (!hubSrc.includes('meetingsWithMinutes')) fail('Hub must list minutes from seed');
+if (!hubSrc.includes('role="tablist"')) fail('Hub must use Agendas / Records / Schedule tabs');
+if (!hubSrc.includes("id: 'agendas'") || !hubSrc.includes("id: 'records'") || !hubSrc.includes("id: 'schedule'")) {
+  fail('Hub tabs must be Agendas, Records, and Schedule');
+}
+if (/year filter|workingYear filter/i.test(hubSrc)) fail('Do not add a year filter on the hub');
 
 const appSrc = readFileSync('src/App.jsx', 'utf8');
 if (!appSrc.includes('path="/board"')) fail('App must declare /board');
