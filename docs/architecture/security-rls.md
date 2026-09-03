@@ -8,6 +8,14 @@ Helpers (SECURITY DEFINER, `search_path=public`):
 Gate future member-only content (e.g. CME) on `is_active_member()`  
 (`membership_status='active'` OR editors/admins).
 
+**Board meetings (T45):** `/board` + `/board/:slug` use the same client gate as
+the directory (`RequireActiveMember` / `canAccessMemberDirectory`). `is_board`
+stays a directory badge — agendas and approved minutes are a **member**
+transparency surface, not a board-only working folder. Client checks are UX
+only. PDFs dropped in `public/files/board/` are reachable by URL if someone
+knows the path; do not put confidential drafts there until there is an
+authenticated file route.
+
 ## Table rules (summary)
 
 | Area | Rule |

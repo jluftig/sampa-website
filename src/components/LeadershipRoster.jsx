@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Linkedin, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CalendarDays, Linkedin, MapPin } from 'lucide-react';
 import {
   LEADERSHIP_GROUPS,
   LEADERSHIP_PAGE,
@@ -137,6 +138,25 @@ export default function LeadershipRoster() {
         <p className="text-lg text-text/80 leading-relaxed">
           {LEADERSHIP_PAGE.oneLiner}
         </p>
+        <Link
+          to="/board"
+          className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 bg-white rounded-3xl border border-primary/10 px-5 py-4 hover:border-primary/30 hover:shadow-md transition-all max-w-2xl"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+            <CalendarDays className="w-5 h-5 text-primary-text" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-data uppercase tracking-wider text-accent font-semibold mb-1">
+              Members only
+            </div>
+            <p className="font-semibold text-text leading-snug">
+              Board meeting agendas and minutes
+            </p>
+            <p className="text-sm text-text/60 mt-1">
+              Sign in to view this year’s schedule, agendas, and approved records.
+            </p>
+          </div>
+        </Link>
       </header>
 
       {LEADERSHIP_GROUPS.map((group) => {

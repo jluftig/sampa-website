@@ -110,8 +110,9 @@ export default function AboutPage() {
               Join the work
             </h2>
             <p className="mb-8">
-              Membership opens the peer directory. A gift keeps the work going.
-              Both serve the same end: patients reaching care.
+              Membership opens the peer directory and Board meeting records.
+              A gift keeps the work going. Both serve the same end: patients
+              reaching care.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Link

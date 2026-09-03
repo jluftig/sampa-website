@@ -4,10 +4,17 @@ import { useAuth } from '../lib/AuthContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-// Gate for member-benefit routes (networking directory, future CME): signed-in
-// active members and staff (editors/admins). Matches SQL is_active_member().
-// Non-members are pointed at /join; signed-out visitors go to /login.
-export default function RequireActiveMember({ children }) {
+// Gate for member-benefit routes (networking directory, Board meetings, future
+// CME): signed-in active members and staff (editors/admins). Matches SQL
+// is_active_member(). Non-members are pointed at /join; signed-out visitors
+// go to /login. Optional `deniedCopy` customizes the denial paragraph.
+const DIRECTORY_DENIED =
+  'The member directory is a benefit of active SAMPA membership. Join to network with other physician associates in addiction medicine.';
+
+export default function RequireActiveMember({
+  children,
+  deniedCopy = DIRECTORY_DENIED,
+}) {
   const { loading, user, canAccessMemberDirectory } = useAuth();
   const location = useLocation();
 
@@ -37,8 +44,7 @@ export default function RequireActiveMember({ children }) {
         <main className="max-w-3xl mx-auto px-4 pt-40 pb-24 text-center">
           <h1 className="text-3xl font-drama font-bold mb-4">Members only</h1>
           <p className="text-text/60 max-w-md mx-auto mb-8">
-            The member directory is a benefit of active SAMPA membership.
-            Join to network with other physician associates in addiction medicine.
+            {deniedCopy}
           </p>
           <Link
             to="/join"

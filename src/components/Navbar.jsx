@@ -48,7 +48,10 @@ export default function Navbar() {
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
           <DonateLink className="hover:text-primary-text transition-colors">Donate</DonateLink>
           {canAccessMemberDirectory && (
-            <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
+            <>
+              <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
+              <Link to="/board" className="hover:text-primary-text transition-colors">Board</Link>
+            </>
           )}
         </div>
 
@@ -104,7 +107,10 @@ export default function Navbar() {
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
           <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</DonateLink>
           {canAccessMemberDirectory && (
-            <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
+            <>
+              <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
+              <Link to="/board" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Board</Link>
+            </>
           )}
           <div className="mt-2 pt-4 border-t border-primary/10 flex flex-col gap-2.5">
             <Link
