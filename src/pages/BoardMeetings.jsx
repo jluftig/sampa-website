@@ -7,21 +7,20 @@ import {
   BOARD_HUB,
   listBoardMeetings,
   upcomingMeetings,
-  completedMeetings,
+  meetingsWithAgenda,
+  meetingsWithMinutes,
   kindLabel,
   meetingStatusLabel,
   docStatusLabel,
-  hasPostedDoc,
+  hasFullBody,
+  hasListedDoc,
 } from '../data/boardMeetings';
 import { formatDateOnly } from '../lib/format';
 
 function meetingWhen(meeting) {
   if (meeting.date) {
     const start = formatDateOnly(meeting.date);
-    if (meeting.endDate && meeting.endDate !== meeting.date) {
-      return `${start} – ${formatDateOnly(meeting.endDate)}`;
-    }
-    return start;
+    return meeting.time ? `${start} · ${meeting.time}` : start;
   }
   return meeting.dateLabel || 'Date to be announced';
 }
@@ -47,15 +46,16 @@ function StatusChip({ children, tone = 'neutral' }) {
 }
 
 function docTone(doc) {
-  if (hasPostedDoc(doc)) return 'ready';
-  if (doc?.status === 'pending') return 'soon';
+  if (hasFullBody(doc)) return 'ready';
+  if (hasListedDoc(doc)) return 'soon';
   return 'neutral';
 }
 
 export default function BoardMeetings() {
   const meetings = useMemo(() => listBoardMeetings(), []);
   const upcoming = useMemo(() => upcomingMeetings(meetings), [meetings]);
-  const records = useMemo(() => completedMeetings(meetings), [meetings]);
+  const agendas = useMemo(() => meetingsWithAgenda(meetings), [meetings]);
+  const records = useMemo(() => meetingsWithMinutes(meetings), [meetings]);
   const nextUp = upcoming[0] || null;
 
   return (
@@ -127,16 +127,15 @@ export default function BoardMeetings() {
 
         <section id="schedule" className="mb-16 md:mb-20 scroll-mt-32" aria-labelledby="schedule-heading">
           <h2 id="schedule-heading" className="text-2xl md:text-3xl font-drama font-bold mb-4">
-            {BOARD_HUB.workingYear} schedule
+            Meeting list
           </h2>
           <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-8">
-            Quarterly meetings plus virtual meetings as needed. Open a meeting for
-            its agenda and, after approval, the minutes.
+            Newest first. Open a meeting for its agenda and minutes.
           </p>
           <div className="overflow-x-auto rounded-3xl border border-primary/10 bg-white">
             <table className="w-full min-w-[44rem] text-left text-sm md:text-base">
               <caption className="sr-only">
-                SAMPA Board meeting schedule for {BOARD_HUB.workingYear}
+                SAMPA Board meetings, newest first
               </caption>
               <thead>
                 <tr className="border-b border-primary/10 bg-primary/5">
@@ -183,11 +182,11 @@ export default function BoardMeetings() {
             Agendas
           </h2>
           <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-8">
-            Posted agendas open as PDFs. Until a file is attached, the meeting
-            page shows the standing outline.
+            Posted agendas are on the meeting page. Months marked on file are
+            in the Board Meetings Drive and will get full text here next.
           </p>
           <ul className="space-y-4">
-            {meetings.map((meeting) => (
+            {agendas.map((meeting) => (
               <li key={`${meeting.slug}-agenda`}>
                 <Link
                   to={`/board/${meeting.slug}#agenda`}
@@ -212,13 +211,13 @@ export default function BoardMeetings() {
             Meeting records
           </h2>
           <p className="text-lg text-text/70 leading-relaxed max-w-3xl mb-8">
-            Approved minutes and other records appear here after the Board
-            accepts them. Nothing is posted yet for this working year.
+            Approved minutes and other records. July 2026 is posted in full.
+            Other months on file will get their bodies pasted next.
           </p>
           {records.length === 0 ? (
             <div className="text-center bg-white rounded-4xl border border-primary/10 p-16 max-w-2xl mx-auto">
               <FileText className="w-10 h-10 text-primary/40 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">No approved minutes yet</h3>
+              <h3 className="text-xl font-bold mb-2">No minutes listed yet</h3>
               <p className="text-text/60">
                 After a meeting, minutes are drafted, approved at a later
                 meeting, then posted on that meeting’s page.

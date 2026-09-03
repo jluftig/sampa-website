@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-03 (T45 In Progress — Board meeting agenda + minutes pages)
+**Last updated:** 2026-09-03 (T45 — Board meetings Drive populate in progress, PR #97)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge until Josh reviews. `/board` + `/board/:slug`, gated like the directory (`is_active_member()`, not `is_board`). Seed: `src/data/boardMeetings.js`. Still needs Josh: real dates/PDFs, nav label (Board), confirm member vs board-only. |
+| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge. Drive populate **in progress**: July 2026 agenda+minutes full HTML; 2026 Jan–Jun/Aug/Sep agendas on file; 2026 Jan–Jun minutes on file; no Aug 2026 minutes; 2025 Feb/Jun/Jul/Aug/Sep minutes listed; annual 2026 listed. CoS paste next. Gated `is_active_member()`. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 

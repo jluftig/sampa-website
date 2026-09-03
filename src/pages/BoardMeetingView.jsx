@@ -1,26 +1,23 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Download, FileText, MapPin } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import {
   BOARD_HUB,
-  STANDING_AGENDA_ITEMS,
   getBoardMeeting,
   kindLabel,
   meetingStatusLabel,
   docStatusLabel,
-  hasPostedDoc,
+  hasFullBody,
 } from '../data/boardMeetings';
 import { formatDateOnly } from '../lib/format';
 
 function meetingWhen(meeting) {
   if (meeting.date) {
     const start = formatDateOnly(meeting.date);
-    if (meeting.endDate && meeting.endDate !== meeting.date) {
-      return `${start} – ${formatDateOnly(meeting.endDate)}`;
-    }
-    return start;
+    return meeting.time ? `${start} · ${meeting.time}` : start;
   }
   return meeting.dateLabel || 'Date to be announced';
 }
@@ -31,19 +28,24 @@ function formatLabel(format) {
   return 'Virtual';
 }
 
-function DocumentCard({ id, heading, doc, emptyCopy }) {
-  const posted = hasPostedDoc(doc);
+function DocumentSection({ id, heading, doc, emptyCopy }) {
+  const safeBody = doc.bodyHtml
+    ? DOMPurify.sanitize(doc.bodyHtml, { USE_PROFILES: { html: true } })
+    : '';
+  const postedPdf = Boolean(doc.pdfUrl && (doc.status === 'posted' || doc.status === 'on_file'));
+
   return (
     <section id={id} className="mb-12 scroll-mt-32" aria-labelledby={`${id}-heading`}>
       <h2 id={`${id}-heading`} className="text-xl font-drama font-bold mb-4">
         {heading}
       </h2>
-      {posted ? (
+
+      {postedPdf && (
         <a
           href={doc.pdfUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-4 bg-white rounded-3xl border border-primary/15 px-6 py-5 hover:border-primary/40 hover:shadow-md transition-all group"
+          className="flex items-center gap-4 bg-white rounded-3xl border border-primary/15 px-6 py-5 mb-6 hover:border-primary/40 hover:shadow-md transition-all group"
         >
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
             <FileText className="w-6 h-6 text-primary-text" />
@@ -59,6 +61,15 @@ function DocumentCard({ id, heading, doc, emptyCopy }) {
           </div>
           <Download className="w-5 h-5 text-primary-text shrink-0" />
         </a>
+      )}
+
+      {safeBody ? (
+        <div
+          className="prose prose-lg max-w-none text-text/80 bg-white rounded-3xl border border-primary/10 px-6 py-6
+            prose-headings:font-drama prose-headings:text-text
+            prose-a:text-primary-text"
+          dangerouslySetInnerHTML={{ __html: safeBody }}
+        />
       ) : (
         <div className="flex items-start gap-4 bg-white rounded-3xl border border-primary/10 px-6 py-5">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -74,6 +85,12 @@ function DocumentCard({ id, heading, doc, emptyCopy }) {
             </p>
           </div>
         </div>
+      )}
+
+      {hasFullBody(doc) && doc.approvedAt && !postedPdf && (
+        <p className="text-sm text-text/45 mt-3">
+          Approved {formatDateOnly(doc.approvedAt)}
+        </p>
       )}
     </section>
   );
@@ -166,58 +183,19 @@ export default function BoardMeetingView() {
           <p className="text-lg text-text/75 leading-relaxed mb-10">{meeting.summary}</p>
         )}
 
-        <DocumentCard
+        <DocumentSection
           id="agenda"
           heading="Agenda"
           doc={meeting.agenda}
-          emptyCopy="The agenda PDF will appear here when the Board posts it. Until then, the standing outline below is the usual order of business."
+          emptyCopy="No agenda is listed for this meeting."
         />
 
-        {!hasPostedDoc(meeting.agenda) && (
-          <section className="mb-12" aria-labelledby="outline-heading">
-            <h2 id="outline-heading" className="text-xl font-drama font-bold mb-4">
-              Standing outline
-            </h2>
-            <ul className="space-y-3">
-              {STANDING_AGENDA_ITEMS.map((item) => (
-                <li key={item} className="flex gap-3 text-text/75 leading-relaxed">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <DocumentCard
+        <DocumentSection
           id="minutes"
           heading="Minutes"
           doc={meeting.minutes}
-          emptyCopy="Approved minutes are posted after a later meeting accepts them. Draft minutes are not published."
+          emptyCopy="Minutes are not posted yet. Draft minutes are not published."
         />
-
-        {meeting.records?.length > 0 && (
-          <section id="other-records" className="mb-12 scroll-mt-32" aria-labelledby="other-records-heading">
-            <h2 id="other-records-heading" className="text-xl font-drama font-bold mb-4">
-              Other records
-            </h2>
-            <ul className="space-y-3">
-              {meeting.records.map((rec) => (
-                <li key={rec.pdfUrl}>
-                  <a
-                    href={rec.pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-primary-text font-semibold hover:underline"
-                  >
-                    <FileText className="w-4 h-4 shrink-0" />
-                    {rec.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
 
         <p className="text-sm text-text/45 leading-relaxed border-t border-text/10 pt-8">
           {BOARD_HUB.disclaimer}
