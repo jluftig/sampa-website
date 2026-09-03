@@ -212,6 +212,9 @@ if (!hubSrc.includes("id: 'agendas'") || !hubSrc.includes("id: 'records'") || !h
 }
 if (!hubSrc.includes('nextStandingBoardDates')) fail('Schedule must use the 2nd-Wednesday standing dates, not a full archive table');
 if (!hubSrc.includes('Annual Membership Meeting')) fail('Schedule must list the Annual Membership Meeting separately');
+if (!hubSrc.includes('CopyWithObserverEmail') || !hubSrc.includes('mailto:')) {
+  fail('Hub and Schedule must link info@addictionpas.org as mailto');
+}
 if (hubSrc.includes('SAMPA Board meeting schedule, newest first')) {
   fail('Do not keep the full-history schedule laundry list');
 }

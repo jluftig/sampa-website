@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-03 (T45 — Board hub AAPA tabs + 2nd-Wednesday schedule, PR #97)
+**Last updated:** 2026-09-03 (T45 — Board observer guidance + mailto on Schedule, PR #97)
 
 **Doc roles (one board — not three sources of truth):**
 

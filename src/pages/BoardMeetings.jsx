@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, FileText } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -47,6 +47,28 @@ function tabFromHash(hash) {
   return TABS.some((t) => t.id === id) ? id : 'agendas';
 }
 
+function CopyWithObserverEmail({ text }) {
+  const email = BOARD_HUB.observerEmail;
+  const parts = String(text || '').split(email);
+  return (
+    <>
+      {parts.map((part, i) => (
+        <Fragment key={`${email}-${i}`}>
+          {part}
+          {i < parts.length - 1 && (
+            <a
+              href={`mailto:${email}`}
+              className="text-primary-text font-semibold hover:underline"
+            >
+              {email}
+            </a>
+          )}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 export default function BoardMeetings() {
   const meetings = useMemo(() => listBoardMeetings(), []);
   const agendas = useMemo(() => meetingsWithAgenda(meetings), [meetings]);
@@ -88,7 +110,7 @@ export default function BoardMeetings() {
             .
           </p>
           <p className="text-text/65 leading-relaxed max-w-2xl">
-            {BOARD_HUB.hubObserverNote}{' '}
+            <CopyWithObserverEmail text={BOARD_HUB.hubObserverNote} />{' '}
             <button
               type="button"
               onClick={() => setTab('schedule')}
@@ -268,15 +290,9 @@ export default function BoardMeetings() {
             <h3 className="text-xl font-drama font-bold mb-3">
               Member observers
             </h3>
-            <p className="text-text/70 leading-relaxed mb-4">
-              {BOARD_HUB.scheduleObserver}
+            <p className="text-text/70 leading-relaxed">
+              <CopyWithObserverEmail text={BOARD_HUB.scheduleObserver} />
             </p>
-            <a
-              href={`mailto:${BOARD_HUB.observerEmail}`}
-              className="text-primary-text font-semibold hover:underline"
-            >
-              Email {BOARD_HUB.observerEmail}
-            </a>
           </section>
         )}
 
