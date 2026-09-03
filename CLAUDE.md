@@ -103,7 +103,7 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers.
 15. **Mobile shared lib:** `sampa-shared` → `src/lib`; no DOM/Vite-only code there.
 16. **No IAP** for memberships on iOS — website checkout only.
-17. **Board meetings** — `/board` + `/board/:slug` gated like the directory (`RequireActiveMember` / `is_active_member()`). `is_board` is still badge-only. Hub tabs: Agendas / Records / Schedule. Seed: `src/data/boardMeetings.js`; PDFs in `public/files/board/`. Do not paste Zoom join URLs.
+17. **Board meetings** — `/board` + `/board/:slug` gated like the directory (`RequireActiveMember` / `is_active_member()`). `is_board` is still badge-only. Hub tabs: Agendas / Records / Schedule (date + type; no year filter). Schedule is the 2nd-Wednesday / 8:00 PM ET rule plus next 1–2 dates — not a forward laundry list. Annual Membership Meeting is separate (TBD Q2 2027). Observers: `info@addictionpas.org`. Seed: `src/data/boardMeetings.js`. Do not paste Zoom join URLs.
 
 ## Rollback (short)
 

@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-03 (T45 — Board meetings full posted bodies Jan–Aug 2026 + 2025 SPAAM, PR #97)
+**Last updated:** 2026-09-03 (T45 — Board hub AAPA tabs + 2nd-Wednesday schedule, PR #97)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge. Hub: Agendas / Records / Schedule tabs. **Posted:** 2026 Jan–Sep agendas (Sep minutes not yet); 2026 Jan–Aug minutes; May 17 hybrid AAPA NOLA Room 278; 2025 Oct agenda; 2025 Feb notes + Jun/Jul/Aug/Sep minutes (SPAAM / early SAMPA). **Still stub:** 2026 annual PDF; 2025 Feb/Jun/Jul/Aug/Sep agendas. Gated `is_active_member()`. |
+| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge. Hub tabs Agendas / Records / Schedule (date + type). Schedule: 2nd Wednesday 8:00 PM ET; next 1–2 dates only; Annual Membership Meeting TBD Q2 2027; observers email `info@addictionpas.org`; no Zoom links. Historical months stay in Agendas + Records. Gated `is_active_member()`. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 

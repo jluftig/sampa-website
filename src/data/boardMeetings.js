@@ -18,15 +18,22 @@ export const BOARD_HUB = {
   oneLiner:
     'Board meeting agendas and approved minutes — a benefit of active SAMPA membership.',
   cadence:
-    'The Board meets monthly. Most meetings are virtual; May 2026 was hybrid at AAPA in New Orleans. Agendas and approved minutes are posted here for members. Join links stay on the calendar invite, not on this page.',
+    'The Board meets every second Wednesday at 8:00 PM ET, virtually. Join links are sent only to the named invite list for that meeting and are not posted here.',
   agendasIntro:
     'Date and meeting type. Open a meeting for the posted agenda.',
   recordsIntro:
     'Minutes and action summaries are posted after the Board approves them. 2025 records are labeled SPAAM / early SAMPA.',
-  scheduleIntro:
-    'Date, time, and location. Virtual meetings: the join link stays on the calendar invite, not on this page.',
+  scheduleStanding:
+    'Standing Board meetings are every second Wednesday at 8:00 PM ET, virtually. The cadence is the source of truth — dates below are the next one or two second Wednesdays for orientation.',
+  scheduleAnnual:
+    'The Annual Membership Meeting is listed separately. It is the standing invitation for all members (not every monthly Board meeting). Date: TBD, Q2 2027.',
+  scheduleObserver:
+    'The SAMPA Board of Directors meets monthly, virtually. Monthly Board Zoom is a named roster (voting Board and chairs), not an all-member blast. Active members interested in attending as a member observer can email info@addictionpas.org to request to be added for a specific meeting. Join links are sent only to the named invite list for that meeting and are not posted here. Executive-session and other closed portions are not open to observers. The Annual Membership Meeting remains the standing invitation for all members.',
+  observerEmail: 'info@addictionpas.org',
+  hubObserverNote:
+    'Active members may request to observe a monthly Board meeting. Email info@addictionpas.org — details on the Schedule tab.',
   disclaimer:
-    'These pages are for active SAMPA members. Executive-session material is not published. Virtual meetings: see your calendar invite for the join link.',
+    'These pages are for active SAMPA members. Executive-session material is not published. Join links are not posted on this page.',
 };
 
 export const MEETING_KINDS = {
@@ -752,16 +759,93 @@ export function kindLabel(kind) {
   return MEETING_KINDS[kind]?.label || 'Meeting';
 }
 
+function dateLabelFromIso(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  if (!m) return iso || '';
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function meetingWhenLabel(meeting) {
+  if (meeting?.date) return dateLabelFromIso(meeting.date);
+  return meeting?.dateLabel || 'Date to be announced';
+}
+
+/** Agenda-list title, AAPA-style (“September 9, 2026 Board Meeting”). */
+export function agendaListTitle(meeting) {
+  const when = meetingWhenLabel(meeting);
+  if (meeting?.era === 'spaam') {
+    return meeting.slug === '2025-02'
+      ? `${when} SPAAM Committee Meeting`
+      : `${when} SPAAM / Early SAMPA Meeting`;
+  }
+  if (meeting?.kind === 'annual') return `${when} Annual Board Meeting`;
+  if (meeting?.kind === 'special') return `${when} Special Board Meeting`;
+  return `${when} Board Meeting`;
+}
+
 /** Record-list type, AAPA-style (Virtual BOD / In Person / Special / Annual). */
 export function recordTypeLabel(meeting) {
   if (meeting?.era === 'spaam') {
-    return meeting.slug === '2025-02' ? 'SPAAM committee notes' : 'SPAAM / early SAMPA minutes';
+    return meeting.slug === '2025-02' ? 'SPAAM committee notes' : 'SPAAM / early SAMPA';
   }
   if (meeting?.kind === 'annual') return 'Annual record';
-  if (meeting?.kind === 'special') return 'Special meeting record';
-  if (meeting?.format === 'in-person') return 'In-person minutes';
-  if (meeting?.format === 'hybrid') return 'Hybrid meeting minutes';
-  return 'Virtual monthly minutes';
+  if (meeting?.kind === 'special') return 'Special';
+  if (meeting?.format === 'in-person') return 'In Person';
+  if (meeting?.format === 'hybrid') return 'Hybrid BOD';
+  return 'Virtual BOD';
+}
+
+export function recordListTitle(meeting) {
+  return `${meetingWhenLabel(meeting)} ${recordTypeLabel(meeting)}`;
+}
+
+/** Second Wednesday of a calendar month (local date). month is 1–12. */
+export function secondWednesday(year, month) {
+  const first = new Date(year, month - 1, 1);
+  const firstWed = 1 + ((3 - first.getDay() + 7) % 7);
+  return new Date(year, month - 1, firstWed + 7);
+}
+
+function isoDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * Next standing Board dates from the 2nd-Wednesday / 8:00 PM ET rule.
+ * Does not invent a long forward calendar — default is the next two.
+ */
+export function nextStandingBoardDates(count = 2, from = new Date(), meetings = BOARD_MEETINGS) {
+  const out = [];
+  let year = from.getFullYear();
+  let month = from.getMonth() + 1;
+  while (out.length < count) {
+    const day = secondWednesday(year, month);
+    const end = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59);
+    if (end >= from) {
+      const date = isoDate(day);
+      const seeded = meetings.find((m) => m.date === date) || null;
+      out.push({
+        date,
+        dateLabel: dateLabelFromIso(date),
+        time: '8:00 PM ET',
+        location: 'Virtual',
+        slug: seeded?.slug || null,
+      });
+    }
+    month += 1;
+    if (month > 12) {
+      month = 1;
+      year += 1;
+    }
+  }
+  return out;
 }
 
 export function meetingStatusLabel(status) {

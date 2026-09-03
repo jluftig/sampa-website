@@ -10,6 +10,10 @@ import {
   meetingsWithMinutes,
   hasFullBody,
   hasListedDoc,
+  agendaListTitle,
+  recordListTitle,
+  nextStandingBoardDates,
+  secondWednesday,
 } from '../src/data/boardMeetings.js';
 
 const fail = (msg) => {
@@ -21,10 +25,23 @@ if (BOARD_HUB.title !== 'Board meetings') fail('Hub title must stay Board meetin
 if (!/active SAMPA membership/i.test(BOARD_HUB.oneLiner)) {
   fail('Hub one-liner must say this is an active-membership benefit');
 }
-if (!/monthly/i.test(BOARD_HUB.cadence)) fail('Cadence must mention monthly meetings');
-if (!/calendar invite/i.test(BOARD_HUB.cadence)) fail('Cadence must point join links at the calendar invite');
+if (!/second Wednesday/i.test(BOARD_HUB.cadence)) fail('Cadence must state the 2nd-Wednesday rule');
+if (!/8:00 PM ET/i.test(BOARD_HUB.cadence)) fail('Cadence must state 8:00 PM ET');
+if (!/named invite list/i.test(BOARD_HUB.cadence)) fail('Cadence must say join links stay on the named invite list');
 if (!/after the Board approves/i.test(BOARD_HUB.recordsIntro || '')) {
   fail('Records intro must say minutes post after Board approval');
+}
+if (BOARD_HUB.observerEmail !== 'info@addictionpas.org') {
+  fail('Observer email must be info@addictionpas.org');
+}
+if (!/info@addictionpas\.org/.test(BOARD_HUB.scheduleObserver || '')) {
+  fail('Schedule observer blurb must use info@addictionpas.org');
+}
+if (!/Q2 2027/.test(BOARD_HUB.scheduleAnnual || '')) {
+  fail('Annual Membership Meeting must be TBD, Q2 2027');
+}
+if (!/Executive-session/i.test(BOARD_HUB.scheduleObserver || '')) {
+  fail('Observer blurb must say executive session is closed');
 }
 
 const meetings = listBoardMeetings();
@@ -153,8 +170,31 @@ if (upcomingMeetings(meetings)[0]?.slug !== '2026-09') {
 if (meetingsWithAgenda(meetings).length < 9) fail('2026 agendas should all be listed');
 if (meetingsWithMinutes(meetings).length < 10) fail('Minutes list is too thin');
 
+if (isoDate(secondWednesday(2026, 9)) !== '2026-09-09') fail('Sep 2026 second Wednesday is the 9th');
+if (isoDate(secondWednesday(2026, 10)) !== '2026-10-14') fail('Oct 2026 second Wednesday is the 14th');
+const standing = nextStandingBoardDates(2, new Date(2026, 8, 3), meetings);
+if (standing[0]?.date !== '2026-09-09' || standing[0]?.slug !== '2026-09') {
+  fail('Next standing date from Sep 3 2026 should be the seeded Sep 9 meeting');
+}
+if (standing[1]?.date !== '2026-10-14' || standing[1]?.slug) {
+  fail('Second standing date is Oct 14 2026 with no empty Oct stub');
+}
+if (agendaListTitle(getBoardMeeting('2026-09')) !== 'September 9, 2026 Board Meeting') {
+  fail('Agenda list titles must be date + Board Meeting');
+}
+if (!recordListTitle(getBoardMeeting('2026-08')).includes('Virtual BOD')) {
+  fail('Records list titles must use AAPA-style Virtual BOD');
+}
+
+function isoDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 const seedSrc = readFileSync('src/data/boardMeetings.js', 'utf8');
-if (/zoom\.us/i.test(seedSrc) || /pwd=/i.test(seedSrc) || /passcode/i.test(seedSrc) || /meeting[\s-]?id\s*[:=]/i.test(seedSrc)) {
+if (/zoom\.us/i.test(seedSrc) || /pwd=/i.test(seedSrc) || /passcode\s*[:=]/i.test(seedSrc) || /meeting[\s-]?id\s*[:=]/i.test(seedSrc)) {
   fail('Do not paste Zoom join URLs, meeting IDs, or passcodes');
 }
 if (/coming soon/i.test(seedSrc)) fail('Do not leave coming-soon copy for listed months');
@@ -169,6 +209,11 @@ if (!hubSrc.includes('meetingsWithMinutes')) fail('Hub must list minutes from se
 if (!hubSrc.includes('role="tablist"')) fail('Hub must use Agendas / Records / Schedule tabs');
 if (!hubSrc.includes("id: 'agendas'") || !hubSrc.includes("id: 'records'") || !hubSrc.includes("id: 'schedule'")) {
   fail('Hub tabs must be Agendas, Records, and Schedule');
+}
+if (!hubSrc.includes('nextStandingBoardDates')) fail('Schedule must use the 2nd-Wednesday standing dates, not a full archive table');
+if (!hubSrc.includes('Annual Membership Meeting')) fail('Schedule must list the Annual Membership Meeting separately');
+if (hubSrc.includes('SAMPA Board meeting schedule, newest first')) {
+  fail('Do not keep the full-history schedule laundry list');
 }
 if (/year filter|workingYear filter/i.test(hubSrc)) fail('Do not add a year filter on the hub');
 
