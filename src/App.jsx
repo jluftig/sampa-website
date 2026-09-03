@@ -23,6 +23,8 @@ const Donate = lazy(() => import('./pages/Donate'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
 const MemberProfile = lazy(() => import('./pages/MemberProfile'));
+const BoardMeetings = lazy(() => import('./pages/BoardMeetings'));
+const BoardMeetingView = lazy(() => import('./pages/BoardMeetingView'));
 const About = lazy(() => import('./pages/About'));
 const Caq = lazy(() => import('./pages/Caq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
@@ -79,6 +81,26 @@ function App() {
             element={
               <RequireActiveMember>
                 <MemberProfile />
+              </RequireActiveMember>
+            }
+          />
+          <Route
+            path="/board"
+            element={
+              <RequireActiveMember
+                deniedCopy="Board meeting agendas and minutes are a benefit of active SAMPA membership. Join to read this year’s Board meeting schedule, agendas, and approved minutes."
+              >
+                <BoardMeetings />
+              </RequireActiveMember>
+            }
+          />
+          <Route
+            path="/board/:slug"
+            element={
+              <RequireActiveMember
+                deniedCopy="Board meeting agendas and minutes are a benefit of active SAMPA membership. Join to read this year’s Board meeting schedule, agendas, and approved minutes."
+              >
+                <BoardMeetingView />
               </RequireActiveMember>
             }
           />

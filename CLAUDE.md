@@ -103,6 +103,7 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers.
 15. **Mobile shared lib:** `sampa-shared` → `src/lib`; no DOM/Vite-only code there.
 16. **No IAP** for memberships on iOS — website checkout only.
+17. **Board meetings** — `/board` + `/board/:slug` gated like the directory (`RequireActiveMember` / `is_active_member()`). `is_board` is still badge-only. Hub chrome is AAPA-sparse: full title, three tab labels, Records/Schedule official intros, date lists. No extra access-policy essays. Seed: `src/data/boardMeetings.js`. Do not paste Zoom join URLs.
 
 ## Rollback (short)
 

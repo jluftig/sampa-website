@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { BookmarkX, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
+import { BookmarkX, CalendarDays, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { canAddPatron, patronDollars, patronUpgradeDuration, PATRON_ADDON_BLURB, tierByKey } from '../lib/membership';
@@ -317,9 +317,14 @@ export default function Dashboard() {
               </Link>
             )}
             {canAccessMemberDirectory && (
-              <Link to="/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
-                <Users className="w-4 h-4" /> Directory
-              </Link>
+              <>
+                <Link to="/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
+                  <Users className="w-4 h-4" /> Directory
+                </Link>
+                <Link to="/board" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
+                  <CalendarDays className="w-4 h-4" /> Board meetings
+                </Link>
+              </>
             )}
             {canViewMembers && (
               <Link to="/editor/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">

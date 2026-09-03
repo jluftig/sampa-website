@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:invoice-pdf": "node scripts/verify-invoice-pdf.mjs",
-    "test:patron-copy": "node scripts/verify-patron-copy.mjs"
+    "test:patron-copy": "node scripts/verify-patron-copy.mjs",
+    "test:board-meetings": "node scripts/verify-board-meetings.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
