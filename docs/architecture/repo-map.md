@@ -84,7 +84,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 |----------|--------|
 | Public | `/`, `/about` (`#leadership`), `/caq`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
-| Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (Agendas / Records / Schedule — 2nd Wednesday cadence, observer email), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
+| Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people` |
 | Member-viewer or admin | `/editor/members` (staff roster) |

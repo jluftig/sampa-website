@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-03 (T45 — Board observer guidance + mailto on Schedule, PR #97)
+**Last updated:** 2026-09-03 (T45 — AAPA-sparse hub copy pass, PR #97)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge. Hub tabs Agendas / Records / Schedule (date + type). Schedule: 2nd Wednesday 8:00 PM ET; next 1–2 dates only; Annual Membership Meeting TBD Q2 2027; observers email `info@addictionpas.org`; no Zoom links. Historical months stay in Agendas + Records. Gated `is_active_member()`. |
+| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge. Copy pass: AAPA-sparse hub (full title, three tab labels, Records/Schedule intros, date lists). Posted bodies unchanged. Gated `is_active_member()`. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 

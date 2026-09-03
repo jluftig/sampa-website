@@ -12,28 +12,12 @@
  */
 
 export const BOARD_HUB = {
-  eyebrow: 'Member area',
-  title: 'Board meetings',
-  workingYear: '2025–2026',
-  oneLiner:
-    'Board meeting agendas and approved minutes — a benefit of active SAMPA membership.',
-  cadence:
-    'The Board meets every second Wednesday at 8:00 PM ET, virtually. Join links are sent only to the named invite list for that meeting and are not posted here.',
-  agendasIntro:
-    'Date and meeting type. Open a meeting for the posted agenda.',
+  title: 'Board of Directors Meetings and Meeting Records',
   recordsIntro:
-    'Minutes and action summaries are posted after the Board approves them. 2025 records are labeled SPAAM / early SAMPA.',
-  scheduleStanding:
-    'Standing Board meetings are every second Wednesday at 8:00 PM ET, virtually. The cadence is the source of truth — dates below are the next one or two second Wednesdays for orientation.',
-  scheduleAnnual:
-    'The Annual Membership Meeting is listed separately. It is the standing invitation for all members (not every monthly Board meeting). Date: TBD, Q2 2027.',
-  scheduleObserver:
-    'The SAMPA Board of Directors meets monthly, virtually. Monthly Board Zoom is a named roster (voting Board and chairs), not an all-member blast. Active members interested in attending as a member observer can email info@addictionpas.org to request to be added for a specific meeting. Join links are sent only to the named invite list for that meeting and are not posted here. Executive-session and other closed portions are not open to observers. The Annual Membership Meeting remains the standing invitation for all members.',
+    'The SAMPA Board of Directors publishes meeting minutes and summary of actions. Per The Standard Code of Parliamentary Procedure, 5th Ed., these records are posted following BOD approval, which typically occurs at the next scheduled meeting or conference call. Minutes are retained online for one year.',
+  scheduleIntro:
+    'The SAMPA Board of Directors conducts monthly virtual meetings. The regular meeting schedule is listed below. SAMPA members interested in attending as a member observer can contact info@addictionpas.org for more information.',
   observerEmail: 'info@addictionpas.org',
-  hubObserverNote:
-    'Active members may request to observe a monthly Board meeting. Email info@addictionpas.org — details on the Schedule tab.',
-  disclaimer:
-    'These pages are for active SAMPA members. Executive-session material is not published. Join links are not posted on this page.',
 };
 
 export const MEETING_KINDS = {
@@ -777,11 +761,7 @@ function meetingWhenLabel(meeting) {
 /** Agenda-list title, AAPA-style (“September 9, 2026 Board Meeting”). */
 export function agendaListTitle(meeting) {
   const when = meetingWhenLabel(meeting);
-  if (meeting?.era === 'spaam') {
-    return meeting.slug === '2025-02'
-      ? `${when} SPAAM Committee Meeting`
-      : `${when} SPAAM / Early SAMPA Meeting`;
-  }
+  if (meeting?.era === 'spaam') return `${when} SPAAM Meeting`;
   if (meeting?.kind === 'annual') return `${when} Annual Board Meeting`;
   if (meeting?.kind === 'special') return `${when} Special Board Meeting`;
   return `${when} Board Meeting`;
@@ -789,9 +769,7 @@ export function agendaListTitle(meeting) {
 
 /** Record-list type, AAPA-style (Virtual BOD / In Person / Special / Annual). */
 export function recordTypeLabel(meeting) {
-  if (meeting?.era === 'spaam') {
-    return meeting.slug === '2025-02' ? 'SPAAM committee notes' : 'SPAAM / early SAMPA';
-  }
+  if (meeting?.era === 'spaam') return 'SPAAM';
   if (meeting?.kind === 'annual') return 'Annual record';
   if (meeting?.kind === 'special') return 'Special';
   if (meeting?.format === 'in-person') return 'In Person';

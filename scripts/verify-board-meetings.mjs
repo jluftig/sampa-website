@@ -21,27 +21,29 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-if (BOARD_HUB.title !== 'Board meetings') fail('Hub title must stay Board meetings');
-if (!/active SAMPA membership/i.test(BOARD_HUB.oneLiner)) {
-  fail('Hub one-liner must say this is an active-membership benefit');
+if (BOARD_HUB.title !== 'Board of Directors Meetings and Meeting Records') {
+  fail('Hub title must match the AAPA-style full title');
 }
-if (!/second Wednesday/i.test(BOARD_HUB.cadence)) fail('Cadence must state the 2nd-Wednesday rule');
-if (!/8:00 PM ET/i.test(BOARD_HUB.cadence)) fail('Cadence must state 8:00 PM ET');
-if (!/named invite list/i.test(BOARD_HUB.cadence)) fail('Cadence must say join links stay on the named invite list');
-if (!/after the Board approves/i.test(BOARD_HUB.recordsIntro || '')) {
-  fail('Records intro must say minutes post after Board approval');
+for (const gone of ['eyebrow', 'oneLiner', 'cadence', 'agendasIntro', 'scheduleStanding', 'scheduleAnnual', 'scheduleObserver', 'hubObserverNote', 'disclaimer']) {
+  if (BOARD_HUB[gone] != null) fail(`BOARD_HUB.${gone} must be deleted`);
+}
+if (!/Standard Code of Parliamentary Procedure/.test(BOARD_HUB.recordsIntro || '')) {
+  fail('Records intro must follow the AAPA parliamentary-procedure wording');
+}
+if (!/retained online for one year/.test(BOARD_HUB.recordsIntro || '')) {
+  fail('Records intro must say minutes are retained online for one year');
+}
+if (!/monthly virtual meetings/.test(BOARD_HUB.scheduleIntro || '')) {
+  fail('Schedule intro must say monthly virtual meetings');
 }
 if (BOARD_HUB.observerEmail !== 'info@addictionpas.org') {
   fail('Observer email must be info@addictionpas.org');
 }
-if (!/info@addictionpas\.org/.test(BOARD_HUB.scheduleObserver || '')) {
-  fail('Schedule observer blurb must use info@addictionpas.org');
+if (!BOARD_HUB.scheduleIntro.includes('info@addictionpas.org')) {
+  fail('Schedule intro must tell members to contact info@addictionpas.org');
 }
-if (!/Q2 2027/.test(BOARD_HUB.scheduleAnnual || '')) {
-  fail('Annual Membership Meeting must be TBD, Q2 2027');
-}
-if (!/Executive-session/i.test(BOARD_HUB.scheduleObserver || '')) {
-  fail('Observer blurb must say executive session is closed');
+if (/named roster|all-member blast|join links|executive.session|source of truth/i.test(`${BOARD_HUB.recordsIntro} ${BOARD_HUB.scheduleIntro}`)) {
+  fail('Hub copy must stay sparse — no extra access-policy essays');
 }
 
 const meetings = listBoardMeetings();
@@ -206,19 +208,29 @@ if (!viewSrc.includes('DOMPurify')) fail('Meeting HTML must be sanitized');
 const hubSrc = readFileSync('src/pages/BoardMeetings.jsx', 'utf8');
 if (!hubSrc.includes('meetingsWithAgenda')) fail('Hub must list agendas from seed');
 if (!hubSrc.includes('meetingsWithMinutes')) fail('Hub must list minutes from seed');
-if (!hubSrc.includes('role="tablist"')) fail('Hub must use Agendas / Records / Schedule tabs');
-if (!hubSrc.includes("id: 'agendas'") || !hubSrc.includes("id: 'records'") || !hubSrc.includes("id: 'schedule'")) {
-  fail('Hub tabs must be Agendas, Records, and Schedule');
+if (!hubSrc.includes('role="tablist"')) fail('Hub must use the three AAPA-style tabs');
+if (!hubSrc.includes('Board Meeting Agendas') || !hubSrc.includes('Board Meeting Records') || !hubSrc.includes('Board Meeting Schedule')) {
+  fail('Tab labels must be Board Meeting Agendas / Records / Schedule');
 }
 if (!hubSrc.includes('nextStandingBoardDates')) fail('Schedule must use the 2nd-Wednesday standing dates, not a full archive table');
-if (!hubSrc.includes('Annual Membership Meeting')) fail('Schedule must list the Annual Membership Meeting separately');
-if (!hubSrc.includes('CopyWithObserverEmail') || !hubSrc.includes('mailto:')) {
-  fail('Hub and Schedule must link info@addictionpas.org as mailto');
+if (!hubSrc.includes('Annual Membership Meeting: TBD, Q2 2027')) {
+  fail('Schedule must list Annual Membership Meeting as its own TBD Q2 2027 row');
+}
+if (!hubSrc.includes('every second Wednesday, 8:00 PM ET, virtual')) {
+  fail('Schedule must include the standing 2nd-Wednesday row');
+}
+if (!hubSrc.includes('mailto:')) fail('Schedule intro must mailto info@addictionpas.org');
+if (/named roster|all-member blast|join links|executive.session|source of truth|Member area|on file until pasted/i.test(hubSrc)) {
+  fail('Hub UI must not render extra policy essays');
 }
 if (hubSrc.includes('SAMPA Board meeting schedule, newest first')) {
   fail('Do not keep the full-history schedule laundry list');
 }
 if (/year filter|workingYear filter/i.test(hubSrc)) fail('Do not add a year filter on the hub');
+
+if (/disclaimer|executive.session|join links|on file until pasted/i.test(viewSrc)) {
+  fail('Meeting detail must be title + agenda/minutes body only');
+}
 
 const appSrc = readFileSync('src/App.jsx', 'utf8');
 if (!appSrc.includes('path="/board"')) fail('App must declare /board');

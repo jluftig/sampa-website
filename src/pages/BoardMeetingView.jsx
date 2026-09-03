@@ -1,38 +1,23 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, Download, FileText, MapPin } from 'lucide-react';
+import { ArrowLeft, Download, FileText } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import {
   BOARD_HUB,
   getBoardMeeting,
-  kindLabel,
-  meetingStatusLabel,
-  docStatusLabel,
+  agendaListTitle,
   hasFullBody,
 } from '../data/boardMeetings';
 import { formatDateOnly } from '../lib/format';
 
-function meetingWhen(meeting) {
-  if (meeting.date) {
-    const start = formatDateOnly(meeting.date);
-    return meeting.time ? `${start} · ${meeting.time}` : start;
-  }
-  return meeting.dateLabel || 'Date to be announced';
-}
-
-function formatLabel(format) {
-  if (format === 'in-person') return 'In person';
-  if (format === 'hybrid') return 'Hybrid';
-  return 'Virtual';
-}
-
-function DocumentSection({ id, heading, doc, emptyCopy }) {
+function DocumentSection({ id, heading, doc }) {
   const safeBody = doc.bodyHtml
     ? DOMPurify.sanitize(doc.bodyHtml, { USE_PROFILES: { html: true } })
     : '';
   const postedPdf = Boolean(doc.pdfUrl && (doc.status === 'posted' || doc.status === 'on_file'));
+  if (!safeBody && !postedPdf) return null;
 
   return (
     <section id={id} className="mb-12 scroll-mt-32" aria-labelledby={`${id}-heading`}>
@@ -55,7 +40,7 @@ function DocumentSection({ id, heading, doc, emptyCopy }) {
               {doc.label || heading}
             </div>
             <div className="text-sm text-text/50">
-              Official PDF (download or open)
+              Official PDF
               {doc.approvedAt ? ` · Approved ${formatDateOnly(doc.approvedAt)}` : ''}
             </div>
           </div>
@@ -70,22 +55,7 @@ function DocumentSection({ id, heading, doc, emptyCopy }) {
             prose-a:text-primary-text"
           dangerouslySetInnerHTML={{ __html: safeBody }}
         />
-      ) : (
-        <div className="flex items-start gap-4 bg-white rounded-3xl border border-primary/10 px-6 py-5">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-            <FileText className="w-6 h-6 text-primary-text" />
-          </div>
-          <div>
-            <div className="font-bold text-text mb-1">{doc.label || heading}</div>
-            <p className="text-sm text-text/60 leading-relaxed">
-              {emptyCopy}{' '}
-              <span className="font-data uppercase tracking-wider text-xs text-text/45">
-                {docStatusLabel(doc.status)}
-              </span>
-            </p>
-          </div>
-        </div>
-      )}
+      ) : null}
 
       {hasFullBody(doc) && doc.approvedAt && !postedPdf && (
         <p className="text-sm text-text/45 mt-3">
@@ -119,11 +89,8 @@ export default function BoardMeetingView() {
         <Navbar />
         <main className="max-w-3xl mx-auto px-4 pt-32 pb-24 text-center">
           <h1 className="text-3xl font-drama font-bold mb-4">Not found</h1>
-          <p className="text-text/60 mb-8">
-            That Board meeting isn’t on the site (or the link is outdated).
-          </p>
           <Link to="/board" className="text-primary-text font-semibold hover:underline">
-            ← Back to Board meetings
+            ← {BOARD_HUB.title}
           </Link>
         </main>
         <Footer />
@@ -142,64 +109,15 @@ export default function BoardMeetingView() {
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-text/50 hover:text-primary-text transition-colors mb-10"
         >
           <ArrowLeft className="w-4 h-4" />
-          Board meetings
+          {BOARD_HUB.title}
         </Link>
 
-        <header className="mb-10">
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary-text text-xs font-semibold font-data uppercase tracking-wider">
-              {meetingStatusLabel(meeting.status)}
-            </span>
-            <span className="text-xs font-data uppercase tracking-wider text-text/45">
-              {kindLabel(meeting.kind)}
-            </span>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-drama font-bold leading-tight mb-6">
-            {meeting.title}
-          </h1>
-          <dl className="grid gap-2 text-sm text-text/60">
-            <div className="flex flex-wrap items-center gap-x-2">
-              <dt className="font-semibold text-text/80 inline-flex items-center gap-1.5">
-                <CalendarDays className="w-4 h-4" />
-                When
-              </dt>
-              <dd>
-                {meetingWhen(meeting)} · {formatLabel(meeting.format)}
-              </dd>
-            </div>
-            {meeting.location && (
-              <div className="flex flex-wrap items-center gap-x-2">
-                <dt className="font-semibold text-text/80 inline-flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4" />
-                  Where
-                </dt>
-                <dd>{meeting.location}</dd>
-              </div>
-            )}
-          </dl>
-        </header>
+        <h1 className="text-3xl md:text-4xl font-drama font-bold leading-tight mb-10">
+          {agendaListTitle(meeting)}
+        </h1>
 
-        {meeting.summary && (
-          <p className="text-lg text-text/75 leading-relaxed mb-10">{meeting.summary}</p>
-        )}
-
-        <DocumentSection
-          id="agenda"
-          heading="Agenda"
-          doc={meeting.agenda}
-          emptyCopy="No agenda is listed for this meeting."
-        />
-
-        <DocumentSection
-          id="minutes"
-          heading="Minutes"
-          doc={meeting.minutes}
-          emptyCopy="Minutes are not posted yet. Draft minutes are not published."
-        />
-
-        <p className="text-sm text-text/45 leading-relaxed border-t border-text/10 pt-8">
-          {BOARD_HUB.disclaimer}
-        </p>
+        <DocumentSection id="agenda" heading="Agenda" doc={meeting.agenda} />
+        <DocumentSection id="minutes" heading="Minutes" doc={meeting.minutes} />
       </main>
 
       <Footer />
