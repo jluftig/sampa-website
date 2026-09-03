@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
+| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge until Josh reviews. `/board` + `/board/:slug`, gated like the directory (`is_active_member()`, not `is_board`). Seed: `src/data/boardMeetings.js`. Still needs Josh: real dates/PDFs, nav label (Board), confirm member vs board-only. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -340,7 +340,7 @@ Deferred from the first directory ship:
   optional separate `/research` later. Keep distinct from News/Key Points. Do not
   shrink the hub to comments-only as corpus grows.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
-- **Board privileges** — `is_board` is badge-only today; decide board-only surfaces. **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
+- **Board privileges** — `is_board` is badge-only today; decide board-only surfaces. **T45 (In Progress · cursor, PR #97):** `/board` agendas + minutes gated to **active members + staff** (not board-only). Confirm with Josh if that should tighten later.
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
 
 ### Product — platforms
