@@ -6,7 +6,8 @@
  * `public/files/board/`. Client gate is UX only — do not put confidential
  * drafts in `public/` until there is an authenticated file route.
  *
- * Do not paste Zoom join URLs or passcodes. Location stays “Virtual”.
+ * Do not paste Zoom join URLs, meeting IDs, or passcodes.
+ * Location is Virtual unless a meeting is hybrid (May 2026 AAPA).
  * `is_board` stays badge-only; pages are gated on `is_active_member()`.
  */
 
@@ -17,15 +18,15 @@ export const BOARD_HUB = {
   oneLiner:
     'Board meeting agendas and approved minutes — a benefit of active SAMPA membership.',
   cadence:
-    'The Board meets monthly, virtually. Agendas and approved minutes are posted here for members. Join links stay on the calendar invite, not on this page.',
+    'The Board meets monthly. Most meetings are virtual; May 2026 was hybrid at AAPA in New Orleans. Agendas and approved minutes are posted here for members. Join links stay on the calendar invite, not on this page.',
   agendasIntro:
-    'Date and meeting type. Posted agendas are on the meeting page. On-file months are in the Board Meetings Drive until the full text is pasted here.',
+    'Date and meeting type. Open a meeting for the posted agenda.',
   recordsIntro:
-    'Minutes and action summaries are posted after the Board approves them. Posted months have full text on the meeting page. On-file months stay listed until the body is pasted from the Board Meetings Drive.',
+    'Minutes and action summaries are posted after the Board approves them. 2025 records are labeled SPAAM / early SAMPA.',
   scheduleIntro:
     'Date, time, and location. Virtual meetings: the join link stays on the calendar invite, not on this page.',
   disclaimer:
-    'These pages are for active SAMPA members. Executive-session material is not published. Virtual meetings: see your calendar invite for the join link. Full text for on-file months will be pasted from the Board Meetings Drive.',
+    'These pages are for active SAMPA members. Executive-session material is not published. Virtual meetings: see your calendar invite for the join link.',
 };
 
 export const MEETING_KINDS = {
@@ -49,14 +50,8 @@ export const DOC_STATUSES = {
   not_yet: { key: 'not_yet', label: 'Not yet posted' },
 };
 
-const ON_FILE_AGENDA =
-  '<p>Agenda on file in the Board Meetings Drive (Kala Agenda/2026). Full text will be added here when it is pasted.</p>';
-const ON_FILE_MINUTES =
-  '<p>Minutes on file in the Board Meetings Drive. Full text will be added here when it is pasted.</p>';
-const ON_FILE_MINUTES_2025 =
-  '<p>Minutes on file in Minutes/2025. Full text will be added here when it is pasted.</p>';
 const ON_FILE_ANNUAL =
-  '<p>Annual Board meeting materials on file (<em>SAMPA Annual BOD Meeting.pdf</em>). Full text will be added here when it is pasted.</p>';
+  '<p>Annual Board meeting materials on file (<em>SAMPA Annual BOD Meeting.pdf</em>).</p>';
 
 const SEPTEMBER_2026_AGENDA_HTML = `
 <p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
@@ -206,6 +201,279 @@ const JULY_2026_MINUTES_HTML = `
 <p>Respectfully submitted: Shani Wilson, PA-C, President; Kala Klug, Secretary</p>
 `.trim();
 
+const AUGUST_2026_AGENDA_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
+<p>August 12, 2026 · 8 PM ET · Virtual</p>
+<ol>
+<li>Welcome/Call to Order</li>
+<li>Attendance</li>
+<li>July 2026 Meeting Minutes</li>
+<li>Committee Reports — Bylaws and Policies; Certification; Education; Finance; Membership (incl. Newsletter Sub Committee)</li>
+<li>Business Items — AAPA HOD Events (Shani); Extended Leave Coverage (Kala/Shani); website, news, Brevo, organizational email, Workspace, and job board (Josh); COI Disclaimer (Deanna)</li>
+<li>Open Forum</li>
+<li>Next Meeting — September 9, 2026</li>
+<li>Adjournment</li>
+</ol>
+`.trim();
+
+const JUNE_2026_AGENDA_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
+<p>June 10, 2026 · 8 PM ET · Virtual</p>
+<ol>
+<li>Welcome/Call to Order</li>
+<li>Attendance</li>
+<li>May 2026 Meeting Minutes</li>
+<li>Committee Reports — Bylaws and Policy; Certification; Education; Financial; Membership</li>
+<li>Business Items — AAPA Recap (Shani); Future Communication (Clarissa/Kala); ASAM/ACMT Drug Testing statement (Tasha/Cheryl); PCSS-MAUD collaboration (Deanna); AMERSA PA SIG (Tasha)</li>
+<li>Elections</li>
+<li>Open Forum</li>
+<li>Next Meeting — July 8, 2026</li>
+<li>Adjournment</li>
+</ol>
+`.trim();
+
+const JUNE_2026_MINUTES_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
+<p>June 10, 2026 · 8:00–9:22 PM ET · Virtual</p>
+<p><strong>Present:</strong> Shani Wilson, Jordan Vold, Kala Klug, Josh Luftig, Tasha Seliski, Clarissa Peterson, Deanna Najera, Arianna Campbell, Kerith Hartmann, Megan Zawacki. General: Aliya Pasik.</p>
+<p><strong>Absent:</strong> Cheryl Vanderford, Debra Newman, Kelsy Ruggiero.</p>
+<h3>Call to Order</h3>
+<p>The meeting ran 8:00–9:22 PM ET.</p>
+<h3>Approval of May 2026 Minutes</h3>
+<p>May 2026 minutes were approved.</p>
+<h3>Certification</h3>
+<p>Specialty Advisory Group expected late summer or fall. Blueprint work expected early 2027.</p>
+<h3>Education</h3>
+<p>Long-acting injectable sessions; Speakers Bureau; the committee is seeking a co-chair.</p>
+<h3>Finance</h3>
+<p>About 15 members. About $1,000 in dues and about $400 in donations. Bank account in place. Stripe work in progress. Merchandise about $70.</p>
+<h3>Policy and bylaws</h3>
+<p>Bylaws as written 6/10/2026, Wyoming, were approved. Organizational structure and Conflict of Interest remain under review before approval.</p>
+<h3>Elections</h3>
+<p>Email ballot for President-Elect, Treasurer, Secretary, Directors-at-Large, and Chief Delegate.</p>
+<h3>Adjournment</h3>
+<p>Adjourned 9:22 PM ET.</p>
+`.trim();
+
+const MAY_2026_AGENDA_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
+<p>May 17, 2026 · 6–7 PM CT · Hybrid — AAPA New Orleans, Level 2, Room 278 + Virtual</p>
+<ol>
+<li>Welcome/Call to Order</li>
+<li>Attendance</li>
+<li>April 2026 Meeting Minutes</li>
+<li>Committee Highlights — Certification; Education; Financial; Membership; Policy</li>
+<li>Open Board Positions</li>
+<li>Discussion</li>
+<li>Next Meeting — June 10, 2026, Virtual</li>
+<li>Adjournment</li>
+</ol>
+`.trim();
+
+const MAY_2026_MINUTES_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
+<p>May 17, 2026 · 6:28–7:04 PM CT · Hybrid — AAPA New Orleans, Level 2, Room 278 + Virtual</p>
+<p><strong>Board present:</strong> Shani Wilson, Kala Klug, Josh Luftig, Tasha Selinski, Deanna Najera, Megan Zawacki, Arianna Campbell, Cheryl Vanderford.</p>
+<p><strong>General members present:</strong> Olivia Sawh, Ruth McDowell, Jennifer Clemente-Metz, Kari Hoover, Bernard Stuetz, Edward Traverso, Mercedes Dodge.</p>
+<p><strong>Board absent:</strong> Jordan Vold, Clarissa Peterson, Kerith Hartmann, Debra Newman, Kelsy Ruggiero. Quorum met.</p>
+<h3>Call to Order</h3>
+<p>The meeting was called to order at 6:28 PM CT.</p>
+<h3>Approval of April 2026 Minutes</h3>
+<p>April 2026 minutes were approved.</p>
+<h3>Discussion</h3>
+<p>Teach addiction medicine to PAs who are not addiction specialists. Perioperative MOUD and pain; possible letter to a surgery organization. Inpatient consult and outpatient clinic models. Outreach to specialty organizations on substance use disorder.</p>
+<h3>Adjournment</h3>
+<p>Adjourned 7:04 PM CT.</p>
+`.trim();
+
+const APRIL_2026_AGENDA_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
+<p>April 8, 2026 · 8–9 PM ET · Virtual</p>
+<ol>
+<li>Welcome/Call to Order</li>
+<li>Attendance</li>
+<li>March 2026 Meeting Minutes</li>
+<li>Committee Reports — Bylaw and Policy; Certification; Education; Financial (update); Membership</li>
+<li>Business Items — Approval of Board Members (Shani); Dues (Josh); Gifts (Josh); AAPA 2026 (Kala); Awards (Shani)</li>
+<li>Open Forum</li>
+<li>Next Meeting — May 17, 2026, hybrid, AAPA New Orleans Room 278 + Virtual</li>
+<li>Adjournment</li>
+</ol>
+`.trim();
+
+const MARCH_2026_AGENDA_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
+<p>March 11, 2026 · 8–9 PM ET · Virtual</p>
+<ol>
+<li>Welcome/Call to Order</li>
+<li>Attendance</li>
+<li>February 2026 Meeting Minutes</li>
+<li>Committee Reports — Bylaws (update); Certification; Education; Financial; Membership</li>
+<li>Business Items — AAPA Conference room / AA (Shani); ASAM Associate Member Community (Kala)</li>
+<li>Open Forum</li>
+<li>Next Meeting — April 8, 2026</li>
+<li>Adjournment</li>
+</ol>
+`.trim();
+
+const MARCH_2026_MINUTES_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
+<p>March 11, 2026 · Virtual</p>
+<p><strong>Present:</strong> Shani Wilson, Jordan Vold, Kala Klug, Josh Luftig, Cheryl Vanderford, Tasha Selinski, Clarissa Peterson, Deanna Najera, Arianna Campbell, Kerith Hartmann, Debra Newman.</p>
+<p><strong>Absent:</strong> Kelsy Ruggiero, Megan Zawacki.</p>
+<h3>Approval of February 2026 Minutes</h3>
+<p>February minutes were approved with edits: do not include a transcript link; remove vacation and Steelers notes; add roll call.</p>
+<h3>Bylaws</h3>
+<p>Listserv survey by the end of March.</p>
+<h3>Certification</h3>
+<p>CAQ announced. A 10–12 PA subcommittee is forming.</p>
+<h3>Education</h3>
+<p>Shani to speak for the LGBT PA Caucus.</p>
+<h3>Finance — motions approved</h3>
+<ol>
+<li>Incorporate as a 501(c)(3), not a 501(c)(6).</li>
+<li>Incorporate in Wisconsin or Delaware as SAMPA Inc.</li>
+<li>Josh to file Articles, obtain an EIN, and open a Relay checking account with two signatories; reimbursements at or under $500.</li>
+</ol>
+<h3>Annual meeting</h3>
+<p>Annual Board meeting at AAPA, Sunday May 17, 6–7 PM.</p>
+<h3>Liaisons</h3>
+<p>Arianna Campbell approved as ASAM Liaison. Tasha Selinski approved as AMERSA Liaison.</p>
+`.trim();
+
+const FEBRUARY_2026_AGENDA_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
+<p>February 11, 2026 · 8–9 PM ET · Virtual</p>
+<ol>
+<li>Welcome/Call to Order</li>
+<li>Attendance</li>
+<li>January 2026 Meeting Minutes</li>
+<li>Committee Reports — Bylaws; Certification (update); Education; Financial; Membership</li>
+<li>Business Items — Approve Mission (Clarissa); Recruitment Flyer (Clarissa); Bylaws (Jordan); ATF Policy (Shani); Board Work Deadlines (Shani)</li>
+<li>Open Forum</li>
+<li>Next Meeting — March 11, 2026</li>
+<li>Adjournment</li>
+</ol>
+`.trim();
+
+const FEBRUARY_2026_MINUTES_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
+<p>February 11, 2026 · about 7:07 PM Central · Virtual</p>
+<p><strong>Present:</strong> Shani Wilson, Jordan Vold, Kala Klug, Josh Luftig, Cheryl Vanderford, Tasha Seliski, Clarissa Peterson, Deanna Najera, Arianna Campbell, Kerith Hartmann, Kelsy Ruggiero, Olivia Sawh.</p>
+<p><strong>Absent:</strong> Megan Zawacki, Debra Newman.</p>
+<h3>Approval of January 2026 Minutes</h3>
+<p>January minutes were approved.</p>
+<h3>Bylaws</h3>
+<p>Draft Board-approved, pending attorney review within 12 months if funds allow. Send to the membership for ratification. Ten percent membership vote threshold.</p>
+<h3>Certification</h3>
+<p>NCCPA approved an Addiction Medicine CAQ.</p>
+<h3>Education</h3>
+<p>LGBTQ+ caucus OUD session planned for March/April.</p>
+<h3>Finance and operations</h3>
+<p>Domain and organizational email. 501(c)(6) discussed (later became 501(c)(3)). Printful, job board, newsletter, and Stripe.</p>
+<h3>Membership</h3>
+<p>Membership expanded. Use “people,” not “patients,” in outreach copy.</p>
+`.trim();
+
+const JANUARY_2026_AGENDA_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Agenda</strong></p>
+<p>January 14, 2026 · 8–9 PM ET · Virtual</p>
+<ol>
+<li>Welcome/Call to Order</li>
+<li>Attendance</li>
+<li>November 2025 Meeting Minutes</li>
+<li>Committee Reports — Bylaws; Certification; Education; Membership</li>
+<li>New Business — Board Position Updates (Shani); PayPal (Shani); Zoom Business Account (Kala); 2025 CO Outreach &amp; Advocacy Awards (Deanna); CO Update Form AAPA (Clarissa); Mission Statement (Clarissa)</li>
+<li>Open Forum</li>
+<li>Next Meeting — February 11, 2026</li>
+<li>Adjournment</li>
+</ol>
+`.trim();
+
+const JANUARY_2026_MINUTES_HTML = `
+<p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
+<p>January 14, 2026 · 7:03–8:06 PM Central · Virtual · Regular meeting</p>
+<p><strong>Present:</strong> Shani Wilson, PA-C; Kala Klug; Clarissa Peterson; Jordan Void; Josh Luftig; Megan Zawaki; Ariana (late).</p>
+<p><strong>Absent with notice:</strong> Tasha Selinski; Cheryl Vanderford (family emergency).</p>
+<h3>Call to Order</h3>
+<p>The meeting ran 7:03–8:06 PM Central.</p>
+<h3>November 2025 minutes</h3>
+<p>November 2025 retreat minutes were deferred.</p>
+<h3>Bylaws</h3>
+<p>Near final. Async review over about 1.5 weeks.</p>
+<h3>Education</h3>
+<p>NCCPA CAQ outreach.</p>
+<h3>Communications</h3>
+<p>SAMPA email and social.</p>
+<h3>Finance and board seats</h3>
+<p>Josh Luftig was unanimously seated as Treasurer. A Financial Committee was formed. A technology / domain subcommittee was discussed.</p>
+<h3>Mission</h3>
+<p>Mission statement draft in progress.</p>
+<h3>Open Forum</h3>
+<p>SAMHSA funding cuts. AAPA award deadline January 31.</p>
+<h3>Adjournment</h3>
+<p>Adjourned 8:06 PM Central.</p>
+`.trim();
+
+const OCTOBER_2025_AGENDA_HTML = `
+<p><strong>SPAAM / early SAMPA Meeting Agenda</strong></p>
+<p>October 8, 2025 · Virtual</p>
+<ol>
+<li>Attendance</li>
+<li>Approve September 2025 minutes</li>
+<li>Retreat items</li>
+<li>Open Forum</li>
+<li>Next Meeting — November 2025</li>
+</ol>
+`.trim();
+
+const SEPTEMBER_2025_MINUTES_HTML = `
+<p><strong>SPAAM / early SAMPA Meeting Minutes</strong></p>
+<p>September 10, 2025 · 6:05–7:10 · Virtual</p>
+<p><strong>Present:</strong> Shani Wilson, Jordan Void, Cheryl Vanderford, Kala Klug, Clarissa Peterson, Arianna Campbell, Kerith Hartmann, Jim Anderson, Bernie.</p>
+<p><strong>Absent:</strong> Tasha Selinski.</p>
+<h3>Discussion</h3>
+<p>Education, membership, certification, finance, rebrand, and retreat planning.</p>
+`.trim();
+
+const AUGUST_2025_MINUTES_HTML = `
+<p><strong>SPAAM / early SAMPA Meeting Minutes</strong></p>
+<p>August 25, 2025 · 7:05–8:00 · Virtual</p>
+<h3>Discussion</h3>
+<p>AAPA engagement. No dues yet. Retreat planning. Conflict of Interest draft. President-Elect speaker-bureau disclosure discussion.</p>
+`.trim();
+
+const JULY_2025_MINUTES_HTML = `
+<p><strong>SPAAM / early SAMPA Meeting Minutes</strong></p>
+<p>July 2025 · 7:05–8:00 PM CST · Virtual</p>
+<p>First official general membership meeting.</p>
+<h3>Committees</h3>
+<p>Education: Kala and Natasha. Membership: Carrie and Clarissa. Bylaws: Deanna, Jordan, and Shani.</p>
+<h3>Finance</h3>
+<p>Treasurer search; Vic Holmes as mentor.</p>
+<h3>Retreat</h3>
+<p>Target September 2025.</p>
+`.trim();
+
+const JUNE_2025_MINUTES_HTML = `
+<p><strong>SPAAM / early SAMPA Meeting Minutes</strong></p>
+<p>June 11, 2025 · 6:01–about 7:37 PM CST · Virtual · Shani Wilson, Acting President</p>
+<h3>AAPA 2025</h3>
+<p>Resolutions discussion. Sober social: about 70–80 people across 14 organizations.</p>
+<h3>Committees</h3>
+<p>Education, Membership, Communications, Finance, Advocacy, and Bylaws.</p>
+<h3>Education</h3>
+<p>Co-chairs Kayla and Natasha. PCSS / AAPA CME.</p>
+<h3>Action items</h3>
+<p>Retreat; Treasurer; History (Jim); dues.</p>
+`.trim();
+
+const FEBRUARY_2025_NOTES_HTML = `
+<p><strong>SPAAM Committee Meeting Notes</strong></p>
+<p>February 2, 2025 · Historical SPAAM / early SAMPA record (committee notes, not a formal Board template)</p>
+<p>Notes from Bernie Spaetz and Shani Wilson. Posted as an early organizational record.</p>
+`.trim();
+
 function agendaDoc({ status, bodyHtml, label = 'Meeting agenda' }) {
   return { status, label, bodyHtml: bodyHtml || null, pdfUrl: null };
 }
@@ -234,6 +502,7 @@ function minutesDoc({ status, bodyHtml, label = 'Approved minutes', approvedAt =
  * @property {'virtual'|'in-person'|'hybrid'} format
  * @property {string|null} [location]
  * @property {'upcoming'|'scheduled'|'completed'|'cancelled'} status
+ * @property {'spaam'} [era]
  * @property {string} [summary]
  * @property {BoardDoc} agenda
  * @property {BoardDoc} minutes
@@ -258,13 +527,13 @@ const BOARD_MEETINGS = [
     slug: '2026-08',
     title: 'August 2026 Board meeting',
     date: '2026-08-12',
-    time: '7:00–8:00 PM CST',
+    time: '8 PM ET',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
     status: 'completed',
-    summary: 'Monthly virtual meeting. Minutes posted (August.docx was filed under Agenda/2026). Agenda text not yet pasted.',
-    agenda: agendaDoc({ status: 'on_file', bodyHtml: ON_FILE_AGENDA }),
+    summary: 'Monthly virtual meeting. Agenda and minutes posted.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: AUGUST_2026_AGENDA_HTML }),
     minutes: minutesDoc({
       status: 'posted',
       bodyHtml: AUGUST_2026_MINUTES_HTML,
@@ -290,40 +559,40 @@ const BOARD_MEETINGS = [
   {
     slug: '2026-06',
     title: 'June 2026 Board meeting',
-    date: null,
-    dateLabel: 'June 2026',
+    date: '2026-06-10',
+    time: '8:00–9:22 PM ET',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
     status: 'completed',
-    summary: 'Monthly virtual meeting. Agenda and minutes on file.',
-    agenda: agendaDoc({ status: 'on_file', bodyHtml: ON_FILE_AGENDA }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES }),
+    summary: 'Monthly virtual meeting. Agenda and minutes posted.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: JUNE_2026_AGENDA_HTML }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: JUNE_2026_MINUTES_HTML }),
   },
   {
     slug: '2026-05',
     title: 'May 2026 Board meeting',
-    date: null,
-    dateLabel: 'May 2026',
+    date: '2026-05-17',
+    time: '6–7 PM CT',
     kind: 'regular',
-    format: 'virtual',
-    location: 'Virtual',
+    format: 'hybrid',
+    location: 'AAPA New Orleans · Level 2, Room 278 + Virtual',
     status: 'completed',
-    summary: 'Monthly virtual meeting. Agenda and minutes on file.',
-    agenda: agendaDoc({ status: 'on_file', bodyHtml: ON_FILE_AGENDA }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES }),
+    summary: 'Hybrid meeting at AAPA New Orleans (Room 278) and virtual.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: MAY_2026_AGENDA_HTML }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: MAY_2026_MINUTES_HTML }),
   },
   {
     slug: '2026-04',
     title: 'April 2026 Board meeting',
     date: '2026-04-08',
-    time: '7:09–8:12 PM CT',
+    time: '8–9 PM ET',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
     status: 'completed',
-    summary: 'Monthly virtual meeting. Minutes posted. Agenda on file.',
-    agenda: agendaDoc({ status: 'on_file', bodyHtml: ON_FILE_AGENDA }),
+    summary: 'Monthly virtual meeting. Agenda and minutes posted.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: APRIL_2026_AGENDA_HTML }),
     minutes: minutesDoc({
       status: 'posted',
       bodyHtml: APRIL_2026_MINUTES_HTML,
@@ -332,41 +601,41 @@ const BOARD_MEETINGS = [
   {
     slug: '2026-03',
     title: 'March 2026 Board meeting',
-    date: null,
-    dateLabel: 'March 2026',
+    date: '2026-03-11',
+    time: '8–9 PM ET',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
     status: 'completed',
-    summary: 'Monthly virtual meeting. Agenda and minutes on file.',
-    agenda: agendaDoc({ status: 'on_file', bodyHtml: ON_FILE_AGENDA }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES }),
+    summary: 'Monthly virtual meeting. Agenda and minutes posted.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: MARCH_2026_AGENDA_HTML }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: MARCH_2026_MINUTES_HTML }),
   },
   {
     slug: '2026-02',
     title: 'February 2026 Board meeting',
-    date: null,
-    dateLabel: 'February 2026',
+    date: '2026-02-11',
+    time: '8–9 PM ET',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
     status: 'completed',
-    summary: 'Monthly virtual meeting. Agenda and minutes on file.',
-    agenda: agendaDoc({ status: 'on_file', bodyHtml: ON_FILE_AGENDA }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES }),
+    summary: 'Monthly virtual meeting. Agenda and minutes posted.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: FEBRUARY_2026_AGENDA_HTML }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: FEBRUARY_2026_MINUTES_HTML }),
   },
   {
     slug: '2026-01',
     title: 'January 2026 Board meeting',
-    date: null,
-    dateLabel: 'January 2026',
+    date: '2026-01-14',
+    time: '8–9 PM ET',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
     status: 'completed',
-    summary: 'Monthly virtual meeting. Agenda and minutes on file.',
-    agenda: agendaDoc({ status: 'on_file', bodyHtml: ON_FILE_AGENDA }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES }),
+    summary: 'Monthly virtual meeting. Agenda and minutes posted.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: JANUARY_2026_AGENDA_HTML }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: JANUARY_2026_MINUTES_HTML }),
   },
   {
     slug: '2026-annual',
@@ -382,69 +651,91 @@ const BOARD_MEETINGS = [
     minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_ANNUAL, label: 'Annual record' }),
   },
   {
-    slug: '2025-09',
-    title: 'September 2025 Board meeting',
-    date: null,
-    dateLabel: 'September 2025',
+    slug: '2025-10',
+    title: 'October 2025 meeting (SPAAM / early SAMPA)',
+    date: '2025-10-08',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
+    era: 'spaam',
     status: 'completed',
-    summary: 'Minutes on file (Minutes/2025).',
+    summary: 'Historical SPAAM / early SAMPA agenda.',
+    agenda: agendaDoc({ status: 'posted', bodyHtml: OCTOBER_2025_AGENDA_HTML }),
+    minutes: minutesDoc({ status: 'not_yet' }),
+  },
+  {
+    slug: '2025-09',
+    title: 'September 2025 meeting (SPAAM / early SAMPA)',
+    date: '2025-09-10',
+    time: '6:05–7:10',
+    kind: 'regular',
+    format: 'virtual',
+    location: 'Virtual',
+    era: 'spaam',
+    status: 'completed',
+    summary: 'Historical SPAAM / early SAMPA minutes.',
     agenda: agendaDoc({ status: 'not_yet' }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES_2025 }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: SEPTEMBER_2025_MINUTES_HTML }),
   },
   {
     slug: '2025-08',
-    title: 'August 2025 Board meeting',
-    date: null,
-    dateLabel: 'August 2025',
+    title: 'August 2025 meeting (SPAAM / early SAMPA)',
+    date: '2025-08-25',
+    time: '7:05–8:00',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
+    era: 'spaam',
     status: 'completed',
-    summary: 'Minutes on file (Minutes/2025).',
+    summary: 'Historical SPAAM / early SAMPA minutes.',
     agenda: agendaDoc({ status: 'not_yet' }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES_2025 }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: AUGUST_2025_MINUTES_HTML }),
   },
   {
     slug: '2025-07',
-    title: 'July 2025 Board meeting',
+    title: 'July 2025 meeting (SPAAM / early SAMPA)',
     date: null,
     dateLabel: 'July 2025',
+    time: '7:05–8:00 PM CST',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
+    era: 'spaam',
     status: 'completed',
-    summary: 'Minutes on file (Minutes/2025).',
+    summary: 'First official general membership meeting. Historical SPAAM / early SAMPA.',
     agenda: agendaDoc({ status: 'not_yet' }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES_2025 }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: JULY_2025_MINUTES_HTML }),
   },
   {
     slug: '2025-06',
-    title: 'June 2025 Board meeting',
-    date: null,
-    dateLabel: 'June 2025',
+    title: 'June 2025 meeting (SPAAM / early SAMPA)',
+    date: '2025-06-11',
+    time: '6:01–about 7:37 PM CST',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
+    era: 'spaam',
     status: 'completed',
-    summary: 'Minutes on file (Minutes/2025).',
+    summary: 'Shani Wilson, Acting President. Historical SPAAM / early SAMPA.',
     agenda: agendaDoc({ status: 'not_yet' }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES_2025 }),
+    minutes: minutesDoc({ status: 'posted', bodyHtml: JUNE_2025_MINUTES_HTML }),
   },
   {
     slug: '2025-02',
-    title: 'February 2025 Board meeting',
-    date: null,
-    dateLabel: 'February 2025',
+    title: 'February 2025 SPAAM committee notes',
+    date: '2025-02-02',
     kind: 'regular',
     format: 'virtual',
     location: 'Virtual',
+    era: 'spaam',
     status: 'completed',
-    summary: 'Minutes on file (Minutes/2025).',
+    summary: 'SPAAM committee notes (Bernie Spaetz, Shani Wilson) — early historical record, not a formal Board template.',
     agenda: agendaDoc({ status: 'not_yet' }),
-    minutes: minutesDoc({ status: 'on_file', bodyHtml: ON_FILE_MINUTES_2025 }),
+    minutes: minutesDoc({
+      status: 'posted',
+      bodyHtml: FEBRUARY_2025_NOTES_HTML,
+      label: 'Committee notes',
+    }),
   },
 ];
 
@@ -463,6 +754,9 @@ export function kindLabel(kind) {
 
 /** Record-list type, AAPA-style (Virtual BOD / In Person / Special / Annual). */
 export function recordTypeLabel(meeting) {
+  if (meeting?.era === 'spaam') {
+    return meeting.slug === '2025-02' ? 'SPAAM committee notes' : 'SPAAM / early SAMPA minutes';
+  }
   if (meeting?.kind === 'annual') return 'Annual record';
   if (meeting?.kind === 'special') return 'Special meeting record';
   if (meeting?.format === 'in-person') return 'In-person minutes';
