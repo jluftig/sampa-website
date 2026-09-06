@@ -38,6 +38,9 @@ export default function Footer() {
               </a>
               {' '}· @addictionpas.org email
             </p>
+            <p className="text-white/40 max-w-sm text-xs leading-relaxed">
+              30 N Gould St Ste N, Sheridan, WY 82801
+            </p>
             <div className="flex items-center gap-4">
               <a
                 href="https://www.instagram.com/societyofaddictionmedicinepas/"
@@ -100,7 +103,9 @@ export default function Footer() {
             used; the legal name has not changed.
           </p>
           <p className="mt-2">
-            Mailing address: PO Box 8, Point Reyes Station, CA 94956
+            Registered agent: 30 N Gould St Ste N, Sheridan, WY 82801
+            (Northwest Registered Agent Service Inc). Mailing address: PO Box 8,
+            Point Reyes Station, CA 94956.
           </p>
           <p className="mt-2">
             © {new Date().getFullYear()} SAMPA, Inc. All rights reserved.

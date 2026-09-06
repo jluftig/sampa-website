@@ -53,7 +53,7 @@ export default function AboutPage() {
           </p>
           <p
             id="official-domain"
-            className="text-sm text-text/70 leading-relaxed mb-6"
+            className="text-sm text-text/70 leading-relaxed mb-3"
           >
             SAMPA, Inc. (EIN 42-2288772), Society of Addiction Medicine
             Physician Associates, operates{' '}
@@ -66,6 +66,9 @@ export default function AboutPage() {
             as its official website and @addictionpas.org email domain. The
             shorter domain sampa.org was unavailable, so addictionpas.org is
             used; the legal name has not changed.
+          </p>
+          <p className="text-sm text-text/60 leading-relaxed mb-6">
+            Wyoming corporation · 30 N Gould St Ste N, Sheridan, WY 82801
           </p>
         </header>
 
@@ -149,9 +152,10 @@ export default function AboutPage() {
               </a>
             </div>
             <p className="mt-8 text-sm text-text/60 leading-relaxed">
-              SAMPA, Inc. is recognized by the IRS as tax-exempt under Section
-              501(c)(3) of the Internal Revenue Code. EIN 42-2288772.
-              Contributions are tax-deductible to the extent allowed by law.
+              SAMPA, Inc. is a Wyoming nonprofit corporation recognized by the
+              IRS as tax-exempt under Section 501(c)(3) of the Internal Revenue
+              Code. EIN 42-2288772. Contributions are tax-deductible to the
+              extent allowed by law.
             </p>
             <p className="mt-3 text-sm text-text/60 leading-relaxed">
               Official website:{' '}
@@ -162,6 +166,11 @@ export default function AboutPage() {
                 https://www.addictionpas.org
               </a>
               {' '}· @addictionpas.org email
+            </p>
+            <p className="mt-3 text-sm text-text/60 leading-relaxed">
+              Registered agent: 30 N Gould St Ste N, Sheridan, WY 82801
+              (Northwest Registered Agent Service Inc). Mailing address: PO Box
+              8, Point Reyes Station, CA 94956.
             </p>
           </section>
         </div>
