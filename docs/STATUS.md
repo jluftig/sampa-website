@@ -74,7 +74,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
-| T46 | Session persistence across mobile navigation + Stripe checkout return | cursor | 2026-09-06 | **Merged PR #99 → Production.** Vic Holmes (via Shani): stay signed in on mobile nav and after membership checkout so a follow-on donate does not need a new magic link. Guest donate unchanged. Josh phone-testing on production after deploy. |
+| T46 | Session persistence across mobile navigation + Stripe checkout return | cursor | 2026-09-06 | **Merged PR #99 → Production** (`4470cb4`). Vic Holmes (via Shani): stay signed in on mobile nav and after membership checkout so a follow-on donate does not need a new magic link. Guest donate unchanged. Josh phone-testing on production after deploy. |
 | T44 | ASAM hub copy: pro-APP access tone (drop physician-gate) | egg | 2026-09-02 | **Merged PR #96 → Production** (`f40d7af`). Hub + comment PDF cover letter: name PAs/APPs so more people stay on MOUD. Filed 17 line comments unchanged. |
 | T43 | ASAM policy polish: source PDF link + SAMPA logo on comment PDF | cursor | 2026-09-02 | **Merged → Production.** Hub “Download the PDF” → ASAM official standards URL; SAMPA logo top-left on comment PDF. |
 | T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Merged → Production** (direct `main`). PDF + hub detail with `[P## L##]` rounded-rect capsules; `lineComments` in seed data; alwaysApply Cursor STATUS claim rule. |
