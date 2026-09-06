@@ -14,6 +14,10 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 4. `/join` blocks a second checkout while membership is already active — tier changes via
    Customer Portal.
 5. Webhook is the **sole** writer of membership columns on `profiles`.
+6. **Browser session survives navigation and Stripe return.** Membership webhook
+   can still activate a profile when the tab’s session dies; the member must
+   remain signed in to start a follow-on `/donate` or another checkout without
+   a new magic link. Guest donate stays public (no JWT required).
 
 ## Surfaces
 
@@ -91,5 +95,32 @@ front of `/join`. Card payers never see a form unless they click the quiet
 4. When the link is paid, `checkout.session.completed` fires with
    `metadata.supabase_user_id` / `tier` / `duration` / `patron` — the existing
    webhook activates the profile. No second membership path.
+
+## Session continuity (web)
+
+Reported 2026-09-06 (Vic Holmes): mobile re-login on each screen change; laptop
+logged out after a 3-year membership Checkout before a separate $75 donate.
+
+- **Storage:** `src/lib/authStorage.js` — localStorage first; chunked `SameSite=Lax`
+  cookie mirror so Safari/ITP or an in-memory SDK fallback still has a session
+  after a full load. Production cookies use `Domain=.addictionpas.org` so apex
+  and www are not two logins.
+- **Refresh:** `src/lib/authSession.js` + `AuthContext` keep the last session
+  across a null `TOKEN_REFRESHED` / unexpected `SIGNED_OUT` and retry
+  `refreshSession` before the route guards treat the user as signed out.
+  Intentional `signOut()` is not retried. `?checkout=success` / `?status=success`
+  holds `loading` until recovery settles.
+- **Canonical origin:** `src/lib/siteUrl.js` (`requestSiteOrigin` in
+  `api/_lib/siteUrl.js`). OAuth, magic-link, Stripe success/cancel, portal
+  return, and invoice pay-link redirect use `https://www.addictionpas.org` when
+  the request is apex or www. Preview and localhost keep their own origin.
+  `vercel.json` 308s `addictionpas.org` → www. Client also replaces apex → www
+  before mount.
+- **Guest donate** is unchanged: `create-donation-session` does not call
+  `requireUser`; a JWT is attached only when one exists.
+
+Automated: `npm run test:session`. Still needs a human pass on **iOS Safari**
+(magic link → a few in-app navigations → `/join` 3-year Checkout → return
+`/dashboard?checkout=success` still signed in → `/donate` without a new link).
 
 Do not revive PR #73 (`/membership` Step 1).

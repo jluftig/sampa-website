@@ -1,4 +1,5 @@
 import { stripeClient, supabaseAdmin, requireUser, json } from './_lib/clients.js';
+import { requestSiteOrigin } from './_lib/siteUrl.js';
 import { priceIdFor, patronDollars, TIER_DURATIONS } from './_lib/tiers.js';
 import {
   assertOpenablePdf,
@@ -114,7 +115,7 @@ export async function POST(request) {
       line_items.push({ price: await patronPriceId(stripe, duration), quantity: 1 });
     }
 
-    const origin = new URL(request.url).origin;
+    const origin = requestSiteOrigin(request);
     const paymentLink = await stripe.paymentLinks.create({
       line_items,
       metadata,

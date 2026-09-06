@@ -9,6 +9,7 @@ Source of truth for DDL: `supabase/schema.sql`.
 api/                        Vercel serverless functions (Web-handler signature: export POST)
   _lib/clients.js           stripeClient(), supabaseAdmin() (service role), requireUser(JWT), json()
   _lib/tiers.js             tier key -> STRIPE_PRICE_* env mapping
+  _lib/siteUrl.js           requestSiteOrigin() → www in production
   create-checkout-session.js POST {tier, duration, patron?} -> {url}; JWT required;
                             client_reference_id = user id. `patron: true` adds a
                             matching-term price_data line item (+$25 × years);
@@ -37,8 +38,11 @@ src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
   lib/
-    supabaseClient.js       single shared Supabase client
-    AuthContext.jsx         session + profile; useAuth()
+    supabaseClient.js       single shared Supabase client (auth storage backup)
+    AuthContext.jsx         session + profile; useAuth(); refresh retry
+    siteUrl.js              canonical www origin (auth + Stripe return)
+    authStorage.js          localStorage + cookie session mirror
+    authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
     api.js                  apiPost(path, body) — /api/* with Supabase JWT
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
@@ -70,7 +74,7 @@ scripts/
   sampa-post/               News post generator (repo agents)
   sampa-email/              Brevo campaigns (repo agents)
 mobile/                     Expo iOS/Android — separate build, same Supabase (see architecture/mobile.md)
-vercel.json                 SPA rewrite; crawler UAs on /news/:slug → /api/share
+vercel.json                 SPA rewrite; apex→www; crawler UAs on /news/:slug → /api/share
 ```
 
 Marketing email architecture: **`docs/architecture/email-brevo.md`**.

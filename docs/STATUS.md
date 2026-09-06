@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-03 (T45 In Progress — Board meeting agenda + minutes pages)
+**Last updated:** 2026-09-06 (T46 Done — session persistence across mobile nav + Stripe return, PR #99)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -74,11 +74,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T46 | Session persistence across mobile navigation + Stripe checkout return | cursor | 2026-09-06 | **Merged PR #99 → Production.** Vic Holmes (via Shani): stay signed in on mobile nav and after membership checkout so a follow-on donate does not need a new magic link. Guest donate unchanged. Josh phone-testing on production after deploy. |
 | T44 | ASAM hub copy: pro-APP access tone (drop physician-gate) | egg | 2026-09-02 | **Merged PR #96 → Production** (`f40d7af`). Hub + comment PDF cover letter: name PAs/APPs so more people stay on MOUD. Filed 17 line comments unchanged. |
 | T43 | ASAM policy polish: source PDF link + SAMPA logo on comment PDF | cursor | 2026-09-02 | **Merged → Production.** Hub “Download the PDF” → ASAM official standards URL; SAMPA logo top-left on comment PDF. |
 | T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Merged → Production** (direct `main`). PDF + hub detail with `[P## L##]` rounded-rect capsules; `lineComments` in seed data; alwaysApply Cursor STATUS claim rule. |
 | T41 | Josh live Patron copy (Join / invoice / dashboard / Stripe) | cursor | 2026-08-25 | **Merged PR #92 → Production** (`be1a28d`). Josh’s exact sentence (extra support + badge flex + gratitude) on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description. No SQL / email / About / Stripe Dashboard product edits. |
-| T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Merged PR #91 → Production** (`da74fa4`). Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron for existing active non-Patron members. Peer `/members` Patron chip when `profiles.patron`. SQL applied in prod SQL Editor before merge. |
 
 ### Task workflow (agents + humans)
 
@@ -366,6 +366,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-09-06 · **Session persistence (T46)** — PR #99. Members stay signed in across mobile navigation and Stripe checkout return (cookie backup + refresh retry + www canonical URLs). Guest donate unchanged. Josh phone-testing on production.
 - 2026-09-02 · **ASAM policy polish (T43)** — “Download the PDF” links to ASAM’s official standards PDF; SAMPA logo top-left on the comment PDF.
 - 2026-09-02 · **ASAM correctional settings on `/policy` (T42)** — Public comment PDF + hub detail with `[P## L##]` rounded-rect capsules (`lineComments`). Hub one-liner names ASAM. Cursor alwaysApply STATUS claim rule.
 - 2026-08-25 · **Josh live Patron copy (T41)** — PR #92. Same sentence on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout: extra support + badge flex + gratitude. No SQL.
