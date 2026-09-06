@@ -1,4 +1,5 @@
 import { stripeClient, supabaseAdmin, requireUser, json } from './_lib/clients.js';
+import { requestSiteOrigin } from './_lib/siteUrl.js';
 import { priceIdFor, patronLineItem } from './_lib/tiers.js';
 
 // POST { tier, duration, patron? } → { url } of a Stripe Checkout session.
@@ -36,7 +37,7 @@ export async function POST(request) {
       // patron is an add-on flag only; webhook writes `tier`, not this.
       ...(wantPatron ? { patron: 'true' } : {}),
     };
-    const origin = new URL(request.url).origin;
+    const origin = requestSiteOrigin(request);
     const line_items = [{ price, quantity: 1 }];
     if (wantPatron) line_items.push(patronLineItem(duration));
 
