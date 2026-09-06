@@ -17,6 +17,12 @@ export function isAuthCallbackSearch(search = '') {
   return params.has('code') || params.has('token_hash') || params.get('type') === 'magiclink';
 }
 
+// Don't treat a null INITIAL_SESSION as signed-out until getSession() has
+// also settled — the listener can fire first and bounce RequireAuth to /login.
+export function shouldHoldAuthReady({ event, session, getSessionDone } = {}) {
+  return event === 'INITIAL_SESSION' && !session && !getSessionDone;
+}
+
 export function shouldRetryAuthRecovery({
   event,
   session,

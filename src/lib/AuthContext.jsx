@@ -5,6 +5,7 @@ import {
   isCheckoutReturnSearch,
   nextSessionFromAuthEvent,
   refreshSessionWithRetry,
+  shouldHoldAuthReady,
   shouldRetryAuthRecovery,
   stripAuthCallbackParams,
 } from './authSession';
@@ -66,8 +67,10 @@ export function AuthProvider({ children }) {
   // Watch the auth session.
   useEffect(() => {
     let active = true;
+    let getSessionDone = false;
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
+      getSessionDone = true;
       applySession(data.session);
       cleanAuthCallbackUrl();
       if (!data.session && shouldRetryAuthRecovery({
@@ -85,6 +88,9 @@ export function AuthProvider({ children }) {
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
       if (!active) return;
+      if (shouldHoldAuthReady({ event, session: sess, getSessionDone })) {
+        return;
+      }
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         cleanAuthCallbackUrl();
       }

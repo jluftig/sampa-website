@@ -22,6 +22,7 @@ import {
   isCheckoutReturnSearch,
   isAuthCallbackSearch,
   shouldRetryAuthRecovery,
+  shouldHoldAuthReady,
   nextSessionFromAuthEvent,
   refreshSessionWithRetry,
   stripAuthCallbackParams,
@@ -167,6 +168,13 @@ describe('auth event recovery', () => {
       }),
       null,
     );
+  });
+
+  it('does not mark auth ready on a null INITIAL_SESSION before getSession settles', () => {
+    assert.equal(shouldHoldAuthReady({ event: 'INITIAL_SESSION', session: null, getSessionDone: false }), true);
+    assert.equal(shouldHoldAuthReady({ event: 'INITIAL_SESSION', session: null, getSessionDone: true }), false);
+    assert.equal(shouldHoldAuthReady({ event: 'INITIAL_SESSION', session, getSessionDone: false }), false);
+    assert.equal(shouldHoldAuthReady({ event: 'SIGNED_OUT', session: null, getSessionDone: false }), false);
   });
 
   it('retries refresh on transient gaps, not on a normal cold start', () => {
