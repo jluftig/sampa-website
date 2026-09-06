@@ -7,7 +7,7 @@ import LeadershipRoster from '../components/LeadershipRoster';
 
 // About's job: who we are + who leads. Programs, CAQ, news, join, donate,
 // and the no-wrong-doors pitch already have homes. Keep 501(c)(3) + EIN
-// findable for Ad Grants.
+// and the official-domain statement findable for Ad Grants / Workspace.
 
 export default function AboutPage() {
   const { hash } = useLocation();
@@ -47,9 +47,25 @@ export default function AboutPage() {
           </p>
           <p
             id="nonprofit-status"
-            className="text-sm font-semibold text-primary-text font-data tracking-wide mb-6"
+            className="text-sm font-semibold text-primary-text font-data tracking-wide mb-3"
           >
             SAMPA, Inc. is a 501(c)(3) nonprofit organization · EIN 42-2288772
+          </p>
+          <p
+            id="official-domain"
+            className="text-sm text-text/70 leading-relaxed mb-6"
+          >
+            SAMPA, Inc. (EIN 42-2288772), Society of Addiction Medicine
+            Physician Associates, operates{' '}
+            <a
+              href="https://www.addictionpas.org"
+              className="text-primary-text hover:underline"
+            >
+              https://www.addictionpas.org
+            </a>{' '}
+            as its official website and @addictionpas.org email domain. The
+            shorter domain sampa.org was unavailable, so addictionpas.org is
+            used; the legal name has not changed.
           </p>
         </header>
 
@@ -136,6 +152,16 @@ export default function AboutPage() {
               SAMPA, Inc. is recognized by the IRS as tax-exempt under Section
               501(c)(3) of the Internal Revenue Code. EIN 42-2288772.
               Contributions are tax-deductible to the extent allowed by law.
+            </p>
+            <p className="mt-3 text-sm text-text/60 leading-relaxed">
+              Official website:{' '}
+              <a
+                href="https://www.addictionpas.org"
+                className="text-primary-text hover:underline"
+              >
+                https://www.addictionpas.org
+              </a>
+              {' '}· @addictionpas.org email
             </p>
           </section>
         </div>

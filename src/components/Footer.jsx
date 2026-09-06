@@ -28,6 +28,16 @@ export default function Footer() {
             <p className="text-white/50 max-w-sm text-xs font-data tracking-wide">
               501(c)(3) nonprofit · EIN 42-2288772
             </p>
+            <p className="text-white/40 max-w-sm text-xs leading-relaxed">
+              Official website{' '}
+              <a
+                href="https://www.addictionpas.org"
+                className="text-white/60 hover:text-white underline underline-offset-2"
+              >
+                www.addictionpas.org
+              </a>
+              {' '}· @addictionpas.org email
+            </p>
             <div className="flex items-center gap-4">
               <a
                 href="https://www.instagram.com/societyofaddictionmedicinepas/"
@@ -78,6 +88,21 @@ export default function Footer() {
           </p>
           <p>
             SAMPA, Inc. is a 501(c)(3) nonprofit organization. EIN: 42-2288772.
+            SAMPA, Inc. operates{' '}
+            <a
+              href="https://www.addictionpas.org"
+              className="text-white/60 hover:text-white/80 underline underline-offset-2"
+            >
+              https://www.addictionpas.org
+            </a>{' '}
+            as its official website and @addictionpas.org email domain. The
+            shorter domain sampa.org was unavailable, so addictionpas.org is
+            used; the legal name has not changed.
+          </p>
+          <p className="mt-2">
+            Mailing address: PO Box 8, Point Reyes Station, CA 94956
+          </p>
+          <p className="mt-2">
             © {new Date().getFullYear()} SAMPA, Inc. All rights reserved.
           </p>
         </div>
