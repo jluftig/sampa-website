@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-06 (T47 In Progress — official-domain copy for Workspace for Nonprofits)
+**Last updated:** 2026-09-06 (T47 Done — official-domain + WY registered-agent address, PR #100)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T47 | Official-domain + WY registered-agent address for Workspace for Nonprofits | cursor | 2026-09-06 | **Claimed cursor.** Preview PR #100. Official-domain sentence (EIN 42-2288772; addictionpas.org; sampa.org unavailable). Public street: 30 N Gould St Ste N, Sheridan, WY 82801 (Northwest Registered Agent Service Inc — SOS filing). Mailing: PO Box 8, Point Reyes Station, CA 94956. **No home street address.** Do not merge until Josh reviews. |
 | T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
@@ -75,11 +74,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T47 | Official-domain + WY registered-agent address for Workspace for Nonprofits | cursor | 2026-09-06 | **Merged PR #100 → Production** (`71a8b7e`). About + footer: official website/email domain; sampa.org unavailable; Sheridan registered-agent street; mailing PO Box 8. No home street address. |
 | T46 | Session persistence across mobile navigation + Stripe checkout return | cursor | 2026-09-06 | **Merged PR #99 → Production** (`4470cb4`). Vic Holmes (via Shani): stay signed in on mobile nav and after membership checkout so a follow-on donate does not need a new magic link. Guest donate unchanged. Josh phone-testing on production after deploy. |
 | T44 | ASAM hub copy: pro-APP access tone (drop physician-gate) | egg | 2026-09-02 | **Merged PR #96 → Production** (`f40d7af`). Hub + comment PDF cover letter: name PAs/APPs so more people stay on MOUD. Filed 17 line comments unchanged. |
 | T43 | ASAM policy polish: source PDF link + SAMPA logo on comment PDF | cursor | 2026-09-02 | **Merged → Production.** Hub “Download the PDF” → ASAM official standards URL; SAMPA logo top-left on comment PDF. |
 | T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Merged → Production** (direct `main`). PDF + hub detail with `[P## L##]` rounded-rect capsules; `lineComments` in seed data; alwaysApply Cursor STATUS claim rule. |
-| T41 | Josh live Patron copy (Join / invoice / dashboard / Stripe) | cursor | 2026-08-25 | **Merged PR #92 → Production** (`be1a28d`). Josh’s exact sentence (extra support + badge flex + gratitude) on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description. No SQL / email / About / Stripe Dashboard product edits. |
 
 ### Task workflow (agents + humans)
 
@@ -367,6 +366,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-09-06 · **Workspace domain transparency (T47)** — PR #100. Official-domain sentence + Wyoming registered-agent street (30 N Gould St Ste N, Sheridan) + mailing PO Box 8. No home street address.
 - 2026-09-06 · **Session persistence (T46)** — PR #99. Members stay signed in across mobile navigation and Stripe checkout return (cookie backup + refresh retry + www canonical URLs). Guest donate unchanged. Josh phone-testing on production.
 - 2026-09-02 · **ASAM policy polish (T43)** — “Download the PDF” links to ASAM’s official standards PDF; SAMPA logo top-left on the comment PDF.
 - 2026-09-02 · **ASAM correctional settings on `/policy` (T42)** — Public comment PDF + hub detail with `[P## L##]` rounded-rect capsules (`lineComments`). Hub one-liner names ASAM. Cursor alwaysApply STATUS claim rule.
