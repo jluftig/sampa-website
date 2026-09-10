@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test:invoice-pdf": "node scripts/verify-invoice-pdf.mjs",
     "test:patron-copy": "node scripts/verify-patron-copy.mjs",
-    "test:session": "node --test scripts/verify-session-persistence.mjs"
+    "test:session": "node --test scripts/verify-session-persistence.mjs",
+    "test:kerith-asio": "node scripts/verify-kerith-asio.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
