@@ -78,18 +78,29 @@ function LeaderCard({ person }) {
           {person.credentials && (
             <p className="text-text/50 mt-1">{person.credentials}</p>
           )}
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            <span className="px-2.5 py-0.5 rounded-full bg-primary-text/10 text-primary-text text-xs font-data font-semibold uppercase tracking-wider">
-              {person.role}
-            </span>
-            {person.also?.map((role) => (
-              <span
-                key={role}
-                className="px-2.5 py-0.5 rounded-full bg-primary/5 text-text/65 text-xs font-data font-semibold uppercase tracking-wider"
-              >
-                {role}
+          <div className="mt-3">
+            <div className="flex flex-wrap gap-1.5">
+              <span className="px-2.5 py-0.5 rounded-full bg-primary-text/10 text-primary-text text-xs font-data font-semibold uppercase tracking-wider">
+                {person.role}
               </span>
-            ))}
+            </div>
+            {person.roleExpand && (
+              <p className="mt-1.5 text-sm text-text/60 leading-snug">
+                {person.roleExpand}
+              </p>
+            )}
+            {person.also?.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {person.also.map((role) => (
+                  <span
+                    key={role}
+                    className="px-2.5 py-0.5 rounded-full bg-primary/5 text-text/65 text-xs font-data font-semibold uppercase tracking-wider"
+                  >
+                    {role}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm text-text/55">
             {location && (
