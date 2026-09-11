@@ -172,7 +172,9 @@ export const LEADERSHIP = [
     name: 'Harrison Paul Keyes',
     credentials: 'MPAS, PA-C',
     role: 'Director at large',
+    also: ['Education co-chair'],
     location: 'Boston, MA',
+    // Education Committee co-chair 2026-09-11 (Shani Wilson appointment). DAL stays primary.
     // Form bio dropped the leading H ("arrison Keyes…"); restored here.
     bio: 'Harrison Keyes currently practices in primary care at Boston Health Care for the Homeless Program. He started in the respite program following his graduation from the MGH Institute of Health Professions in 2018. During the COVID-19 pandemic, Harrison conducted the program’s COVID testing and screening endeavors across Boston’s shelter system. He now works as the medical director of the JYP clinic, overseeing the program’s largest outpatient site, offering primary care, psychiatry, Hep C and HIV care as well as addiction and recovery support. Harrison also volunteers as the Chief Delegate for the Massachusetts Association of PAs.',
     photo: '/leadership/harrison-keyes.jpg',
