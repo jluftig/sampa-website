@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-11 (T49 In Progress — Harrison Keyes Education Committee co-chair on About, preview PR)
+**Last updated:** 2026-09-11 (T49 Done — Harrison Keyes Education co-chair on About, PR #102)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T49 | Harrison Keyes Education Committee co-chair on About | cursor | 2026-09-11 | **Claimed cursor.** Shani Wilson (President, still Education chair) appointed Harrison Education Committee co-chair. Keep DAL as primary `role`; add `also: ['Education co-chair']` on `/about#harrison-keyes`. Bio/photo/name/credentials/location/LinkedIn untouched. Shani unchanged. Preview PR **#102** only — do not merge until Josh reviews. |
 | T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
@@ -75,11 +74,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T49 | Harrison Keyes Education Committee co-chair on About | cursor | 2026-09-11 | **Merged PR #102 → Production** (`ef9b908`). Shani Wilson appointed Harrison Education Committee co-chair. `/about#harrison-keyes`: DAL primary + `Education co-chair`. Bio/photo kept. Shani remains Education chair. |
 | T48 | Kerith Hartmann ASIO officer on About | cursor | 2026-09-10 | **Merged PR #101 → Production** (`1a18c24`). Board vote 2026-09-09. `/about#kerith-hartmann`: ASIO (Advocacy, Success, and Impact Officer) in Board and officers after Treasurer. Form bio/photo kept. |
 | T47 | Official-domain + WY registered-agent address for Workspace for Nonprofits | cursor | 2026-09-06 | **Merged PR #100 → Production** (`71a8b7e`). About + footer: official website/email domain; sampa.org unavailable; Sheridan registered-agent street; mailing PO Box 8. No home street address. |
 | T46 | Session persistence across mobile navigation + Stripe checkout return | cursor | 2026-09-06 | **Merged PR #99 → Production** (`4470cb4`). Vic Holmes (via Shani): stay signed in on mobile nav and after membership checkout so a follow-on donate does not need a new magic link. Guest donate unchanged. Josh phone-testing on production after deploy. |
 | T44 | ASAM hub copy: pro-APP access tone (drop physician-gate) | egg | 2026-09-02 | **Merged PR #96 → Production** (`f40d7af`). Hub + comment PDF cover letter: name PAs/APPs so more people stay on MOUD. Filed 17 line comments unchanged. |
-| T43 | ASAM policy polish: source PDF link + SAMPA logo on comment PDF | cursor | 2026-09-02 | **Merged → Production.** Hub “Download the PDF” → ASAM official standards URL; SAMPA logo top-left on comment PDF. |
 
 ### Task workflow (agents + humans)
 
@@ -227,7 +226,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#102** preview-only (**T49** Harrison Education co-chair; do not merge until Josh reviews). **#101** merged (**T48** Done → Production). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#102** merged (**T49** Done → Production). **#101** merged (**T48** Done → Production). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -286,7 +285,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ### Product — site polish / marketing
 
 - [x] **Night click-through fixes (T30)** — 2026-08-21. PR #80. Eric Bergersen house-voice PA; `/join` intro 10–13% / 17–20%; hash targets clear the sticky header; home SAMHSA citation is the survey name.
-- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closed, not merged (T31). **T48 (2026-09-10, PR #101):** Kerith Hartmann ASIO officer after 2026-09-09 Board vote.
+- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closed, not merged (T31). **T48 (2026-09-10, PR #101):** Kerith Hartmann ASIO officer after 2026-09-09 Board vote. **T49 (2026-09-11, PR #102):** Harrison Keyes Education Committee co-chair (DAL stays primary; Shani remains Education chair).
 
 - [x] **Jonathan Baker About card (T29)** — 2026-08-25. PR #79. Form bio + PA-C + LinkedIn live.
 - [x] **Jonathan Baker form headshot (T34)** — 2026-08-25. PR #84 → Production. House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg`.
@@ -368,6 +367,7 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-09-11 · **Harrison Keyes Education co-chair (T49)** — PR #102 (`ef9b908`). `/about#harrison-keyes` keeps DAL as primary role and lists Education co-chair. Form bio/photo kept. Shani remains Education chair.
 - 2026-09-10 · **Kerith Hartmann ASIO officer (T48)** — PR #101 (`1a18c24`). Board vote 2026-09-09. `/about#kerith-hartmann` lists her as ASIO (Advocacy, Success, and Impact Officer) with other officers. Form bio/photo kept.
 - 2026-09-06 · **Workspace domain transparency (T47)** — PR #100. Official-domain sentence + Wyoming registered-agent street (30 N Gould St Ste N, Sheridan) + mailing PO Box 8. No home street address.
 - 2026-09-06 · **Session persistence (T46)** — PR #99. Members stay signed in across mobile navigation and Stripe checkout return (cookie backup + refresh retry + www canonical URLs). Guest donate unchanged. Josh phone-testing on production.
