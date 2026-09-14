@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useAuth } from '../lib/AuthContext';
 import DonateLink from './DonateLink';
+import MemberLoginLink from './MemberLoginLink';
 
 export default function Navbar() {
   const navRef = useRef(null);
@@ -54,12 +55,9 @@ export default function Navbar() {
 
         {/* Desktop CTAs — Login secondary, Join primary */}
         <div className="hidden lg:flex items-center gap-2.5">
-          <Link
-            to="/dashboard"
+          <MemberLoginLink
             className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
-          >
-            Member Login
-          </Link>
+          />
           <Link to="/join" className="btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block">
             <span>Join</span>
           </Link>
@@ -107,13 +105,10 @@ export default function Navbar() {
             <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
           )}
           <div className="mt-2 pt-4 border-t border-primary/10 flex flex-col gap-2.5">
-            <Link
-              to="/dashboard"
+            <MemberLoginLink
               className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold text-center hover:bg-primary-text hover:text-white transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Member Login
-            </Link>
+            />
             <Link
               to="/join"
               className="bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full"

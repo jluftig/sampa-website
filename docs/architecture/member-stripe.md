@@ -25,7 +25,7 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 |------|-----|
 | `/join` | Honor-system AAPA yes/no (PA-path) → pick a tier and term → optional Patron → Stripe Checkout |
 | `/join/invoice` | Quiet employer-invoice side door (T38). Not a catalog, not Step 1. Sign-in required to submit so the pay link carries `supabase_user_id`. Does not charge or activate. |
-| `/dashboard` | Status, portal, profile, directory privacy, saved articles |
+| `/dashboard` | Status, portal, profile, directory privacy, saved articles. Header **Member Login** lands here for signed-in members; editors go to `/editor` instead. Join upsell only when **this** profile has no `membership_status`. |
 | `/donate` | Public gifts (one-time/monthly) — separate `donations` ledger |
 | `/members` | Peer directory (active members / staff), not staff roster |
 | `/editor/members` | Staff roster / pledges (member-viewer+) |

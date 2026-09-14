@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
+import { oauthReturnPath, postAuthPath, safeNext } from '../lib/memberHome';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-// Only follow in-app paths — never an absolute URL from the query string.
-function safeNext(raw) {
-  return raw && raw.startsWith('/') && !raw.startsWith('//') ? raw : '/dashboard';
-}
-
 export default function Login() {
-  const { user, loading, signInWithGoogle, signInWithEmail } = useAuth();
+  const { user, profile, loading, signInWithGoogle, signInWithEmail } = useAuth();
   const [searchParams] = useSearchParams();
-  const next = safeNext(searchParams.get('next'));
+  const requestedNext = safeNext(searchParams.get('next'));
+  const next = postAuthPath(profile, requestedNext);
+  const oauthNext = oauthReturnPath(requestedNext);
 
   const [email, setEmail] = useState('');
   const [linkState, setLinkState] = useState('idle'); // idle | sending | sent | error
 
-  // Already signed in? Continue to wherever they were headed.
+  // Already signed in? Continue to wherever they were headed — or, when
+  // Member Login left next empty / defaulted to /dashboard, the editor
+  // dashboard if this profile can edit.
   if (!loading && user) {
     return <Navigate to={next} replace />;
   }
@@ -27,7 +27,7 @@ export default function Login() {
     e.preventDefault();
     if (!email.trim()) return;
     setLinkState('sending');
-    const { error } = await signInWithEmail(email.trim(), next);
+    const { error } = await signInWithEmail(email.trim(), oauthNext);
     setLinkState(error ? 'error' : 'sent');
   };
 
@@ -48,7 +48,7 @@ export default function Login() {
           </p>
 
           <button
-            onClick={() => signInWithGoogle(next)}
+            onClick={() => signInWithGoogle(oauthNext)}
             disabled={loading}
             className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50"
           >

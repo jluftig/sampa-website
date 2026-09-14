@@ -9,6 +9,7 @@ import {
   shouldRetryAuthRecovery,
   stripAuthCallbackParams,
 } from './authSession';
+import { isEditorProfile } from './memberHome';
 
 const AuthContext = createContext(null);
 
@@ -29,6 +30,7 @@ function cleanAuthCallbackUrl() {
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [profileError, setProfileError] = useState(null);
   const [authReady, setAuthReady] = useState(false);     // session has been checked
   const [profileReady, setProfileReady] = useState(false); // profile fetch settled
   const [recovering, setRecovering] = useState(() => (
@@ -132,18 +134,21 @@ export function AuthProvider({ children }) {
     let active = true;
     if (!userId) {
       setProfile(null);
+      setProfileError(null);
       setProfileReady(true);
       return;
     }
     setProfileReady(false);
+    setProfileError(null);
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
       if (!active) return;
-      setProfile(data);
+      setProfile(data ?? null);
+      setProfileError(error?.message ?? null);
       setProfileReady(true);
     })();
     return () => { active = false; };
@@ -153,25 +158,29 @@ export function AuthProvider({ children }) {
   // remount) — used after profile edits and after Stripe checkout returns.
   const refreshProfile = useCallback(async () => {
     if (!userId) return;
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
-    setProfile(data);
+    setProfile(data ?? null);
+    setProfileError(error?.message ?? null);
   }, [userId]);
 
   // `next` is an in-app path to land on after auth completes. Both flows
   // redirect through Supabase, so the URL must be covered by the allowlist in
   // Supabase Auth → URL Configuration. Always www in production so storage
   // isn't split across apex / www.
-  const signInWithGoogle = (next = '/dashboard') =>
+  // Default `/login` (not `/dashboard`) so Login can send editors to /editor
+  // once the profile is known. Callers with an explicit next (e.g. /join)
+  // still pass it through.
+  const signInWithGoogle = (next = '/login') =>
     supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${clientSiteOrigin()}${next}` },
     });
 
-  const signInWithEmail = (email, next = '/dashboard') =>
+  const signInWithEmail = (email, next = '/login') =>
     supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: `${clientSiteOrigin()}${next}` },
@@ -184,7 +193,7 @@ export function AuthProvider({ children }) {
 
   const role = profile?.role ?? null;
   const isAdmin = role === 'admin';
-  const isEditor = role === 'editor' || isAdmin || !!profile?.can_edit_news;
+  const isEditor = isEditorProfile(profile);
   // Paid membership only — used by /join to block duplicate checkouts.
   const isActiveMember = profile?.membership_status === 'active';
   // Matches SQL is_active_member(): paid members + staff (editors/admins).
@@ -193,6 +202,7 @@ export function AuthProvider({ children }) {
     session,
     user: session?.user ?? null,
     profile,
+    profileError,
     role,
     // Capabilities are checkboxes, not a ladder — people can hold several.
     // The legacy 'editor' role still implies news editing; admins imply all.

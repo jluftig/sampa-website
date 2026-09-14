@@ -92,3 +92,5 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 Declare `/editor/keywords`, `/editor/people`, `/editor/members` **before** `/editor/:id`.  
 `/login?next=` must be an in-app path starting with `/` (not `//`).
+
+**Member Login** (header/footer): signed-out → `/login` (no next). After auth with no next, editors/admins/`can_edit_news` → `/editor`; everyone else → `/dashboard`. An explicit `next` is honored. Membership and editor flags are read from **this** auth user’s `profiles` row (id = Supabase user id), never by email. A second Google login is a second profile.
