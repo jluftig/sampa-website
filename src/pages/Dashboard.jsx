@@ -35,7 +35,7 @@ const DIRECTORY_IDENTITY_FIELDS = [
 ];
 
 export default function Dashboard() {
-  const { user, profile, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
+  const { user, profile, profileError, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
   const justAddedPatron = justPaid && searchParams.get('addon') === 'patron';
@@ -366,7 +366,31 @@ export default function Dashboard() {
             )}
           </div>
 
-          {profile?.membership_status ? (
+          {!profile ? (
+            <>
+              <p className="text-text/70 text-sm mb-6">
+                We couldn't load a membership profile for this sign-in.
+                {profileError ? ` (${profileError})` : ''} Membership is tied to
+                the account you used to pay — not to your email address — so a
+                second Google login is a separate profile.
+              </p>
+              <p className="text-text/40 text-xs">
+                You're signed in as{' '}
+                <strong className="text-text/60">{user?.email}</strong>. If you
+                joined SAMPA or have editor access on a different email, sign
+                out (top of this page) and sign back in with that one, or{' '}
+                <a
+                  href="https://forms.gle/YqYYRVE9z2nCYdNz5"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-primary-text"
+                >
+                  contact us
+                </a>{' '}
+                and we'll connect your accounts. Do not pay again.
+              </p>
+            </>
+          ) : profile.membership_status ? (
             <>
               <p className="text-text/70 text-sm mb-6">
                 {tier ? `${tier.name} membership` : 'SAMPA membership'}

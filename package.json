@@ -11,7 +11,8 @@
     "test:patron-copy": "node scripts/verify-patron-copy.mjs",
     "test:session": "node --test scripts/verify-session-persistence.mjs",
     "test:kerith-asio": "node scripts/verify-kerith-asio.mjs",
-    "test:harrison-education": "node scripts/verify-harrison-education-cochair.mjs"
+    "test:harrison-education": "node scripts/verify-harrison-education-cochair.mjs",
+    "test:member-login": "node --test scripts/verify-member-login-routing.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",

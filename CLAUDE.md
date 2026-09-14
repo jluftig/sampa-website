@@ -104,6 +104,7 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 15. **Mobile shared lib:** `sampa-shared` → `src/lib`; no DOM/Vite-only code there.
 16. **No IAP** for memberships on iOS — website checkout only.
 17. **Web session continuity:** `createClient` uses `createAuthStorage()` (localStorage + first-party cookie backup, `Domain=.addictionpas.org` on prod). Auth/Stripe return URLs go through `clientSiteOrigin` / `requestSiteOrigin` (apex → `https://www.addictionpas.org`). `AuthContext` retries `refreshSession` on a transient null before treating the user as signed out. Do not revert to a bare `createClient` or `window.location.origin` for those redirects.
+18. **Member Login** (header/footer) is not a hard link to `/dashboard`. Signed-out → `/login`; signed-in editor/admin/`can_edit_news` → `/editor`; else `/dashboard`. A held/expired session that still has `user.email` but no `profiles` row is **signed-out** — send `/login`, do not show the no-membership upsell. Membership is keyed to **this** auth user’s `profiles.id`. Two Google logins = two profiles — do not look up membership by email, and do not invent a production account merge.
 
 ## Rollback (short)
 

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Instagram, Facebook } from 'lucide-react';
 import DonateLink from './DonateLink';
 import NewsletterSignup from './NewsletterSignup';
+import MemberLoginLink from './MemberLoginLink';
 
 export default function Footer() {
   const { pathname } = useLocation();
@@ -75,12 +76,9 @@ export default function Footer() {
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
             <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>
-            <Link
-              to="/dashboard"
+            <MemberLoginLink
               className="px-4 py-2 rounded-full border border-white/40 text-white font-semibold hover:bg-white hover:text-text transition-colors"
-            >
-              Member Login
-            </Link>
+            />
           </div>
 
         </div>

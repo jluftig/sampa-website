@@ -19,14 +19,14 @@ function FullPage({ children }) {
 // in), then authorization (role must be editor or admin). Pass adminOnly to
 // further restrict to admins (e.g. tag management).
 export default function RequireEditor({ children, adminOnly = false }) {
-  const { loading, user, isEditor, isAdmin } = useAuth();
+  const { loading, sessionUsable, isEditor, isAdmin } = useAuth();
   const location = useLocation();
 
   if (loading) {
     return <FullPage><p className="text-text/50 font-data">Checking access…</p></FullPage>;
   }
 
-  if (!user) {
+  if (!sessionUsable) {
     const next = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/login?next=${next}`} replace />;
   }
