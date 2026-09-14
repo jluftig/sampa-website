@@ -2,9 +2,12 @@ import React, { createContext, useContext, useCallback, useEffect, useRef, useSt
 import { supabase } from './supabaseClient';
 import { clientSiteOrigin } from './siteUrl';
 import {
+  isAccessTokenExpired,
   isCheckoutReturnSearch,
+  isSessionUsable,
   nextSessionFromAuthEvent,
   refreshSessionWithRetry,
+  shouldClearHeldSession,
   shouldHoldAuthReady,
   shouldRetryAuthRecovery,
   stripAuthCallbackParams,
@@ -73,9 +76,14 @@ export function AuthProvider({ children }) {
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
       getSessionDone = true;
-      applySession(data.session);
+      const initial = data.session;
+      if (initial && isAccessTokenExpired(initial)) {
+        recoverSession();
+        return;
+      }
+      applySession(initial);
       cleanAuthCallbackUrl();
-      if (!data.session && shouldRetryAuthRecovery({
+      if (!initial && shouldRetryAuthRecovery({
         event: 'INITIAL_SESSION',
         session: null,
         previous: sessionRef.current,
@@ -141,18 +149,66 @@ export function AuthProvider({ children }) {
     setProfileReady(false);
     setProfileError(null);
     (async () => {
-      const { data, error } = await supabase
+      const first = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
       if (!active) return;
-      setProfile(data ?? null);
-      setProfileError(error?.message ?? null);
+      if (first.data) {
+        setProfile(first.data);
+        setProfileError(null);
+        setProfileReady(true);
+        return;
+      }
+
+      // Session claims a user (email still readable from the JWT) but we
+      // could not read their profiles row. That is the stale-cookie /
+      // T46-held-session case: refresh once, then drop the session so
+      // Member Login and /dashboard go through /login instead of the
+      // "no membership yet" upsell.
+      const { data: liveWrap } = await supabase.auth.getSession();
+      const liveSession = liveWrap?.session ?? null;
+      if (!shouldClearHeldSession({
+        session: sessionRef.current,
+        liveSession,
+        profile: first.data,
+        profileError: first.error?.message,
+      })) {
+        setProfile(null);
+        setProfileError(first.error?.message ?? null);
+        setProfileReady(true);
+        return;
+      }
+
+      const { session: recovered } = await refreshSessionWithRetry(supabase.auth);
+      if (!active) return;
+      if (recovered) {
+        applySession(recovered);
+        const second = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', recovered.user?.id ?? userId)
+          .maybeSingle();
+        if (!active) return;
+        if (second.data) {
+          setProfile(second.data);
+          setProfileError(null);
+          setProfileReady(true);
+          return;
+        }
+      }
+
+      intentionalSignOutRef.current = true;
+      try { await supabase.auth.signOut({ scope: 'local' }); } catch { /* ignore */ }
+      if (!active) return;
+      applySession(null);
+      setProfile(null);
+      setProfileError(first.error?.message ?? 'session expired');
       setProfileReady(true);
     })();
     return () => { active = false; };
-  }, [userId]);
+  }, [userId, applySession]);
 
   // Re-fetch the profile without flipping `loading` (so route guards don't
   // remount) — used after profile edits and after Stripe checkout returns.
@@ -198,6 +254,12 @@ export function AuthProvider({ children }) {
   const isActiveMember = profile?.membership_status === 'active';
   // Matches SQL is_active_member(): paid members + staff (editors/admins).
   const canAccessMemberDirectory = isActiveMember || role === 'editor' || isAdmin;
+  // A just-expired token is still usable while recoverSession is in flight
+  // (T46: don't bounce a checkout return to /login on a radio blip).
+  // A session with no profiles row is never usable — that is the stale
+  // cookie / held-session upsell bug.
+  const sessionUsable = isSessionUsable(session, profile)
+    || (!!profile && recovering && !!session?.user);
   const value = {
     session,
     user: session?.user ?? null,
@@ -213,6 +275,7 @@ export function AuthProvider({ children }) {
     isBoard: !!profile?.is_board,
     isActiveMember,
     canAccessMemberDirectory,
+    sessionUsable,
     // True until we know both the session and (if signed in) the profile.
     // Stay "loading" while a refresh retry is in flight so RequireAuth does
     // not bounce a returning checkout to /login.

@@ -8,7 +8,7 @@ import Footer from './Footer';
 // can_view_members capability. Read-only access — RLS enforces that viewers
 // can't write member data even if the UI were bypassed.
 export default function RequireMemberViewer({ children }) {
-  const { loading, user, canViewMembers } = useAuth();
+  const { loading, sessionUsable, canViewMembers } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -24,7 +24,7 @@ export default function RequireMemberViewer({ children }) {
     );
   }
 
-  if (!user) {
+  if (!sessionUsable) {
     const next = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/login?next=${next}`} replace />;
   }

@@ -7,7 +7,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function Login() {
-  const { user, profile, loading, signInWithGoogle, signInWithEmail } = useAuth();
+  const { profile, sessionUsable, loading, signInWithGoogle, signInWithEmail } = useAuth();
   const [searchParams] = useSearchParams();
   const requestedNext = safeNext(searchParams.get('next'));
   const next = postAuthPath(profile, requestedNext);
@@ -16,10 +16,10 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [linkState, setLinkState] = useState('idle'); // idle | sending | sent | error
 
-  // Already signed in? Continue to wherever they were headed — or, when
-  // Member Login left next empty / defaulted to /dashboard, the editor
-  // dashboard if this profile can edit.
-  if (!loading && user) {
+  // Only continue when the session is usable (live token + profiles row).
+  // A held/expired session still has user.email — bouncing that to
+  // /dashboard is the no-membership upsell bug.
+  if (!loading && sessionUsable) {
     return <Navigate to={next} replace />;
   }
 

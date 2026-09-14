@@ -7,7 +7,7 @@ import Footer from './Footer';
 // Gate for member routes: any signed-in user qualifies (no role required).
 // Signed-out visitors are sent to /login and returned here afterwards.
 export default function RequireAuth({ children }) {
-  const { loading, user } = useAuth();
+  const { loading, sessionUsable } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -23,7 +23,7 @@ export default function RequireAuth({ children }) {
     );
   }
 
-  if (!user) {
+  if (!sessionUsable) {
     const next = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/login?next=${next}`} replace />;
   }

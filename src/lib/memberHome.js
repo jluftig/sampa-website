@@ -39,13 +39,16 @@ export function oauthReturnPath(rawNext) {
   return '/login';
 }
 
+// Half-hydrated: React still has user.email from a held/expired session but
+// no profiles row. Treat as signed-out so Member Login goes to /login
+// instead of the no-membership upsell.
 export function memberLoginHref({ user, profile, loading } = {}) {
-  if (loading || !user) return '/login';
+  if (loading || !user || !profile) return '/login';
   return signedInHomePath(profile);
 }
 
 export function memberLoginLabel({ user, profile, loading } = {}) {
-  if (loading || !user) return 'Member Login';
+  if (loading || !user || !profile) return 'Member Login';
   if (isEditorProfile(profile)) return 'Editor';
   return 'Dashboard';
 }

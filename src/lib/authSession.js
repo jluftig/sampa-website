@@ -51,12 +51,86 @@ export function nextSessionFromAuthEvent({ event, incoming, previous, intentiona
   return incoming ?? null;
 }
 
-export async function refreshSessionWithRetry(auth, { attempts = 3, delayMs = 250, sleep = defaultSleep } = {}) {
+const ACCESS_TOKEN_SKEW_MS = 15_000;
+
+function base64UrlDecode(part) {
+  const padded = part.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = padded.length % 4 === 0 ? '' : '='.repeat(4 - (padded.length % 4));
+  const raw = (typeof atob === 'function' ? atob : (s) => Buffer.from(s, 'base64').toString('binary'))(padded + pad);
+  return raw;
+}
+
+export function sessionExpiresAtSec(session) {
+  if (typeof session?.expires_at === 'number' && Number.isFinite(session.expires_at)) {
+    return session.expires_at;
+  }
+  const token = session?.access_token;
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length < 2) return null;
+  try {
+    const payload = JSON.parse(base64UrlDecode(parts[1]));
+    return typeof payload.exp === 'number' ? payload.exp : null;
+  } catch {
+    return null;
+  }
+}
+
+// True when the access token is past exp (with a small skew). A held React
+// session after T46 SIGNED_OUT / TOKEN_REFRESHED can still have user.email
+// while this is true — do not treat that as signed-in.
+export function isAccessTokenExpired(session, nowMs = Date.now(), skewMs = ACCESS_TOKEN_SKEW_MS) {
+  const exp = sessionExpiresAtSec(session);
+  if (exp == null) return false;
+  return exp * 1000 <= nowMs + skewMs;
+}
+
+export function isAuthFailureMessage(message) {
+  if (!message) return false;
+  const m = String(message).toLowerCase();
+  return /jwt|expired|invalid token|not authenticated|unauthorized|401/.test(m);
+}
+
+// A session is usable for Member Login / membership UI only when we have a
+// live access token AND the matching profiles row. user.email from a JWT
+// (or a held session) is not enough — that is how Josh saw "signed in as
+// luftig@gmail.com" with no membership until Command-R.
+export function isSessionUsable(session, profile, nowMs = Date.now()) {
+  if (!session?.user) return false;
+  if (isAccessTokenExpired(session, nowMs)) return false;
+  return !!profile;
+}
+
+// After a profile fetch comes back empty, decide whether this is a dead
+// held/cookie session (clear + send to /login) vs a real missing row.
+export function shouldClearHeldSession({
+  session,
+  liveSession,
+  profile,
+  profileError,
+  nowMs = Date.now(),
+} = {}) {
+  if (profile) return false;
+  if (!session?.user) return false;
+  if (isAccessTokenExpired(session, nowMs)) return true;
+  if (isAuthFailureMessage(profileError)) return true;
+  if (!liveSession) return true;
+  if (isAccessTokenExpired(liveSession, nowMs)) return true;
+  return false;
+}
+
+function usableSession(session, nowMs) {
+  if (!session) return null;
+  return isAccessTokenExpired(session, nowMs) ? null : session;
+}
+
+export async function refreshSessionWithRetry(auth, { attempts = 3, delayMs = 250, sleep = defaultSleep, nowMs = Date.now() } = {}) {
   let lastError = null;
   for (let i = 0; i < attempts; i += 1) {
     try {
       const { data, error } = await auth.refreshSession();
-      if (data?.session) return { session: data.session, error: null };
+      const next = usableSession(data?.session, nowMs);
+      if (next) return { session: next, error: null };
       lastError = error || lastError;
     } catch (err) {
       lastError = err;
@@ -65,7 +139,9 @@ export async function refreshSessionWithRetry(auth, { attempts = 3, delayMs = 25
   }
   try {
     const { data } = await auth.getSession();
-    if (data?.session) return { session: data.session, error: null };
+    const next = usableSession(data?.session, nowMs);
+    if (next) return { session: next, error: null };
+    if (data?.session) lastError = lastError || new Error('session expired');
   } catch (err) {
     lastError = lastError || err;
   }

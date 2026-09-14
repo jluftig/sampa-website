@@ -8,7 +8,7 @@ import Footer from './Footer';
 // active members and staff (editors/admins). Matches SQL is_active_member().
 // Non-members are pointed at /join; signed-out visitors go to /login.
 export default function RequireActiveMember({ children }) {
-  const { loading, user, canAccessMemberDirectory } = useAuth();
+  const { loading, sessionUsable, canAccessMemberDirectory } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -24,7 +24,7 @@ export default function RequireActiveMember({ children }) {
     );
   }
 
-  if (!user) {
+  if (!sessionUsable) {
     const next = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/login?next=${next}`} replace />;
   }

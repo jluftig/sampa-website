@@ -63,6 +63,12 @@ describe('signed-in home + Member Login href/label', () => {
     assert.equal(memberLoginHref({ user: { id: '3' }, profile: unpaid, loading: false }), '/dashboard');
     assert.equal(memberLoginLabel({ user: { id: '3' }, profile: unpaid, loading: false }), 'Dashboard');
   });
+
+  it('treats a held session without a profiles row as signed-out', () => {
+    const staleUser = { id: 'stale', email: 'luftig@gmail.com' };
+    assert.equal(memberLoginHref({ user: staleUser, profile: null, loading: false }), '/login');
+    assert.equal(memberLoginLabel({ user: staleUser, profile: null, loading: false }), 'Member Login');
+  });
 });
 
 describe('post-auth next + OAuth return', () => {
@@ -109,6 +115,16 @@ describe('header/footer and login wiring', () => {
     assert.match(login, /oauthReturnPath/);
     assert.match(login, /signInWithGoogle\(oauthNext\)/);
     assert.match(login, /signInWithEmail\([^,]+, oauthNext\)/);
+    assert.match(login, /sessionUsable/);
+    assert.doesNotMatch(login, /if \(!loading && user\)/);
+  });
+
+  it('route guards bounce a half-hydrated session to /login', () => {
+    const auth = readFileSync(new URL('../src/components/RequireAuth.jsx', import.meta.url), 'utf8');
+    const editor = readFileSync(new URL('../src/components/RequireEditor.jsx', import.meta.url), 'utf8');
+    assert.match(auth, /sessionUsable/);
+    assert.match(editor, /sessionUsable/);
+    assert.match(auth, /\/login\?next=/);
   });
 
   it('dashboard does not call the no-membership upsell when the profile row failed to load', () => {

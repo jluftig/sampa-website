@@ -19,8 +19,12 @@ import {
   AUTH_COOKIE_CHUNK_SIZE,
 } from '../src/lib/authStorage.js';
 import {
+  isAccessTokenExpired,
+  isAuthFailureMessage,
   isCheckoutReturnSearch,
   isAuthCallbackSearch,
+  isSessionUsable,
+  shouldClearHeldSession,
   shouldRetryAuthRecovery,
   shouldHoldAuthReady,
   nextSessionFromAuthEvent,
@@ -195,6 +199,46 @@ describe('auth event recovery', () => {
     }), true);
   });
 
+  it('does not treat an expired or profile-less session as signed-in', () => {
+    const now = 1_800_000_000_000;
+    const expired = { ...session, expires_at: Math.floor(now / 1000) - 60 };
+    const live = { ...session, expires_at: Math.floor(now / 1000) + 3600 };
+    assert.equal(isAccessTokenExpired(expired, now), true);
+    assert.equal(isAccessTokenExpired(live, now), false);
+    assert.equal(isSessionUsable(live, { membership_status: 'active' }, now), true);
+    assert.equal(isSessionUsable(live, null, now), false);
+    assert.equal(isSessionUsable(expired, { role: 'admin' }, now), false);
+    assert.equal(isAuthFailureMessage('JWT expired'), true);
+    assert.equal(shouldClearHeldSession({
+      session: live,
+      liveSession: null,
+      profile: null,
+    }), true);
+    assert.equal(shouldClearHeldSession({
+      session: live,
+      liveSession: live,
+      profile: null,
+      profileError: null,
+      nowMs: now,
+    }), false);
+  });
+
+  it('does not recover an expired getSession leftover after refresh fails', async () => {
+    const now = 1_800_000_000_000;
+    const expired = { ...session, expires_at: Math.floor(now / 1000) - 60 };
+    const auth = {
+      refreshSession: async () => ({ data: { session: null }, error: new Error('blip') }),
+      getSession: async () => ({ data: { session: expired } }),
+    };
+    const result = await refreshSessionWithRetry(auth, {
+      attempts: 1,
+      delayMs: 1,
+      sleep: async () => {},
+      nowMs: now,
+    });
+    assert.equal(result.session, null);
+  });
+
   it('retries refreshSession before giving up', async () => {
     let calls = 0;
     const auth = {
@@ -242,6 +286,8 @@ describe('source contracts', () => {
     assert.match(client, /createAuthStorage/);
     assert.match(client, /persistSession: true/);
     assert.match(authCtx, /refreshSessionWithRetry/);
+    assert.match(authCtx, /shouldClearHeldSession/);
+    assert.match(authCtx, /signOut\(\{ scope: 'local' \}\)/);
     assert.match(authCtx, /clientSiteOrigin\(\)/);
     assert.match(authCtx, /intentionalSignOutRef/);
   });
