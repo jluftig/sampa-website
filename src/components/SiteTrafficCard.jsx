@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Activity } from 'lucide-react';
 import { apiGet } from '../lib/api';
-import { TRAFFIC_RANGES } from '../lib/siteTraffic';
+import { TRACKING_STARTED_NOTE, TRAFFIC_RANGES } from '../lib/siteTraffic';
 
 function formatCount(n) {
   return Number(n || 0).toLocaleString('en-US');
@@ -12,7 +12,7 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
 
   return (
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
         <div>
           <h2 className="text-xl font-bold flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary-text" aria-hidden="true" />
@@ -44,6 +44,9 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
           ))}
         </div>
       </div>
+      <p className="text-text/45 text-xs mb-6 max-w-xl">
+        {TRACKING_STARTED_NOTE}
+      </p>
 
       {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
 
@@ -80,9 +83,7 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
 
           {stats.empty ? (
             <p className="text-text/50 text-sm">
-              No pageviews in this window yet. Analytics started collecting
-              after Web Analytics was enabled — numbers appear after people
-              visit the live site.
+              No pageviews in this window yet.
             </p>
           ) : (
             <>

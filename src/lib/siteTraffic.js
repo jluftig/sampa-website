@@ -3,6 +3,8 @@
 
 export const TRAFFIC_RANGES = [7, 30];
 export const TOP_PATH_LIMIT = 5;
+// Vercel Web Analytics has no backfill — counts start when tracking was enabled.
+export const TRACKING_STARTED_NOTE = 'Tracking started on September 16, 2026.';
 
 export function canViewSiteTraffic(profile) {
   return !!(profile?.is_board || profile?.is_membership_committee);

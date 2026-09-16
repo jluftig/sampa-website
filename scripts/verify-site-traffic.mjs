@@ -10,6 +10,7 @@ import {
   normalizeVisitCount,
   parseTrafficRange,
   shapeSiteTraffic,
+  TRACKING_STARTED_NOTE,
   trafficWindow,
 } from '../src/lib/siteTraffic.js';
 import { buildVisitsUrl } from '../api/_lib/vercel-analytics.js';
@@ -209,6 +210,10 @@ describe('wiring', () => {
     assert.match(dashboard, /canViewSiteTraffic/);
     assert.match(card, /export function SiteTrafficPanel/);
     assert.match(card, /apiGet\(`\/api\/site-traffic\?range=\$\{range\}`\)/);
+    assert.equal(TRACKING_STARTED_NOTE, 'Tracking started on September 16, 2026.');
+    const noteIdx = card.indexOf('{TRACKING_STARTED_NOTE}');
+    const loadingIdx = card.indexOf('{loading &&');
+    assert.ok(noteIdx > 0 && noteIdx < loadingIdx, 'start-date note must render whenever the card is shown');
     assert.match(api, /canViewSiteTraffic/);
     assert.match(api, /queryVisits/);
     assert.match(claude, /VERCEL_WEB_ANALYTICS_TOKEN/);
