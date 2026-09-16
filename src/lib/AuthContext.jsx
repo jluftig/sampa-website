@@ -268,11 +268,12 @@ export function AuthProvider({ children }) {
     role,
     // Capabilities are checkboxes, not a ladder — people can hold several.
     // The legacy 'editor' role still implies news editing; admins imply all.
-    // is_board is explicit only (admin ≠ board unless checked).
+    // is_board / is_membership_committee are explicit only (admin ≠ those hats).
     isEditor,
     canViewMembers: isAdmin || !!profile?.can_view_members,
     isAdmin,
     isBoard: !!profile?.is_board,
+    isMembershipCommittee: !!profile?.is_membership_committee,
     isActiveMember,
     canAccessMemberDirectory,
     sessionUsable,

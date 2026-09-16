@@ -98,12 +98,16 @@ alter table public.profiles add column if not exists onboarded_at      timestamp
 -- legacy value and honored by is_editor()); can_view_members = READ-ONLY
 -- access to the member roster + pledge tracker (/editor/members) for the
 -- membership committee, treasurer, etc. is_board = SAMPA board member (badge
--- in the member directory; future board privileges TBD). Admins implicitly have
--- news + member-viewer capabilities; Board is independent (admin ≠ board).
+-- in the member directory; future board privileges TBD).
+-- is_membership_committee = Membership Committee (People checkbox; with
+-- is_board, gates the /dashboard Site traffic card). Admins implicitly have
+-- news + member-viewer capabilities; Board and Membership Committee are
+-- independent (admin ≠ board / committee unless checked).
 -- Flags are admin-set only (guarded by guard_profile_role).
 alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
 alter table public.profiles add column if not exists can_view_members boolean not null default false;
 alter table public.profiles add column if not exists is_board         boolean not null default false;
+alter table public.profiles add column if not exists is_membership_committee boolean not null default false;
 
 -- Member networking directory privacy (self-editable). Opt-out model:
 -- directory_visible defaults true so active members appear unless they hide.
@@ -394,6 +398,9 @@ begin
   if new.is_board is distinct from old.is_board then
     changes := changes || jsonb_build_object('is_board', jsonb_build_array(old.is_board, new.is_board));
   end if;
+  if new.is_membership_committee is distinct from old.is_membership_committee then
+    changes := changes || jsonb_build_object('is_membership_committee', jsonb_build_array(old.is_membership_committee, new.is_membership_committee));
+  end if;
   if changes <> '{}'::jsonb then
     insert into public.audit_log (actor_id, actor_email, action, target_email, detail)
     values (
@@ -432,6 +439,7 @@ begin
     or new.can_edit_news      is distinct from old.can_edit_news
     or new.can_view_members   is distinct from old.can_view_members
     or new.is_board           is distinct from old.is_board
+    or new.is_membership_committee is distinct from old.is_membership_committee
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;

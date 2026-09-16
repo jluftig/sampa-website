@@ -34,6 +34,9 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             donations table. type='donation' segregates gift vs dues flows.
   share.js                  GET ?slug= → OG/Twitter meta HTML for social crawlers (anon key,
                             published only)
+  site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths; JWT +
+                            is_board or is_membership_committee; proxies Vercel
+                            Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -44,7 +47,7 @@ src/
     authStorage.js          localStorage + cookie session mirror
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
-    api.js                  apiPost(path, body) — /api/* with Supabase JWT
+    api.js                  apiGet / apiPost — /api/* with Supabase JWT
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle
     tags.js                 collectPostTags(post)

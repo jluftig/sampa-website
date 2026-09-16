@@ -140,7 +140,8 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   `/members` via live `member_directory(..., settings_filter)`); legacy free-text
   fallback until re-save.
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
-  badge). Further board-only privileges not built yet.
+  badge). **T53 (preview):** `/dashboard` Site traffic for Board **or**
+  `is_membership_committee` (new People checkbox). Further board-only privileges TBD.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
   ledger in Supabase, donor column on the admin roster.
   **ON (2026-07-21):** restored after IRS 501(c)(3) determination for SAMPA, Inc.
@@ -345,7 +346,7 @@ Deferred from the first directory ship:
   optional separate `/research` later. Keep distinct from News/Key Points. Do not
   shrink the hub to comments-only as corpus grows.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
-- **Board privileges** — `is_board` is badge-only today; decide board-only surfaces. **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
+- **Board privileges** — `is_board` is a directory badge plus **T53 (In Progress · cursor):** `/dashboard` Site traffic card (`is_board` OR `is_membership_committee`). **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
 
 ### Product — platforms

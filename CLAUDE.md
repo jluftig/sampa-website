@@ -54,13 +54,16 @@ Local: `.env.local`. Missing → blank page.
 
 **Server (Vercel only, never `VITE_`):**  
 `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY` (or Secret key),  
-optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOOK_SECRET`
+optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOOK_SECRET`,
+`VERCEL_WEB_ANALYTICS_TOKEN` (site-traffic dashboard; optional
+`VERCEL_WEB_ANALYTICS_PROJECT_ID` / `VERCEL_WEB_ANALYTICS_TEAM_ID` override
+system `VERCEL_PROJECT_ID` / `VERCEL_ORG_ID`)
 
 ## Short map
 
 | Path | Job |
 |------|-----|
-| `api/` | Checkout, portal, webhook, donate session, invoice request, delete-account, send-push, share OG |
+| `api/` | Checkout, portal, webhook, donate session, invoice request, delete-account, send-push, share OG, site-traffic |
 | `src/lib/` | Supabase client, auth context, membership tiers, comments (shared w/ mobile) |
 | `src/pages/` | Public, member, editor, admin routes |
 | `supabase/schema.sql` | **DDL + RLS source of truth** |

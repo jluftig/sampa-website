@@ -13,7 +13,8 @@
     "test:kerith-asio": "node scripts/verify-kerith-asio.mjs",
     "test:harrison-education": "node scripts/verify-harrison-education-cochair.mjs",
     "test:member-login": "node --test scripts/verify-member-login-routing.mjs",
-    "test:cms-pfs-comment": "node scripts/verify-cms-pfs-comment.mjs"
+    "test:cms-pfs-comment": "node scripts/verify-cms-pfs-comment.mjs",
+    "test:site-traffic": "node --test scripts/verify-site-traffic.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
