@@ -31,8 +31,8 @@ must(seed, 'onBehalfOfMembers: true', 'policyDocuments.js');
 must(seed, 'Quality ID 305', 'policyDocuments.js');
 must(seed, 'GSMAS', 'policyDocuments.js');
 must(seed, 'G2211', 'policyDocuments.js');
-must(seed, 'Shani Wilson', 'policyDocuments.js');
 must(seed, 'policy@addictionpas.org', 'policyDocuments.js');
+must(seed, 'Public Health Policy Committee', 'policyDocuments.js');
 must(
   seed,
   'to CMS on the CY 2027 Medicare Physician Fee Schedule',
@@ -51,6 +51,19 @@ must(seed, 'CY 2027 PFS (SBIRT, SUD shared medical appointments, visit-complexit
 const cmsBlock = seed.split("slug: 'cms-pfs-cy-2027-1848-p'")[1]?.split("slug: '")[0] || '';
 if (cmsBlock.includes('lineComments')) {
   fail('CMS entry must not define lineComments');
+}
+for (const leftover of [
+  'The letter is dated',
+  'Signed by Shani Wilson',
+  'Natasha Seliski',
+  'Arianna Campbell',
+]) {
+  if (cmsBlock.includes(leftover)) {
+    fail(`CMS bodyHtml must not restate ${JSON.stringify(leftover)}`);
+  }
+}
+if (!cmsBlock.includes('Questions go to the SAMPA Public Health Policy Committee at policy@addictionpas.org')) {
+  fail('CMS close should match the HRSA/ASAM committee + policy@ line');
 }
 
 const slugs = [...seed.matchAll(/slug: '([^']+)'/g)].map((m) => m[1]);
