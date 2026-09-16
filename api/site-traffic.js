@@ -36,17 +36,23 @@ async function loadViewerProfile(userId) {
   return boardOnly.data;
 }
 
-export async function GET(request) {
+export async function handleSiteTraffic(request, deps = {}) {
+  const requireViewer = deps.requireUser || requireUser;
+  const loadProfile = deps.loadViewerProfile || loadViewerProfile;
+  const env = deps.env || process.env;
+  const query = deps.queryVisits || queryVisits;
+  const now = deps.now || new Date();
+
   try {
-    const user = await requireUser(request);
+    const user = await requireViewer(request);
     if (!user) return trafficJson({ error: 'Sign in required' }, 401);
 
-    const profile = await loadViewerProfile(user.id);
+    const profile = await loadProfile(user.id);
     if (!canViewSiteTraffic(profile)) {
       return trafficJson({ error: 'Not authorized' }, 403);
     }
 
-    const cfg = analyticsConfigFromEnv(process.env);
+    const cfg = analyticsConfigFromEnv(env);
     if (!cfg.configured) {
       return trafficJson({
         error: 'not_configured',
@@ -56,10 +62,10 @@ export async function GET(request) {
 
     const url = new URL(request.url);
     const range = parseTrafficRange(url.searchParams.get('range'));
-    const window = trafficWindow(range);
+    const window = trafficWindow(range, now);
 
     const [countPayload, pathsPayload] = await Promise.all([
-      queryVisits({
+      query({
         token: cfg.token,
         projectId: cfg.projectId,
         teamId: cfg.teamId,
@@ -67,7 +73,7 @@ export async function GET(request) {
         since: window.since,
         until: window.until,
       }),
-      queryVisits({
+      query({
         token: cfg.token,
         projectId: cfg.projectId,
         teamId: cfg.teamId,
@@ -93,4 +99,8 @@ export async function GET(request) {
       message: 'Could not load site traffic right now.',
     }, 502);
   }
+}
+
+export async function GET(request) {
+  return handleSiteTraffic(request);
 }

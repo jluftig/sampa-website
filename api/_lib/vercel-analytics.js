@@ -4,8 +4,7 @@ const VISITS = 'https://api.vercel.com/v1/query/web-analytics/visits';
 
 export { analyticsConfigFromEnv };
 
-export async function queryVisits({
-  token,
+export function buildVisitsUrl({
   projectId,
   teamId,
   mode = 'count',
@@ -28,6 +27,23 @@ export async function queryVisits({
   }
   if (limit) url.searchParams.set('limit', String(limit));
   if (filter) url.searchParams.set('filter', filter);
+  return url;
+}
+
+export async function queryVisits({
+  token,
+  projectId,
+  teamId,
+  mode = 'count',
+  since,
+  until,
+  by,
+  limit,
+  filter,
+}) {
+  const url = buildVisitsUrl({
+    projectId, teamId, mode, since, until, by, limit, filter,
+  });
 
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },

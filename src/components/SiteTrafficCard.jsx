@@ -7,37 +7,7 @@ function formatCount(n) {
   return Number(n || 0).toLocaleString('en-US');
 }
 
-export default function SiteTrafficCard() {
-  const [range, setRange] = useState(7);
-  const [cache, setCache] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const stats = cache[range] || null;
-
-  useEffect(() => {
-    if (stats) {
-      setLoading(false);
-      setError(null);
-      return;
-    }
-    let active = true;
-    setLoading(true);
-    setError(null);
-    (async () => {
-      try {
-        const data = await apiGet(`/api/site-traffic?range=${range}`);
-        if (!active) return;
-        setCache((prev) => ({ ...prev, [range]: data }));
-        setLoading(false);
-      } catch (err) {
-        if (!active) return;
-        setError(err);
-        setLoading(false);
-      }
-    })();
-    return () => { active = false; };
-  }, [range, stats]);
-
+export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }) {
   const notConfigured = error?.code === 'not_configured' || error?.status === 503;
 
   return (
@@ -62,7 +32,7 @@ export default function SiteTrafficCard() {
             <button
               key={days}
               type="button"
-              onClick={() => setRange(days)}
+              onClick={() => onRangeChange?.(days)}
               className={`px-3 py-1 rounded-full text-xs font-data font-semibold uppercase tracking-wider transition-colors ${
                 range === days
                   ? 'bg-primary-text text-white'
@@ -139,5 +109,47 @@ export default function SiteTrafficCard() {
         </>
       )}
     </section>
+  );
+}
+
+export default function SiteTrafficCard() {
+  const [range, setRange] = useState(7);
+  const [cache, setCache] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const stats = cache[range] || null;
+
+  useEffect(() => {
+    if (stats) {
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    let active = true;
+    setLoading(true);
+    setError(null);
+    (async () => {
+      try {
+        const data = await apiGet(`/api/site-traffic?range=${range}`);
+        if (!active) return;
+        setCache((prev) => ({ ...prev, [range]: data }));
+        setLoading(false);
+      } catch (err) {
+        if (!active) return;
+        setError(err);
+        setLoading(false);
+      }
+    })();
+    return () => { active = false; };
+  }, [range, stats]);
+
+  return (
+    <SiteTrafficPanel
+      range={range}
+      onRangeChange={setRange}
+      loading={loading}
+      error={error}
+      stats={stats}
+    />
   );
 }

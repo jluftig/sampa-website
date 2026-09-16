@@ -12,6 +12,8 @@ import {
   shapeSiteTraffic,
   trafficWindow,
 } from '../src/lib/siteTraffic.js';
+import { buildVisitsUrl } from '../api/_lib/vercel-analytics.js';
+import { handleSiteTraffic } from '../api/site-traffic.js';
 
 describe('canViewSiteTraffic', () => {
   it('allows board or membership committee only', () => {
@@ -96,12 +98,105 @@ describe('Analytics env + response shaping', () => {
   });
 });
 
+describe('Vercel visits URL', () => {
+  it('builds count and path-aggregate query strings', () => {
+    const count = buildVisitsUrl({
+      projectId: 'prj_1',
+      teamId: 'team_1',
+      mode: 'count',
+      since: '2026-09-09T00:00:00.000Z',
+      until: '2026-09-16T00:00:00.000Z',
+    });
+    assert.equal(count.pathname, '/v1/query/web-analytics/visits/count');
+    assert.equal(count.searchParams.get('projectId'), 'prj_1');
+    assert.equal(count.searchParams.get('teamId'), 'team_1');
+
+    const paths = buildVisitsUrl({
+      projectId: 'prj_1',
+      mode: 'aggregate',
+      by: ['requestPath'],
+      limit: 5,
+      filter: "environment eq 'production'",
+    });
+    assert.equal(paths.pathname, '/v1/query/web-analytics/visits/aggregate');
+    assert.equal(paths.searchParams.get('by'), 'requestPath');
+    assert.equal(paths.searchParams.get('limit'), '5');
+    assert.equal(paths.searchParams.get('filter'), "environment eq 'production'");
+  });
+});
+
+describe('GET /api/site-traffic authZ', () => {
+  const req = (range = '7') => new Request(`https://www.addictionpas.org/api/site-traffic?range=${range}`);
+
+  async function read(res) {
+    return { status: res.status, body: await res.json() };
+  }
+
+  it('rejects anonymous, non-board members, and missing token', async () => {
+    const anon = await read(await handleSiteTraffic(req(), {
+      requireUser: async () => null,
+    }));
+    assert.equal(anon.status, 401);
+
+    const member = await read(await handleSiteTraffic(req(), {
+      requireUser: async () => ({ id: 'u1' }),
+      loadViewerProfile: async () => ({ is_board: false, is_membership_committee: false }),
+    }));
+    assert.equal(member.status, 403);
+
+    const noToken = await read(await handleSiteTraffic(req(), {
+      requireUser: async () => ({ id: 'u1' }),
+      loadViewerProfile: async () => ({ is_board: true }),
+      env: {},
+    }));
+    assert.equal(noToken.status, 503);
+    assert.equal(noToken.body.error, 'not_configured');
+  });
+
+  it('returns aggregates for a board viewer without exposing the token', async () => {
+    const calls = [];
+    const res = await handleSiteTraffic(req('30'), {
+      requireUser: async () => ({ id: 'board' }),
+      loadViewerProfile: async () => ({ is_membership_committee: true }),
+      env: {
+        VERCEL_WEB_ANALYTICS_TOKEN: 'secret-token',
+        VERCEL_PROJECT_ID: 'prj_1',
+        VERCEL_ORG_ID: 'team_1',
+      },
+      now: new Date('2026-09-16T12:00:00.000Z'),
+      queryVisits: async (args) => {
+        calls.push(args);
+        if (args.mode === 'count') {
+          return { data: { visitors: 9, pageviews: 21 } };
+        }
+        return {
+          data: [
+            { requestPath: '/', pageviews: 12, visitors: 7 },
+            { requestPath: '/about', pageviews: 4, visitors: 3 },
+          ],
+        };
+      },
+    });
+    const { status, body } = await read(res);
+    assert.equal(status, 200);
+    assert.equal(body.range, 30);
+    assert.equal(body.visitors, 9);
+    assert.equal(body.pageviews, 21);
+    assert.equal(body.paths[0].path, '/');
+    assert.equal(calls.length, 2);
+    assert.equal(calls[0].token, 'secret-token');
+    assert.equal(JSON.stringify(body).includes('secret-token'), false);
+    assert.equal(res.headers.get('cache-control'), 'private, no-store');
+  });
+});
+
 describe('wiring', () => {
   it('keeps the column, guard, People checkbox, and dashboard card', () => {
     const schema = readFileSync('supabase/schema.sql', 'utf8');
     const migration = readFileSync('supabase/migrations/2026-09-16-membership-committee.sql', 'utf8');
     const people = readFileSync('src/pages/AdminPeople.jsx', 'utf8');
     const dashboard = readFileSync('src/pages/Dashboard.jsx', 'utf8');
+    const card = readFileSync('src/components/SiteTrafficCard.jsx', 'utf8');
     const api = readFileSync('api/site-traffic.js', 'utf8');
     const claude = readFileSync('CLAUDE.md', 'utf8');
 
@@ -112,6 +207,8 @@ describe('wiring', () => {
     assert.match(people, /is_membership_committee/);
     assert.match(dashboard, /SiteTrafficCard/);
     assert.match(dashboard, /canViewSiteTraffic/);
+    assert.match(card, /export function SiteTrafficPanel/);
+    assert.match(card, /apiGet\(`\/api\/site-traffic\?range=\$\{range\}`\)/);
     assert.match(api, /canViewSiteTraffic/);
     assert.match(api, /queryVisits/);
     assert.match(claude, /VERCEL_WEB_ANALYTICS_TOKEN/);
