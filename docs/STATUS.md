@@ -148,9 +148,9 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 - **Policy hub** — public `/policy` + `/policy/:slug`. **Framing:** where SAMPA
   **will publish** its public voice for **access** to MAT/MOUD—not a “comments only”
   archive and not nav-labeled “Advocacy.” Nav stays **Policy**. Honest scope today:
-  three public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
+  four public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
   91 FR 43103; ASAM correctional settings & reentry **2026-08-31** with `[P## L##]`
-  capsules); levers table + Position/Statement
+  capsules; CMS CY 2027 PFS **CMS-1848-P** **2026-09-14**); levers table + Position/Statement
   types are **roadmap / intent** (“How we will improve access”, “What we will publish”).
   `/policy` also shows **Roadmap from our first comment** priorities seeded by that
   HHS RFI (telehealth, state/OTP alignment, workforce, payment, stigma/peers, data).
