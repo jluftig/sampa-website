@@ -12,12 +12,14 @@ expanding access to medications for addiction treatment (MAT)—including
 buprenorphine, methadone, naltrexone, and other medications for opioid use
 disorder (MOUD), especially in rural and underserved communities.
 
-**Honest scope today:** the first published artifact is the July 2026 HHS RFI
-public comment. Most levers and document types are **roadmap / intent**, not a
-claim that SAMPA already operates across every lever. Site copy must stay in
-future/intent tense for the levers table and type taxonomy (“How we will…”,
-“What we will publish”). The **Roadmap from our first comment** section on
-`/policy` surfaces priorities taken from that HHS submission.
+**Honest scope today:** four published public comments (HHS RFI July 2026; HRSA
+psychedelic-therapies August 2026; ASAM correctional settings August 2026; CMS
+CY 2027 PFS / CMS-1848-P September 2026). Most levers and document types are
+**roadmap / intent**, not a claim that SAMPA already operates across every lever.
+Site copy must stay in future/intent tense for the levers table and type
+taxonomy (“How we will…”, “What we will publish”). The **Roadmap from our first
+comment** section on `/policy` surfaces priorities taken from that HHS
+submission.
 
 **Nav label stays “Policy.”** Outcome-forward copy; instruments underneath.
 Do **not** rename the product to “Public comment hub” (too narrow) or lead with
@@ -57,7 +59,7 @@ levers—not only federal dockets. Keep in sync with `POLICY_LEVERS` in
 |-------|--------------------------------------|------------------|
 | Federal rulemaking | HHS/SAMHSA/DEA/CMS RFIs; permanent SUD telehealth with practitioner-neutral language; 42 CFR Part 8 OTP practitioner implementation | Public comments |
 | State practice law | Scope/supervision; stranded DATA-waiver / X-waiver references; MOUD-specific PA barriers; state OTP / methadone alignment with Part 8 | Positions, board letters, model language, coalitions |
-| Payment | Medicaid MOUD pay parity; prior auth; Medicare differentials; PA billing for Collaborative Care / BHI | Letters, positions, payer comments |
+| Payment | Medicaid MOUD pay parity; prior auth; Medicare differentials; CY 2027 PFS (SBIRT, SUD SMAs, visit-complexity, Quality ID 305); PA billing for Collaborative Care / BHI | Letters, positions, payer comments |
 | Systems / employers | Low-barrier / same-day MOUD; clinic protocols; peer recovery with prescribing; rural specialty backup | Toolkits, positions, member education |
 | Workforce & professional voice | PA recognition in HRSA/NHSC & HHS projections; MATE Act / stigma education; peer recovery culture; joint society statements | Statements, coalitions, comments |
 | Evidence → standards | Outcome measures including prescriber type; near-real-time MOUD access dashboards; workforce-visible claims data | Positions + research briefs |
@@ -90,11 +92,11 @@ clusters.
   with the SPA route `/policy/:slug`.
 - Optional **`lineComments`** on a document (ASAM correctional standards, 2026-08-31)
   render as a “Submitted comments” list on `/policy/:slug` with `[P## L##]` citation
-  capsules via `formatCitationCapsule`. HHS/HRSA entries omit the field.
+  capsules via `formatCitationCapsule`. HHS/HRSA/CMS entries omit the field.
 - 501(c)(3) disclaimer stays on hub + detail pages: educational / public-health
   mission; no political campaign activity.
-- First published artifact is an HHS public comment; empty Position/Statement
-  slots are intentional so the first item does not redefine the whole category.
+- First published artifact was an HHS public comment; empty Position/Statement
+  slots stay intentional so comments do not redefine the whole category.
 
 ## Policy ops (adjacent track)
 
