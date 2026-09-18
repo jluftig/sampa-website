@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-18 (T54 In Progress — news bylines include credentials / PA-C)
+**Last updated:** 2026-09-18 (T54 Done — news bylines include credentials / PA-C, PR #107)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T54 | News bylines include credentials (PA-C) | egg | 2026-09-18 | **Claimed egg.** `author_name` / picker used `full_name` only. Append `profiles.credentials`. Preview PR; do not merge. Live denormalized bylines backfilled separately. |
 | T53 | In-site site-traffic dashboard for Board + Membership Committee | cursor | 2026-09-16 | **Claimed cursor.** Logged-in `/dashboard` card (not Vercel login): visitors/pageviews + top paths. Gate: `is_board` OR new `is_membership_committee`. Server proxy to Vercel Web Analytics API. Preview PR only — do not merge. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
 | T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
@@ -77,11 +76,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T54 | News bylines include credentials (PA-C) | egg | 2026-09-18 | **Merged PR #107 → Production** (`8241122`). Bylines append `profiles.credentials` (`Josh Luftig, PA-C`). Live `author_name` backfilled. SQL Editor still needs `supabase/migrations/2026-09-18-list-news-editors-credentials.sql` so the picker does not strip titles on save. |
 | T52 | Vercel Web Analytics for addictionpas.org | cursor | 2026-09-16 | **Merged PR #105 → Production** (`fe234d6`). `@vercel/analytics/react` `<Analytics />` at SPA root (`src/main.jsx`). Josh already Enabled the dashboard toggle. After this deploy, visit the live site once to confirm the Analytics tab starts receiving pageviews. |
 | T51 | CMS CY 2027 PFS public comment (CMS-1848-P) on /policy | cursor | 2026-09-16 | **Merged PR #104 → Production** (`b3ade23`). Fourth public comment: CMS-1848-P / Docket CMS-2026-2377 on `/policy` + `/policy/cms-pfs-cy-2027-1848-p` with branded PDF. Josh approved after Vercel preview + bodyHtml copy trim. |
 | T49 | Harrison Keyes Education Committee co-chair on About | cursor | 2026-09-11 | **Merged PR #102 → Production** (`ef9b908`). Shani Wilson appointed Harrison Education Committee co-chair. `/about#harrison-keyes`: DAL primary + `Education co-chair`. Bio/photo kept. Shani remains Education chair. |
 | T48 | Kerith Hartmann ASIO officer on About | cursor | 2026-09-10 | **Merged PR #101 → Production** (`1a18c24`). Board vote 2026-09-09. `/about#kerith-hartmann`: ASIO (Advocacy, Success, and Impact Officer) in Board and officers after Treasurer. Form bio/photo kept. |
-| T47 | Official-domain + WY registered-agent address for Workspace for Nonprofits | cursor | 2026-09-06 | **Merged PR #100 → Production** (`71a8b7e`). About + footer: official website/email domain; sampa.org unavailable; Sheridan registered-agent street; mailing PO Box 8. No home street address. |
 
 ### Task workflow (agents + humans)
 
