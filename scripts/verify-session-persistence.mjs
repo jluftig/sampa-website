@@ -184,6 +184,7 @@ describe('auth event recovery', () => {
   it('retries refresh on transient gaps, not on a normal cold start', () => {
     assert.equal(shouldRetryAuthRecovery({ event: 'TOKEN_REFRESHED', session: null, previous: session }), true);
     assert.equal(shouldRetryAuthRecovery({ event: 'SIGNED_OUT', session: null, previous: session }), true);
+    assert.equal(shouldRetryAuthRecovery({ event: 'SIGNED_OUT', session: null, previous: null }), false);
     assert.equal(shouldRetryAuthRecovery({
       event: 'SIGNED_OUT',
       session: null,

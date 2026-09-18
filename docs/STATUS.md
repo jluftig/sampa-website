@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-18 (T53 rebased onto main — Site traffic on `/editor/members` for roster viewers)
+**Last updated:** 2026-09-18 (T56 claimed — homepage / `/editor/members` reload loop)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,6 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor.** PR #109. Root cause: Login honored `next=/editor/members` for any signed-in profile, and guards bounced half-hydrated sessions to `/login?next=…`, so `sessionUsable` flicker replayed the roster URL (and `SIGNED_OUT` with no previous session re-entered recovery). Fix: access-aware `postAuthPath`, half-session stays on “Checking access…”, no SIGNED_OUT retry without a previous session. Roster gate unchanged (`admin` OR `can_view_members`). Preview PR — do not merge until Josh reviews. |
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
 | T53 | In-site site-traffic dashboard for roster viewers | cursor | 2026-09-16 | **Claimed cursor.** PR #106. Site traffic card at the **top of `/editor/members`** (not `/dashboard`). Gate matches roster (`RequireMemberViewer` / `canViewMemberRoster`): `admin` OR `can_view_members`. Board / Membership Committee hats do **not** grant access — check **View members** for committee/board people who need the roster + card. Tracking-start note 2026-09-16. Aggregates only (no PII). Preview PR only — do not merge. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
+import { guardLoginPath } from '../lib/authRedirect';
 import { canViewMemberRoster } from '../lib/memberRoster';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -8,11 +9,11 @@ import Footer from './Footer';
 // Gate for the member roster (/editor/members): same helper as Site traffic —
 // admin or can_view_members. Read-only roster — RLS still blocks writes.
 export default function RequireMemberViewer({ children }) {
-  const { loading, sessionUsable, profile } = useAuth();
+  const { loading, sessionUsable, profile, user } = useAuth();
   const location = useLocation();
   const canOpen = canViewMemberRoster(profile);
 
-  if (loading) {
+  if (loading || (!sessionUsable && !!user)) {
     return (
       <div className="relative min-h-screen bg-background text-text">
         <div className="noise-overlay pointer-events-none"></div>
@@ -26,8 +27,15 @@ export default function RequireMemberViewer({ children }) {
   }
 
   if (!sessionUsable) {
-    const next = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?next=${next}`} replace />;
+    return (
+      <Navigate
+        to={guardLoginPath({
+          pathname: location.pathname,
+          search: location.search,
+        })}
+        replace
+      />
+    );
   }
 
   if (!canOpen) {

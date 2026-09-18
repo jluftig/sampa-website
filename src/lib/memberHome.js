@@ -1,3 +1,6 @@
+import { stripAuthCallbackParams } from './authSession.js';
+import { canViewMemberRoster } from './memberRoster.js';
+
 // Where a signed-in person should land after "Member Login" (header/footer)
 // or after /login with no explicit next. Membership is keyed to the profile
 // row for THIS auth user id — never email. Editors/admins (and anyone with
@@ -17,16 +20,48 @@ export function signedInHomePath(profile) {
   return isEditorProfile(profile) ? '/editor' : '/dashboard';
 }
 
-// Only follow in-app paths — never an absolute URL from the query string.
-export function safeNext(raw) {
-  return raw && raw.startsWith('/') && !raw.startsWith('//') ? raw : null;
+function pathOnly(raw) {
+  return String(raw || '').split('?')[0].split('#')[0];
 }
 
-// Honor an explicit next (checkout, news, /dashboard, /editor/members, …).
-// Member Login itself uses /login with no next so officers land on /editor.
+export function isMemberRosterPath(path) {
+  const p = pathOnly(path);
+  return p === '/editor/members' || p.startsWith('/editor/members/');
+}
+
+export function isEditorAppPath(path) {
+  const p = pathOnly(path);
+  if (isMemberRosterPath(p)) return false;
+  return p === '/editor' || p.startsWith('/editor/');
+}
+
+// Only follow in-app paths — never an absolute URL from the query string.
+// Drop PKCE/magic-link params so a guard bounce cannot replay ?code= and
+// never treat /login as a return-to (that is how next nests into a loop).
+export function safeNext(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  if (!raw.startsWith('/') || raw.startsWith('//')) return null;
+  const stripped = stripAuthCallbackParams(`https://www.addictionpas.org${raw}`);
+  const cleaned = stripped || raw;
+  if (pathOnly(cleaned) === '/login') return null;
+  return cleaned;
+}
+
+// Honor an explicit next only when this profile can actually stay there.
+// /editor/members is roster-gated (admin or can_view_members) — sending a
+// signed-in president/editor without that flag back to the roster is how
+// Login ↔ RequireMemberViewer can bounce forever if sessionUsable flickers.
 export function postAuthPath(profile, rawNext) {
   const requested = safeNext(rawNext);
-  if (requested) return requested;
+  if (requested) {
+    if (isMemberRosterPath(requested) && !canViewMemberRoster(profile)) {
+      return signedInHomePath(profile);
+    }
+    if (isEditorAppPath(requested) && !isEditorProfile(profile)) {
+      return signedInHomePath(profile);
+    }
+    return requested;
+  }
   return signedInHomePath(profile);
 }
 
