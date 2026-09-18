@@ -92,7 +92,14 @@ export default function PolicyView() {
             {doc.docket && (
               <div className="flex flex-wrap gap-x-2">
                 <dt className="font-semibold text-text/80">Docket</dt>
-                <dd>{doc.docket}</dd>
+                <dd
+                  className="[&_a]:text-primary-text [&_a]:underline hover:[&_a]:no-underline"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(doc.docket, {
+                      USE_PROFILES: { html: true },
+                    }),
+                  }}
+                />
               </div>
             )}
             {doc.submittedAt && (

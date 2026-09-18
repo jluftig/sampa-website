@@ -23,6 +23,12 @@ must(seed, "type: 'comment'", 'policyDocuments.js');
 must(seed, 'CMS-1848-P', 'policyDocuments.js');
 must(seed, 'Centers for Medicare & Medicaid Services (CMS)', 'policyDocuments.js');
 must(seed, 'CMS-2026-2377-0002', 'policyDocuments.js');
+must(
+  seed,
+  'href="https://www.regulations.gov/document/CMS-2026-2377-0002"',
+  'policyDocuments.js'
+);
+must(seed, '>Document ID CMS-2026-2377-0002</a>', 'policyDocuments.js');
 must(seed, 'mu1-xtr9-b3nv', 'policyDocuments.js');
 must(seed, "submittedAt: '2026-09-14'", 'policyDocuments.js');
 must(seed, "publishedAt: '2026-09-14'", 'policyDocuments.js');
@@ -64,6 +70,12 @@ for (const leftover of [
 }
 if (!cmsBlock.includes('Questions go to the SAMPA Public Health Policy Committee at policy@addictionpas.org')) {
   fail('CMS close should match the HRSA/ASAM committee + policy@ line');
+}
+
+const view = readFileSync(join(root, 'src/pages/PolicyView.jsx'), 'utf8');
+must(view, 'dangerouslySetInnerHTML', 'PolicyView.jsx');
+if (!view.includes('doc.docket') || !view.includes('DOMPurify.sanitize(doc.docket')) {
+  fail('PolicyView must sanitize docket HTML so the regulations.gov citation can render');
 }
 
 const slugs = [...seed.matchAll(/slug: '([^']+)'/g)].map((m) => m[1]);
