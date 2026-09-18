@@ -3,7 +3,6 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { BookmarkX, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
-import { canViewSiteTraffic } from '../lib/siteTraffic';
 import { canAddPatron, patronDollars, patronUpgradeDuration, PATRON_ADDON_BLURB, tierByKey } from '../lib/membership';
 import { US_STATES } from '../lib/usStates';
 import {
@@ -37,7 +36,7 @@ const DIRECTORY_IDENTITY_FIELDS = [
 
 export default function Dashboard() {
   const { user, profile, profileError, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
-  const showRosterLink = canViewMembers || canViewSiteTraffic(profile);
+  const showRosterLink = canViewMembers;
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
   const justAddedPatron = justPaid && searchParams.get('addon') === 'patron';

@@ -13,6 +13,7 @@ import {
   stripAuthCallbackParams,
 } from './authSession';
 import { isEditorProfile } from './memberHome';
+import { canViewMemberRoster } from './memberRoster';
 
 const AuthContext = createContext(null);
 
@@ -270,7 +271,7 @@ export function AuthProvider({ children }) {
     // The legacy 'editor' role still implies news editing; admins imply all.
     // is_board / is_membership_committee are explicit only (admin ≠ those hats).
     isEditor,
-    canViewMembers: isAdmin || !!profile?.can_view_members,
+    canViewMembers: canViewMemberRoster(profile),
     isAdmin,
     isBoard: !!profile?.is_board,
     isMembershipCommittee: !!profile?.is_membership_committee,

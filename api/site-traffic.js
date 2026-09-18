@@ -2,7 +2,7 @@ import { requireUser, supabaseAdmin, json } from './_lib/clients.js';
 import { analyticsConfigFromEnv, queryVisits } from './_lib/vercel-analytics.js';
 import {
   TOP_PATH_LIMIT,
-  canViewSiteTraffic,
+  canViewMemberRoster,
   normalizeTopPaths,
   normalizeVisitCount,
   parseTrafficRange,
@@ -11,8 +11,8 @@ import {
 } from '../src/lib/siteTraffic.js';
 
 // GET /api/site-traffic?range=7|30
-// Board or Membership Committee only. Proxies Vercel Web Analytics (aggregates,
-// no PII). Token stays on the server.
+// Same gate as /editor/members: canViewMemberRoster (admin or can_view_members).
+// Proxies Vercel Web Analytics (aggregates, no PII). Token stays on the server.
 
 function trafficJson(body, status = 200) {
   return json(body, status, { 'cache-control': 'private, no-store' });
@@ -20,20 +20,12 @@ function trafficJson(body, status = 200) {
 
 async function loadViewerProfile(userId) {
   const admin = supabaseAdmin();
-  const full = await admin
+  const { data } = await admin
     .from('profiles')
-    .select('is_board, is_membership_committee')
+    .select('role, can_view_members')
     .eq('id', userId)
     .maybeSingle();
-  if (!full.error) return full.data;
-
-  // Migration not applied yet — fall back to is_board only.
-  const boardOnly = await admin
-    .from('profiles')
-    .select('is_board')
-    .eq('id', userId)
-    .maybeSingle();
-  return boardOnly.data;
+  return data;
 }
 
 export async function handleSiteTraffic(request, deps = {}) {
@@ -48,7 +40,7 @@ export async function handleSiteTraffic(request, deps = {}) {
     if (!user) return trafficJson({ error: 'Sign in required' }, 401);
 
     const profile = await loadProfile(user.id);
-    if (!canViewSiteTraffic(profile)) {
+    if (!canViewMemberRoster(profile)) {
       return trafficJson({ error: 'Not authorized' }, 403);
     }
 

@@ -9,9 +9,11 @@ import Footer from '../components/Footer';
 // Admin-only page: everyone who has signed in, with checkbox permissions.
 // Capabilities are independent (people wear multiple hats):
 //   Publish news  -> can_edit_news (news posts; the old 'editor' role)
-//   View members  -> can_view_members (READ-ONLY roster + pledge tracker)
-//   Board         -> is_board (directory badge; site-traffic on /editor/members)
-//   Membership    -> is_membership_committee (site-traffic on /editor/members)
+//   View members  -> can_view_members (READ-ONLY roster + pledge tracker +
+//                    Site traffic on /editor/members)
+//   Board         -> is_board (directory badge)
+//   Membership    -> is_membership_committee (People label; give View members
+//                    if they need the roster / Site traffic)
 //   Administrator -> role 'admin' (everything operational, incl. this page)
 // Saving normalizes the legacy 'editor' role value into the flag.
 // Board is independent of admin (admin ≠ board unless checked).
@@ -98,14 +100,15 @@ export default function AdminPeople() {
           independent checkboxes — check as many as someone&apos;s hats require.
           <strong> Publish news</strong> lets them write and publish posts;
           <strong> view members</strong> gives read-only access to the staff
-          roster and pledge tracker (for the membership committee, treasurer,
-          and board); <strong>Board</strong> marks a board member (directory
-          badge + Site traffic on the member roster);
-          <strong> Membership Committee</strong> also unlocks Site traffic on
-          the roster (independent of Board);
+          roster, pledge tracker, and Site traffic (for the membership
+          committee, treasurer, and board); <strong>Board</strong> marks a
+          board member (directory badge);
+          <strong> Membership Committee</strong> is a hat label — also check
+          <strong> view members</strong> if they should see the roster and
+          Site traffic;
           <strong> administrators</strong> have operational access, including
-          this page and editing member records. Board and Membership Committee
-          are separate from Admin.
+          this page, the roster, and Site traffic. Board and Membership
+          Committee are separate from Admin.
         </p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}

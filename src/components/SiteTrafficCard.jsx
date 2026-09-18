@@ -19,8 +19,8 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
             Site traffic
           </h2>
           <p className="text-text/50 text-xs mt-1 max-w-xl">
-            Aggregate visitors and pageviews for addictionpas.org. Board and
-            Membership Committee only — no individual visitors.
+            Aggregate visitors and pageviews for addictionpas.org. Same access
+            as the member roster — no individual visitors.
           </p>
         </div>
         <div

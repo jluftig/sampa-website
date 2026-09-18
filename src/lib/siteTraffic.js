@@ -1,14 +1,15 @@
-// Site-traffic dashboard helpers. Aggregate visitors/pageviews only — no PII.
-// Gate: Board or Membership Committee. Admin is not implied (same as is_board).
+import { canViewMemberRoster } from './memberRoster.js';
+
+// Site-traffic helpers. Aggregate visitors/pageviews only — no PII.
+// Gate matches the member roster: canViewMemberRoster (admin or can_view_members).
+
+export { canViewMemberRoster };
+export const canViewSiteTraffic = canViewMemberRoster;
 
 export const TRAFFIC_RANGES = [7, 30];
 export const TOP_PATH_LIMIT = 5;
 // Vercel Web Analytics has no backfill — counts start when tracking was enabled.
 export const TRACKING_STARTED_NOTE = 'Tracking started on September 16, 2026.';
-
-export function canViewSiteTraffic(profile) {
-  return !!(profile?.is_board || profile?.is_membership_committee);
-}
 
 export function parseTrafficRange(value) {
   return value === '30' || value === 30 ? 30 : 7;

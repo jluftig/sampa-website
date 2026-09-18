@@ -1,18 +1,16 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
-import { canViewSiteTraffic } from '../lib/siteTraffic';
+import { canViewMemberRoster } from '../lib/memberRoster';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-// Gate for the member roster (/editor/members): admins, can_view_members,
-// Board, or Membership Committee. Site traffic lives at the top of this page
-// (board/committee only). Roster data is still RLS-enforced; viewers can't
-// write member records even if the UI were bypassed.
+// Gate for the member roster (/editor/members): same helper as Site traffic —
+// admin or can_view_members. Read-only roster — RLS still blocks writes.
 export default function RequireMemberViewer({ children }) {
-  const { loading, sessionUsable, canViewMembers, profile } = useAuth();
+  const { loading, sessionUsable, profile } = useAuth();
   const location = useLocation();
-  const canOpen = canViewMembers || canViewSiteTraffic(profile);
+  const canOpen = canViewMemberRoster(profile);
 
   if (loading) {
     return (
@@ -40,10 +38,9 @@ export default function RequireMemberViewer({ children }) {
         <main className="max-w-3xl mx-auto px-4 pt-40 pb-24 text-center">
           <h1 className="text-3xl font-drama font-bold mb-4">Members-area access required</h1>
           <p className="text-text/60 max-w-md mx-auto">
-            Viewing the member roster is limited to administrators, people
-            with the &quot;view members&quot; permission, Board, and
-            Membership Committee. If you should have access, ask an
-            administrator to grant it.
+            Viewing the member roster is limited to administrators and people
+            with the &quot;view members&quot; permission. If you should have
+            access, ask an administrator to grant it.
           </p>
         </main>
         <Footer />

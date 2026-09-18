@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
-import { canViewSiteTraffic } from '../lib/siteTraffic';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function EditorDashboard() {
   const { profile, signOut, isAdmin, canViewMembers } = useAuth();
-  const showRosterLink = canViewMembers || canViewSiteTraffic(profile);
+  const showRosterLink = canViewMembers;
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

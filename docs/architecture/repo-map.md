@@ -35,8 +35,8 @@ api/                        Vercel serverless functions (Web-handler signature: 
   share.js                  GET ?slug= → OG/Twitter meta HTML for social crawlers (anon key,
                             published only)
   site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths; JWT +
-                            is_board or is_membership_committee; proxies Vercel
-                            Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
+                            canViewMemberRoster (admin or can_view_members);
+                            proxies Vercel Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -47,6 +47,8 @@ src/
     authStorage.js          localStorage + cookie session mirror
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
+    memberRoster.js         canViewMemberRoster — /editor/members + Site traffic
+    siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
     api.js                  apiGet / apiPost — /api/* with Supabase JWT
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle
@@ -91,7 +93,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people` |
-| Member-viewer, admin, Board, or Membership Committee | `/editor/members` (staff roster; Site traffic card for Board / Membership Committee) |
+| Member-viewer or admin | `/editor/members` (staff roster + Site traffic card; `canViewMemberRoster`) |
 
 Declare `/editor/keywords`, `/editor/people`, `/editor/members` **before** `/editor/:id`.  
 `/login?next=` must be an in-app path starting with `/` (not `//`).

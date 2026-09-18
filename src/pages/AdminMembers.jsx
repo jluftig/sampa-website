@@ -9,7 +9,6 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PrivilegedAccessAgreement from '../components/PrivilegedAccessAgreement';
 import SiteTrafficCard from '../components/SiteTrafficCard';
-import { canViewSiteTraffic } from '../lib/siteTraffic';
 
 const STATUS_FILTERS = [
   { key: 'all', label: 'All accounts' },
@@ -128,7 +127,6 @@ function toCsv(rows) {
 // are allowed by the profiles RLS policy (admins see all rows).
 export default function AdminMembers() {
   const { user, profile } = useAuth();
-  const showSiteTraffic = canViewSiteTraffic(profile);
   // Confidentiality agreement gate: no member data is fetched or rendered
   // until this person has click-accepted (timestamp on their profile).
   const accepted = !!profile?.privileged_terms_accepted_at;
@@ -286,11 +284,9 @@ export default function AdminMembers() {
           ← Dashboard
         </Link>
 
-        {showSiteTraffic && (
-          <div className="mt-6">
-            <SiteTrafficCard />
-          </div>
-        )}
+        <div className="mt-6">
+          <SiteTrafficCard />
+        </div>
 
         {!accepted ? (
           <div className="mt-8">

@@ -79,6 +79,7 @@ Full tree + routes: **`docs/architecture/repo-map.md`**.
 
 - **RLS is the only real authz boundary.** Client checks = UX only.
 - Peer directory via **`member_directory*` RPCs only** — never open `profiles` SELECT to all members.
+- **`/editor/members` + Site traffic** share `canViewMemberRoster` (`admin` or `can_view_members`). Board / Membership Committee hats do not imply it.
 - **`guard_profile_role`** blocks self-grant of role/membership; webhook is sole membership writer.
 - Public aggregates must filter **`status='published'`** in app **and** in SQL RPCs (editors can see drafts via RLS).
 - No service_role / elevated key in client or `VITE_*`.
