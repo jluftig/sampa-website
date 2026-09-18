@@ -1027,11 +1027,13 @@ create policy device_tokens_delete on public.device_tokens
 -- Editors-only roster for the PostEditor co-author picker. SECURITY DEFINER so
 -- we never widen profiles SELECT RLS (own / admin / member-viewer only). Caller
 -- must be an editor; returns a hard allowlist of columns.
+drop function if exists public.list_news_editors();
 create or replace function public.list_news_editors()
 returns table (
   id uuid,
   full_name text,
-  email text
+  email text,
+  credentials text
 )
 language plpgsql stable security definer set search_path = public as $$
 begin
@@ -1043,7 +1045,8 @@ begin
   select
     p.id,
     coalesce(nullif(btrim(p.full_name), ''), p.email) as full_name,
-    p.email
+    p.email,
+    nullif(btrim(p.credentials), '') as credentials
   from public.profiles p
   where p.role in ('editor', 'admin') or p.can_edit_news
   order by coalesce(nullif(btrim(p.full_name), ''), p.email);
