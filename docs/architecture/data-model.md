@@ -36,8 +36,9 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 
 ### Content
 - `posts` — title, slug, excerpt, body_html, cover, author_id/author_name (denormalized from
-  `post_authors`), status draft|published, published_at, source_* citation fields, `fts`
-- `post_authors` — ordered co-authors; `list_news_editors()` for picker
+  `post_authors`; byline is `full_name` + `profiles.credentials`, e.g. `Josh Luftig, PA-C`),
+  status draft|published, published_at, source_* citation fields, `fts`
+- `post_authors` — ordered co-authors; `list_news_editors()` for picker (includes credentials)
 - `tags` — UI term **keyword**; slug immutable in UI
 - `items` — Key Points; **ids are permanent share targets** `/news/<slug>#point-<id>`
 - `item_tags` — M2M
