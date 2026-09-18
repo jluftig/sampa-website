@@ -67,7 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
-| T53 | In-site site-traffic dashboard for Board + Membership Committee | cursor | 2026-09-16 | **Claimed cursor.** PR #106. Logged-in `/dashboard` card (not Vercel login): visitors/pageviews + top paths. Gate: `is_board` OR new `is_membership_committee`. Card always notes tracking started 2026-09-16 (no Analytics backfill). Server proxy to Vercel Web Analytics API. Preview PR only — do not merge. |
+| T53 | In-site site-traffic dashboard for Board + Membership Committee | cursor | 2026-09-16 | **Claimed cursor.** PR #106. Site traffic card at the **top of `/editor/members`** (not `/dashboard`). Gate: `is_board` OR `is_membership_committee` (admin does not imply). Tracking-start note 2026-09-16. Server proxy to Vercel Web Analytics API. Preview PR only — do not merge. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
 | T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
@@ -140,7 +140,7 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   `/members` via live `member_directory(..., settings_filter)`); legacy free-text
   fallback until re-save.
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
-  badge). **T53 (preview):** `/dashboard` Site traffic for Board **or**
+  badge). **T53 (preview):** Site traffic at the top of `/editor/members` for Board **or**
   `is_membership_committee` (new People checkbox). Further board-only privileges TBD.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
   ledger in Supabase, donor column on the admin roster.
@@ -346,7 +346,7 @@ Deferred from the first directory ship:
   optional separate `/research` later. Keep distinct from News/Key Points. Do not
   shrink the hub to comments-only as corpus grows.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
-- **Board privileges** — `is_board` is a directory badge plus **T53 (In Progress · cursor):** `/dashboard` Site traffic card (`is_board` OR `is_membership_committee`). **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
+- **Board privileges** — `is_board` is a directory badge plus **T53 (In Progress · cursor):** Site traffic card at the top of `/editor/members` (`is_board` OR `is_membership_committee`; not `/dashboard`). **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
 
 ### Product — platforms

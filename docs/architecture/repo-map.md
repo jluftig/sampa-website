@@ -91,7 +91,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people` |
-| Member-viewer or admin | `/editor/members` (staff roster) |
+| Member-viewer, admin, Board, or Membership Committee | `/editor/members` (staff roster; Site traffic card for Board / Membership Committee) |
 
 Declare `/editor/keywords`, `/editor/people`, `/editor/members` **before** `/editor/:id`.  
 `/login?next=` must be an in-app path starting with `/` (not `//`).

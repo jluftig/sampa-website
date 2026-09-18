@@ -17,7 +17,6 @@ import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import DonateLink from '../components/DonateLink';
-import SiteTrafficCard from '../components/SiteTrafficCard';
 import { PracticeSettingPicker } from '../components/PracticeSettingChips';
 
 const STATUS_BADGES = {
@@ -38,7 +37,7 @@ const DIRECTORY_IDENTITY_FIELDS = [
 
 export default function Dashboard() {
   const { user, profile, profileError, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
-  const showSiteTraffic = canViewSiteTraffic(profile);
+  const showRosterLink = canViewMembers || canViewSiteTraffic(profile);
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
   const justAddedPatron = justPaid && searchParams.get('addon') === 'patron';
@@ -324,7 +323,7 @@ export default function Dashboard() {
                 <Users className="w-4 h-4" /> Directory
               </Link>
             )}
-            {canViewMembers && (
+            {showRosterLink && (
               <Link to="/editor/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
                 <Users className="w-4 h-4" /> Roster
               </Link>
@@ -489,8 +488,6 @@ export default function Dashboard() {
             </>
           )}
         </section>
-
-        {showSiteTraffic && <SiteTrafficCard />}
 
         {/* Profile — account contact (SAMPA) + directory profile (peers) */}
         <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">

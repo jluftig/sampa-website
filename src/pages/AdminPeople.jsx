@@ -10,8 +10,8 @@ import Footer from '../components/Footer';
 // Capabilities are independent (people wear multiple hats):
 //   Publish news  -> can_edit_news (news posts; the old 'editor' role)
 //   View members  -> can_view_members (READ-ONLY roster + pledge tracker)
-//   Board         -> is_board (directory badge; site-traffic dashboard)
-//   Membership    -> is_membership_committee (site-traffic dashboard)
+//   Board         -> is_board (directory badge; site-traffic on /editor/members)
+//   Membership    -> is_membership_committee (site-traffic on /editor/members)
 //   Administrator -> role 'admin' (everything operational, incl. this page)
 // Saving normalizes the legacy 'editor' role value into the flag.
 // Board is independent of admin (admin ≠ board unless checked).
@@ -100,9 +100,9 @@ export default function AdminPeople() {
           <strong> view members</strong> gives read-only access to the staff
           roster and pledge tracker (for the membership committee, treasurer,
           and board); <strong>Board</strong> marks a board member (directory
-          badge + site-traffic dashboard);
-          <strong> Membership Committee</strong> also unlocks the site-traffic
-          dashboard (independent of Board);
+          badge + Site traffic on the member roster);
+          <strong> Membership Committee</strong> also unlocks Site traffic on
+          the roster (independent of Board);
           <strong> administrators</strong> have operational access, including
           this page and editing member records. Board and Membership Committee
           are separate from Admin.

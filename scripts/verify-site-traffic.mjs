@@ -192,11 +192,13 @@ describe('GET /api/site-traffic authZ', () => {
 });
 
 describe('wiring', () => {
-  it('keeps the column, guard, People checkbox, and dashboard card', () => {
+  it('keeps the column, guard, People checkbox, and roster card', () => {
     const schema = readFileSync('supabase/schema.sql', 'utf8');
     const migration = readFileSync('supabase/migrations/2026-09-16-membership-committee.sql', 'utf8');
     const people = readFileSync('src/pages/AdminPeople.jsx', 'utf8');
     const dashboard = readFileSync('src/pages/Dashboard.jsx', 'utf8');
+    const roster = readFileSync('src/pages/AdminMembers.jsx', 'utf8');
+    const rosterGate = readFileSync('src/components/RequireMemberViewer.jsx', 'utf8');
     const card = readFileSync('src/components/SiteTrafficCard.jsx', 'utf8');
     const api = readFileSync('api/site-traffic.js', 'utf8');
     const claude = readFileSync('CLAUDE.md', 'utf8');
@@ -206,8 +208,11 @@ describe('wiring', () => {
     assert.match(migration, /add column if not exists is_membership_committee/);
     assert.match(people, /Membership Committee/);
     assert.match(people, /is_membership_committee/);
-    assert.match(dashboard, /SiteTrafficCard/);
+    assert.doesNotMatch(dashboard, /SiteTrafficCard/);
     assert.match(dashboard, /canViewSiteTraffic/);
+    assert.match(roster, /SiteTrafficCard/);
+    assert.match(roster, /canViewSiteTraffic/);
+    assert.match(rosterGate, /canViewSiteTraffic/);
     assert.match(card, /export function SiteTrafficPanel/);
     assert.match(card, /apiGet\(`\/api\/site-traffic\?range=\$\{range\}`\)/);
     assert.equal(TRACKING_STARTED_NOTE, 'Tracking started on September 16, 2026.');
