@@ -8,6 +8,7 @@ import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PrivilegedAccessAgreement from '../components/PrivilegedAccessAgreement';
+import SiteTrafficCard from '../components/SiteTrafficCard';
 
 const STATUS_FILTERS = [
   { key: 'all', label: 'All accounts' },
@@ -282,6 +283,10 @@ export default function AdminMembers() {
         <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
+
+        <div className="mt-6">
+          <SiteTrafficCard />
+        </div>
 
         {!accepted ? (
           <div className="mt-8">

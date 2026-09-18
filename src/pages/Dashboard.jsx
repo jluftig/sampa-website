@@ -36,6 +36,7 @@ const DIRECTORY_IDENTITY_FIELDS = [
 
 export default function Dashboard() {
   const { user, profile, profileError, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
+  const showRosterLink = canViewMembers;
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
   const justAddedPatron = justPaid && searchParams.get('addon') === 'patron';
@@ -321,7 +322,7 @@ export default function Dashboard() {
                 <Users className="w-4 h-4" /> Directory
               </Link>
             )}
-            {canViewMembers && (
+            {showRosterLink && (
               <Link to="/editor/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
                 <Users className="w-4 h-4" /> Roster
               </Link>

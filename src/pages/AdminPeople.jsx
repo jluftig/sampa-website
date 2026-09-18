@@ -9,8 +9,11 @@ import Footer from '../components/Footer';
 // Admin-only page: everyone who has signed in, with checkbox permissions.
 // Capabilities are independent (people wear multiple hats):
 //   Publish news  -> can_edit_news (news posts; the old 'editor' role)
-//   View members  -> can_view_members (READ-ONLY roster + pledge tracker)
-//   Board         -> is_board (directory badge; future board privileges TBD)
+//   View members  -> can_view_members (READ-ONLY roster + pledge tracker +
+//                    Site traffic on /editor/members)
+//   Board         -> is_board (directory badge)
+//   Membership    -> is_membership_committee (People label; give View members
+//                    if they need the roster / Site traffic)
 //   Administrator -> role 'admin' (everything operational, incl. this page)
 // Saving normalizes the legacy 'editor' role value into the flag.
 // Board is independent of admin (admin ≠ board unless checked).
@@ -23,10 +26,19 @@ export default function AdminPeople() {
 
   async function load() {
     setLoading(true);
-    const { data, error } = await supabase
+    const cols = 'id, email, full_name, role, can_edit_news, can_view_members, is_board, is_membership_committee, created_at';
+    let { data, error } = await supabase
       .from('profiles')
-      .select('id, email, full_name, role, can_edit_news, can_view_members, is_board, created_at')
+      .select(cols)
       .order('created_at', { ascending: true });
+    if (error && /is_membership_committee/i.test(error.message || '')) {
+      const retry = await supabase
+        .from('profiles')
+        .select('id, email, full_name, role, can_edit_news, can_view_members, is_board, created_at')
+        .order('created_at', { ascending: true });
+      data = retry.data;
+      error = retry.error;
+    }
     if (error) setError(error.message);
     else setPeople(data || []);
     setLoading(false);
@@ -39,6 +51,7 @@ export default function AdminPeople() {
     news: p.can_edit_news || p.role === 'editor',
     view: p.can_view_members,
     board: !!p.is_board,
+    membershipCommittee: !!p.is_membership_committee,
     admin: p.role === 'admin',
   });
 
@@ -50,8 +63,20 @@ export default function AdminPeople() {
       can_edit_news: next.news,
       can_view_members: next.view,
       is_board: next.board,
+      is_membership_committee: next.membershipCommittee,
     };
-    const { error } = await supabase.from('profiles').update(patch).eq('id', person.id);
+    let { error } = await supabase.from('profiles').update(patch).eq('id', person.id);
+    if (error && /is_membership_committee/i.test(error.message || '')) {
+      const { is_membership_committee: _drop, ...older } = patch;
+      const retry = await supabase.from('profiles').update(older).eq('id', person.id);
+      error = retry.error;
+      if (!error) {
+        setError('Membership Committee is not in the database yet — apply supabase/migrations/2026-09-16-membership-committee.sql, then refresh.');
+        setPeople((prev) => prev.map((p) => (p.id === person.id ? { ...p, ...older } : p)));
+        setBusyId(null);
+        return;
+      }
+    }
     if (error) setError(error.message);
     else setPeople((prev) => prev.map((p) => (p.id === person.id ? { ...p, ...patch } : p)));
     setBusyId(null);
@@ -75,11 +100,15 @@ export default function AdminPeople() {
           independent checkboxes — check as many as someone&apos;s hats require.
           <strong> Publish news</strong> lets them write and publish posts;
           <strong> view members</strong> gives read-only access to the staff
-          roster and pledge tracker (for the membership committee, treasurer,
-          and board); <strong>Board</strong> marks a board member (badge in the
-          member directory; further privileges later);
+          roster, pledge tracker, and Site traffic (for the membership
+          committee, treasurer, and board); <strong>Board</strong> marks a
+          board member (directory badge);
+          <strong> Membership Committee</strong> is a hat label — also check
+          <strong> view members</strong> if they should see the roster and
+          Site traffic;
           <strong> administrators</strong> have operational access, including
-          this page and editing member records. Board is separate from Admin.
+          this page, the roster, and Site traffic. Board and Membership
+          Committee are separate from Admin.
         </p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -100,6 +129,11 @@ export default function AdminPeople() {
                       {p.board && (
                         <span className="ml-2 text-xs font-data font-semibold uppercase tracking-wider text-primary-text">
                           Board
+                        </span>
+                      )}
+                      {p.membershipCommittee && (
+                        <span className="ml-2 text-xs font-data font-semibold uppercase tracking-wider text-primary-text">
+                          Membership
                         </span>
                       )}
                     </div>
@@ -146,6 +180,17 @@ export default function AdminPeople() {
                         className={checkboxCls}
                       />
                       Board
+                    </label>
+                    <label className={`flex items-center gap-2 ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
+                      <input
+                        type="checkbox"
+                        checked={p.membershipCommittee}
+                        disabled={disabled}
+                        title={isSelf ? "You can't change your own permissions" : 'Membership Committee'}
+                        onChange={() => apply(person, { ...p, membershipCommittee: !p.membershipCommittee })}
+                        className={checkboxCls}
+                      />
+                      Membership Committee
                     </label>
                     <label className={`flex items-center gap-2 font-semibold ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
                       <input

@@ -27,7 +27,8 @@ Gate future member-only content (e.g. CME) on `is_active_member()`
 ## Privilege escalation
 
 `guard_profile_role()` BEFORE UPDATE blocks non-admins from changing `role` or any
-membership/billing column (including `patron`). Bypass only when `auth.uid() IS NULL`
+membership/billing column (including `patron`, `is_board`, `is_membership_committee`).
+Bypass only when `auth.uid() IS NULL`
 (SQL editor / service_role / Stripe webhook). `aapa_member` is self-writable (honor
 system; not verified) and is not in that guard.
 
@@ -38,6 +39,7 @@ system; not verified) and is not in that guard.
 | Endpoint | Auth |
 |----------|------|
 | checkout / portal / delete-account / create-invoice-request | Valid Supabase JWT |
+| site-traffic | Valid Supabase JWT **and** `canViewMemberRoster` (`admin` or `can_view_members`) — same as `/editor/members` |
 | create-donation-session | Public; optional JWT to link profile; amount validated server-side ($1–$50k) |
 | stripe-webhook | Stripe signature (`STRIPE_WEBHOOK_SECRET`) |
 | send-push | `x-push-secret` = `PUSH_WEBHOOK_SECRET` |

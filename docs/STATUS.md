@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-18 (T55 In Progress — regulations.gov link on CMS CY 2027 PFS policy comment)
+**Last updated:** 2026-09-18 (T53 rebased onto main — Site traffic on `/editor/members` for roster viewers)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,7 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
-| T53 | In-site site-traffic dashboard for Board + Membership Committee | cursor | 2026-09-16 | **Claimed cursor.** Logged-in `/dashboard` card (not Vercel login): visitors/pageviews + top paths. Gate: `is_board` OR new `is_membership_committee`. Server proxy to Vercel Web Analytics API. Preview PR only — do not merge. |
+| T53 | In-site site-traffic dashboard for roster viewers | cursor | 2026-09-16 | **Claimed cursor.** PR #106. Site traffic card at the **top of `/editor/members`** (not `/dashboard`). Gate matches roster (`RequireMemberViewer` / `canViewMemberRoster`): `admin` OR `can_view_members`. Board / Membership Committee hats do **not** grant access — check **View members** for committee/board people who need the roster + card. Tracking-start note 2026-09-16. Aggregates only (no PII). Preview PR only — do not merge. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
 | T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
@@ -140,7 +140,10 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   `/members` via live `member_directory(..., settings_filter)`); legacy free-text
   fallback until re-save.
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
-  badge). Further board-only privileges not built yet.
+  badge). **T53 (preview):** Site traffic at the top of `/editor/members` for
+  the same people who can open the roster (`admin` or `can_view_members`).
+  Membership Committee is a People hat label — also check **View members** if
+  they should see the roster / Site traffic. Further board-only privileges TBD.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
   ledger in Supabase, donor column on the admin roster.
   **ON (2026-07-21):** restored after IRS 501(c)(3) determination for SAMPA, Inc.
@@ -230,7 +233,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#105** merged (**T52** Done → Production). **#104** merged (**T51** Done → Production). **#102** merged (**T49** Done → Production). **#101** merged (**T48** Done → Production). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#106** (T53 Site traffic on `/editor/members` for roster viewers), **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#105** merged (**T52** Done → Production). **#104** merged (**T51** Done → Production). **#102** merged (**T49** Done → Production). **#101** merged (**T48** Done → Production). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -345,7 +348,7 @@ Deferred from the first directory ship:
   optional separate `/research` later. Keep distinct from News/Key Points. Do not
   shrink the hub to comments-only as corpus grows.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
-- **Board privileges** — `is_board` is badge-only today; decide board-only surfaces. **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
+- **Board privileges** — `is_board` is a directory badge. **T53 (In Progress · cursor):** Site traffic card at the top of `/editor/members` for roster viewers (`admin` OR `can_view_members`; not `/dashboard`; Board/committee hats alone do not open it). **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
 
 ### Product — platforms

@@ -30,8 +30,11 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
   collected. Helps suggest Fellow vs Certified PA (`sustaining`) on `/join`.
 - `role` enum `user_role` = member|editor|admin (default member; `editor` legacy — UI
   normalizes to member + flags)
-- Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`, `is_board`
-  (Board independent of Admin)
+- Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`,
+  `is_board`, `is_membership_committee` (Board and Membership Committee are
+  independent of Admin). Roster + Site traffic use `canViewMemberRoster`
+  (`admin` or `can_view_members`). Committee/board hats do not open those
+  surfaces — also check **View members**.
 - `privileged_terms_accepted_at` — roster confidentiality click-accept (self-settable)
 
 ### Content
