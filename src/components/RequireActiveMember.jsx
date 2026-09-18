@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
+import { guardLoginPath } from '../lib/authRedirect';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -8,10 +9,10 @@ import Footer from './Footer';
 // active members and staff (editors/admins). Matches SQL is_active_member().
 // Non-members are pointed at /join; signed-out visitors go to /login.
 export default function RequireActiveMember({ children }) {
-  const { loading, sessionUsable, canAccessMemberDirectory } = useAuth();
+  const { loading, sessionUsable, canAccessMemberDirectory, user } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if (loading || (!sessionUsable && !!user)) {
     return (
       <div className="relative min-h-screen bg-background text-text">
         <div className="noise-overlay pointer-events-none"></div>
@@ -25,8 +26,15 @@ export default function RequireActiveMember({ children }) {
   }
 
   if (!sessionUsable) {
-    const next = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?next=${next}`} replace />;
+    return (
+      <Navigate
+        to={guardLoginPath({
+          pathname: location.pathname,
+          search: location.search,
+        })}
+        replace
+      />
+    );
   }
 
   if (!canAccessMemberDirectory) {

@@ -32,7 +32,10 @@ export function shouldRetryAuthRecovery({
 } = {}) {
   if (intentionalSignOut) return false;
   if (session) return false;
-  if (event === 'SIGNED_OUT') return true;
+  // Only retry SIGNED_OUT when we still had a session to recover. A second
+  // SIGNED_OUT after a held-session clear (previous already null) is what
+  // re-hydrated a dead cookie and bounced /editor/members ↔ /login.
+  if (event === 'SIGNED_OUT') return !!previous;
   if (KEEP_ON_NULL.has(event)) return true;
   if (event === 'INITIAL_SESSION') {
     if (previous) return false;

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
-import { oauthReturnPath, postAuthPath, safeNext } from '../lib/memberHome';
+import { decideAuthRedirect } from '../lib/authRedirect';
+import { oauthReturnPath, safeNext } from '../lib/memberHome';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function Login() {
   const { profile, sessionUsable, loading, signInWithGoogle, signInWithEmail } = useAuth();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const requestedNext = safeNext(searchParams.get('next'));
-  const next = postAuthPath(profile, requestedNext);
   const oauthNext = oauthReturnPath(requestedNext);
+  const dest = decideAuthRedirect(location, { loading, sessionUsable, profile });
 
   const [email, setEmail] = useState('');
   const [linkState, setLinkState] = useState('idle'); // idle | sending | sent | error
@@ -19,8 +21,10 @@ export default function Login() {
   // Only continue when the session is usable (live token + profiles row).
   // A held/expired session still has user.email — bouncing that to
   // /dashboard is the no-membership upsell bug.
-  if (!loading && sessionUsable) {
-    return <Navigate to={next} replace />;
+  // dest is access-aware: /editor/members is not honored without roster access,
+  // so we cannot bounce Login ↔ RequireMemberViewer.
+  if (dest && dest !== `${location.pathname}${location.search}`) {
+    return <Navigate to={dest} replace />;
   }
 
   const sendMagicLink = async (e) => {

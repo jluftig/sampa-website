@@ -79,10 +79,12 @@ describe('post-auth next + OAuth return', () => {
     assert.equal(safeNext(null), null);
   });
 
-  it('honors an explicit in-app next (join, dashboard, roster)', () => {
+  it('honors an explicit in-app next the profile can actually keep', () => {
     assert.equal(postAuthPath(editor, '/join'), '/join');
     assert.equal(postAuthPath(editor, '/dashboard'), '/dashboard');
-    assert.equal(postAuthPath(editor, '/editor/members'), '/editor/members');
+    assert.equal(postAuthPath(admin, '/editor/members'), '/editor/members');
+    assert.equal(postAuthPath(editor, '/editor/members'), '/editor');
+    assert.equal(postAuthPath(member, '/editor/members'), '/dashboard');
     assert.equal(postAuthPath(member, '/news/hello'), '/news/hello');
   });
 
@@ -111,7 +113,7 @@ describe('header/footer and login wiring', () => {
 
   it('Login resolves next from the profile after auth and sends OAuth back through /login by default', () => {
     const login = readFileSync(new URL('../src/pages/Login.jsx', import.meta.url), 'utf8');
-    assert.match(login, /postAuthPath/);
+    assert.match(login, /decideAuthRedirect/);
     assert.match(login, /oauthReturnPath/);
     assert.match(login, /signInWithGoogle\(oauthNext\)/);
     assert.match(login, /signInWithEmail\([^,]+, oauthNext\)/);
@@ -119,12 +121,16 @@ describe('header/footer and login wiring', () => {
     assert.doesNotMatch(login, /if \(!loading && user\)/);
   });
 
-  it('route guards bounce a half-hydrated session to /login', () => {
+  it('route guards use sessionUsable + guardLoginPath', () => {
     const auth = readFileSync(new URL('../src/components/RequireAuth.jsx', import.meta.url), 'utf8');
     const editor = readFileSync(new URL('../src/components/RequireEditor.jsx', import.meta.url), 'utf8');
+    const roster = readFileSync(new URL('../src/components/RequireMemberViewer.jsx', import.meta.url), 'utf8');
     assert.match(auth, /sessionUsable/);
     assert.match(editor, /sessionUsable/);
-    assert.match(auth, /\/login\?next=/);
+    assert.match(roster, /sessionUsable/);
+    assert.match(auth, /guardLoginPath/);
+    assert.match(editor, /guardLoginPath/);
+    assert.match(roster, /guardLoginPath/);
   });
 
   it('dashboard does not call the no-membership upsell when the profile row failed to load', () => {
