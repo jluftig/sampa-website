@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** Add Document ID CMS-2026-2377-0002 link to https://www.regulations.gov/document/CMS-2026-2377-0002 on `/policy/cms-pfs-cy-2027-1848-p`. Follow-up to T51 / PR #104. |
+| T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
 | T53 | In-site site-traffic dashboard for Board + Membership Committee | cursor | 2026-09-16 | **Claimed cursor.** Logged-in `/dashboard` card (not Vercel login): visitors/pageviews + top paths. Gate: `is_board` OR new `is_membership_committee`. Server proxy to Vercel Web Analytics API. Preview PR only — do not merge. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
 | T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
