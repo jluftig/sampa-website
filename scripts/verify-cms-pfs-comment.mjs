@@ -74,9 +74,10 @@ if (!cmsBlock.includes('Questions go to the SAMPA Public Health Policy Committee
 
 const view = readFileSync(join(root, 'src/pages/PolicyView.jsx'), 'utf8');
 must(view, 'dangerouslySetInnerHTML', 'PolicyView.jsx');
-if (!view.includes('doc.docket') || !view.includes('DOMPurify.sanitize(doc.docket')) {
+if (!view.includes('doc.docket') || !view.includes('sanitizePolicyHtml(doc.docket)')) {
   fail('PolicyView must sanitize docket HTML so the regulations.gov citation can render');
 }
+must(view, "ADD_ATTR: ['target']", 'PolicyView.jsx');
 
 const slugs = [...seed.matchAll(/slug: '([^']+)'/g)].map((m) => m[1]);
 if (slugs[0] !== 'cms-pfs-cy-2027-1848-p') {
