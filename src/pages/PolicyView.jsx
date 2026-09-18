@@ -50,9 +50,13 @@ export default function PolicyView() {
     );
   }
 
-  const safeBody = doc.bodyHtml
-    ? DOMPurify.sanitize(doc.bodyHtml, { USE_PROFILES: { html: true } })
-    : '';
+  const sanitizePolicyHtml = (html) =>
+    DOMPurify.sanitize(html, {
+      USE_PROFILES: { html: true },
+      ADD_ATTR: ['target'],
+    });
+
+  const safeBody = doc.bodyHtml ? sanitizePolicyHtml(doc.bodyHtml) : '';
 
   return (
     <div className="relative min-h-screen bg-background text-text">
@@ -92,7 +96,12 @@ export default function PolicyView() {
             {doc.docket && (
               <div className="flex flex-wrap gap-x-2">
                 <dt className="font-semibold text-text/80">Docket</dt>
-                <dd>{doc.docket}</dd>
+                <dd
+                  className="[&_a]:text-primary-text [&_a]:underline hover:[&_a]:no-underline"
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizePolicyHtml(doc.docket),
+                  }}
+                />
               </div>
             )}
             {doc.submittedAt && (

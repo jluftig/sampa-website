@@ -122,7 +122,7 @@ export const POLICY_HUB = {
  * @property {string} summary
  * @property {string[]} themes
  * @property {string} [agency]
- * @property {string} [docket]
+ * @property {string} [docket] citation line; may include a sanitized <a> to the official source
  * @property {string} [submittedAt] ISO date (YYYY-MM-DD)
  * @property {string} publishedAt ISO date
  * @property {string} pdfUrl public path to PDF
@@ -155,13 +155,13 @@ const DOCUMENTS = [
     ],
     agency: 'Centers for Medicare & Medicaid Services (CMS)',
     docket:
-      'CMS-1848-P · Docket CMS-2026-2377 · Document ID CMS-2026-2377-0002',
+      'CMS-1848-P · Docket CMS-2026-2377 · <a href="https://www.regulations.gov/document/CMS-2026-2377-0002" target="_blank" rel="noopener noreferrer">Document ID CMS-2026-2377-0002</a>',
     submittedAt: '2026-09-14',
     publishedAt: '2026-09-14',
     pdfUrl: '/files/policy/cms-pfs-cy-2027-1848-p.pdf',
     onBehalfOfMembers: true,
     bodyHtml: `
-<p>SAMPA submitted this response to the Calendar Year 2027 Medicare Physician Fee Schedule proposed rule (CMS-1848-P; Docket CMS-2026-2377; Document ID CMS-2026-2377-0002; tracking number mu1-xtr9-b3nv) electronically via regulations.gov.</p>
+<p>SAMPA submitted this response to the Calendar Year 2027 Medicare Physician Fee Schedule proposed rule (CMS-1848-P; Docket CMS-2026-2377; <a href="https://www.regulations.gov/document/CMS-2026-2377-0002" target="_blank" rel="noopener noreferrer">Document ID CMS-2026-2377-0002</a>; tracking number mu1-xtr9-b3nv) electronically via regulations.gov.</p>
 <p>The comment is limited to addiction-care payment and PA practice. SAMPA does not ask CMS to reverse the statutory conversion-factor change that expires after CY 2026. We ask CMS to finalize the addiction-care payment improvements already in this rule, and to modify a small number of proposals that would otherwise shrink access to SUD care furnished by physicians and qualified nonphysician practitioners, including PAs.</p>
 <p>Four numbered asks: (1) finalize SBIRT and tobacco-cessation work RVU inclusion as proposed; (2) finalize shared medical appointments (HCPCS GSMAS) with qualified nonphysician practitioner / PA leadership, and expressly include tobacco use disorder, alcohol use disorder, and other SUDs; (3) finalize G2211 as a 16% MOD1 percentage add-on and extend visit-complexity to ongoing SUD/MOUD care for all eligible practitioners — oppose ACO/LEAD-only MOD2 (fallback: MOD1 only); (4) retain Quality ID 305 (Initiation and Engagement of SUD Treatment) in the APP Plus ACO measure set.</p>
 <p>Download the PDF for the complete submitted comment, including quoted proposed text and suggested replacement language. Questions go to the SAMPA Public Health Policy Committee at policy@addictionpas.org.</p>
