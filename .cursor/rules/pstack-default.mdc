@@ -1,0 +1,11 @@
+---
+description: Default to pstack poteto-mode for coding work
+alwaysApply: true
+---
+# pstack default on
+
+For any non-trivial coding, debugging, refactoring, architecture, PR, or verification work in this chat, apply the pstack `/poteto-mode` skill: match a playbook, follow its steps, and verify against the real artifact.
+
+Casual chat, scheduling, and non-code asks stay out of poteto-mode.
+
+If the user says to skip poteto-mode / pstack for a turn or session, honor that until they opt back in.
