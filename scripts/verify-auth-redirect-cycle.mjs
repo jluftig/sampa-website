@@ -7,6 +7,7 @@ import {
   decideAuthRedirect,
   guardLoginPath,
   loginAuthedDestination,
+  shouldLeaveForLogin,
   walkAuthRedirects,
 } from '../src/lib/authRedirect.js';
 import {
@@ -144,6 +145,116 @@ describe('redirect graph has no cycle', () => {
     assert.equal(decideAuthRedirect('/', halfSession), null);
     assert.equal(decideAuthRedirect('/', loading), null);
     assert.equal(walkAuthRedirects('/', halfSession).cycle, false);
+  });
+});
+
+function walkRosterGate(events) {
+  let url = '/editor/members';
+  let hadSession = false;
+  const hops = [url];
+  for (const auth of events) {
+    if (auth.user) hadSession = true;
+    if (url.startsWith('/editor/members')) {
+      const leave = shouldLeaveForLogin({
+        sessionUsable: auth.sessionUsable,
+        user: auth.user,
+        hadSession,
+        intentionalSignOut: !!auth.intentionalSignOut,
+        holdExpired: !!auth.holdExpired,
+      });
+      if (leave) url = '/login?next=%2Feditor%2Fmembers';
+    } else if (url.startsWith('/login')) {
+      const dest = decideAuthRedirect(url, auth);
+      if (dest) url = dest;
+    }
+    hops.push(url);
+  }
+  let sawLogin = false;
+  let returnedToRoster = false;
+  let leftAgain = false;
+  for (const hop of hops) {
+    if (hop.startsWith('/login')) {
+      if (returnedToRoster) leftAgain = true;
+      sawLogin = true;
+    } else if (hop === '/editor/members' && sawLogin) {
+      returnedToRoster = true;
+    }
+  }
+  return { cycle: leftAgain, hops, stuckAt: url };
+}
+
+describe('privileged roster session drop does not bounce through login', () => {
+  const viewerUser = { id: 'shani' };
+  const onRoster = {
+    loading: false,
+    sessionUsable: true,
+    halfSession: false,
+    profile: viewer,
+    user: viewerUser,
+  };
+  const dropped = {
+    loading: false,
+    sessionUsable: false,
+    halfSession: false,
+    profile: null,
+    user: null,
+  };
+
+  it('holds the roster while a privileged session is gone and not yet expired', () => {
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: true,
+      intentionalSignOut: false,
+      holdExpired: false,
+    }), false);
+    const walk = walkRosterGate([onRoster, dropped, onRoster, dropped, onRoster]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.equal(walk.stuckAt, '/editor/members');
+    assert.equal(walk.hops.includes('/login?next=%2Feditor%2Fmembers'), false);
+  });
+
+  it('sends a cold signed-out visit to login once, then back to the roster after sign-in', () => {
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: false,
+      intentionalSignOut: false,
+      holdExpired: false,
+    }), true);
+    const walk = walkRosterGate([dropped, dropped, onRoster, onRoster]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.deepEqual(walk.hops, [
+      '/editor/members',
+      '/login?next=%2Feditor%2Fmembers',
+      '/login?next=%2Feditor%2Fmembers',
+      '/editor/members',
+      '/editor/members',
+    ]);
+  });
+
+  it('leaves for login after the hold expires, and on an intentional sign-out immediately', () => {
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: true,
+      intentionalSignOut: false,
+      holdExpired: true,
+    }), true);
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: true,
+      intentionalSignOut: true,
+      holdExpired: false,
+    }), true);
+    const walk = walkRosterGate([
+      onRoster,
+      { ...dropped, holdExpired: true },
+      dropped,
+    ]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.equal(walk.stuckAt, '/login?next=%2Feditor%2Fmembers');
   });
 });
 

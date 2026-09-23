@@ -40,6 +40,12 @@ function isGuardedPath(pathname) {
 // page (roster, dashboard, editor) can reload forever if sessionUsable
 // flickers. The guard keeps showing "Checking access…" until the session
 // either becomes usable or is fully cleared.
+export function shouldLeaveForLogin({ sessionUsable, user } = {}) {
+  if (sessionUsable) return false;
+  if (user) return false;
+  return true;
+}
+
 export function guardLoginPath({ pathname, search = '', halfSession = false } = {}) {
   if (halfSession) return null;
   const next = safeNext(`${pathname || ''}${search || ''}`);
