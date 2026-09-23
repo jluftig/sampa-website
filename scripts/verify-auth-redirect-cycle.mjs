@@ -277,9 +277,17 @@ describe('wiring', () => {
   it('Login and roster guard use the shared redirect helpers', () => {
     const login = readFileSync(new URL('../src/pages/Login.jsx', import.meta.url), 'utf8');
     const roster = readFileSync(new URL('../src/components/RequireMemberViewer.jsx', import.meta.url), 'utf8');
+    const gate = readFileSync(new URL('../src/components/useAuthGate.js', import.meta.url), 'utf8');
+    const auth = readFileSync(new URL('../src/components/RequireAuth.jsx', import.meta.url), 'utf8');
+    const editor = readFileSync(new URL('../src/components/RequireEditor.jsx', import.meta.url), 'utf8');
+    const member = readFileSync(new URL('../src/components/RequireActiveMember.jsx', import.meta.url), 'utf8');
     assert.match(login, /decideAuthRedirect/);
-    assert.match(roster, /guardLoginPath/);
-    assert.match(roster, /!sessionUsable && !!user/);
+    assert.match(roster, /useAuthGate/);
+    assert.match(auth, /useAuthGate/);
+    assert.match(editor, /useAuthGate/);
+    assert.match(member, /useAuthGate/);
+    assert.match(gate, /shouldLeaveForLogin/);
+    assert.match(gate, /AUTH_NULL_HOLD_MS/);
     assert.match(roster, /canViewMemberRoster/);
     assert.doesNotMatch(roster, /is_board|is_membership_committee/);
   });

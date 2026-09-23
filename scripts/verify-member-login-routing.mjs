@@ -125,12 +125,13 @@ describe('header/footer and login wiring', () => {
     const auth = readFileSync(new URL('../src/components/RequireAuth.jsx', import.meta.url), 'utf8');
     const editor = readFileSync(new URL('../src/components/RequireEditor.jsx', import.meta.url), 'utf8');
     const roster = readFileSync(new URL('../src/components/RequireMemberViewer.jsx', import.meta.url), 'utf8');
-    assert.match(auth, /sessionUsable/);
-    assert.match(editor, /sessionUsable/);
-    assert.match(roster, /sessionUsable/);
-    assert.match(auth, /guardLoginPath/);
-    assert.match(editor, /guardLoginPath/);
-    assert.match(roster, /guardLoginPath/);
+    const gate = readFileSync(new URL('../src/components/useAuthGate.js', import.meta.url), 'utf8');
+    assert.match(auth, /useAuthGate/);
+    assert.match(editor, /useAuthGate/);
+    assert.match(roster, /useAuthGate/);
+    assert.match(gate, /sessionUsable/);
+    assert.match(gate, /guardLoginPath/);
+    assert.match(gate, /shouldLeaveForLogin/);
   });
 
   it('dashboard does not call the no-membership upsell when the profile row failed to load', () => {

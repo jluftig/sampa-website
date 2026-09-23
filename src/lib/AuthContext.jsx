@@ -40,6 +40,7 @@ export function AuthProvider({ children }) {
   const [recovering, setRecovering] = useState(() => (
     isCheckoutReturnSearch(currentSearch())
   ));
+  const [intentionalSignOut, setIntentionalSignOut] = useState(false);
   const sessionRef = useRef(null);
   const intentionalSignOutRef = useRef(false);
   const recoverInFlightRef = useRef(false);
@@ -49,6 +50,7 @@ export function AuthProvider({ children }) {
   const applySession = useCallback((next) => {
     sessionRef.current = next;
     setSession(next);
+    if (next?.user) setIntentionalSignOut(false);
   }, []);
 
   const recoverSession = useCallback(async () => {
@@ -201,6 +203,7 @@ export function AuthProvider({ children }) {
       }
 
       intentionalSignOutRef.current = true;
+      setIntentionalSignOut(true);
       try { await supabase.auth.signOut({ scope: 'local' }); } catch { /* ignore */ }
       if (!active) return;
       applySession(null);
@@ -245,6 +248,7 @@ export function AuthProvider({ children }) {
 
   const signOut = () => {
     intentionalSignOutRef.current = true;
+    setIntentionalSignOut(true);
     return supabase.auth.signOut();
   };
 
@@ -278,6 +282,7 @@ export function AuthProvider({ children }) {
     isActiveMember,
     canAccessMemberDirectory,
     sessionUsable,
+    intentionalSignOut,
     // True until we know both the session and (if signed in) the profile.
     // Stay "loading" while a refresh retry is in flight so RequireAuth does
     // not bounce a returning checkout to /login.
