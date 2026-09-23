@@ -11,11 +11,21 @@ import {
   normalizeVisitCount,
   parseTrafficRange,
   shapeSiteTraffic,
+  shouldRequestTraffic,
   TRACKING_STARTED_NOTE,
   trafficWindow,
 } from '../src/lib/siteTraffic.js';
 import { buildVisitsUrl } from '../api/_lib/vercel-analytics.js';
 import { handleSiteTraffic } from '../api/site-traffic.js';
+
+describe('site traffic fetch does not retry a failed range', () => {
+  it('requests once per range and stops after a 403', () => {
+    assert.equal(shouldRequestTraffic({ stats: null, range: 7, failedRange: null }), true);
+    assert.equal(shouldRequestTraffic({ stats: null, range: 7, failedRange: 7 }), false);
+    assert.equal(shouldRequestTraffic({ stats: { visitors: 1 }, range: 7, failedRange: null }), false);
+    assert.equal(shouldRequestTraffic({ stats: null, range: 30, failedRange: 7 }), true);
+  });
+});
 
 describe('canViewMemberRoster / Site traffic gate', () => {
   it('matches the roster viewer check (admin or can_view_members)', () => {
@@ -252,6 +262,8 @@ describe('wiring', () => {
     assert.doesNotMatch(rosterGate, /is_board|is_membership_committee|canViewSiteTraffic/);
     assert.match(card, /export function SiteTrafficPanel/);
     assert.match(card, /apiGet\(`\/api\/site-traffic\?range=\$\{range\}`\)/);
+    assert.match(card, /shouldRequestTraffic/);
+    assert.doesNotMatch(card, /location\.reload|location\.assign|window\.location/);
     assert.match(card, /Same access\s+as the member roster/);
     assert.doesNotMatch(card, /Board and\s+Membership Committee only/);
     assert.equal(TRACKING_STARTED_NOTE, 'Tracking started on September 16, 2026.');

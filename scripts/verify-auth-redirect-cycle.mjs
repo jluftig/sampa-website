@@ -183,6 +183,72 @@ function walkRosterGate(events) {
   return { cycle: leftAgain, hops, stuckAt: url };
 }
 
+describe('Shani Wilson /editor/members', () => {
+  const shani = {
+    role: 'member',
+    is_board: true,
+    is_membership_committee: true,
+    can_view_members: false,
+    membership_status: 'active',
+    email: 'shani@addictionpas.org',
+  };
+  const user = { id: 'shani' };
+
+  it('president without view-members leaves the roster at most once and does not return', () => {
+    assert.equal(canViewMemberRoster(shani), false);
+    const onRoster = {
+      loading: false,
+      sessionUsable: true,
+      profile: shani,
+      user,
+    };
+    const dropped = {
+      loading: false,
+      sessionUsable: false,
+      profile: null,
+      user: null,
+      holdExpired: true,
+    };
+    const walk = walkRosterGate([onRoster, onRoster, dropped, onRoster, dropped]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.deepEqual(walk.hops, [
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/login?next=%2Feditor%2Fmembers',
+      '/dashboard',
+      '/dashboard',
+    ]);
+  });
+
+  it('the same person with can_view_members stays on the roster across a short drop', () => {
+    const viewer = { ...shani, can_view_members: true };
+    assert.equal(canViewMemberRoster(viewer), true);
+    const onRoster = {
+      loading: false,
+      sessionUsable: true,
+      profile: viewer,
+      user,
+    };
+    const dropped = {
+      loading: false,
+      sessionUsable: false,
+      profile: null,
+      user: null,
+    };
+    const walk = walkRosterGate([onRoster, dropped, onRoster, dropped, onRoster]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.deepEqual(walk.hops, [
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+    ]);
+  });
+});
+
 describe('privileged roster session drop does not bounce through login', () => {
   const viewerUser = { id: 'shani' };
   const onRoster = {

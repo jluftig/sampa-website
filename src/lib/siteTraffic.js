@@ -15,6 +15,15 @@ export function parseTrafficRange(value) {
   return value === '30' || value === 30 ? 30 : 7;
 }
 
+// A 403/503 stays on the card. Refetch only when the range changes or there
+// is no failed attempt for this range yet. Do not key a refetch on the error
+// object — that retries forever.
+export function shouldRequestTraffic({ stats, range, failedRange } = {}) {
+  if (stats) return false;
+  if (failedRange != null && failedRange === range) return false;
+  return true;
+}
+
 export function trafficWindow(days, now = new Date()) {
   const range = parseTrafficRange(days);
   const until = new Date(now);
