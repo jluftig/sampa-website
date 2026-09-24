@@ -7,7 +7,7 @@
  * Framing: docs/architecture/policy-hub.md
  */
 
-import asamCorrectionalLineComments from './asam-correctional-line-comments-2026.json';
+import asamCorrectionalLineComments from './asam-correctional-line-comments-2026.json' with { type: 'json' };
 
 export const POLICY_TYPES = {
   position: {

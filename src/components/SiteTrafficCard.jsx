@@ -1,23 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { Activity } from 'lucide-react';
+import { Activity, Mail, Megaphone } from 'lucide-react';
 import { apiGet } from '../lib/api';
 import { shouldRequestTraffic, TRACKING_STARTED_NOTE, TRAFFIC_RANGES } from '../lib/siteTraffic';
+import MiniLineChart from './MiniLineChart';
 
 function formatCount(n) {
   return Number(n || 0).toLocaleString('en-US');
 }
 
+function formatRate(rate) {
+  if (rate == null || Number.isNaN(Number(rate))) return '—';
+  const shown = Math.min(100, Number(rate));
+  return `${shown.toFixed(1)}%`;
+}
+
+function formatWhen(iso) {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+function shortDay(isoDate) {
+  const [, month, day] = String(isoDate).split('-');
+  if (!month || !day) return isoDate;
+  return `${Number(month)}/${Number(day)}`;
+}
+
+function Stat({ label, value }) {
+  return (
+    <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-5">
+      <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-1">
+        {label}
+      </div>
+      <div className="text-3xl font-drama font-bold">{value}</div>
+    </div>
+  );
+}
+
 export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }) {
   const notConfigured = error?.code === 'not_configured' || error?.status === 503;
+  const series = stats?.series || [];
+  const hasSeries = series.some((point) => point.visitors || point.pageviews);
 
   return (
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
       <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
         <div>
-          <h2 className="text-xl font-bold flex items-center gap-2">
+          <h3 className="text-lg font-bold flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary-text" aria-hidden="true" />
             Site traffic
-          </h2>
+          </h3>
           <p className="text-text/50 text-xs mt-1 max-w-xl">
             Aggregate visitors and pageviews for addictionpas.org. Same access
             as the member roster — no individual visitors.
@@ -67,19 +105,23 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
       {!loading && !error && stats && (
         <>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-5">
-              <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-1">
-                Visitors
-              </div>
-              <div className="text-3xl font-drama font-bold">{formatCount(stats.visitors)}</div>
-            </div>
-            <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-5">
-              <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-1">
-                Pageviews
-              </div>
-              <div className="text-3xl font-drama font-bold">{formatCount(stats.pageviews)}</div>
-            </div>
+            <Stat label="Visitors" value={formatCount(stats.visitors)} />
+            <Stat label="Pageviews" value={formatCount(stats.pageviews)} />
           </div>
+
+          {hasSeries && (
+            <div className="mb-6 text-text">
+              <h3 className="text-sm font-bold mb-2">Visitors over time</h3>
+              <MiniLineChart
+                ariaLabel="Daily visitors and pageviews since tracking started"
+                categories={series.map((point) => shortDay(point.date))}
+                lines={[
+                  { name: 'Visitors', color: '#0F766E', values: series.map((point) => point.visitors) },
+                  { name: 'Pageviews', color: '#26A69A', values: series.map((point) => point.pageviews) },
+                ]}
+              />
+            </div>
+          )}
 
           {stats.empty ? (
             <p className="text-text/50 text-sm">
@@ -113,12 +155,152 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
   );
 }
 
+export function NewsletterPanel({ loading, error, stats }) {
+  const notConfigured = error?.code === 'not_configured' || error?.status === 503;
+  const issues = stats?.issues || [];
+  const chronological = [...issues].reverse();
+  const latest = stats?.latest;
+
+  return (
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
+      <h3 className="text-lg font-bold flex items-center gap-2">
+        <Mail className="w-5 h-5 text-primary-text" aria-hidden="true" />
+        Newsletter
+      </h3>
+      <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+        SAMPA Weekly on list 3. List size at send is that issue&apos;s sent
+        count. Opens and clicks stay here. The test list and makeup catch-ups
+        are left out. Same access as the member roster.
+      </p>
+
+      {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
+
+      {!loading && notConfigured && (
+        <p className="text-text/60 text-sm">Newsletter stats not configured.</p>
+      )}
+
+      {!loading && error && !notConfigured && (
+        <p className="text-text/60 text-sm">
+          Couldn&apos;t load newsletter stats right now. Try again in a minute.
+        </p>
+      )}
+
+      {!loading && !error && stats && (
+        <>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <Stat label="List size" value={formatCount(stats.subscribers)} />
+            <Stat label="Latest open rate" value={formatRate(latest?.openRate)} />
+          </div>
+
+          {latest ? (
+            <div className="mb-6">
+              <h3 className="text-sm font-bold">{latest.name}</h3>
+              <p className="text-text/50 text-xs mt-1 mb-4">
+                {formatWhen(latest.sentAt)}
+                {stats.listName ? ` · ${stats.listName}` : ''}
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <Stat label="Recipients" value={formatCount(latest.recipients)} />
+                <Stat label="Delivered" value={formatCount(latest.delivered)} />
+                <Stat label="Unique opens" value={formatCount(latest.uniqueOpens)} />
+                <Stat label="Open rate" value={formatRate(latest.openRate)} />
+                <Stat label="Unique clicks" value={formatCount(latest.uniqueClicks)} />
+                <Stat label="Click rate" value={formatRate(latest.clickRate)} />
+              </div>
+              {stats.articles?.length ? (
+                <div className="mt-4">
+                  <h4 className="text-sm font-bold mb-2">Top clicked articles</h4>
+                  <ul className="divide-y divide-primary/10">
+                    {stats.articles.map((article) => (
+                      <li key={article.path} className="py-2 flex items-baseline justify-between gap-3 text-sm">
+                        <span className="min-w-0">
+                          <span className="font-semibold">{article.title || article.slug}</span>
+                          <span className="block font-data text-text/50 text-xs break-all">{article.path}</span>
+                        </span>
+                        <span className="text-text/50 font-data shrink-0">{formatCount(article.clicks)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <p className="text-text/50 text-sm mb-6">No weekly issues yet.</p>
+          )}
+
+          {chronological.length > 0 && (
+            <div className="mb-6 text-text">
+              <h3 className="text-sm font-bold mb-2">Open rate by issue</h3>
+              <MiniLineChart
+                ariaLabel="Open rate for each weekly issue"
+                yMax={100}
+                formatY={(value) => `${Math.round(value)}%`}
+                categories={chronological.map((issue) => shortDay(String(issue.sentAt || '').slice(0, 10)))}
+                lines={[{
+                  name: 'Open rate',
+                  color: '#0F766E',
+                  values: chronological.map((issue) => issue.openRate || 0),
+                }]}
+              />
+              <h4 className="text-sm font-bold mt-4 mb-2">
+                {stats.listSize?.source === 'snapshot' ? 'Subscribers over time' : 'List size at send'}
+              </h4>
+              <p className="text-text/45 text-xs mb-2 max-w-xl">
+                {stats.listSize?.source === 'snapshot'
+                  ? 'Saved subscriber snapshots.'
+                  : 'Sent count for each issue. Brevo has no subscriber history.'}
+              </p>
+              <MiniLineChart
+                ariaLabel="List size at each weekly send"
+                categories={(stats.listSize?.points || chronological).map((point) => shortDay(String(point.date || point.sentAt || '').slice(0, 10)))}
+                lines={[{
+                  name: stats.listSize?.source === 'snapshot' ? 'Subscribers' : 'Sent',
+                  color: '#1E2A38',
+                  values: (stats.listSize?.points || chronological).map((point) => point.total ?? point.recipients ?? 0),
+                }]}
+              />
+            </div>
+          )}
+
+          {issues.length > 0 && (
+            <>
+              <h3 className="text-sm font-bold mb-3">Recent issues</h3>
+              <ul className="divide-y divide-primary/10">
+                {issues.map((issue) => (
+                  <li key={issue.id} className="py-3">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-semibold text-sm">{issue.name}</span>
+                      <span className="text-text/50 text-xs font-data">{formatWhen(issue.sentAt)}</span>
+                    </div>
+                    <p className="text-text/60 text-xs mt-1 font-data">
+                      {formatCount(issue.recipients)} recipients
+                      {' · '}
+                      {formatCount(issue.delivered)} delivered
+                      {' · '}
+                      {formatCount(issue.uniqueOpens)} opens ({formatRate(issue.openRate)})
+                      {' · '}
+                      {formatCount(issue.uniqueClicks)} clicks ({formatRate(issue.clickRate)})
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
 export default function SiteTrafficCard() {
   const [range, setRange] = useState(7);
   const [cache, setCache] = useState({});
   const [failedRange, setFailedRange] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [newsletter, setNewsletter] = useState(null);
+  const [newsletterLoading, setNewsletterLoading] = useState(true);
+  const [newsletterError, setNewsletterError] = useState(null);
   const stats = cache[range] || null;
 
   useEffect(() => {
@@ -146,13 +328,44 @@ export default function SiteTrafficCard() {
     return () => { active = false; };
   }, [range, stats, failedRange]);
 
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const data = await apiGet('/api/newsletter-stats');
+        if (!active) return;
+        setNewsletter(data);
+        setNewsletterLoading(false);
+      } catch (err) {
+        if (!active) return;
+        setNewsletterError(err);
+        setNewsletterLoading(false);
+      }
+    })();
+    return () => { active = false; };
+  }, []);
+
   return (
-    <SiteTrafficPanel
-      range={range}
-      onRangeChange={setRange}
-      loading={loading}
-      error={error}
-      stats={stats}
-    />
+    <div className="mb-8">
+      <h2 className="text-xl font-bold flex items-center gap-2">
+        <Megaphone className="w-5 h-5 text-primary-text" aria-hidden="true" />
+        Reach
+      </h2>
+      <p className="text-text/50 text-xs mt-1 mb-4 max-w-xl">
+        Distribution. Pageviews, list size, opens, and clicks stay in this pillar.
+      </p>
+      <SiteTrafficPanel
+        range={range}
+        onRangeChange={setRange}
+        loading={loading}
+        error={error}
+        stats={stats}
+      />
+      <NewsletterPanel
+        loading={newsletterLoading}
+        error={newsletterError}
+        stats={newsletter}
+      />
+    </div>
   );
 }

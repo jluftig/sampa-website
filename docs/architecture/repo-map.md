@@ -34,9 +34,13 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             donations table. type='donation' segregates gift vs dues flows.
   share.js                  GET ?slug= → OG/Twitter meta HTML for social crawlers (anon key,
                             published only)
-  site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths; JWT +
+  site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths + daily series; JWT +
                             canViewMemberRoster (admin or can_view_members);
                             proxies Vercel Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
+  newsletter-stats.js       GET → SAMPA Updates list size + weekly issue stats + top links; same JWT gate;
+                            read-only Brevo (`BREVO_API_KEY`, never `VITE_`).
+                            `?section=membership` and `?section=finance` share this function
+                            (Hobby plan allows 12 functions). Handlers live in `api/_lib/`.
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -47,8 +51,13 @@ src/
     authStorage.js          localStorage + cookie session mirror
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
-    memberRoster.js         canViewMemberRoster — /editor/members + Site traffic
+    memberRoster.js         canViewMemberRoster — /editor/members + Site traffic; canViewFinance is admin only
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
+    newsletterStats.js      list-3 weekly filter (name/subject; lists 8 and 13 out) + rates for Reach
+    policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
+    educationImpact.js      published-news and issues-sent series; CME and jobs are placeholders
+    membershipStats.js      current-term headcount series (not a stored snapshot)
+    financeStats.js         Stripe balance-transaction shaping (usd, in-window)
     api.js                  apiGet / apiPost — /api/* with Supabase JWT
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle

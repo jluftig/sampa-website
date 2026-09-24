@@ -63,7 +63,7 @@ system `VERCEL_PROJECT_ID` / `VERCEL_ORG_ID`)
 
 | Path | Job |
 |------|-----|
-| `api/` | Checkout, portal, webhook, donate session, invoice request, delete-account, send-push, share OG, site-traffic |
+| `api/` | Checkout, portal, webhook, donate session, invoice request, delete-account, send-push, share OG, site-traffic, newsletter-stats (`section=membership` and `section=finance` share that function) |
 | `src/lib/` | Supabase client, auth context, membership tiers, comments (shared w/ mobile) |
 | `src/pages/` | Public, member, editor, admin routes |
 | `supabase/schema.sql` | **DDL + RLS source of truth** |

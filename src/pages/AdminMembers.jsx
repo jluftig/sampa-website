@@ -8,7 +8,7 @@ import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PrivilegedAccessAgreement from '../components/PrivilegedAccessAgreement';
-import SiteTrafficCard from '../components/SiteTrafficCard';
+import OrgDashboard from '../components/OrgDashboard';
 
 const STATUS_FILTERS = [
   { key: 'all', label: 'All accounts' },
@@ -285,7 +285,7 @@ export default function AdminMembers() {
         </Link>
 
         <div className="mt-6">
-          <SiteTrafficCard />
+          <OrgDashboard />
         </div>
 
         {!accepted ? (

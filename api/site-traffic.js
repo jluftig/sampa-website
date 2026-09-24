@@ -1,21 +1,25 @@
 import { requireUser, supabaseAdmin, json } from './_lib/clients.js';
+import { createTtlCache } from './_lib/ttl-cache.js';
 import { analyticsConfigFromEnv, queryVisits } from './_lib/vercel-analytics.js';
 import {
   TOP_PATH_LIMIT,
+  TRAFFIC_CACHE_MS,
   canViewMemberRoster,
+  fillDailySeries,
+  normalizeDailySeries,
   normalizeTopPaths,
   normalizeVisitCount,
   parseTrafficRange,
+  seriesSince,
   shapeSiteTraffic,
   trafficWindow,
 } from '../src/lib/siteTraffic.js';
 
-// GET /api/site-traffic?range=7|30
-// Same gate as /editor/members: canViewMemberRoster (admin or can_view_members).
-// Proxies Vercel Web Analytics (aggregates, no PII). Token stays on the server.
+const trafficCache = createTtlCache();
 
 function trafficJson(body, status = 200) {
-  return json(body, status, { 'cache-control': 'private, no-store' });
+  const cacheControl = status === 200 ? 'private, max-age=300' : 'private, no-store';
+  return json(body, status, { 'cache-control': cacheControl });
 }
 
 async function loadViewerProfile(userId) {
@@ -34,6 +38,7 @@ export async function handleSiteTraffic(request, deps = {}) {
   const env = deps.env || process.env;
   const query = deps.queryVisits || queryVisits;
   const now = deps.now || new Date();
+  const cache = deps.cache || trafficCache;
 
   try {
     const user = await requireViewer(request);
@@ -55,20 +60,25 @@ export async function handleSiteTraffic(request, deps = {}) {
     const url = new URL(request.url);
     const range = parseTrafficRange(url.searchParams.get('range'));
     const window = trafficWindow(range, now);
+    const cacheKey = `traffic:${range}:${window.since}:${window.until}`;
+    const cached = cache.get(cacheKey);
+    if (cached) return trafficJson(cached);
 
-    const [countPayload, pathsPayload] = await Promise.all([
+    const daySince = seriesSince(window.since);
+    const shared = {
+      token: cfg.token,
+      projectId: cfg.projectId,
+      teamId: cfg.teamId,
+    };
+    const [countPayload, pathsPayload, seriesPayload] = await Promise.all([
       query({
-        token: cfg.token,
-        projectId: cfg.projectId,
-        teamId: cfg.teamId,
+        ...shared,
         mode: 'count',
         since: window.since,
         until: window.until,
       }),
       query({
-        token: cfg.token,
-        projectId: cfg.projectId,
-        teamId: cfg.teamId,
+        ...shared,
         mode: 'aggregate',
         since: window.since,
         until: window.until,
@@ -76,14 +86,25 @@ export async function handleSiteTraffic(request, deps = {}) {
         limit: TOP_PATH_LIMIT,
         filter: "environment eq 'production'",
       }),
+      query({
+        ...shared,
+        mode: 'aggregate',
+        since: daySince,
+        until: window.until,
+        by: ['day'],
+        filter: "environment eq 'production'",
+      }),
     ]);
 
-    return trafficJson(shapeSiteTraffic({
+    const body = shapeSiteTraffic({
       range,
       window,
       count: normalizeVisitCount(countPayload),
       paths: normalizeTopPaths(pathsPayload),
-    }));
+      series: fillDailySeries(normalizeDailySeries(seriesPayload), daySince, window.until),
+    });
+    cache.set(cacheKey, body, TRAFFIC_CACHE_MS);
+    return trafficJson(body);
   } catch (err) {
     console.error('site-traffic:', err);
     return trafficJson({
