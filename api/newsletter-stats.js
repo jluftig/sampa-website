@@ -6,6 +6,7 @@ import {
   brevoConfigFromEnv,
   selectWeeklyIssues,
   shapeNewsletterStats,
+  topClickedLinks,
 } from '../src/lib/newsletterStats.js';
 
 const CACHE_MS = 5 * 60 * 1000;
@@ -59,13 +60,28 @@ export async function handleNewsletterStats(request, deps = {}) {
       loadSentCampaigns(cfg.apiKey, get),
     ]);
 
+    const issues = selectWeeklyIssues(campaigns, {
+      updatesListId: cfg.listId,
+    });
+    const topLinks = [];
+    for (const issue of issues.slice(0, 3)) {
+      try {
+        const detail = await get(
+          cfg.apiKey,
+          `/emailCampaigns/${issue.id}?statistics=linksStats&excludeHtmlContent=true`,
+        );
+        const links = topClickedLinks(detail?.statistics?.linksStats);
+        if (links.length) topLinks.push({ id: issue.id, name: issue.name, links });
+      } catch (err) {
+        console.error('newsletter-stats links:', issue.id, err?.status || err?.message || err);
+      }
+    }
     const body = shapeNewsletterStats({
       subscribers: list?.totalSubscribers,
       listId: cfg.listId,
       listName: list?.name,
-      issues: selectWeeklyIssues(campaigns, {
-        updatesListId: cfg.listId,
-      }),
+      issues,
+      topLinks,
     });
     cache.set(cacheKey, body, CACHE_MS);
     return newsletterJson(body);

@@ -77,11 +77,21 @@ export function selectWeeklyIssues(campaigns, options = {}) {
     .slice(0, limit);
 }
 
+export function topClickedLinks(linksStats, limit = 5) {
+  if (!linksStats || typeof linksStats !== 'object' || Array.isArray(linksStats)) return [];
+  return Object.entries(linksStats)
+    .map(([url, clicks]) => ({ url: String(url), clicks: Number(clicks) || 0 }))
+    .filter((row) => row.url && row.clicks > 0)
+    .sort((a, b) => b.clicks - a.clicks || a.url.localeCompare(b.url))
+    .slice(0, limit);
+}
+
 export function shapeNewsletterStats({
   subscribers,
   listId,
   listName,
   issues,
+  topLinks,
 }) {
   const list = Array.isArray(issues) ? issues : [];
   return {
@@ -90,6 +100,7 @@ export function shapeNewsletterStats({
     subscribers: Number(subscribers) || 0,
     latest: list[0] || null,
     issues: list,
+    topLinks: Array.isArray(topLinks) ? topLinks : [],
     empty: list.length === 0,
   };
 }

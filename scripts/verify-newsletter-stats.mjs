@@ -142,6 +142,19 @@ describe('GET /api/newsletter-stats', () => {
     if (path.startsWith('/contacts/lists/')) {
       return { id: 3, name: 'SAMPA Updates', totalSubscribers: 145 };
     }
+    if (path.includes('linksStats')) {
+      if (path.includes('/emailCampaigns/25')) {
+        return {
+          statistics: {
+            linksStats: {
+              'https://www.addictionpas.org/news/example': 6,
+              'https://www.addictionpas.org/join': 2,
+            },
+          },
+        };
+      }
+      throw new Error('links unavailable');
+    }
     return { count: 4, campaigns: [weekly01, catchUp, weekly02, testList] };
   }
 
@@ -202,8 +215,14 @@ describe('GET /api/newsletter-stats', () => {
     assert.equal(res.body.latest.id, 25);
     assert.deepEqual(res.body.issues.map((issue) => issue.id), [25, 23]);
     assert.equal(res.body.issues[1].openRate, 59.8);
+    assert.equal(res.body.topLinks.length, 1);
+    assert.equal(res.body.topLinks[0].id, 25);
+    assert.deepEqual(res.body.topLinks[0].links, [
+      { url: 'https://www.addictionpas.org/news/example', clicks: 6 },
+      { url: 'https://www.addictionpas.org/join', clicks: 2 },
+    ]);
     assert.equal(JSON.stringify(res.body).includes('secret-brevo-key'), false);
-    assert.equal(calls.length, 2);
+    assert.equal(calls.length, 4);
     assert.ok(calls.every((call) => call.key === 'secret-brevo-key'));
     const paths = calls.map((call) => call.path);
     assert.ok(paths.some((path) => path === '/contacts/lists/3'));
@@ -227,6 +246,6 @@ describe('GET /api/newsletter-stats', () => {
     const second = await read(await handleNewsletterStats(req(), deps));
     assert.equal(first.status, 200);
     assert.equal(second.body.latest.id, 25);
-    assert.equal(hits, 2);
+    assert.equal(hits, 4);
   });
 });

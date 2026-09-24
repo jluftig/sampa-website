@@ -167,8 +167,9 @@ export function NewsletterPanel({ loading, error, stats }) {
         Newsletter
       </h2>
       <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
-        SAMPA Weekly on the SAMPA Updates list. Test sends and small catch-up
-        blasts are left out. Same access as the member roster.
+        SAMPA Weekly on the SAMPA Updates list. The list size is the current
+        subscriber count. Test sends and small catch-up blasts are left out.
+        Same access as the member roster.
       </p>
 
       {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
@@ -205,6 +206,22 @@ export function NewsletterPanel({ loading, error, stats }) {
                 <Stat label="Unique clicks" value={formatCount(latest.uniqueClicks)} />
                 <Stat label="Click rate" value={formatRate(latest.clickRate)} />
               </div>
+              {(stats.topLinks || []).some((row) => row.links?.length) && (
+                <div className="mt-4">
+                  <h3 className="text-sm font-bold mb-2">Top clicked links</h3>
+                  <ul className="divide-y divide-primary/10">
+                    {stats.topLinks.flatMap((row) => row.links.map((link) => (
+                      <li key={`${row.id}-${link.url}`} className="py-2 flex items-baseline justify-between gap-3 text-sm">
+                        <span className="font-data text-text/80 break-all">{link.url}</span>
+                        <span className="text-text/50 font-data shrink-0">
+                          {formatCount(link.clicks)}
+                          {row.name ? ` · ${row.name}` : ''}
+                        </span>
+                      </li>
+                    )))}
+                  </ul>
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-text/50 text-sm mb-6">No weekly issues yet.</p>
