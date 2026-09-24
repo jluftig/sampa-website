@@ -1,9 +1,9 @@
 import Stripe from 'stripe';
-import { requireUser, supabaseAdmin, json } from './_lib/clients.js';
-import { createTtlCache } from './_lib/ttl-cache.js';
-import { canViewFinance, canViewMemberRoster } from '../src/lib/memberRoster.js';
-import { financeConfigFromEnv, shapeFinanceStats } from '../src/lib/financeStats.js';
-import { monthKeys } from '../src/lib/membershipStats.js';
+import { requireUser, supabaseAdmin, json } from './clients.js';
+import { createTtlCache } from './ttl-cache.js';
+import { canViewFinance, canViewMemberRoster } from '../../src/lib/memberRoster.js';
+import { financeConfigFromEnv, shapeFinanceStats } from '../../src/lib/financeStats.js';
+import { monthKeys } from '../../src/lib/membershipStats.js';
 
 const CACHE_MS = 5 * 60 * 1000;
 const financeCache = createTtlCache();
@@ -88,8 +88,4 @@ export async function handleFinanceStats(request, deps = {}) {
       message: 'Could not load finance stats right now.',
     }, 502);
   }
-}
-
-export async function GET(request) {
-  return handleFinanceStats(request);
 }

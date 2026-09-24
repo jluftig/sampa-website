@@ -10,7 +10,8 @@ function formatCount(n) {
 
 function formatRate(rate) {
   if (rate == null || Number.isNaN(Number(rate))) return '—';
-  return `${Number(rate).toFixed(1)}%`;
+  const shown = Math.min(100, Number(rate));
+  return `${shown.toFixed(1)}%`;
 }
 
 function formatWhen(iso) {

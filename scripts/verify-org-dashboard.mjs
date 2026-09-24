@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Membership headcount derivation and finance auth for the roster dashboard.
+import { readdirSync, readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { createTtlCache } from '../api/_lib/ttl-cache.js';
-import { handleMembershipStats } from '../api/membership-stats.js';
-import { handleFinanceStats } from '../api/finance-stats.js';
+import { handleMembershipStats } from '../api/_lib/membership-stats.js';
+import { handleFinanceStats } from '../api/_lib/finance-stats.js';
 import { canViewFinance } from '../src/lib/memberRoster.js';
 import { shapeMembershipStats } from '../src/lib/membershipStats.js';
 import { shapeFinanceStats } from '../src/lib/financeStats.js';
@@ -14,6 +15,18 @@ const NOW = new Date('2026-09-24T12:00:00.000Z');
 function monthActive(stats, month) {
   return stats.series.find((point) => point.month === month)?.active;
 }
+
+describe('hobby function budget', () => {
+  it('serves membership and finance from the newsletter function', () => {
+    const endpoints = readdirSync('api').filter((name) => name.endsWith('.js'));
+    assert.equal(endpoints.length, 12);
+    assert.equal(endpoints.includes('membership-stats.js'), false);
+    assert.equal(endpoints.includes('finance-stats.js'), false);
+    const dashboard = readFileSync('src/components/OrgDashboard.jsx', 'utf8');
+    assert.match(dashboard, /\/api\/newsletter-stats\?section=membership/);
+    assert.match(dashboard, /\/api\/newsletter-stats\?section=finance/);
+  });
+});
 
 describe('membership headcount derivation', () => {
   const profiles = [

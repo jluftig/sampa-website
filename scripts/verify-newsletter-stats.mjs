@@ -7,6 +7,8 @@ import { loadSentCampaigns } from '../api/_lib/brevo-readonly.js';
 import { handleNewsletterStats } from '../api/newsletter-stats.js';
 import {
   brevoConfigFromEnv,
+  capRate,
+  isTestCampaign,
   isWeeklyIssue,
   ratePercent,
   selectWeeklyIssues,
@@ -73,6 +75,38 @@ describe('weekly issue filter', () => {
       ...weekly01,
       statistics: { globalStats: { sent: 39, delivered: 39, uniqueViews: 10, uniqueClicks: 1 } },
     }), false);
+    assert.equal(isWeeklyIssue({
+      ...weekly01,
+      id: 30,
+      name: 'SAMPA Weekly Issue #04 (TEST)',
+      subject: 'SAMPA Weekly Issue #04',
+    }), false);
+    assert.equal(isWeeklyIssue({
+      ...weekly02,
+      id: 31,
+      name: 'SAMPA Weekly Issue #04',
+      subject: 'TEST send of issue 04',
+    }), false);
+    assert.equal(isTestCampaign({
+      id: 32,
+      name: 'SAMPA Weekly Issue #04',
+      subject: 'This week',
+      tag: 'test-send',
+    }), true);
+    assert.equal(isWeeklyIssue({
+      ...weekly01,
+      id: 33,
+      name: 'SAMPA Weekly Issue #04',
+      subject: 'This week in addiction medicine',
+    }), true);
+    const inflated = selectWeeklyIssues([{
+      ...weekly01,
+      statistics: { globalStats: { sent: 130, delivered: 127, uniqueViews: 76, uniqueClicks: 200 } },
+    }]);
+    assert.equal(inflated[0].uniqueClicks, 200);
+    assert.equal(inflated[0].clickRate, 100);
+    assert.equal(capRate(157.5), 100);
+    assert.equal(capRate(7.1), 7.1);
 
     const issues = selectWeeklyIssues([testList, catchUp, weekly01, weekly02]);
     assert.deepEqual(issues.map((issue) => issue.id), [25, 23]);
@@ -155,7 +189,25 @@ describe('GET /api/newsletter-stats', () => {
       }
       throw new Error('links unavailable');
     }
-    return { count: 4, campaigns: [weekly01, catchUp, weekly02, testList] };
+    return {
+      count: 5,
+      campaigns: [
+        weekly01,
+        catchUp,
+        weekly02,
+        testList,
+        {
+          ...weekly02,
+          id: 30,
+          name: 'SAMPA Weekly Issue #04 (TEST)',
+          subject: 'SAMPA Weekly Issue #04 (TEST)',
+          sentDate: '2026-09-20T15:00:00.000Z',
+          statistics: {
+            globalStats: { sent: 130, delivered: 120, uniqueViews: 10, uniqueClicks: 400 },
+          },
+        },
+      ],
+    };
   }
 
   it('rejects anonymous callers and non-roster profiles', async () => {
@@ -214,6 +266,7 @@ describe('GET /api/newsletter-stats', () => {
     assert.equal(res.body.listName, 'SAMPA Updates');
     assert.equal(res.body.latest.id, 25);
     assert.deepEqual(res.body.issues.map((issue) => issue.id), [25, 23]);
+    assert.equal(JSON.stringify(res.body).includes('TEST'), false);
     assert.equal(res.body.issues[1].openRate, 59.8);
     assert.equal(res.body.topLinks.length, 1);
     assert.equal(res.body.topLinks[0].id, 25);

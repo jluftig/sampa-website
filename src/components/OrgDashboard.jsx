@@ -201,12 +201,12 @@ export function FinancePanel({ loading, error, stats }) {
 }
 
 function MembershipSection() {
-  const { stats, loading, error } = useRosterGet('/api/membership-stats');
+  const { stats, loading, error } = useRosterGet('/api/newsletter-stats?section=membership');
   return <MembershipPanel loading={loading} error={error} stats={stats} />;
 }
 
 function FinanceSection() {
-  const { stats, loading, error } = useRosterGet('/api/finance-stats');
+  const { stats, loading, error } = useRosterGet('/api/newsletter-stats?section=finance');
   return <FinancePanel loading={loading} error={error} stats={stats} />;
 }
 

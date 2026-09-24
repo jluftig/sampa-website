@@ -1,6 +1,8 @@
 import { requireUser, supabaseAdmin, json } from './_lib/clients.js';
 import { createTtlCache } from './_lib/ttl-cache.js';
 import { brevoGet, loadSentCampaigns } from './_lib/brevo-readonly.js';
+import { handleMembershipStats } from './_lib/membership-stats.js';
+import { handleFinanceStats } from './_lib/finance-stats.js';
 import { canViewMemberRoster } from '../src/lib/memberRoster.js';
 import {
   brevoConfigFromEnv,
@@ -95,5 +97,8 @@ export async function handleNewsletterStats(request, deps = {}) {
 }
 
 export async function GET(request) {
+  const section = new URL(request.url).searchParams.get('section');
+  if (section === 'membership') return handleMembershipStats(request);
+  if (section === 'finance') return handleFinanceStats(request);
   return handleNewsletterStats(request);
 }

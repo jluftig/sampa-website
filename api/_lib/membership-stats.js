@@ -1,7 +1,7 @@
-import { requireUser, supabaseAdmin, json } from './_lib/clients.js';
-import { createTtlCache } from './_lib/ttl-cache.js';
-import { canViewMemberRoster } from '../src/lib/memberRoster.js';
-import { shapeMembershipStats } from '../src/lib/membershipStats.js';
+import { requireUser, supabaseAdmin, json } from './clients.js';
+import { createTtlCache } from './ttl-cache.js';
+import { canViewMemberRoster } from '../../src/lib/memberRoster.js';
+import { shapeMembershipStats } from '../../src/lib/membershipStats.js';
 
 const CACHE_MS = 5 * 60 * 1000;
 const membershipCache = createTtlCache();
@@ -68,8 +68,4 @@ export async function handleMembershipStats(request, deps = {}) {
       message: 'Could not load membership stats right now.',
     }, 502);
   }
-}
-
-export async function GET(request) {
-  return handleMembershipStats(request);
 }

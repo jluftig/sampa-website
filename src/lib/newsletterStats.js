@@ -37,10 +37,28 @@ export function ratePercent(part, whole) {
   return Math.round((n / d) * 1000) / 10;
 }
 
+export function capRate(rate) {
+  if (rate == null || !Number.isFinite(Number(rate))) return null;
+  return Math.min(100, Number(rate));
+}
+
+function campaignLabels(campaign) {
+  const labels = [campaign?.name, campaign?.subject, campaign?.tag];
+  if (Array.isArray(campaign?.tags)) labels.push(...campaign.tags);
+  return labels;
+}
+
+export function isTestCampaign(campaign) {
+  if (!campaign) return false;
+  if (campaign.test === true || campaign.isTest === true) return true;
+  return campaignLabels(campaign).some((value) => /test/i.test(String(value ?? '')));
+}
+
 export function isWeeklyIssue(campaign, options = {}) {
   const updatesListId = options.updatesListId ?? UPDATES_LIST_ID;
   const minSent = options.minSent ?? MIN_WEEKLY_SENT;
   if (!campaign || String(campaign.status || '').toLowerCase() !== 'sent') return false;
+  if (isTestCampaign(campaign)) return false;
   if (campaign.type && campaign.type !== 'classic') return false;
   const lists = listIdsFromRecipients(campaign.recipients);
   if (!lists.includes(updatesListId)) return false;
@@ -64,7 +82,7 @@ export function toWeeklyIssue(campaign) {
     uniqueOpens,
     uniqueClicks,
     openRate: ratePercent(uniqueOpens, denom),
-    clickRate: ratePercent(uniqueClicks, denom),
+    clickRate: capRate(ratePercent(uniqueClicks, denom)),
   };
 }
 

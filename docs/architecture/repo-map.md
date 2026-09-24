@@ -38,10 +38,9 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             canViewMemberRoster (admin or can_view_members);
                             proxies Vercel Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
   newsletter-stats.js       GET → SAMPA Updates list size + weekly issue stats + top links; same JWT gate;
-                            read-only Brevo (`BREVO_API_KEY`, never `VITE_`)
-  membership-stats.js       GET → 12-month active headcount derived from current term; same JWT gate
-  finance-stats.js          GET → 12-month Stripe cash totals; roster gate plus admin (`canViewFinance`);
-                            `STRIPE_SECRET_KEY` server-side. No bookkeeping source.
+                            read-only Brevo (`BREVO_API_KEY`, never `VITE_`).
+                            `?section=membership` and `?section=finance` share this function
+                            (Hobby plan allows 12 functions). Handlers live in `api/_lib/`.
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
