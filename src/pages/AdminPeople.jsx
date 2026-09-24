@@ -100,15 +100,15 @@ export default function AdminPeople() {
           independent checkboxes — check as many as someone&apos;s hats require.
           <strong> Publish news</strong> lets them write and publish posts;
           <strong> view members</strong> gives read-only access to the staff
-          roster, pledge tracker, Site traffic, and newsletter stats (for the membership
-          committee, treasurer, and board); <strong>Board</strong> marks a
-          board member (directory badge);
+          roster, pledge tracker, membership counts, Site traffic, and newsletter
+          stats (for the membership committee, treasurer, and board);
+          <strong>Board</strong> marks a board member (directory badge);
           <strong> Membership Committee</strong> is a hat label — also check
           <strong> view members</strong> if they should see the roster,
-          Site traffic, and newsletter stats;
+          membership counts, Site traffic, and newsletter stats;
           <strong> administrators</strong> have operational access, including
-          this page, the roster, and Site traffic. Board and Membership
-          Committee are separate from Admin.
+          this page, the roster, Site traffic, and finance totals. Board and
+          Membership Committee are separate from Admin and do not open finance.
         </p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
