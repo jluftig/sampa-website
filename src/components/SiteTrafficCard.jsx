@@ -268,9 +268,9 @@ export function NewsletterPanel({ loading, error, stats }) {
               <ul className="divide-y divide-primary/10">
                 {issues.map((issue) => (
                   <li key={issue.id} className="py-1.5">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <span className="font-semibold text-sm">{issue.name}</span>
-                      <span className="text-text/50 text-xs font-data">{formatWhen(issue.sentAt)}</span>
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="font-semibold text-sm min-w-0 truncate">{issue.name}</span>
+                      <span className="text-text/50 text-xs font-data shrink-0">{formatWhen(issue.sentAt)}</span>
                     </div>
                     <p className="text-text/60 text-xs mt-1 font-data">
                       {formatCount(issue.recipients)} recipients
