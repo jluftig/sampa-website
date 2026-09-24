@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// T57: weekly-issue filter and /api/newsletter-stats roster gate.
+// T58: weekly-issue filter and /api/newsletter-stats roster gate.
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { createTtlCache } from '../api/_lib/ttl-cache.js';
