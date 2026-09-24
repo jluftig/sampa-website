@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
+import { canViewPolicyWork } from '../lib/policyWorkAccess';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -9,6 +10,7 @@ import Footer from '../components/Footer';
 export default function EditorDashboard() {
   const { profile, signOut, isAdmin, canViewMembers } = useAuth();
   const showRosterLink = canViewMembers;
+  const showPolicyWork = canViewPolicyWork(profile);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -95,6 +97,14 @@ export default function EditorDashboard() {
                 className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
               >
                 Members
+              </Link>
+            )}
+            {showPolicyWork && (
+              <Link
+                to="/editor/policy"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
+              >
+                Policy work
               </Link>
             )}
             <button

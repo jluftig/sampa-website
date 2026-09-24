@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { BookmarkX, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
+import { BookmarkX, ClipboardList, CreditCard, Heart, PenSquare, Plus, Trash2, Users } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { canAddPatron, patronDollars, patronUpgradeDuration, PATRON_ADDON_BLURB, tierByKey } from '../lib/membership';
@@ -12,6 +12,7 @@ import {
   sanitizeOrganizations,
 } from '../lib/organizations';
 import { apiPost } from '../lib/api';
+import { canViewPolicyWork } from '../lib/policyWorkAccess';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -37,6 +38,7 @@ const DIRECTORY_IDENTITY_FIELDS = [
 export default function Dashboard() {
   const { user, profile, profileError, isEditor, canViewMembers, canAccessMemberDirectory, refreshProfile, signOut } = useAuth();
   const showRosterLink = canViewMembers;
+  const showPolicyWork = canViewPolicyWork(profile);
   const [searchParams, setSearchParams] = useSearchParams();
   const justPaid = searchParams.get('checkout') === 'success';
   const justAddedPatron = justPaid && searchParams.get('addon') === 'patron';
@@ -325,6 +327,11 @@ export default function Dashboard() {
             {showRosterLink && (
               <Link to="/editor/members" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
                 <Users className="w-4 h-4" /> Roster
+              </Link>
+            )}
+            {showPolicyWork && (
+              <Link to="/editor/policy" className="flex items-center gap-1.5 text-primary-text font-semibold hover:underline">
+                <ClipboardList className="w-4 h-4" /> Policy work
               </Link>
             )}
             <button onClick={signOut} className="text-text/50 hover:text-text font-semibold">
