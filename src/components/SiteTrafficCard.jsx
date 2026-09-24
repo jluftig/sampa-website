@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Activity, Mail, Megaphone } from 'lucide-react';
 import { apiGet } from '../lib/api';
+import { displayIssueName } from '../lib/newsletterStats';
 import { shouldRequestTraffic, TRACKING_STARTED_NOTE, TRAFFIC_RANGES } from '../lib/siteTraffic';
 import MiniLineChart from './MiniLineChart';
 
@@ -24,6 +25,12 @@ function formatWhen(iso) {
     year: 'numeric',
     timeZone: 'UTC',
   });
+}
+
+function shownIssueName(name) {
+  const label = displayIssueName(name);
+  const raw = String(name || '');
+  return { label, title: label === raw.trim() ? undefined : raw };
 }
 
 function shortDay(isoDate) {
@@ -160,6 +167,7 @@ export function NewsletterPanel({ loading, error, stats }) {
   const issues = stats?.issues || [];
   const chronological = [...issues].reverse();
   const latest = stats?.latest;
+  const latestShown = shownIssueName(latest?.name);
 
   return (
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
@@ -194,7 +202,9 @@ export function NewsletterPanel({ loading, error, stats }) {
 
           {latest ? (
             <div className="mb-3">
-              <h3 className="text-sm font-bold">{latest.name}</h3>
+              <h3 className="text-sm font-bold" title={latestShown.title}>
+                {latestShown.label}
+              </h3>
               <p className="text-text/50 text-xs mt-0.5 mb-2">
                 {formatWhen(latest.sentAt)}
                 {stats.listName ? ` · ${stats.listName}` : ''}
@@ -266,23 +276,26 @@ export function NewsletterPanel({ loading, error, stats }) {
             <>
               <h3 className="text-sm font-bold mb-1">Recent issues</h3>
               <ul className="divide-y divide-primary/10">
-                {issues.map((issue) => (
-                  <li key={issue.id} className="py-1.5">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <span className="font-semibold text-sm min-w-0 truncate">{issue.name}</span>
-                      <span className="text-text/50 text-xs font-data shrink-0">{formatWhen(issue.sentAt)}</span>
-                    </div>
-                    <p className="text-text/60 text-xs mt-1 font-data">
-                      {formatCount(issue.recipients)} recipients
-                      {' · '}
-                      {formatCount(issue.delivered)} delivered
-                      {' · '}
-                      {formatCount(issue.uniqueOpens)} opens ({formatRate(issue.openRate)})
-                      {' · '}
-                      {formatCount(issue.uniqueClicks)} clicks ({formatRate(issue.clickRate)})
-                    </p>
-                  </li>
-                ))}
+                {issues.map((issue) => {
+                  const shown = shownIssueName(issue.name);
+                  return (
+                    <li key={issue.id} className="py-1.5">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="font-semibold text-sm min-w-0 truncate" title={shown.title}>{shown.label}</span>
+                        <span className="text-text/50 text-xs font-data shrink-0">{formatWhen(issue.sentAt)}</span>
+                      </div>
+                      <p className="text-text/60 text-xs mt-1 font-data">
+                        {formatCount(issue.recipients)} recipients
+                        {' · '}
+                        {formatCount(issue.delivered)} delivered
+                        {' · '}
+                        {formatCount(issue.uniqueOpens)} opens ({formatRate(issue.openRate)})
+                        {' · '}
+                        {formatCount(issue.uniqueClicks)} clicks ({formatRate(issue.clickRate)})
+                      </p>
+                    </li>
+                  );
+                })}
               </ul>
             </>
           )}

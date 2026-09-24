@@ -69,6 +69,18 @@ function countOf(row, key) {
   return Number.isFinite(n) ? n : 0;
 }
 
+export function displayIssueName(name) {
+  const raw = String(name || '').trim();
+  let cleaned = raw;
+  let previous;
+  do {
+    previous = cleaned;
+    cleaned = cleaned.replace(/\s*\([^()]*\)/g, ' ');
+  } while (cleaned !== previous);
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+  return cleaned || raw;
+}
+
 export function toWeeklyIssue(campaign, options = {}) {
   const listId = options.updatesListId ?? UPDATES_LIST_ID;
   const listStats = listCampaignStats(campaign, listId);
