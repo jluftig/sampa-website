@@ -51,10 +51,25 @@ export function listCampaignStats(campaign, listId = UPDATES_LIST_ID) {
   return rows.find((row) => Number(row?.listId) === Number(listId)) || null;
 }
 
+// Reach omits a test send. The campaign stays in Brevo.
+// A send is a test when the name or subject contains "test" (any case),
+// or when recipients include the Brevo test list.
+// Brevo's testSent flag means a preview was sent, including before a real issue, so it does not count.
+export function isTestCampaign(campaign, options = {}) {
+  if (!campaign) return false;
+  const name = String(campaign.name || '');
+  const subject = String(campaign.subject || '');
+  if (name.toLowerCase().includes('test') || subject.toLowerCase().includes('test')) return true;
+  const testListId = Number(options.testListId ?? TEST_LIST_ID);
+  if (!Number.isFinite(testListId) || testListId <= 0) return false;
+  return listIdsFromRecipients(campaign.recipients).includes(testListId);
+}
+
 export function isWeeklyIssue(campaign, options = {}) {
   const updatesListId = options.updatesListId ?? UPDATES_LIST_ID;
   const makeupListId = options.makeupListId ?? MAKEUP_LIST_ID;
   if (!campaign || String(campaign.status || '').toLowerCase() !== 'sent') return false;
+  if (isTestCampaign(campaign, options)) return false;
   const name = String(campaign.name || '');
   if (/makeup/i.test(name)) return false;
   const lists = listIdsFromRecipients(campaign.recipients);
