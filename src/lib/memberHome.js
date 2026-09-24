@@ -1,5 +1,6 @@
 import { stripAuthCallbackParams } from './authSession.js';
 import { canViewMemberRoster } from './memberRoster.js';
+import { canViewPolicyWork } from './policyWorkAccess.js';
 
 // Where a signed-in person should land after "Member Login" (header/footer)
 // or after /login with no explicit next. Membership is keyed to the profile
@@ -29,9 +30,14 @@ export function isMemberRosterPath(path) {
   return p === '/editor/members' || p.startsWith('/editor/members/');
 }
 
+export function isPolicyWorkPath(path) {
+  const p = pathOnly(path);
+  return p === '/editor/policy' || p.startsWith('/editor/policy/');
+}
+
 export function isEditorAppPath(path) {
   const p = pathOnly(path);
-  if (isMemberRosterPath(p)) return false;
+  if (isMemberRosterPath(p) || isPolicyWorkPath(p)) return false;
   return p === '/editor' || p.startsWith('/editor/');
 }
 
@@ -55,6 +61,9 @@ export function postAuthPath(profile, rawNext) {
   const requested = safeNext(rawNext);
   if (requested) {
     if (isMemberRosterPath(requested) && !canViewMemberRoster(profile)) {
+      return signedInHomePath(profile);
+    }
+    if (isPolicyWorkPath(requested) && !canViewPolicyWork(profile)) {
       return signedInHomePath(profile);
     }
     if (isEditorAppPath(requested) && !isEditorProfile(profile)) {
