@@ -294,9 +294,13 @@ describe('wiring', () => {
     assert.match(helper, /export function canViewMemberRoster/);
     assert.match(helper, /role === 'admin'/);
     assert.match(helper, /can_view_members/);
+    const org = readFileSync('src/components/OrgDashboard.jsx', 'utf8');
     assert.doesNotMatch(dashboard, /SiteTrafficCard/);
+    assert.doesNotMatch(dashboard, /OrgDashboard/);
     assert.doesNotMatch(dashboard, /canViewSiteTraffic/);
-    assert.match(roster, /SiteTrafficCard/);
+    assert.match(roster, /OrgDashboard/);
+    assert.doesNotMatch(roster, /SiteTrafficCard/);
+    assert.match(org, /SiteTrafficCard/);
     assert.doesNotMatch(roster, /canViewSiteTraffic/);
     assert.match(rosterGate, /canViewMemberRoster/);
     assert.doesNotMatch(rosterGate, /is_board|is_membership_committee|canViewSiteTraffic/);
