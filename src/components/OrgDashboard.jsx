@@ -29,11 +29,39 @@ function shortMonth(key) {
 
 function Stat({ label, value }) {
   return (
-    <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-5">
-      <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-1">
+    <div className="rounded-xl border border-primary/10 bg-primary/[0.03] px-3 py-2">
+      <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-0.5">
         {label}
       </div>
-      <div className="text-3xl font-drama font-bold">{value}</div>
+      <div className="text-2xl font-drama font-bold leading-tight">{value}</div>
+    </div>
+  );
+}
+
+function formatRelayDate(iso) {
+  const [year, month, day] = String(iso || '').split('-').map(Number);
+  if (!year || !month || !day) return iso || '';
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+function RelayBalance({ relay }) {
+  if (!relay) return null;
+  return (
+    <div className="mb-3">
+      <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50">
+        Current balance
+      </div>
+      <div className="text-3xl font-drama font-bold leading-tight mt-0.5">
+        {formatMoney(relay.amountCents)}
+      </div>
+      <p className="text-text/50 text-xs mt-1">
+        {relay.source} · manual · last updated {formatRelayDate(relay.updatedOn)}
+      </p>
     </div>
   );
 }
@@ -68,12 +96,12 @@ export function MembershipPanel({ loading, error, stats }) {
   const hasSeries = series.some((point) => point.active);
 
   return (
-    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
-      <h2 className="text-xl font-bold flex items-center gap-2">
-        <Users className="w-5 h-5 text-primary-text" aria-hidden="true" />
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
+      <h2 className="text-lg font-bold flex items-center gap-2">
+        <Users className="w-4 h-4 text-primary-text" aria-hidden="true" />
         Membership
       </h2>
-      <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+      <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
         Active headcount from each member&apos;s current term
         (renews on, minus term length). Lifetime members and active members
         with no term length are included in the latest month only. Canceled
@@ -91,14 +119,14 @@ export function MembershipPanel({ loading, error, stats }) {
 
       {!loading && !error && stats && (
         <>
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 mb-3">
             <Stat label="Active now" value={formatCount(stats.activeNow)} />
             <Stat label="Latest month" value={formatCount(series[series.length - 1]?.active)} />
           </div>
 
           {hasSeries ? (
-            <div className="mb-6 text-text">
-              <h3 className="text-sm font-bold mb-2">Active members by month</h3>
+            <div className="mb-3 text-text">
+              <h3 className="text-sm font-bold mb-1">Active members by month</h3>
               <MiniLineChart
                 ariaLabel="Active members by month, derived from the current term"
                 categories={series.map((point) => shortMonth(point.month))}
@@ -110,15 +138,15 @@ export function MembershipPanel({ loading, error, stats }) {
               />
             </div>
           ) : (
-            <p className="text-text/50 text-sm mb-6">No active members in this window.</p>
+            <p className="text-text/50 text-sm mb-3">No active members in this window.</p>
           )}
 
           {stats.tiers?.length > 0 && (
             <>
-              <h3 className="text-sm font-bold mb-3">Current tiers</h3>
+              <h3 className="text-sm font-bold mb-1">Current tiers</h3>
               <ul className="divide-y divide-primary/10">
                 {stats.tiers.map((row) => (
-                  <li key={row.tier} className="py-2.5 flex items-center justify-between gap-4 text-sm">
+                  <li key={row.tier} className="py-1.5 flex items-center justify-between gap-4 text-sm">
                     <span className="font-data text-text/80">{row.tier}</span>
                     <span className="text-text/50 font-data">{formatCount(row.count)}</span>
                   </li>
@@ -136,22 +164,23 @@ export function FinancePanel({ loading, error, stats }) {
   const notConfigured = error?.code === 'not_configured' || error?.status === 503;
   const restricted = error?.code === 'finance_restricted';
   const series = stats?.series || [];
+  const relay = restricted ? null : (stats?.relay || error?.relay);
 
   return (
-    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
-      <h2 className="text-xl font-bold flex items-center gap-2">
-        <Landmark className="w-5 h-5 text-primary-text" aria-hidden="true" />
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
+      <h2 className="text-lg font-bold flex items-center gap-2">
+        <Landmark className="w-4 h-4 text-primary-text" aria-hidden="true" />
         Finances
       </h2>
-      <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
-        Stripe cash activity for the last 12 months, including dues and
-        donations that settled in Stripe. Payouts to the bank are excluded.
-        Spend is not connected. There is no bookkeeping source, so bills paid
-        outside Stripe are not here. Stripe fees are processing costs.
+      <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
+        Operating cash is the Relay balance. Stripe figures are dues and
+        donations that settled on the site. They are not the bank balance.
         Administrators only.
       </p>
 
       {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
+
+      {!loading && relay && <RelayBalance relay={relay} />}
 
       {!loading && restricted && (
         <p className="text-text/60 text-sm">Finance totals are limited to administrators.</p>
@@ -172,21 +201,24 @@ export function FinancePanel({ loading, error, stats }) {
 
       {!loading && !error && stats && (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+          <h3 className="text-sm font-bold mb-1">Membership dues (Stripe)</h3>
+          <p className="text-text/50 text-xs mb-3 max-w-xl">
+            Last 12 months of dues and donations that settled in Stripe.
+            Payouts to the bank are excluded. Stripe fees are processing
+            costs. Spend is not connected, so bills paid outside Stripe are
+            not here.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
             <Stat label="Revenue" value={formatMoney(stats.revenueCents)} />
             <Stat label="Stripe fees" value={formatMoney(stats.feeCents)} />
             <Stat label="Refunds" value={formatMoney(stats.refundCents)} />
-            <Stat label="Net" value={formatMoney(stats.netCents)} />
+            <Stat label="After fees" value={formatMoney(stats.netCents)} />
           </div>
-          <p className="text-text/50 text-xs mb-4">
-            Spend is not connected. Add a bookkeeping integration later if org
-            expenses should appear here. STRIPE_SECRET_KEY is the revenue source.
-          </p>
           {stats.empty ? (
             <p className="text-text/50 text-sm">No Stripe charges in the last 12 months.</p>
           ) : (
             <div className="text-text">
-              <h3 className="text-sm font-bold mb-2">Revenue by month</h3>
+              <h3 className="text-sm font-bold mb-1">Revenue by month</h3>
               <MiniLineChart
                 ariaLabel="Stripe revenue by month"
                 formatY={(value) => `$${Math.round(value)}`}
@@ -266,25 +298,25 @@ function useEducationOutputs() {
 
 function OutputCharts({ loading, slot, monthlyLabel, cumulativeLabel, emptyLabel, monthlyAria, cumulativeAria }) {
   if (loading || slot?.state === 'loading') {
-    return <p className="text-text/50 font-data text-sm mb-6">Loading…</p>;
+    return <p className="text-text/50 font-data text-sm mb-3">Loading…</p>;
   }
   if (slot?.state === 'unconfigured') {
-    return <p className="text-text/60 text-sm mb-6">Newsletter stats not configured.</p>;
+    return <p className="text-text/60 text-sm mb-3">Newsletter stats not configured.</p>;
   }
   if (slot?.state === 'error' || !slot?.series) {
-    return <p className="text-text/60 text-sm mb-6">Unavailable</p>;
+    return <p className="text-text/60 text-sm mb-3">Unavailable</p>;
   }
   const series = slot.series;
   return (
-    <div className="mb-6">
-      <div className="grid grid-cols-2 gap-4 mb-4">
+    <div className="mb-3">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         <Stat label="Total" value={formatCount(series.total)} />
         <Stat label="Latest month" value={formatCount(series.monthly[series.monthly.length - 1]?.count)} />
       </div>
       {series.chartsReady ? (
-        <div className="text-text space-y-4">
+        <div className="text-text space-y-2">
           <div>
-            <h4 className="text-sm font-bold mb-2">{monthlyLabel}</h4>
+            <h4 className="text-sm font-bold mb-1">{monthlyLabel}</h4>
             <MiniLineChart
               ariaLabel={monthlyAria}
               categories={series.monthly.map((point) => shortMonth(point.month))}
@@ -292,7 +324,7 @@ function OutputCharts({ loading, slot, monthlyLabel, cumulativeLabel, emptyLabel
             />
           </div>
           <div>
-            <h4 className="text-sm font-bold mb-2">{cumulativeLabel}</h4>
+            <h4 className="text-sm font-bold mb-1">{cumulativeLabel}</h4>
             <MiniLineChart
               ariaLabel={cumulativeAria}
               categories={series.cumulative.map((point) => shortMonth(point.month))}
@@ -309,12 +341,12 @@ function OutputCharts({ loading, slot, monthlyLabel, cumulativeLabel, emptyLabel
 
 function PlaceholderCard({ icon: Icon, title, note }) {
   return (
-    <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/[0.02] p-5">
+    <div className="rounded-xl border border-dashed border-primary/20 bg-primary/[0.02] px-3 py-2">
       <h4 className="text-sm font-bold flex items-center gap-2">
         <Icon className="w-4 h-4 text-primary-text" aria-hidden="true" />
         {title}
       </h4>
-      <p className="text-text/50 text-sm mt-2">{note}</p>
+      <p className="text-text/50 text-sm mt-1">{note}</p>
     </div>
   );
 }
@@ -324,19 +356,19 @@ export function ImpactPanel({ stats, education }) {
   const cumulative = stats?.cumulative || [];
 
   return (
-    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
-      <h2 className="text-xl font-bold flex items-center gap-2">
-        <Scale className="w-5 h-5 text-primary-text" aria-hidden="true" />
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
+      <h2 className="text-lg font-bold flex items-center gap-2">
+        <Scale className="w-4 h-4 text-primary-text" aria-hidden="true" />
         Impact
       </h2>
-      <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+      <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
         What SAMPA put into the world: filings, published articles, and issues
         sent. Opens, clicks, and pageviews stay in Reach.
       </p>
 
       <div>
-        <h3 className="text-lg font-bold mb-1">Policy</h3>
-        <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+        <h3 className="text-base font-bold mb-0.5">Policy</h3>
+        <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
           Filings on the public policy hub. Each item uses its submission date.
           This is the same list as /policy.
           {stats?.yearOnly
@@ -346,15 +378,15 @@ export function ImpactPanel({ stats, education }) {
 
         {stats && (
           <>
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-3 mb-3">
               <Stat label="Filed items" value={formatCount(stats.total)} />
               <Stat label="Latest month" value={formatCount(monthly[monthly.length - 1]?.count)} />
             </div>
 
             {stats.chartsReady ? (
-              <div className="mb-6 text-text space-y-4">
+              <div className="mb-3 text-text space-y-2">
                 <div>
-                  <h4 className="text-sm font-bold mb-2">Monthly filings</h4>
+                  <h4 className="text-sm font-bold mb-1">Monthly filings</h4>
                   <MiniLineChart
                     ariaLabel="Policy items filed each month"
                     categories={monthly.map((point) => shortMonth(point.month))}
@@ -366,7 +398,7 @@ export function ImpactPanel({ stats, education }) {
                   />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold mb-2">Cumulative filings</h4>
+                  <h4 className="text-sm font-bold mb-1">Cumulative filings</h4>
                   <MiniLineChart
                     ariaLabel="Running total of policy items filed"
                     categories={cumulative.map((point) => shortMonth(point.month))}
@@ -379,16 +411,16 @@ export function ImpactPanel({ stats, education }) {
                 </div>
               </div>
             ) : (
-              <p className="text-text/50 text-sm mb-6">
+              <p className="text-text/50 text-sm mb-3">
                 Charts start once two dated filings are on the policy hub.
               </p>
             )}
 
-            <h4 className="text-sm font-bold mb-3">Recent filings</h4>
+            <h4 className="text-sm font-bold mb-1">Recent filings</h4>
             {stats.recent?.length ? (
               <ul className="divide-y divide-primary/10">
                 {stats.recent.map((item) => (
-                  <li key={item.slug || item.title} className="py-3">
+                  <li key={item.slug || item.title} className="py-1.5">
                     <Link to={item.href} className="font-semibold text-sm text-primary-text hover:underline">
                       {item.title}
                     </Link>
@@ -405,16 +437,16 @@ export function ImpactPanel({ stats, education }) {
         )}
       </div>
 
-      <div className="mt-8 pt-8 border-t border-primary/10">
-        <h3 className="text-lg font-bold flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-primary-text" aria-hidden="true" />
+      <div className="mt-4 pt-4 border-t border-primary/10">
+        <h3 className="text-base font-bold flex items-center gap-2">
+          <BookOpen className="w-4 h-4 text-primary-text" aria-hidden="true" />
           Education
         </h3>
-        <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+        <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
           Published news and SAMPA Weekly issues that were sent on list 3.
           This is a count of outputs, not open rate.
         </p>
-        <h4 className="text-sm font-bold mb-3">News articles published</h4>
+        <h4 className="text-sm font-bold mb-1">News articles published</h4>
         <OutputCharts
           slot={education?.news}
           monthlyLabel="Articles by month"
@@ -423,7 +455,7 @@ export function ImpactPanel({ stats, education }) {
           monthlyAria="News articles published each month"
           cumulativeAria="Running total of published news articles"
         />
-        <h4 className="text-sm font-bold mb-3">Weekly issues sent</h4>
+        <h4 className="text-sm font-bold mb-1">Weekly issues sent</h4>
         <OutputCharts
           slot={education?.weekly}
           monthlyLabel="Issues sent by month"
@@ -439,12 +471,12 @@ export function ImpactPanel({ stats, education }) {
         />
       </div>
 
-      <div className="mt-8 pt-8 border-t border-primary/10">
-        <h3 className="text-lg font-bold flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-primary-text" aria-hidden="true" />
+      <div className="mt-4 pt-4 border-t border-primary/10">
+        <h3 className="text-base font-bold flex items-center gap-2">
+          <Briefcase className="w-4 h-4 text-primary-text" aria-hidden="true" />
           Workforce
         </h3>
-        <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+        <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
           Jobs posted for clinicians. Nothing is counted here yet.
         </p>
         <PlaceholderCard
@@ -476,7 +508,7 @@ function FinanceSection() {
 export default function OrgDashboard() {
   return (
     <div>
-      <p className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-4">
+      <p className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-2">
         Organization
       </p>
       <MembershipSection />

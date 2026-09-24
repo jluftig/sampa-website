@@ -4,6 +4,7 @@ import { createTtlCache } from './ttl-cache.js';
 import { canViewFinance, canViewMemberRoster } from '../../src/lib/memberRoster.js';
 import { financeConfigFromEnv, shapeFinanceStats } from '../../src/lib/financeStats.js';
 import { monthKeys } from '../../src/lib/membershipStats.js';
+import { manualRelayBalance } from '../../src/data/relayBalance.js';
 
 const CACHE_MS = 5 * 60 * 1000;
 const financeCache = createTtlCache();
@@ -49,6 +50,7 @@ export async function handleFinanceStats(request, deps = {}) {
   const cache = deps.cache || financeCache;
   const listTransactions = deps.listTransactions || listStripeTransactions;
 
+  let includeRelay = false;
   try {
     const user = await requireViewer(request);
     if (!user) return financeJson({ error: 'Sign in required' }, 401);
@@ -63,12 +65,14 @@ export async function handleFinanceStats(request, deps = {}) {
         message: 'Finance totals are limited to administrators.',
       }, 403);
     }
+    includeRelay = true;
 
     const cfg = financeConfigFromEnv(env);
     if (!cfg.configured) {
       return financeJson({
         error: 'not_configured',
         message: 'Finances not configured.',
+        relay: manualRelayBalance,
       }, 503);
     }
 
@@ -78,7 +82,7 @@ export async function handleFinanceStats(request, deps = {}) {
 
     const since = new Date(`${monthKeys(now)[0]}-01T00:00:00.000Z`);
     const transactions = await listTransactions(Math.floor(since.getTime() / 1000), cfg.key);
-    const body = shapeFinanceStats(transactions, now);
+    const body = { ...shapeFinanceStats(transactions, now), relay: manualRelayBalance };
     cache.set(cacheKey, body, CACHE_MS);
     return financeJson(body);
   } catch (err) {
@@ -86,6 +90,7 @@ export async function handleFinanceStats(request, deps = {}) {
     return financeJson({
       error: 'finance_error',
       message: 'Could not load finance stats right now.',
+      ...(includeRelay ? { relay: manualRelayBalance } : {}),
     }, 502);
   }
 }

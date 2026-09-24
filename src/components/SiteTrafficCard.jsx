@@ -34,11 +34,11 @@ function shortDay(isoDate) {
 
 function Stat({ label, value }) {
   return (
-    <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-5">
-      <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-1">
+    <div className="rounded-xl border border-primary/10 bg-primary/[0.03] px-3 py-2">
+      <div className="text-xs font-data font-semibold uppercase tracking-wider text-text/50 mb-0.5">
         {label}
       </div>
-      <div className="text-3xl font-drama font-bold">{value}</div>
+      <div className="text-2xl font-drama font-bold leading-tight">{value}</div>
     </div>
   );
 }
@@ -49,11 +49,11 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
   const hasSeries = series.some((point) => point.visitors || point.pageviews);
 
   return (
-    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
+      <div className="flex flex-wrap items-end justify-between gap-3 mb-1">
         <div>
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <Activity className="w-5 h-5 text-primary-text" aria-hidden="true" />
+          <h3 className="text-base font-bold flex items-center gap-2">
+            <Activity className="w-4 h-4 text-primary-text" aria-hidden="true" />
             Site traffic
           </h3>
           <p className="text-text/50 text-xs mt-1 max-w-xl">
@@ -82,7 +82,7 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
           ))}
         </div>
       </div>
-      <p className="text-text/45 text-xs mb-6 max-w-xl">
+      <p className="text-text/45 text-xs mb-3 max-w-xl">
         {TRACKING_STARTED_NOTE}
       </p>
 
@@ -104,14 +104,14 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
 
       {!loading && !error && stats && (
         <>
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 mb-3">
             <Stat label="Visitors" value={formatCount(stats.visitors)} />
             <Stat label="Pageviews" value={formatCount(stats.pageviews)} />
           </div>
 
           {hasSeries && (
-            <div className="mb-6 text-text">
-              <h3 className="text-sm font-bold mb-2">Visitors over time</h3>
+            <div className="mb-3 text-text">
+              <h3 className="text-sm font-bold mb-1">Visitors over time</h3>
               <MiniLineChart
                 ariaLabel="Daily visitors and pageviews since tracking started"
                 categories={series.map((point) => shortDay(point.date))}
@@ -129,11 +129,11 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
             </p>
           ) : (
             <>
-              <h3 className="text-sm font-bold mb-3">Top pages</h3>
+              <h3 className="text-sm font-bold mb-1">Top pages</h3>
               {stats.paths?.length ? (
                 <ul className="divide-y divide-primary/10">
                   {stats.paths.map((row) => (
-                    <li key={row.path} className="py-2.5 flex items-center justify-between gap-4 text-sm">
+                    <li key={row.path} className="py-1.5 flex items-center justify-between gap-4 text-sm">
                       <span className="font-data text-text/80 truncate">{row.path}</span>
                       <span className="text-text/50 font-data shrink-0">
                         {formatCount(row.pageviews)} views
@@ -162,12 +162,12 @@ export function NewsletterPanel({ loading, error, stats }) {
   const latest = stats?.latest;
 
   return (
-    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
-      <h3 className="text-lg font-bold flex items-center gap-2">
-        <Mail className="w-5 h-5 text-primary-text" aria-hidden="true" />
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
+      <h3 className="text-base font-bold flex items-center gap-2">
+        <Mail className="w-4 h-4 text-primary-text" aria-hidden="true" />
         Newsletter
       </h3>
-      <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+      <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
         SAMPA Weekly on list 3. List size at send is that issue&apos;s sent
         count. Opens and clicks stay here. The test list and makeup catch-ups
         are left out. Same access as the member roster.
@@ -187,19 +187,19 @@ export function NewsletterPanel({ loading, error, stats }) {
 
       {!loading && !error && stats && (
         <>
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 mb-3">
             <Stat label="List size" value={formatCount(stats.subscribers)} />
             <Stat label="Latest open rate" value={formatRate(latest?.openRate)} />
           </div>
 
           {latest ? (
-            <div className="mb-6">
+            <div className="mb-3">
               <h3 className="text-sm font-bold">{latest.name}</h3>
-              <p className="text-text/50 text-xs mt-1 mb-4">
+              <p className="text-text/50 text-xs mt-0.5 mb-2">
                 {formatWhen(latest.sentAt)}
                 {stats.listName ? ` · ${stats.listName}` : ''}
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <Stat label="Recipients" value={formatCount(latest.recipients)} />
                 <Stat label="Delivered" value={formatCount(latest.delivered)} />
                 <Stat label="Unique opens" value={formatCount(latest.uniqueOpens)} />
@@ -208,11 +208,11 @@ export function NewsletterPanel({ loading, error, stats }) {
                 <Stat label="Click rate" value={formatRate(latest.clickRate)} />
               </div>
               {stats.articles?.length ? (
-                <div className="mt-4">
-                  <h4 className="text-sm font-bold mb-2">Top clicked articles</h4>
+                <div className="mt-3">
+                  <h4 className="text-sm font-bold mb-1">Top clicked articles</h4>
                   <ul className="divide-y divide-primary/10">
                     {stats.articles.map((article) => (
-                      <li key={article.path} className="py-2 flex items-baseline justify-between gap-3 text-sm">
+                      <li key={article.path} className="py-1 flex items-baseline justify-between gap-3 text-sm">
                         <span className="min-w-0">
                           <span className="font-semibold">{article.title || article.slug}</span>
                           <span className="block font-data text-text/50 text-xs break-all">{article.path}</span>
@@ -225,12 +225,12 @@ export function NewsletterPanel({ loading, error, stats }) {
               ) : null}
             </div>
           ) : (
-            <p className="text-text/50 text-sm mb-6">No weekly issues yet.</p>
+            <p className="text-text/50 text-sm mb-3">No weekly issues yet.</p>
           )}
 
           {chronological.length > 0 && (
-            <div className="mb-6 text-text">
-              <h3 className="text-sm font-bold mb-2">Open rate by issue</h3>
+            <div className="mb-3 text-text">
+              <h3 className="text-sm font-bold mb-1">Open rate by issue</h3>
               <MiniLineChart
                 ariaLabel="Open rate for each weekly issue"
                 yMax={100}
@@ -242,7 +242,7 @@ export function NewsletterPanel({ loading, error, stats }) {
                   values: chronological.map((issue) => issue.openRate || 0),
                 }]}
               />
-              <h4 className="text-sm font-bold mt-4 mb-2">
+              <h4 className="text-sm font-bold mt-3 mb-1">
                 {stats.listSize?.source === 'snapshot' ? 'Subscribers over time' : 'List size at send'}
               </h4>
               <p className="text-text/45 text-xs mb-2 max-w-xl">
@@ -264,10 +264,10 @@ export function NewsletterPanel({ loading, error, stats }) {
 
           {issues.length > 0 && (
             <>
-              <h3 className="text-sm font-bold mb-3">Recent issues</h3>
+              <h3 className="text-sm font-bold mb-1">Recent issues</h3>
               <ul className="divide-y divide-primary/10">
                 {issues.map((issue) => (
-                  <li key={issue.id} className="py-3">
+                  <li key={issue.id} className="py-1.5">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <span className="font-semibold text-sm">{issue.name}</span>
                       <span className="text-text/50 text-xs font-data">{formatWhen(issue.sentAt)}</span>
@@ -346,12 +346,12 @@ export default function SiteTrafficCard() {
   }, []);
 
   return (
-    <div className="mb-8">
-      <h2 className="text-xl font-bold flex items-center gap-2">
-        <Megaphone className="w-5 h-5 text-primary-text" aria-hidden="true" />
+    <div className="mb-4">
+      <h2 className="text-lg font-bold flex items-center gap-2">
+        <Megaphone className="w-4 h-4 text-primary-text" aria-hidden="true" />
         Reach
       </h2>
-      <p className="text-text/50 text-xs mt-1 mb-4 max-w-xl">
+      <p className="text-text/50 text-xs mt-0.5 mb-2 max-w-xl">
         Distribution. Pageviews, list size, opens, and clicks stay in this pillar.
       </p>
       <SiteTrafficPanel
