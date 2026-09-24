@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Landmark, Users } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Landmark, Scale, Users } from 'lucide-react';
 import { apiGet } from '../lib/api';
+import { listPolicyDocuments } from '../data/policyDocuments';
+import { shapePolicyImpact } from '../lib/policyImpact';
 import SiteTrafficCard from './SiteTrafficCard';
 import MiniLineChart from './MiniLineChart';
 
@@ -200,6 +203,104 @@ export function FinancePanel({ loading, error, stats }) {
   );
 }
 
+function formatFiled(iso, yearOnly) {
+  if (!iso) return 'Date not recorded';
+  if (yearOnly) return `${iso.slice(0, 4)} (counted in January)`;
+  const [year, month, day] = iso.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+export function ImpactPanel({ stats }) {
+  const monthly = stats?.monthly || [];
+  const cumulative = stats?.cumulative || [];
+
+  return (
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
+      <h2 className="text-xl font-bold flex items-center gap-2">
+        <Scale className="w-5 h-5 text-primary-text" aria-hidden="true" />
+        Impact
+      </h2>
+      <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+        Policy filings on the public policy hub. Each item uses its submission
+        date. This is the same list as /policy.
+        {stats?.yearOnly
+          ? ' A filing dated only by year is counted on January 1 of that year.'
+          : ''}
+      </p>
+
+      {stats && (
+        <>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <Stat label="Filed items" value={formatCount(stats.total)} />
+            <Stat label="Latest month" value={formatCount(monthly[monthly.length - 1]?.count)} />
+          </div>
+
+          {stats.chartsReady ? (
+            <div className="mb-6 text-text space-y-4">
+              <div>
+                <h3 className="text-sm font-bold mb-2">Monthly filings</h3>
+                <MiniLineChart
+                  ariaLabel="Policy items filed each month"
+                  categories={monthly.map((point) => shortMonth(point.month))}
+                  lines={[{
+                    name: 'Filed',
+                    color: '#0F766E',
+                    values: monthly.map((point) => point.count),
+                  }]}
+                />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold mb-2">Cumulative filings</h3>
+                <MiniLineChart
+                  ariaLabel="Running total of policy items filed"
+                  categories={cumulative.map((point) => shortMonth(point.month))}
+                  lines={[{
+                    name: 'Cumulative',
+                    color: '#1E2A38',
+                    values: cumulative.map((point) => point.total),
+                  }]}
+                />
+              </div>
+            </div>
+          ) : (
+            <p className="text-text/50 text-sm mb-6">
+              Charts start once two dated filings are on the policy hub.
+            </p>
+          )}
+
+          <h3 className="text-sm font-bold mb-3">Recent filings</h3>
+          {stats.recent?.length ? (
+            <ul className="divide-y divide-primary/10">
+              {stats.recent.map((item) => (
+                <li key={item.slug || item.title} className="py-3">
+                  <Link to={item.href} className="font-semibold text-sm text-primary-text hover:underline">
+                    {item.title}
+                  </Link>
+                  <p className="text-text/50 text-xs mt-1 font-data">
+                    {formatFiled(item.date, item.yearOnly)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-text/50 text-sm">No policy filings yet.</p>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
+function ImpactSection() {
+  const stats = useMemo(() => shapePolicyImpact(listPolicyDocuments()), []);
+  return <ImpactPanel stats={stats} />;
+}
+
 function MembershipSection() {
   const { stats, loading, error } = useRosterGet('/api/newsletter-stats?section=membership');
   return <MembershipPanel loading={loading} error={error} stats={stats} />;
@@ -219,6 +320,7 @@ export default function OrgDashboard() {
       <MembershipSection />
       <SiteTrafficCard />
       <FinanceSection />
+      <ImpactSection />
     </div>
   );
 }

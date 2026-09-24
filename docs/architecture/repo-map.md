@@ -54,6 +54,7 @@ src/
     memberRoster.js         canViewMemberRoster — /editor/members + Site traffic; canViewFinance is admin only
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
     newsletterStats.js      weekly-issue filter (list 3, min sent) + rate shaping
+    policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
     membershipStats.js      current-term headcount series (not a stored snapshot)
     financeStats.js         Stripe balance-transaction shaping (usd, in-window)
     api.js                  apiGet / apiPost — /api/* with Supabase JWT
