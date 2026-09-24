@@ -34,9 +34,11 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             donations table. type='donation' segregates gift vs dues flows.
   share.js                  GET ?slug= → OG/Twitter meta HTML for social crawlers (anon key,
                             published only)
-  site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths; JWT +
+  site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths + daily series; JWT +
                             canViewMemberRoster (admin or can_view_members);
                             proxies Vercel Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
+  newsletter-stats.js       GET → SAMPA Updates list size + weekly issue stats; same JWT gate;
+                            read-only Brevo (`BREVO_API_KEY`, never `VITE_`)
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -49,6 +51,7 @@ src/
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
     memberRoster.js         canViewMemberRoster — /editor/members + Site traffic
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
+    newsletterStats.js      weekly-issue filter (list 3, min sent) + rate shaping
     api.js                  apiGet / apiPost — /api/* with Supabase JWT
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle

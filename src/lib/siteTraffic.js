@@ -1,15 +1,14 @@
 import { canViewMemberRoster } from './memberRoster.js';
 
-// Site-traffic helpers. Aggregate visitors/pageviews only — no PII.
-// Gate matches the member roster: canViewMemberRoster (admin or can_view_members).
-
 export { canViewMemberRoster };
 export const canViewSiteTraffic = canViewMemberRoster;
 
 export const TRAFFIC_RANGES = [7, 30];
 export const TOP_PATH_LIMIT = 5;
+export const TRAFFIC_CACHE_MS = 5 * 60 * 1000;
 // Vercel Web Analytics has no backfill — counts start when tracking was enabled.
 export const TRACKING_STARTED_NOTE = 'Tracking started on September 16, 2026.';
+export const TRACKING_STARTED_AT = '2026-09-16T00:00:00.000Z';
 
 export function parseTrafficRange(value) {
   return value === '30' || value === 30 ? 30 : 7;
@@ -67,7 +66,43 @@ export function normalizeTopPaths(payload, limit = TOP_PATH_LIMIT) {
     .slice(0, limit);
 }
 
-export function shapeSiteTraffic({ range, window, count, paths }) {
+export function seriesSince(sinceIso, floor = TRACKING_STARTED_AT) {
+  return sinceIso < floor ? floor : sinceIso;
+}
+
+export function normalizeDailySeries(payload) {
+  const rows = Array.isArray(payload?.data) ? payload.data : [];
+  return rows
+    .map((row) => {
+      const date = String(row.timestamp || row.day || row.key || '').slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+      return {
+        date,
+        visitors: Number(row.visitors) || 0,
+        pageviews: Number(row.pageviews) || 0,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export function fillDailySeries(points, sinceIso, untilIso) {
+  const byDate = new Map((points || []).map((point) => [point.date, point]));
+  const start = new Date(sinceIso);
+  const end = new Date(untilIso);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return [];
+  const cursor = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+  const last = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate()));
+  const out = [];
+  while (cursor <= last && out.length < 120) {
+    const date = cursor.toISOString().slice(0, 10);
+    out.push(byDate.get(date) || { date, visitors: 0, pageviews: 0 });
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return out;
+}
+
+export function shapeSiteTraffic({ range, window, count, paths, series }) {
   const visitors = Number(count?.visitors) || 0;
   const pageviews = Number(count?.pageviews) || 0;
   return {
@@ -77,6 +112,7 @@ export function shapeSiteTraffic({ range, window, count, paths }) {
     visitors,
     pageviews,
     paths: Array.isArray(paths) ? paths : [],
+    series: Array.isArray(series) ? series : [],
     empty: visitors === 0 && pageviews === 0,
   };
 }

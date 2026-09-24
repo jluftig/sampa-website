@@ -3,16 +3,21 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { createTtlCache } from '../api/_lib/ttl-cache.js';
 import {
+  TRACKING_STARTED_AT,
+  TRACKING_STARTED_NOTE,
   analyticsConfigFromEnv,
   canViewMemberRoster,
   canViewSiteTraffic,
+  fillDailySeries,
+  normalizeDailySeries,
   normalizeTopPaths,
   normalizeVisitCount,
   parseTrafficRange,
+  seriesSince,
   shapeSiteTraffic,
   shouldRequestTraffic,
-  TRACKING_STARTED_NOTE,
   trafficWindow,
 } from '../src/lib/siteTraffic.js';
 import { buildVisitsUrl } from '../api/_lib/vercel-analytics.js';
@@ -59,6 +64,26 @@ describe('range + window', () => {
     const month = trafficWindow('30', now);
     assert.equal(month.range, 30);
     assert.equal(month.since, '2026-08-17T12:00:00.000Z');
+  });
+
+  it('clamps the daily series to the tracking start', () => {
+    assert.equal(seriesSince('2026-08-17T12:00:00.000Z'), TRACKING_STARTED_AT);
+    assert.equal(seriesSince('2026-09-20T12:00:00.000Z'), '2026-09-20T12:00:00.000Z');
+    const series = fillDailySeries(
+      normalizeDailySeries({
+        data: [
+          { timestamp: '2026-09-17T00:00:00.000Z', visitors: 3, pageviews: 8 },
+          { requestPath: '/', pageviews: 8, visitors: 3 },
+        ],
+      }),
+      '2026-09-16T00:00:00.000Z',
+      '2026-09-18T12:00:00.000Z',
+    );
+    assert.deepEqual(series, [
+      { date: '2026-09-16', visitors: 0, pageviews: 0 },
+      { date: '2026-09-17', visitors: 3, pageviews: 8 },
+      { date: '2026-09-18', visitors: 0, pageviews: 0 },
+    ]);
   });
 });
 
@@ -182,6 +207,7 @@ describe('GET /api/site-traffic authZ', () => {
         VERCEL_PROJECT_ID: 'prj_1',
       },
       now: new Date('2026-09-16T12:00:00.000Z'),
+      cache: createTtlCache(),
       queryVisits: async ({ mode }) => (
         mode === 'count'
           ? { data: { visitors: 2, pageviews: 5 } }
@@ -205,10 +231,17 @@ describe('GET /api/site-traffic authZ', () => {
         VERCEL_ORG_ID: 'team_1',
       },
       now: new Date('2026-09-16T12:00:00.000Z'),
+      cache: createTtlCache(),
       queryVisits: async (args) => {
         calls.push(args);
         if (args.mode === 'count') {
           return { data: { visitors: 9, pageviews: 21 } };
+        }
+        const by = Array.isArray(args.by) ? args.by : [];
+        if (by.includes('day')) {
+          return {
+            data: [{ timestamp: '2026-09-16T00:00:00.000Z', visitors: 4, pageviews: 9 }],
+          };
         }
         return {
           data: [
@@ -224,10 +257,17 @@ describe('GET /api/site-traffic authZ', () => {
     assert.equal(body.visitors, 9);
     assert.equal(body.pageviews, 21);
     assert.equal(body.paths[0].path, '/');
-    assert.equal(calls.length, 2);
+    assert.deepEqual(body.series, [
+      { date: '2026-09-16', visitors: 4, pageviews: 9 },
+    ]);
+    assert.equal(calls.length, 3);
     assert.equal(calls[0].token, 'secret-token');
+    const dayCall = calls.find((call) => Array.isArray(call.by) && call.by.includes('day'));
+    assert.equal(dayCall.since, TRACKING_STARTED_AT);
+    assert.equal(dayCall.filter, "environment eq 'production'");
+    assert.equal(dayCall.limit, undefined);
     assert.equal(JSON.stringify(body).includes('secret-token'), false);
-    assert.equal(res.headers.get('cache-control'), 'private, no-store');
+    assert.equal(res.headers.get('cache-control'), 'private, max-age=300');
   });
 });
 
