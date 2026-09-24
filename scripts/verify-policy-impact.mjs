@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { listPolicyDocuments } from '../src/data/policyDocuments.js';
+import { educationCount, shapeEducationImpact } from '../src/lib/educationImpact.js';
 import { filedDateOf, shapePolicyImpact } from '../src/lib/policyImpact.js';
 
 const NOW = new Date('2026-09-24T12:00:00.000Z');
@@ -78,6 +79,39 @@ describe('filing date rules', () => {
     assert.equal(none.chartsReady, false);
     assert.deepEqual(none.recent, []);
     assert.deepEqual(none.monthly, []);
+  });
+});
+
+describe('education under impact', () => {
+  it('counts real sources and leaves CME and jobs unlabeled by a number', () => {
+    const shaped = shapeEducationImpact({ publishedNews: 12, weeklyIssues: 5 });
+    assert.equal(shaped.news, 12);
+    assert.equal(shaped.weeklyIssues, 5);
+    assert.equal(educationCount(0), 0);
+    assert.equal(educationCount(null), null);
+    assert.equal(educationCount(''), null);
+    assert.equal(shapeEducationImpact({}).news, null);
+    assert.equal(shapeEducationImpact({}).weeklyIssues, null);
+    assert.deepEqual(shaped.placeholders.map((row) => row.note), ['Not connected', 'Not connected']);
+    assert.equal(shaped.placeholders.some((row) => Object.hasOwn(row, 'count')), false);
+  });
+
+  it('nests Education inside the Impact panel', () => {
+    const dashboard = readFileSync('src/components/OrgDashboard.jsx', 'utf8');
+    const panel = dashboard.slice(
+      dashboard.indexOf('export function ImpactPanel'),
+      dashboard.indexOf('function ImpactSection'),
+    );
+    const page = dashboard.slice(dashboard.indexOf('export default function OrgDashboard'));
+    assert.match(panel, /<h3[^>]*>\s*Policy\s*<\/h3>/);
+    assert.match(panel, /Education/);
+    assert.match(panel, /News articles published/);
+    assert.match(panel, /Weekly issues sent/);
+    assert.match(panel, /not connected yet/);
+    assert.match(panel, /EDUCATION_PLACEHOLDERS/);
+    assert.match(dashboard, /\.eq\('status', 'published'\)/);
+    assert.match(page, /<ImpactSection \/>/);
+    assert.doesNotMatch(page, /Education/);
   });
 });
 

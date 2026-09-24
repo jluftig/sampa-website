@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Landmark, Scale, Users } from 'lucide-react';
+import { BookOpen, Landmark, Scale, Users } from 'lucide-react';
 import { apiGet } from '../lib/api';
+import { supabase } from '../lib/supabaseClient';
 import { listPolicyDocuments } from '../data/policyDocuments';
+import { EDUCATION_PLACEHOLDERS, educationCount } from '../lib/educationImpact';
 import { shapePolicyImpact } from '../lib/policyImpact';
 import SiteTrafficCard from './SiteTrafficCard';
 import MiniLineChart from './MiniLineChart';
@@ -215,9 +217,54 @@ function formatFiled(iso, yearOnly) {
   });
 }
 
-export function ImpactPanel({ stats }) {
+function educationValue(slot) {
+  if (!slot || slot.state === 'loading') return '…';
+  if (slot.state === 'ready') return formatCount(slot.count);
+  if (slot.state === 'unconfigured') return 'Not configured';
+  return 'Unavailable';
+}
+
+function useEducationCounts() {
+  const [news, setNews] = useState({ state: 'loading' });
+  const [weekly, setWeekly] = useState({ state: 'loading' });
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { count, error } = await supabase
+        .from('posts')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'published');
+      if (!active) return;
+      const published = error ? null : educationCount(count);
+      setNews(published == null ? { state: 'error' } : { state: 'ready', count: published });
+    })();
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const data = await apiGet('/api/newsletter-stats');
+        if (!active) return;
+        const sent = educationCount(Array.isArray(data?.issues) ? data.issues.length : null);
+        setWeekly(sent == null ? { state: 'error' } : { state: 'ready', count: sent });
+      } catch (err) {
+        if (!active) return;
+        setWeekly(err?.code === 'not_configured' ? { state: 'unconfigured' } : { state: 'error' });
+      }
+    })();
+    return () => { active = false; };
+  }, []);
+
+  return { news, weekly, placeholders: EDUCATION_PLACEHOLDERS };
+}
+
+export function ImpactPanel({ stats, education }) {
   const monthly = stats?.monthly || [];
   const cumulative = stats?.cumulative || [];
+  const placeholders = education?.placeholders || EDUCATION_PLACEHOLDERS;
 
   return (
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
@@ -226,79 +273,110 @@ export function ImpactPanel({ stats }) {
         Impact
       </h2>
       <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
-        Policy filings on the public policy hub. Each item uses its submission
-        date. This is the same list as /policy.
-        {stats?.yearOnly
-          ? ' A filing dated only by year is counted on January 1 of that year.'
-          : ''}
+        What SAMPA puts into the world. Policy and education sit in this pillar.
       </p>
 
-      {stats && (
-        <>
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <Stat label="Filed items" value={formatCount(stats.total)} />
-            <Stat label="Latest month" value={formatCount(monthly[monthly.length - 1]?.count)} />
-          </div>
+      <div>
+        <h3 className="text-lg font-bold mb-1">Policy</h3>
+        <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+          Filings on the public policy hub. Each item uses its submission date.
+          This is the same list as /policy.
+          {stats?.yearOnly
+            ? ' A filing dated only by year is counted on January 1 of that year.'
+            : ''}
+        </p>
 
-          {stats.chartsReady ? (
-            <div className="mb-6 text-text space-y-4">
-              <div>
-                <h3 className="text-sm font-bold mb-2">Monthly filings</h3>
-                <MiniLineChart
-                  ariaLabel="Policy items filed each month"
-                  categories={monthly.map((point) => shortMonth(point.month))}
-                  lines={[{
-                    name: 'Filed',
-                    color: '#0F766E',
-                    values: monthly.map((point) => point.count),
-                  }]}
-                />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold mb-2">Cumulative filings</h3>
-                <MiniLineChart
-                  ariaLabel="Running total of policy items filed"
-                  categories={cumulative.map((point) => shortMonth(point.month))}
-                  lines={[{
-                    name: 'Cumulative',
-                    color: '#1E2A38',
-                    values: cumulative.map((point) => point.total),
-                  }]}
-                />
-              </div>
+        {stats && (
+          <>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <Stat label="Filed items" value={formatCount(stats.total)} />
+              <Stat label="Latest month" value={formatCount(monthly[monthly.length - 1]?.count)} />
             </div>
-          ) : (
-            <p className="text-text/50 text-sm mb-6">
-              Charts start once two dated filings are on the policy hub.
-            </p>
-          )}
 
-          <h3 className="text-sm font-bold mb-3">Recent filings</h3>
-          {stats.recent?.length ? (
-            <ul className="divide-y divide-primary/10">
-              {stats.recent.map((item) => (
-                <li key={item.slug || item.title} className="py-3">
-                  <Link to={item.href} className="font-semibold text-sm text-primary-text hover:underline">
-                    {item.title}
-                  </Link>
-                  <p className="text-text/50 text-xs mt-1 font-data">
-                    {formatFiled(item.date, item.yearOnly)}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-text/50 text-sm">No policy filings yet.</p>
-          )}
-        </>
-      )}
+            {stats.chartsReady ? (
+              <div className="mb-6 text-text space-y-4">
+                <div>
+                  <h4 className="text-sm font-bold mb-2">Monthly filings</h4>
+                  <MiniLineChart
+                    ariaLabel="Policy items filed each month"
+                    categories={monthly.map((point) => shortMonth(point.month))}
+                    lines={[{
+                      name: 'Filed',
+                      color: '#0F766E',
+                      values: monthly.map((point) => point.count),
+                    }]}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold mb-2">Cumulative filings</h4>
+                  <MiniLineChart
+                    ariaLabel="Running total of policy items filed"
+                    categories={cumulative.map((point) => shortMonth(point.month))}
+                    lines={[{
+                      name: 'Cumulative',
+                      color: '#1E2A38',
+                      values: cumulative.map((point) => point.total),
+                    }]}
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="text-text/50 text-sm mb-6">
+                Charts start once two dated filings are on the policy hub.
+              </p>
+            )}
+
+            <h4 className="text-sm font-bold mb-3">Recent filings</h4>
+            {stats.recent?.length ? (
+              <ul className="divide-y divide-primary/10">
+                {stats.recent.map((item) => (
+                  <li key={item.slug || item.title} className="py-3">
+                    <Link to={item.href} className="font-semibold text-sm text-primary-text hover:underline">
+                      {item.title}
+                    </Link>
+                    <p className="text-text/50 text-xs mt-1 font-data">
+                      {formatFiled(item.date, item.yearOnly)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-text/50 text-sm">No policy filings yet.</p>
+            )}
+          </>
+        )}
+      </div>
+
+      <div className="mt-8 pt-8 border-t border-primary/10">
+        <h3 className="text-lg font-bold flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-primary-text" aria-hidden="true" />
+          Education
+        </h3>
+        <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+          Published news articles and sent SAMPA Weekly issues. CME and the job
+          board are not connected yet.
+        </p>
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <Stat label="News articles published" value={educationValue(education?.news)} />
+          <Stat label="Weekly issues sent" value={educationValue(education?.weekly)} />
+        </div>
+        <ul className="divide-y divide-primary/10">
+          {placeholders.map((item) => (
+            <li key={item.id} className="py-3 flex items-baseline justify-between gap-3">
+              <span className="font-semibold text-sm">{item.label}</span>
+              <span className="text-text/50 text-xs font-data">{item.note}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
 
 function ImpactSection() {
   const stats = useMemo(() => shapePolicyImpact(listPolicyDocuments()), []);
-  return <ImpactPanel stats={stats} />;
+  const education = useEducationCounts();
+  return <ImpactPanel stats={stats} education={education} />;
 }
 
 function MembershipSection() {

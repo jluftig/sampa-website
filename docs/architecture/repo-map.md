@@ -55,6 +55,7 @@ src/
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
     newsletterStats.js      weekly-issue filter (list 3, min sent) + rate shaping
     policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
+    educationImpact.js      education counts under Impact; CME and jobs labeled Not connected
     membershipStats.js      current-term headcount series (not a stored snapshot)
     financeStats.js         Stripe balance-transaction shaping (usd, in-window)
     api.js                  apiGet / apiPost — /api/* with Supabase JWT
