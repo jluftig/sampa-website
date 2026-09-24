@@ -35,11 +35,30 @@ function isGuardedPath(pathname) {
     || pathname.startsWith('/editor/');
 }
 
-// Guard → /login. A half-hydrated session (JWT/email still present, no usable
-// profiles row) must stay put: bouncing to /login is how Login ↔ a guarded
-// page (roster, dashboard, editor) can reload forever if sessionUsable
-// flickers. The guard keeps showing "Checking access…" until the session
-// either becomes usable or is fully cleared.
+// Guard → /login. Two cases stay on "Checking access…" instead of navigating:
+// a half-hydrated session (user still set, profiles row not usable), and a
+// session that drops to null after this page already had a user. The second
+// case is the privileged-viewer loop: Login honors next=/editor/members, so
+// one trip to /login comes straight back. Cold signed-out visits still leave
+// immediately. An intentional sign-out leaves immediately.
+// How long that null hold lasts. Covers refreshSessionWithRetry (three
+// attempts, ~1s of backoff).
+export const AUTH_NULL_HOLD_MS = 2000;
+
+export function shouldLeaveForLogin({
+  sessionUsable,
+  user,
+  hadSession = false,
+  intentionalSignOut = false,
+  holdExpired = false,
+} = {}) {
+  if (sessionUsable) return false;
+  if (user) return false;
+  if (intentionalSignOut) return true;
+  if (hadSession && !holdExpired) return false;
+  return true;
+}
+
 export function guardLoginPath({ pathname, search = '', halfSession = false } = {}) {
   if (halfSession) return null;
   const next = safeNext(`${pathname || ''}${search || ''}`);

@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-23 (T56 still open — Shani reports `/editor/members` reload loop continues)
+**Last updated:** 2026-09-23 (T56 preview — hold a null session on guarded pages before `/login`)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor (continued 2026-09-23).** PR #109 merged (`d749cc7`) but Shani (Membership Committee) reports the roster still resets itself on 2026-09-22 PT. Scope: stop the reload loop for privileged viewers and for signed-out → login → return. Preview PR only. Do not merge until Website QA + Josh. |
+| T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor (continued 2026-09-23).** PR #111 (preview only). PR #109 still stands: a president without `can_view_members` stays on the denial page, or goes to `/dashboard` once if the session dies — not back to the roster. Board / committee hats do not grant access. A viewer whose session drops to null is held on the page for `AUTH_NULL_HOLD_MS` before `/login`. Site traffic does not reload or refetch after a 403, and the card is behind the same gate. Do not merge until Website QA + Josh. |
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
 | T53 | In-site site-traffic dashboard for roster viewers | cursor | 2026-09-16 | **Claimed cursor.** PR #106. Site traffic card at the **top of `/editor/members`** (not `/dashboard`). Gate matches roster (`RequireMemberViewer` / `canViewMemberRoster`): `admin` OR `can_view_members`. Board / Membership Committee hats do **not** grant access — check **View members** for committee/board people who need the roster + card. Tracking-start note 2026-09-16. Aggregates only (no PII). Preview PR only — do not merge. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Activity } from 'lucide-react';
 import { apiGet } from '../lib/api';
-import { TRACKING_STARTED_NOTE, TRAFFIC_RANGES } from '../lib/siteTraffic';
+import { shouldRequestTraffic, TRACKING_STARTED_NOTE, TRAFFIC_RANGES } from '../lib/siteTraffic';
 
 function formatCount(n) {
   return Number(n || 0).toLocaleString('en-US');
@@ -116,15 +116,15 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
 export default function SiteTrafficCard() {
   const [range, setRange] = useState(7);
   const [cache, setCache] = useState({});
+  const [failedRange, setFailedRange] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const stats = cache[range] || null;
 
   useEffect(() => {
-    if (stats) {
+    if (!shouldRequestTraffic({ stats, range, failedRange })) {
       setLoading(false);
-      setError(null);
-      return;
+      return undefined;
     }
     let active = true;
     setLoading(true);
@@ -134,15 +134,17 @@ export default function SiteTrafficCard() {
         const data = await apiGet(`/api/site-traffic?range=${range}`);
         if (!active) return;
         setCache((prev) => ({ ...prev, [range]: data }));
+        setFailedRange(null);
         setLoading(false);
       } catch (err) {
         if (!active) return;
+        setFailedRange(range);
         setError(err);
         setLoading(false);
       }
     })();
     return () => { active = false; };
-  }, [range, stats]);
+  }, [range, stats, failedRange]);
 
   return (
     <SiteTrafficPanel

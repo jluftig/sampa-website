@@ -7,6 +7,7 @@ import {
   decideAuthRedirect,
   guardLoginPath,
   loginAuthedDestination,
+  shouldLeaveForLogin,
   walkAuthRedirects,
 } from '../src/lib/authRedirect.js';
 import {
@@ -147,6 +148,182 @@ describe('redirect graph has no cycle', () => {
   });
 });
 
+function walkRosterGate(events) {
+  let url = '/editor/members';
+  let hadSession = false;
+  const hops = [url];
+  for (const auth of events) {
+    if (auth.user) hadSession = true;
+    if (url.startsWith('/editor/members')) {
+      const leave = shouldLeaveForLogin({
+        sessionUsable: auth.sessionUsable,
+        user: auth.user,
+        hadSession,
+        intentionalSignOut: !!auth.intentionalSignOut,
+        holdExpired: !!auth.holdExpired,
+      });
+      if (leave) url = '/login?next=%2Feditor%2Fmembers';
+    } else if (url.startsWith('/login')) {
+      const dest = decideAuthRedirect(url, auth);
+      if (dest) url = dest;
+    }
+    hops.push(url);
+  }
+  let sawLogin = false;
+  let returnedToRoster = false;
+  let leftAgain = false;
+  for (const hop of hops) {
+    if (hop.startsWith('/login')) {
+      if (returnedToRoster) leftAgain = true;
+      sawLogin = true;
+    } else if (hop === '/editor/members' && sawLogin) {
+      returnedToRoster = true;
+    }
+  }
+  return { cycle: leftAgain, hops, stuckAt: url };
+}
+
+describe('Shani Wilson /editor/members', () => {
+  const shani = {
+    role: 'member',
+    is_board: true,
+    is_membership_committee: true,
+    can_view_members: false,
+    membership_status: 'active',
+    email: 'shani@addictionpas.org',
+  };
+  const user = { id: 'shani' };
+
+  it('president without view-members leaves the roster at most once and does not return', () => {
+    assert.equal(canViewMemberRoster(shani), false);
+    const onRoster = {
+      loading: false,
+      sessionUsable: true,
+      profile: shani,
+      user,
+    };
+    const dropped = {
+      loading: false,
+      sessionUsable: false,
+      profile: null,
+      user: null,
+      holdExpired: true,
+    };
+    const walk = walkRosterGate([onRoster, onRoster, dropped, onRoster, dropped]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.deepEqual(walk.hops, [
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/login?next=%2Feditor%2Fmembers',
+      '/dashboard',
+      '/dashboard',
+    ]);
+  });
+
+  it('the same person with can_view_members stays on the roster across a short drop', () => {
+    const viewer = { ...shani, can_view_members: true };
+    assert.equal(canViewMemberRoster(viewer), true);
+    const onRoster = {
+      loading: false,
+      sessionUsable: true,
+      profile: viewer,
+      user,
+    };
+    const dropped = {
+      loading: false,
+      sessionUsable: false,
+      profile: null,
+      user: null,
+    };
+    const walk = walkRosterGate([onRoster, dropped, onRoster, dropped, onRoster]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.deepEqual(walk.hops, [
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+      '/editor/members',
+    ]);
+  });
+});
+
+describe('privileged roster session drop does not bounce through login', () => {
+  const viewerUser = { id: 'shani' };
+  const onRoster = {
+    loading: false,
+    sessionUsable: true,
+    halfSession: false,
+    profile: viewer,
+    user: viewerUser,
+  };
+  const dropped = {
+    loading: false,
+    sessionUsable: false,
+    halfSession: false,
+    profile: null,
+    user: null,
+  };
+
+  it('holds the roster while a privileged session is gone and not yet expired', () => {
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: true,
+      intentionalSignOut: false,
+      holdExpired: false,
+    }), false);
+    const walk = walkRosterGate([onRoster, dropped, onRoster, dropped, onRoster]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.equal(walk.stuckAt, '/editor/members');
+    assert.equal(walk.hops.includes('/login?next=%2Feditor%2Fmembers'), false);
+  });
+
+  it('sends a cold signed-out visit to login once, then back to the roster after sign-in', () => {
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: false,
+      intentionalSignOut: false,
+      holdExpired: false,
+    }), true);
+    const walk = walkRosterGate([dropped, dropped, onRoster, onRoster]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.deepEqual(walk.hops, [
+      '/editor/members',
+      '/login?next=%2Feditor%2Fmembers',
+      '/login?next=%2Feditor%2Fmembers',
+      '/editor/members',
+      '/editor/members',
+    ]);
+  });
+
+  it('leaves for login after the hold expires, and on an intentional sign-out immediately', () => {
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: true,
+      intentionalSignOut: false,
+      holdExpired: true,
+    }), true);
+    assert.equal(shouldLeaveForLogin({
+      sessionUsable: false,
+      user: null,
+      hadSession: true,
+      intentionalSignOut: true,
+      holdExpired: false,
+    }), true);
+    const walk = walkRosterGate([
+      onRoster,
+      { ...dropped, holdExpired: true },
+      dropped,
+    ]);
+    assert.equal(walk.cycle, false, walk.hops.join(' → '));
+    assert.equal(walk.stuckAt, '/login?next=%2Feditor%2Fmembers');
+  });
+});
+
 describe('held-session recovery does not re-enter after a clear', () => {
   it('does not retry SIGNED_OUT when there is no previous session', () => {
     assert.equal(shouldRetryAuthRecovery({
@@ -166,9 +343,17 @@ describe('wiring', () => {
   it('Login and roster guard use the shared redirect helpers', () => {
     const login = readFileSync(new URL('../src/pages/Login.jsx', import.meta.url), 'utf8');
     const roster = readFileSync(new URL('../src/components/RequireMemberViewer.jsx', import.meta.url), 'utf8');
+    const gate = readFileSync(new URL('../src/components/useAuthGate.js', import.meta.url), 'utf8');
+    const auth = readFileSync(new URL('../src/components/RequireAuth.jsx', import.meta.url), 'utf8');
+    const editor = readFileSync(new URL('../src/components/RequireEditor.jsx', import.meta.url), 'utf8');
+    const member = readFileSync(new URL('../src/components/RequireActiveMember.jsx', import.meta.url), 'utf8');
     assert.match(login, /decideAuthRedirect/);
-    assert.match(roster, /guardLoginPath/);
-    assert.match(roster, /!sessionUsable && !!user/);
+    assert.match(roster, /useAuthGate/);
+    assert.match(auth, /useAuthGate/);
+    assert.match(editor, /useAuthGate/);
+    assert.match(member, /useAuthGate/);
+    assert.match(gate, /shouldLeaveForLogin/);
+    assert.match(gate, /AUTH_NULL_HOLD_MS/);
     assert.match(roster, /canViewMemberRoster/);
     assert.doesNotMatch(roster, /is_board|is_membership_committee/);
   });
