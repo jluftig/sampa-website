@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-24 (T57 newsletter stats + traffic charts on the roster dashboard)
+**Last updated:** 2026-09-24 (T57 org dashboard: membership, reach, admin finance)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T57 | Newsletter stats and traffic charts on `/editor/members` | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #112. Preview `sampa-website-git-cursor-newsletter-tr-b83044-jluftigs-projects.vercel.app`. Same roster gate as Site traffic (`canViewMemberRoster`). Server-side Brevo reads for list 3 (`BREVO_API_KEY`, already on Preview + Production). Weekly issues are sent blasts to list 3 with at least 40 recipients. Test list 8 and small catch-ups (campaign #24, 10 recipients) are excluded. Do not merge. |
+| T57 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #112. Do not merge. Membership + reach use `canViewMemberRoster`. Headcount is derived from the current term (`renews_on` minus `membership_years`); lifetime and term-unknown actives count in the latest month only. Join/renewal/lapse dates are not stored. Reach: Vercel daily series since 2026-09-16, top pages, list-3 weekly issues (sent ≥ 40; test list 8 and small catch-ups excluded), top clicked links when Brevo returns them. Finance is **admin only** (`canViewFinance`). Stripe balance transactions via existing `STRIPE_SECRET_KEY`. No bookkeeping source, so spend stays “not connected.” |
 | T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor (continued 2026-09-23).** PR #111 (preview only). PR #109 still stands: a president without `can_view_members` stays on the denial page, or goes to `/dashboard` once if the session dies — not back to the roster. Board / committee hats do not grant access. A viewer whose session drops to null is held on the page for `AUTH_NULL_HOLD_MS` before `/login`. Site traffic does not reload or refetch after a 403, and the card is behind the same gate. Do not merge until Website QA + Josh. |
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
@@ -144,7 +144,8 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
   badge). **T53 (live, PR #106):** Site traffic at the top of `/editor/members` for
   the same people who can open the roster (`admin` or `can_view_members`).
-  **T57:** newsletter stats and charts on that card, same gate.
+  **T57:** organization dashboard on that page (membership counts and reach for
+  roster viewers; finance totals for administrators only).
   Membership Committee is a People hat label — also check **View members** if
   they should see the roster / Site traffic. Further board-only privileges TBD.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
@@ -351,7 +352,7 @@ Deferred from the first directory ship:
   optional separate `/research` later. Keep distinct from News/Key Points. Do not
   shrink the hub to comments-only as corpus grows.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
-- **Board privileges** — `is_board` is a directory badge. **T53 (Done):** Site traffic card at the top of `/editor/members` for roster viewers (`admin` OR `can_view_members`; not `/dashboard`; Board/committee hats alone do not open it). **T57 (In Progress · cursor):** newsletter stats and charts on that card, same gate. **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
+- **Board privileges** — `is_board` is a directory badge. **T53 (Done):** Site traffic card at the top of `/editor/members` for roster viewers (`admin` OR `can_view_members`; not `/dashboard`; Board/committee hats alone do not open it). **T57 (In Progress · cursor):** organization dashboard on that page. Membership counts and reach use the same roster gate. Finance totals are administrators only. **T45 (In Progress · cursor):** member-area Board meeting agenda + minutes pages (AAPA-style meetings/records). Gating TBD in that PR (likely active members, not board-only).
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
 
 ### Product — platforms

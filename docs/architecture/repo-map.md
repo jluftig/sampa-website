@@ -37,8 +37,11 @@ api/                        Vercel serverless functions (Web-handler signature: 
   site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths + daily series; JWT +
                             canViewMemberRoster (admin or can_view_members);
                             proxies Vercel Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
-  newsletter-stats.js       GET → SAMPA Updates list size + weekly issue stats; same JWT gate;
+  newsletter-stats.js       GET → SAMPA Updates list size + weekly issue stats + top links; same JWT gate;
                             read-only Brevo (`BREVO_API_KEY`, never `VITE_`)
+  membership-stats.js       GET → 12-month active headcount derived from current term; same JWT gate
+  finance-stats.js          GET → 12-month Stripe cash totals; roster gate plus admin (`canViewFinance`);
+                            `STRIPE_SECRET_KEY` server-side. No bookkeeping source.
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -49,9 +52,11 @@ src/
     authStorage.js          localStorage + cookie session mirror
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
-    memberRoster.js         canViewMemberRoster — /editor/members + Site traffic
+    memberRoster.js         canViewMemberRoster — /editor/members + Site traffic; canViewFinance is admin only
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
     newsletterStats.js      weekly-issue filter (list 3, min sent) + rate shaping
+    membershipStats.js      current-term headcount series (not a stored snapshot)
+    financeStats.js         Stripe balance-transaction shaping (usd, in-window)
     api.js                  apiGet / apiPost — /api/* with Supabase JWT
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle
