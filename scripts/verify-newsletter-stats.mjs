@@ -11,6 +11,7 @@ import {
   capRate,
   isWeeklyIssue,
   ratePercent,
+  displayIssueName,
   selectWeeklyIssues,
   shapeNewsletterStats,
 } from '../src/lib/newsletterStats.js';
@@ -62,6 +63,29 @@ const testList = {
     globalStats: { sent: 200, delivered: 200, uniqueViews: 100, uniqueClicks: 10 },
   },
 };
+
+describe('display issue name', () => {
+  it('strips test tags and long parentheticals without dropping the send', () => {
+    assert.equal(displayIssueName('SAMPA Weekly Issue #04 (TEST)'), 'SAMPA Weekly Issue #04');
+    assert.equal(
+      displayIssueName('SAMPA Weekly — Issue 01 (FIRSTNAME + feedback ready)'),
+      'SAMPA Weekly — Issue 01',
+    );
+    assert.equal(displayIssueName('SAMPA Weekly Issue #05'), 'SAMPA Weekly Issue #05');
+    assert.equal(displayIssueName('SAMPA Weekly Issue #03 (WIP) (draft notes)'), 'SAMPA Weekly Issue #03');
+    assert.equal(displayIssueName('(TEST)'), '(TEST)');
+
+    const issues = selectWeeklyIssues([{
+      ...weekly01,
+      id: 30,
+      name: 'SAMPA Weekly Issue #04 (TEST)',
+    }]);
+    assert.equal(issues.length, 1);
+    assert.equal(issues[0].name, 'SAMPA Weekly Issue #04 (TEST)');
+    assert.equal(issues[0].recipients, 130);
+    assert.equal(displayIssueName(issues[0].name), 'SAMPA Weekly Issue #04');
+  });
+});
 
 describe('weekly issue filter', () => {
   it('keeps list-3 weeklies, including a TEST name on list 3, and drops makeup', () => {
