@@ -9,6 +9,7 @@ import { handleFinanceStats } from '../api/_lib/finance-stats.js';
 import { canViewFinance } from '../src/lib/memberRoster.js';
 import { shapeMembershipStats } from '../src/lib/membershipStats.js';
 import { shapeFinanceStats } from '../src/lib/financeStats.js';
+import { manualRelayBalance } from '../src/data/relayBalance.js';
 
 const NOW = new Date('2026-09-24T12:00:00.000Z');
 
@@ -25,6 +26,14 @@ describe('hobby function budget', () => {
     const dashboard = readFileSync('src/components/OrgDashboard.jsx', 'utf8');
     assert.match(dashboard, /\/api\/newsletter-stats\?section=membership/);
     assert.match(dashboard, /\/api\/newsletter-stats\?section=finance/);
+    assert.match(dashboard, /Current balance/);
+    assert.match(dashboard, /Membership dues \(Stripe\)/);
+    assert.match(dashboard, /After fees/);
+    assert.doesNotMatch(dashboard, /label="Net"/);
+    assert.doesNotMatch(dashboard, /relayBalance/);
+    assert.equal(manualRelayBalance.amountCents, 245700);
+    assert.equal(manualRelayBalance.source, 'Relay');
+    assert.equal(manualRelayBalance.updatedOn, '2026-09-24');
   });
 });
 
@@ -240,6 +249,19 @@ describe('GET /api/finance-stats', () => {
     assert.equal(roster.status, 403);
     assert.equal(roster.body.error, 'finance_restricted');
     assert.equal(roster.body.message, 'Finance totals are limited to administrators.');
+    assert.equal(roster.body.relay, undefined);
+  });
+
+  it('omits the relay balance when a request fails before the admin gate', async () => {
+    const res = await read(await handleFinanceStats(req(), {
+      requireUser: async () => {
+        throw new Error('auth down');
+      },
+      now: NOW,
+      cache: createTtlCache(),
+    }));
+    assert.equal(res.status, 502);
+    assert.equal(res.body.relay, undefined);
   });
 
   it('returns not_configured when STRIPE_SECRET_KEY is missing', async () => {
@@ -253,6 +275,7 @@ describe('GET /api/finance-stats', () => {
     assert.equal(res.status, 503);
     assert.equal(res.body.error, 'not_configured');
     assert.equal(res.body.message, 'Finances not configured.');
+    assert.deepEqual(res.body.relay, manualRelayBalance);
     assert.equal(res.cache, 'private, no-store');
   });
 
@@ -286,9 +309,26 @@ describe('GET /api/finance-stats', () => {
     assert.equal(first.body.refundCents, 5000);
     assert.equal(first.body.feeCents, 175);
     assert.equal(first.body.netCents, -175);
+    assert.deepEqual(first.body.relay, manualRelayBalance);
     assert.equal(second.body.netCents, -175);
+    assert.deepEqual(second.body.relay, manualRelayBalance);
     assert.equal(hits, 1);
     assert.equal(seenKey, 'sk_test_secret');
     assert.equal(JSON.stringify(first.body).includes('sk_test_secret'), false);
+  });
+
+  it('still returns the relay balance when stripe listing throws for an admin', async () => {
+    const res = await read(await handleFinanceStats(req(), {
+      requireUser: async () => ({ id: 'admin' }),
+      loadViewerProfile: async () => ({ role: 'admin' }),
+      env: { STRIPE_SECRET_KEY: 'sk_test_secret' },
+      listTransactions: async () => {
+        throw new Error('stripe down');
+      },
+      now: NOW,
+      cache: createTtlCache(),
+    }));
+    assert.equal(res.status, 502);
+    assert.deepEqual(res.body.relay, manualRelayBalance);
   });
 });

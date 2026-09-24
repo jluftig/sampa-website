@@ -17,6 +17,7 @@ export async function apiGet(path) {
     const err = new Error(data.message || data.error || `Request failed (${res.status})`);
     err.status = res.status;
     err.code = data.error;
+    if (data.relay) err.relay = data.relay;
     throw err;
   }
   return data;
