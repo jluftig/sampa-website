@@ -332,3 +332,16 @@ describe('GET /api/finance-stats', () => {
     assert.deepEqual(res.body.relay, manualRelayBalance);
   });
 });
+
+describe('recent issues row', () => {
+  it('keeps a long campaign title on one line beside the date', () => {
+    const card = readFileSync('src/components/SiteTrafficCard.jsx', 'utf8');
+    const start = card.indexOf('>Recent issues<');
+    const end = card.indexOf('</ul>', start);
+    const list = card.slice(start, end);
+    assert.equal(list.includes('flex-wrap'), false);
+    assert.match(list, /flex items-baseline justify-between gap-2/);
+    assert.match(list, /font-semibold text-sm min-w-0 truncate/);
+    assert.match(list, /text-text\/50 text-xs font-data shrink-0/);
+  });
+});

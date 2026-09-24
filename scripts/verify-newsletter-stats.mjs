@@ -9,8 +9,10 @@ import {
   articleClicks,
   brevoConfigFromEnv,
   capRate,
+  isTestCampaign,
   isWeeklyIssue,
   ratePercent,
+  displayIssueName,
   selectWeeklyIssues,
   shapeNewsletterStats,
 } from '../src/lib/newsletterStats.js';
@@ -63,8 +65,71 @@ const testList = {
   },
 };
 
+describe('display issue name', () => {
+  it('strips leftover parenthetical notes from a real issue title', () => {
+    assert.equal(
+      displayIssueName('SAMPA Weekly — Issue 01 (FIRSTNAME + feedback ready)'),
+      'SAMPA Weekly — Issue 01',
+    );
+    assert.equal(displayIssueName('SAMPA Weekly Issue #05'), 'SAMPA Weekly Issue #05');
+    assert.equal(displayIssueName('SAMPA Weekly Issue #03 (WIP) (draft notes)'), 'SAMPA Weekly Issue #03');
+    assert.equal(displayIssueName('(TEST)'), '(TEST)');
+  });
+});
+
+describe('test sends', () => {
+  const testSend = {
+    ...weekly01,
+    id: 30,
+    name: 'SAMPA Weekly Issue #04 (TEST)',
+    subject: 'SAMPA Weekly Issue #04',
+    sentDate: '2026-09-18T15:00:00.000Z',
+    statistics: {
+      globalStats: { sent: 9999, delivered: 9999, uniqueViews: 8000, uniqueClicks: 400 },
+    },
+  };
+
+  it('detects a test name, a test subject, and the test list', () => {
+    assert.equal(isTestCampaign(testSend), true);
+    assert.equal(isTestCampaign({ ...weekly02, name: 'SAMPA Weekly Issue #02 (test)' }), true);
+    assert.equal(isTestCampaign({
+      ...weekly02,
+      name: 'SAMPA Weekly Issue #07',
+      subject: 'TEST SAMPA Weekly: preview',
+    }), true);
+    assert.equal(isTestCampaign({
+      ...weekly02,
+      name: 'SAMPA Weekly Issue #08',
+      recipients: { lists: [3, 8] },
+    }), true);
+    assert.equal(isTestCampaign({ ...weekly02, testSent: true }), false);
+    assert.equal(isTestCampaign(weekly02), false);
+  });
+
+  it('drops test sends from the list and from campaign totals', () => {
+    assert.equal(isWeeklyIssue(testSend), false);
+    const issues = selectWeeklyIssues([weekly02, testSend, weekly01]);
+    assert.deepEqual(issues.map((issue) => issue.id), [25, 23]);
+    assert.equal(issues.reduce((sum, issue) => sum + issue.recipients, 0), 270);
+    assert.equal(issues.reduce((sum, issue) => sum + issue.uniqueOpens, 0), 156);
+    assert.equal(issues.reduce((sum, issue) => sum + issue.uniqueClicks, 0), 20);
+
+    const shaped = shapeNewsletterStats({
+      subscribers: 145,
+      listId: 3,
+      listName: 'SAMPA Updates',
+      issues,
+    });
+    assert.equal(shaped.latest.id, 25);
+    assert.equal(shaped.latest.recipients, 140);
+    assert.equal(shaped.latest.uniqueClicks, 11);
+    assert.deepEqual(shaped.listSize.points.map((point) => point.issueId), [23, 25]);
+    assert.equal(shaped.issues.some((issue) => /test/i.test(issue.name)), false);
+  });
+});
+
 describe('weekly issue filter', () => {
-  it('keeps list-3 weeklies, including a TEST name on list 3, and drops makeup', () => {
+  it('keeps list-3 weeklies and drops makeup and a TEST name on list 3', () => {
     assert.equal(isWeeklyIssue(weekly01), true);
     assert.equal(isWeeklyIssue(weekly02), true);
     assert.equal(isWeeklyIssue(catchUp), false);
@@ -80,7 +145,7 @@ describe('weekly issue filter', () => {
       id: 30,
       name: 'SAMPA Weekly Issue #04 (TEST)',
       subject: 'SAMPA Weekly Issue #04',
-    }), true);
+    }), false);
     assert.equal(isWeeklyIssue({
       ...weekly02,
       id: 31,
@@ -265,17 +330,21 @@ describe('GET /api/newsletter-stats', () => {
     assert.equal(res.cache, 'private, max-age=300');
     assert.equal(res.body.subscribers, 145);
     assert.equal(res.body.listName, 'SAMPA Updates');
-    assert.equal(res.body.latest.id, 30);
-    assert.deepEqual(res.body.issues.map((issue) => issue.id), [30, 25, 23]);
-    assert.equal(res.body.issues[0].name, 'SAMPA Weekly Issue #04 (TEST)');
-    assert.equal(res.body.issues[0].clickRate, 100);
-    assert.equal(res.body.issues[2].openRate, 59.8);
+    assert.equal(res.body.latest.id, 25);
+    assert.deepEqual(res.body.issues.map((issue) => issue.id), [25, 23]);
+    assert.equal(res.body.latest.recipients, 140);
+    assert.equal(res.body.latest.uniqueOpens, 80);
+    assert.equal(res.body.latest.uniqueClicks, 11);
+    assert.equal(res.body.latest.clickRate, 8.1);
+    assert.equal(res.body.issues.reduce((sum, issue) => sum + issue.uniqueClicks, 0), 20);
+    assert.equal(res.body.issues.some((issue) => /test/i.test(issue.name)), false);
+    assert.equal(res.body.issues[1].openRate, 59.8);
     assert.equal(res.body.listSize.source, 'sent');
     assert.deepEqual(articleClicks(res.body.topLinks).map((row) => row.path), ['/news/example']);
     assert.deepEqual(res.body.articles.map((row) => row.path), ['/news/example']);
     assert.equal(res.body.topLinks[0].id, 25);
     assert.equal(JSON.stringify(res.body).includes('secret-brevo-key'), false);
-    assert.equal(calls.length, 5);
+    assert.equal(calls.length, 4);
     assert.ok(calls.every((call) => call.key === 'secret-brevo-key'));
     const paths = calls.map((call) => call.path);
     assert.ok(paths.some((path) => path === '/contacts/lists/3'));
@@ -298,7 +367,7 @@ describe('GET /api/newsletter-stats', () => {
     const first = await read(await handleNewsletterStats(req(), deps));
     const second = await read(await handleNewsletterStats(req(), deps));
     assert.equal(first.status, 200);
-    assert.equal(second.body.latest.id, 30);
-    assert.equal(hits, 5);
+    assert.equal(second.body.latest.id, 25);
+    assert.equal(hits, 4);
   });
 });

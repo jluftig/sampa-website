@@ -64,6 +64,7 @@ export async function handleNewsletterStats(request, deps = {}) {
 
     const issues = selectWeeklyIssues(campaigns, {
       updatesListId: cfg.listId,
+      testListId: cfg.testListId,
     });
     const topLinks = [];
     for (const issue of issues.slice(0, 3)) {
