@@ -52,6 +52,7 @@ src/
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
     memberRoster.js         canViewMemberRoster — /editor/members + Site traffic; canViewFinance is admin only
+    policyWorkAccess.js     canViewPolicyWork — /editor/policy (roster gate or is_board)
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
     newsletterStats.js      list-3 weekly filter (name/subject; lists 8 and 13 out) + rates for Reach
     policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
@@ -66,6 +67,7 @@ src/
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
+    policyWork.js           PHP committee tracker seed (internal /editor/policy)
     leadership.js           About-page leadership roster (preview; not a CMS)
   pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,
@@ -103,8 +105,9 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people` |
 | Member-viewer or admin | `/editor/members` (staff roster + Site traffic card; `canViewMemberRoster`) |
+| Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin, `can_view_members`, or `is_board`) |
 
-Declare `/editor/keywords`, `/editor/people`, `/editor/members` **before** `/editor/:id`.  
+Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/policy` **before** `/editor/:id`.  
 `/login?next=` must be an in-app path starting with `/` (not `//`).
 
 **Member Login** (header/footer): signed-out → `/login` (no next). After auth with no next, editors/admins/`can_edit_news` → `/editor`; everyone else → `/dashboard`. An explicit `next` is honored. A held/expired session that still has `user.email` but no `profiles` row is treated as signed-out (do not show the join upsell). Membership and editor flags are read from **this** auth user’s `profiles` row (id = Supabase user id), never by email. A second Google login is a second profile.
