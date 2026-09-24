@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-24 (T60 claimed: Recent issues titles truncate on one line so the date stays aligned. T59 dashboard density is on main as PR #114.)
+**Last updated:** 2026-09-24 (T60 claimed: Recent issues titles truncate on one line. Draft PR #115. Do not merge.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T60 | Recent issues titles stay on one line | cursor | 2026-09-24 | **Claimed cursor.** Reach → Recent issues on `/editor/members`. Long Brevo names such as `(TEST)` and `(FIRSTNAME + feedback ready)` wrap into the date column on mobile. Truncate the title and keep the date on that line. Preview only. Do not merge until Website QA and Josh. |
+| T60 | Recent issues titles stay on one line | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #115. Reach → Recent issues on `/editor/members`. Long Brevo names such as `(TEST)` and `(FIRSTNAME + feedback ready)` truncate on one line, and the date stays on that line. Preview only. Do not merge until Website QA and Josh. |
 | T59 | Denser org dashboard + manual Relay balance | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #114. Do not merge. Follow-up to merged PR #112. Denser Membership, Finances, Reach, Impact, and roster table on `/editor/members`. Finance headline is a manual Relay balance of $2,457.00 (updated 2026-09-24), admin only via `canViewFinance`. Stripe dues stay secondary, labeled After fees. Preview only until Website QA and Josh. |
 | T57 | Internal PHP committee work tracker | cursor | 2026-09-24 | **Claimed cursor.** `/editor/policy` for the Public Health Policy Committee response sheet (seeded items, criteria, punch list). Gate is `canViewPolicyWork`: admin, `can_view_members`, or `is_board`. Not the public `/policy` archive and not parked T19 open windows. Preview only. Do not merge until Website QA and Josh. |
 | T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor (continued 2026-09-23).** PR #111 (preview only). PR #109 still stands: a president without `can_view_members` stays on the denial page, or goes to `/dashboard` once if the session dies — not back to the roster. Board / committee hats do not grant access. A viewer whose session drops to null is held on the page for `AUTH_NULL_HOLD_MS` before `/login`. Site traffic does not reload or refetch after a 403, and the card is behind the same gate. Do not merge until Website QA + Josh. |
