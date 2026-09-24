@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Landmark, Scale, Users } from 'lucide-react';
+import { BookOpen, Briefcase, Landmark, Scale, Users } from 'lucide-react';
 import { apiGet } from '../lib/api';
 import { supabase } from '../lib/supabaseClient';
 import { listPolicyDocuments } from '../data/policyDocuments';
-import { EDUCATION_PLACEHOLDERS, educationCount } from '../lib/educationImpact';
+import { JOBS_PLACEHOLDER, shapeDatedOutput } from '../lib/educationImpact';
 import { shapePolicyImpact } from '../lib/policyImpact';
 import SiteTrafficCard from './SiteTrafficCard';
 import MiniLineChart from './MiniLineChart';
@@ -217,27 +217,26 @@ function formatFiled(iso, yearOnly) {
   });
 }
 
-function educationValue(slot) {
-  if (!slot || slot.state === 'loading') return '…';
-  if (slot.state === 'ready') return formatCount(slot.count);
-  if (slot.state === 'unconfigured') return 'Not configured';
-  return 'Unavailable';
-}
-
-function useEducationCounts() {
+function useEducationOutputs() {
   const [news, setNews] = useState({ state: 'loading' });
   const [weekly, setWeekly] = useState({ state: 'loading' });
 
   useEffect(() => {
     let active = true;
     (async () => {
-      const { count, error } = await supabase
+      const { data, error } = await supabase
         .from('posts')
-        .select('id', { count: 'exact', head: true })
+        .select('id, published_at')
         .eq('status', 'published');
       if (!active) return;
-      const published = error ? null : educationCount(count);
-      setNews(published == null ? { state: 'error' } : { state: 'ready', count: published });
+      if (error) {
+        setNews({ state: 'error' });
+        return;
+      }
+      setNews({
+        state: 'ready',
+        series: shapeDatedOutput((data || []).map((row) => row.published_at)),
+      });
     })();
     return () => { active = false; };
   }, []);
@@ -248,8 +247,12 @@ function useEducationCounts() {
       try {
         const data = await apiGet('/api/newsletter-stats');
         if (!active) return;
-        const sent = educationCount(Array.isArray(data?.issues) ? data.issues.length : null);
-        setWeekly(sent == null ? { state: 'error' } : { state: 'ready', count: sent });
+        if (!Array.isArray(data?.issues)) {
+          setWeekly({ state: 'error' });
+          return;
+        }
+        const sentAt = data.issues.map((issue) => issue.sentAt);
+        setWeekly({ state: 'ready', series: shapeDatedOutput(sentAt) });
       } catch (err) {
         if (!active) return;
         setWeekly(err?.code === 'not_configured' ? { state: 'unconfigured' } : { state: 'error' });
@@ -258,13 +261,67 @@ function useEducationCounts() {
     return () => { active = false; };
   }, []);
 
-  return { news, weekly, placeholders: EDUCATION_PLACEHOLDERS };
+  return { news, weekly };
+}
+
+function OutputCharts({ loading, slot, monthlyLabel, cumulativeLabel, emptyLabel, monthlyAria, cumulativeAria }) {
+  if (loading || slot?.state === 'loading') {
+    return <p className="text-text/50 font-data text-sm mb-6">Loading…</p>;
+  }
+  if (slot?.state === 'unconfigured') {
+    return <p className="text-text/60 text-sm mb-6">Newsletter stats not configured.</p>;
+  }
+  if (slot?.state === 'error' || !slot?.series) {
+    return <p className="text-text/60 text-sm mb-6">Unavailable</p>;
+  }
+  const series = slot.series;
+  return (
+    <div className="mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <Stat label="Total" value={formatCount(series.total)} />
+        <Stat label="Latest month" value={formatCount(series.monthly[series.monthly.length - 1]?.count)} />
+      </div>
+      {series.chartsReady ? (
+        <div className="text-text space-y-4">
+          <div>
+            <h4 className="text-sm font-bold mb-2">{monthlyLabel}</h4>
+            <MiniLineChart
+              ariaLabel={monthlyAria}
+              categories={series.monthly.map((point) => shortMonth(point.month))}
+              lines={[{ name: 'Count', color: '#0F766E', values: series.monthly.map((point) => point.count) }]}
+            />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold mb-2">{cumulativeLabel}</h4>
+            <MiniLineChart
+              ariaLabel={cumulativeAria}
+              categories={series.cumulative.map((point) => shortMonth(point.month))}
+              lines={[{ name: 'Cumulative', color: '#1E2A38', values: series.cumulative.map((point) => point.total) }]}
+            />
+          </div>
+        </div>
+      ) : (
+        <p className="text-text/50 text-sm">{emptyLabel}</p>
+      )}
+    </div>
+  );
+}
+
+function PlaceholderCard({ icon: Icon, title, note }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/[0.02] p-5">
+      <h4 className="text-sm font-bold flex items-center gap-2">
+        <Icon className="w-4 h-4 text-primary-text" aria-hidden="true" />
+        {title}
+      </h4>
+      <p className="text-text/50 text-sm mt-2">{note}</p>
+    </div>
+  );
 }
 
 export function ImpactPanel({ stats, education }) {
   const monthly = stats?.monthly || [];
   const cumulative = stats?.cumulative || [];
-  const placeholders = education?.placeholders || EDUCATION_PLACEHOLDERS;
 
   return (
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
@@ -273,7 +330,8 @@ export function ImpactPanel({ stats, education }) {
         Impact
       </h2>
       <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
-        What SAMPA puts into the world. Policy and education sit in this pillar.
+        What SAMPA put into the world: filings, published articles, and issues
+        sent. Opens, clicks, and pageviews stay in Reach.
       </p>
 
       <div>
@@ -353,21 +411,47 @@ export function ImpactPanel({ stats, education }) {
           Education
         </h3>
         <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
-          Published news articles and sent SAMPA Weekly issues. CME and the job
-          board are not connected yet.
+          Published news and SAMPA Weekly issues that were sent on list 3.
+          This is a count of outputs, not open rate.
         </p>
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <Stat label="News articles published" value={educationValue(education?.news)} />
-          <Stat label="Weekly issues sent" value={educationValue(education?.weekly)} />
-        </div>
-        <ul className="divide-y divide-primary/10">
-          {placeholders.map((item) => (
-            <li key={item.id} className="py-3 flex items-baseline justify-between gap-3">
-              <span className="font-semibold text-sm">{item.label}</span>
-              <span className="text-text/50 text-xs font-data">{item.note}</span>
-            </li>
-          ))}
-        </ul>
+        <h4 className="text-sm font-bold mb-3">News articles published</h4>
+        <OutputCharts
+          slot={education?.news}
+          monthlyLabel="Articles by month"
+          cumulativeLabel="Cumulative articles"
+          emptyLabel="Charts start once two dated articles are published."
+          monthlyAria="News articles published each month"
+          cumulativeAria="Running total of published news articles"
+        />
+        <h4 className="text-sm font-bold mb-3">Weekly issues sent</h4>
+        <OutputCharts
+          slot={education?.weekly}
+          monthlyLabel="Issues sent by month"
+          cumulativeLabel="Cumulative issues sent"
+          emptyLabel="Charts start once two weekly issues have been sent."
+          monthlyAria="Weekly issues sent each month"
+          cumulativeAria="Running total of weekly issues sent"
+        />
+        <PlaceholderCard
+          icon={BookOpen}
+          title="CME / webinars"
+          note="Coming when CME product is live"
+        />
+      </div>
+
+      <div className="mt-8 pt-8 border-t border-primary/10">
+        <h3 className="text-lg font-bold flex items-center gap-2">
+          <Briefcase className="w-5 h-5 text-primary-text" aria-hidden="true" />
+          Workforce
+        </h3>
+        <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
+          Jobs posted for clinicians. Nothing is counted here yet.
+        </p>
+        <PlaceholderCard
+          icon={Briefcase}
+          title={JOBS_PLACEHOLDER.label}
+          note={JOBS_PLACEHOLDER.note}
+        />
       </div>
     </section>
   );
@@ -375,7 +459,7 @@ export function ImpactPanel({ stats, education }) {
 
 function ImpactSection() {
   const stats = useMemo(() => shapePolicyImpact(listPolicyDocuments()), []);
-  const education = useEducationCounts();
+  const education = useEducationOutputs();
   return <ImpactPanel stats={stats} education={education} />;
 }
 
@@ -396,8 +480,8 @@ export default function OrgDashboard() {
         Organization
       </p>
       <MembershipSection />
-      <SiteTrafficCard />
       <FinanceSection />
+      <SiteTrafficCard />
       <ImpactSection />
     </div>
   );

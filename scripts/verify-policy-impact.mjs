@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { listPolicyDocuments } from '../src/data/policyDocuments.js';
-import { educationCount, shapeEducationImpact } from '../src/lib/educationImpact.js';
+import { JOBS_PLACEHOLDER, shapeDatedOutput, shapeEducationImpact } from '../src/lib/educationImpact.js';
 import { filedDateOf, shapePolicyImpact } from '../src/lib/policyImpact.js';
 
 const NOW = new Date('2026-09-24T12:00:00.000Z');
@@ -83,20 +83,33 @@ describe('filing date rules', () => {
 });
 
 describe('education under impact', () => {
-  it('counts real sources and leaves CME and jobs unlabeled by a number', () => {
-    const shaped = shapeEducationImpact({ publishedNews: 12, weeklyIssues: 5 });
-    assert.equal(shaped.news, 12);
-    assert.equal(shaped.weeklyIssues, 5);
-    assert.equal(educationCount(0), 0);
-    assert.equal(educationCount(null), null);
-    assert.equal(educationCount(''), null);
-    assert.equal(shapeEducationImpact({}).news, null);
-    assert.equal(shapeEducationImpact({}).weeklyIssues, null);
-    assert.deepEqual(shaped.placeholders.map((row) => row.note), ['Not connected', 'Not connected']);
-    assert.equal(shaped.placeholders.some((row) => Object.hasOwn(row, 'count')), false);
+  it('counts published articles and sent issues, not engagement', () => {
+    const shaped = shapeEducationImpact({
+      articles: [
+        { published_at: '2026-08-02T00:00:00.000Z' },
+        { published_at: '2026-08-20T00:00:00.000Z' },
+        { published_at: '2026-09-01T00:00:00.000Z' },
+      ],
+      issues: [
+        { sentAt: '2026-08-25T15:00:00.000Z', openRate: 59.8, uniqueClicks: 9 },
+        { sentAt: '2026-09-02T15:00:00.000Z', openRate: 55 },
+      ],
+    }, NOW);
+    assert.equal(shaped.news.total, 3);
+    assert.deepEqual(shaped.news.monthly.map((row) => row.count), [2, 1]);
+    assert.deepEqual(shaped.news.cumulative.map((row) => row.total), [2, 3]);
+    assert.equal(shaped.weekly.total, 2);
+    assert.equal(shaped.weekly.monthly[0].count, 1);
+    assert.equal(shaped.cme.note, 'Coming when CME product is live');
+    assert.equal(Object.hasOwn(shaped.cme, 'count'), false);
+    assert.equal(Object.hasOwn(shaped.weekly, 'openRate'), false);
+    assert.equal(JOBS_PLACEHOLDER.note, 'Coming when jobs board is live');
+    const one = shapeDatedOutput(['2026-09-01'], NOW);
+    assert.equal(one.total, 1);
+    assert.equal(one.chartsReady, false);
   });
 
-  it('nests Education inside the Impact panel', () => {
+  it('nests Policy, Education, and Workforce inside Impact', () => {
     const dashboard = readFileSync('src/components/OrgDashboard.jsx', 'utf8');
     const panel = dashboard.slice(
       dashboard.indexOf('export function ImpactPanel'),
@@ -105,12 +118,21 @@ describe('education under impact', () => {
     const page = dashboard.slice(dashboard.indexOf('export default function OrgDashboard'));
     assert.match(panel, /<h3[^>]*>\s*Policy\s*<\/h3>/);
     assert.match(panel, /Education/);
+    assert.match(panel, /Workforce/);
     assert.match(panel, /News articles published/);
     assert.match(panel, /Weekly issues sent/);
-    assert.match(panel, /not connected yet/);
-    assert.match(panel, /EDUCATION_PLACEHOLDERS/);
+    assert.match(panel, /Coming when CME product is live/);
+    assert.match(panel, /JOBS_PLACEHOLDER/);
+    assert.match(panel, /pageviews stay in Reach/);
+    assert.doesNotMatch(panel, /openRate|uniqueClicks|uniqueOpens/);
     assert.match(dashboard, /\.eq\('status', 'published'\)/);
-    assert.match(page, /<ImpactSection \/>/);
+    assert.match(dashboard, /published_at/);
+    assert.match(dashboard, /Array\.isArray\(data\?\.issues\)/);
+    const membership = page.indexOf('<MembershipSection />');
+    const finance = page.indexOf('<FinanceSection />');
+    const reach = page.indexOf('<SiteTrafficCard />');
+    const impact = page.indexOf('<ImpactSection />');
+    assert.ok(membership < finance && finance < reach && reach < impact);
     assert.doesNotMatch(page, /Education/);
   });
 });

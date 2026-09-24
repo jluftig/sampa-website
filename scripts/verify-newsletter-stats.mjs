@@ -6,9 +6,9 @@ import { createTtlCache } from '../api/_lib/ttl-cache.js';
 import { loadSentCampaigns } from '../api/_lib/brevo-readonly.js';
 import { handleNewsletterStats } from '../api/newsletter-stats.js';
 import {
+  articleClicks,
   brevoConfigFromEnv,
   capRate,
-  isTestCampaign,
   isWeeklyIssue,
   ratePercent,
   selectWeeklyIssues,
@@ -17,7 +17,7 @@ import {
 
 const weekly01 = {
   id: 23,
-  name: 'SAMPA Weekly #01',
+  name: 'SAMPA Weekly Issue #01',
   status: 'sent',
   type: 'classic',
   sentDate: '2026-08-25T15:00:00.000Z',
@@ -41,7 +41,7 @@ const catchUp = {
 
 const weekly02 = {
   id: 25,
-  name: 'SAMPA Weekly #02',
+  name: 'SAMPA Weekly Issue #02',
   status: 'sent',
   type: 'classic',
   sentDate: '2026-09-02T15:00:00.000Z',
@@ -64,39 +64,39 @@ const testList = {
 };
 
 describe('weekly issue filter', () => {
-  it('counts list-3 blasts at or above the floor and drops tests and catch-ups', () => {
+  it('keeps list-3 weeklies, including a TEST name on list 3, and drops makeup', () => {
     assert.equal(isWeeklyIssue(weekly01), true);
     assert.equal(isWeeklyIssue(weekly02), true);
     assert.equal(isWeeklyIssue(catchUp), false);
     assert.equal(isWeeklyIssue(testList), false);
     assert.equal(isWeeklyIssue({ ...weekly01, status: 'draft' }), false);
-    assert.equal(isWeeklyIssue({ ...weekly01, type: 'trigger' }), false);
+    assert.equal(isWeeklyIssue({ ...weekly01, status: 'queued' }), false);
     assert.equal(isWeeklyIssue({
       ...weekly01,
-      statistics: { globalStats: { sent: 39, delivered: 39, uniqueViews: 10, uniqueClicks: 1 } },
-    }), false);
+      statistics: { globalStats: { sent: 10, delivered: 10, uniqueViews: 4, uniqueClicks: 1 } },
+    }), true);
     assert.equal(isWeeklyIssue({
       ...weekly01,
       id: 30,
       name: 'SAMPA Weekly Issue #04 (TEST)',
       subject: 'SAMPA Weekly Issue #04',
-    }), false);
+    }), true);
     assert.equal(isWeeklyIssue({
       ...weekly02,
       id: 31,
-      name: 'SAMPA Weekly Issue #04',
-      subject: 'TEST send of issue 04',
+      name: 'SAMPA Weekly Issue #04 makeup',
+      recipients: { lists: [3] },
     }), false);
-    assert.equal(isTestCampaign({
+    assert.equal(isWeeklyIssue({
+      ...weekly02,
       id: 32,
-      name: 'SAMPA Weekly Issue #04',
-      subject: 'This week',
-      tag: 'test-send',
-    }), true);
+      name: 'SAMPA Weekly Issue #06',
+      recipients: { lists: [3, 13] },
+    }), false);
     assert.equal(isWeeklyIssue({
       ...weekly01,
       id: 33,
-      name: 'SAMPA Weekly Issue #04',
+      name: 'SAMPA Weekly Issue #05',
       subject: 'This week in addiction medicine',
     }), true);
     const inflated = selectWeeklyIssues([{
@@ -155,6 +155,7 @@ describe('Brevo campaign paging', () => {
     assert.equal(paths.length, 2);
     assert.match(paths[0], /status=sent/);
     assert.match(paths[0], /statistics=globalStats/);
+    assert.equal(paths[0].includes('type=classic'), false);
     assert.match(paths[1], /offset=2/);
     assert.equal(paths[0].includes('secret-key'), false);
   });
@@ -264,18 +265,17 @@ describe('GET /api/newsletter-stats', () => {
     assert.equal(res.cache, 'private, max-age=300');
     assert.equal(res.body.subscribers, 145);
     assert.equal(res.body.listName, 'SAMPA Updates');
-    assert.equal(res.body.latest.id, 25);
-    assert.deepEqual(res.body.issues.map((issue) => issue.id), [25, 23]);
-    assert.equal(JSON.stringify(res.body).includes('TEST'), false);
-    assert.equal(res.body.issues[1].openRate, 59.8);
-    assert.equal(res.body.topLinks.length, 1);
+    assert.equal(res.body.latest.id, 30);
+    assert.deepEqual(res.body.issues.map((issue) => issue.id), [30, 25, 23]);
+    assert.equal(res.body.issues[0].name, 'SAMPA Weekly Issue #04 (TEST)');
+    assert.equal(res.body.issues[0].clickRate, 100);
+    assert.equal(res.body.issues[2].openRate, 59.8);
+    assert.equal(res.body.listSize.source, 'sent');
+    assert.deepEqual(articleClicks(res.body.topLinks).map((row) => row.path), ['/news/example']);
+    assert.deepEqual(res.body.articles.map((row) => row.path), ['/news/example']);
     assert.equal(res.body.topLinks[0].id, 25);
-    assert.deepEqual(res.body.topLinks[0].links, [
-      { url: 'https://www.addictionpas.org/news/example', clicks: 6 },
-      { url: 'https://www.addictionpas.org/join', clicks: 2 },
-    ]);
     assert.equal(JSON.stringify(res.body).includes('secret-brevo-key'), false);
-    assert.equal(calls.length, 4);
+    assert.equal(calls.length, 5);
     assert.ok(calls.every((call) => call.key === 'secret-brevo-key'));
     const paths = calls.map((call) => call.path);
     assert.ok(paths.some((path) => path === '/contacts/lists/3'));
@@ -298,7 +298,7 @@ describe('GET /api/newsletter-stats', () => {
     const first = await read(await handleNewsletterStats(req(), deps));
     const second = await read(await handleNewsletterStats(req(), deps));
     assert.equal(first.status, 200);
-    assert.equal(second.body.latest.id, 25);
-    assert.equal(hits, 4);
+    assert.equal(second.body.latest.id, 30);
+    assert.equal(hits, 5);
   });
 });

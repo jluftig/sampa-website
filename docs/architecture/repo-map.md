@@ -53,9 +53,9 @@ src/
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
     memberRoster.js         canViewMemberRoster — /editor/members + Site traffic; canViewFinance is admin only
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
-    newsletterStats.js      weekly-issue filter (list 3, min sent) + rate shaping
+    newsletterStats.js      list-3 weekly filter (name/subject; lists 8 and 13 out) + rates for Reach
     policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
-    educationImpact.js      education counts under Impact; CME and jobs labeled Not connected
+    educationImpact.js      published-news and issues-sent series; CME and jobs are placeholders
     membershipStats.js      current-term headcount series (not a stored snapshot)
     financeStats.js         Stripe balance-transaction shaping (usd, in-window)
     api.js                  apiGet / apiPost — /api/* with Supabase JWT

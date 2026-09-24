@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-24 (T57 Education nested under Impact)
+**Last updated:** 2026-09-24 (T57 four pillars: reach engagement, impact outputs)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T57 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #112. Do not merge. Membership + reach use `canViewMemberRoster`. Headcount is derived from the current term (`renews_on` minus `membership_years`); lifetime and term-unknown actives count in the latest month only. Join/renewal/lapse dates are not stored. Reach: Vercel daily series since 2026-09-16, top pages, list-3 weekly issues (sent ≥ 40; test list 8, small catch-ups, and any campaign whose name, subject, or tag contains TEST are excluded). Click rate is capped at 100%. Membership and finance share `GET /api/newsletter-stats` (`section=membership|finance`) so the Hobby plan stays at 12 functions. Impact counts filings from `listPolicyDocuments()` (the same module as `/policy`): monthly count and a cumulative total. Education is nested under Impact: published news (`posts.status=published`) and sent weekly issues from newsletter stats when those respond. CME and the job board are labeled Not connected, with no invented counts. Finance is **admin only** (`canViewFinance`). Stripe balance transactions via existing `STRIPE_SECRET_KEY`. No bookkeeping source, so spend stays “not connected.” |
+| T57 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #112. Do not merge. Membership + reach use `canViewMemberRoster`. Headcount is derived from the current term (`renews_on` minus `membership_years`); lifetime and term-unknown actives count in the latest month only. Join/renewal/lapse dates are not stored. Pillar order is Membership, Finances, Reach, Impact. Reach is distribution only: Vercel daily series since 2026-09-16, top pages, list size at send (sent-count proxy), open and click rates, and clicked `/news` and `/policy` links. A weekly issue is status sent, recipients include list 3, and the name matches SAMPA Weekly Issue #N or the subject starts with "SAMPA Weekly:". List 8, list 13, and names containing makeup are excluded. A list-3 issue whose name contains TEST still counts. Click rate is capped at 100%. Membership and finance share `GET /api/newsletter-stats` (`section=membership|finance`) so the Hobby plan stays at 12 functions. Impact is outputs: policy filings from `listPolicyDocuments()` (monthly and cumulative), news articles by `published_at` where `status=published`, and the count of those weekly issues sent. CME says coming when the CME product is live. Jobs says coming when the jobs board is live. Opens, clicks, and pageviews stay in Reach. Finance is **admin only** (`canViewFinance`). Stripe balance transactions via existing `STRIPE_SECRET_KEY`. No bookkeeping source, so spend stays “not connected.” |
 | T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor (continued 2026-09-23).** PR #111 (preview only). PR #109 still stands: a president without `can_view_members` stays on the denial page, or goes to `/dashboard` once if the session dies — not back to the roster. Board / committee hats do not grant access. A viewer whose session drops to null is held on the page for `AUTH_NULL_HOLD_MS` before `/login`. Site traffic does not reload or refetch after a 403, and the card is behind the same gate. Do not merge until Website QA + Josh. |
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
@@ -144,8 +144,8 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
   badge). **T53 (live, PR #106):** Site traffic at the top of `/editor/members` for
   the same people who can open the roster (`admin` or `can_view_members`).
-  **T57:** organization dashboard on that page (membership counts and reach for
-  roster viewers; finance totals for administrators only; education nested under impact).
+  **T57:** organization dashboard on that page (membership, finances, reach, and
+  impact for roster viewers; finance totals for administrators only).
   Membership Committee is a People hat label — also check **View members** if
   they should see the roster / Site traffic. Further board-only privileges TBD.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`

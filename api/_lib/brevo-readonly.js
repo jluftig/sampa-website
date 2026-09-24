@@ -23,7 +23,7 @@ export async function loadSentCampaigns(apiKey, get = brevoGet) {
   for (let page = 0; page < 4; page += 1) {
     const data = await get(
       apiKey,
-      `/emailCampaigns?status=sent&statistics=globalStats&type=classic&limit=50&offset=${offset}&sort=desc`,
+      `/emailCampaigns?status=sent&statistics=globalStats&limit=50&offset=${offset}&sort=desc`,
     );
     const batch = Array.isArray(data?.campaigns) ? data.campaigns : [];
     campaigns.push(...batch);

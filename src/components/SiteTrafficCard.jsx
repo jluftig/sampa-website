@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Activity, Mail } from 'lucide-react';
+import { Activity, Mail, Megaphone } from 'lucide-react';
 import { apiGet } from '../lib/api';
 import { shouldRequestTraffic, TRACKING_STARTED_NOTE, TRAFFIC_RANGES } from '../lib/siteTraffic';
 import MiniLineChart from './MiniLineChart';
@@ -52,10 +52,10 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
       <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
         <div>
-          <h2 className="text-xl font-bold flex items-center gap-2">
+          <h3 className="text-lg font-bold flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary-text" aria-hidden="true" />
             Site traffic
-          </h2>
+          </h3>
           <p className="text-text/50 text-xs mt-1 max-w-xl">
             Aggregate visitors and pageviews for addictionpas.org. Same access
             as the member roster — no individual visitors.
@@ -163,14 +163,14 @@ export function NewsletterPanel({ loading, error, stats }) {
 
   return (
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
-      <h2 className="text-xl font-bold flex items-center gap-2">
+      <h3 className="text-lg font-bold flex items-center gap-2">
         <Mail className="w-5 h-5 text-primary-text" aria-hidden="true" />
         Newsletter
-      </h2>
+      </h3>
       <p className="text-text/50 text-xs mt-1 mb-6 max-w-xl">
-        SAMPA Weekly on the SAMPA Updates list. The list size is the current
-        subscriber count. Test sends and small catch-up blasts are left out.
-        Same access as the member roster.
+        SAMPA Weekly on list 3. List size at send is that issue&apos;s sent
+        count. Opens and clicks stay here. The test list and makeup catch-ups
+        are left out. Same access as the member roster.
       </p>
 
       {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
@@ -207,22 +207,22 @@ export function NewsletterPanel({ loading, error, stats }) {
                 <Stat label="Unique clicks" value={formatCount(latest.uniqueClicks)} />
                 <Stat label="Click rate" value={formatRate(latest.clickRate)} />
               </div>
-              {(stats.topLinks || []).some((row) => row.links?.length) && (
+              {stats.articles?.length ? (
                 <div className="mt-4">
-                  <h3 className="text-sm font-bold mb-2">Top clicked links</h3>
+                  <h4 className="text-sm font-bold mb-2">Top clicked articles</h4>
                   <ul className="divide-y divide-primary/10">
-                    {stats.topLinks.flatMap((row) => row.links.map((link) => (
-                      <li key={`${row.id}-${link.url}`} className="py-2 flex items-baseline justify-between gap-3 text-sm">
-                        <span className="font-data text-text/80 break-all">{link.url}</span>
-                        <span className="text-text/50 font-data shrink-0">
-                          {formatCount(link.clicks)}
-                          {row.name ? ` · ${row.name}` : ''}
+                    {stats.articles.map((article) => (
+                      <li key={article.path} className="py-2 flex items-baseline justify-between gap-3 text-sm">
+                        <span className="min-w-0">
+                          <span className="font-semibold">{article.title || article.slug}</span>
+                          <span className="block font-data text-text/50 text-xs break-all">{article.path}</span>
                         </span>
+                        <span className="text-text/50 font-data shrink-0">{formatCount(article.clicks)}</span>
                       </li>
-                    )))}
+                    ))}
                   </ul>
                 </div>
-              )}
+              ) : null}
             </div>
           ) : (
             <p className="text-text/50 text-sm mb-6">No weekly issues yet.</p>
@@ -242,17 +242,21 @@ export function NewsletterPanel({ loading, error, stats }) {
                   values: chronological.map((issue) => issue.openRate || 0),
                 }]}
               />
-              <h3 className="text-sm font-bold mt-4 mb-2">Recipients by issue</h3>
+              <h4 className="text-sm font-bold mt-4 mb-2">
+                {stats.listSize?.source === 'snapshot' ? 'Subscribers over time' : 'List size at send'}
+              </h4>
               <p className="text-text/45 text-xs mb-2 max-w-xl">
-                Sent count at each blast. Current list size is the subscriber number above.
+                {stats.listSize?.source === 'snapshot'
+                  ? 'Saved subscriber snapshots.'
+                  : 'Sent count for each issue. Brevo has no subscriber history.'}
               </p>
               <MiniLineChart
-                ariaLabel="Recipients for each weekly issue"
-                categories={chronological.map((issue) => shortDay(String(issue.sentAt || '').slice(0, 10)))}
+                ariaLabel="List size at each weekly send"
+                categories={(stats.listSize?.points || chronological).map((point) => shortDay(String(point.date || point.sentAt || '').slice(0, 10)))}
                 lines={[{
-                  name: 'Recipients',
+                  name: stats.listSize?.source === 'snapshot' ? 'Subscribers' : 'Sent',
                   color: '#1E2A38',
-                  values: chronological.map((issue) => issue.recipients || 0),
+                  values: (stats.listSize?.points || chronological).map((point) => point.total ?? point.recipients ?? 0),
                 }]}
               />
             </div>
@@ -342,7 +346,14 @@ export default function SiteTrafficCard() {
   }, []);
 
   return (
-    <>
+    <div className="mb-8">
+      <h2 className="text-xl font-bold flex items-center gap-2">
+        <Megaphone className="w-5 h-5 text-primary-text" aria-hidden="true" />
+        Reach
+      </h2>
+      <p className="text-text/50 text-xs mt-1 mb-4 max-w-xl">
+        Distribution. Pageviews, list size, opens, and clicks stay in this pillar.
+      </p>
       <SiteTrafficPanel
         range={range}
         onRangeChange={setRange}
@@ -355,6 +366,6 @@ export default function SiteTrafficCard() {
         error={newsletterError}
         stats={newsletter}
       />
-    </>
+    </div>
   );
 }
