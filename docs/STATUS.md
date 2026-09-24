@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-24 (T57 PHP committee tracker claimed on main; T58 org dashboard four pillars, draft PR #112)
+**Last updated:** 2026-09-24 (T59 claimed: denser `/editor/members` dashboard and a manual Relay balance. T58 merged as PR #112.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,8 +66,8 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T59 | Denser org dashboard + manual Relay balance | cursor | 2026-09-24 | **Claimed cursor.** Follow-up to merged PR #112 on `/editor/members`. Tighten Membership, Finances, Reach, Impact, and the roster table. Finance headline is a manual Relay current balance ($2,457, last updated 2026-09-24). Stripe dues stay secondary and admin-only. Preview only. Do not merge until Website QA and Josh. |
 | T57 | Internal PHP committee work tracker | cursor | 2026-09-24 | **Claimed cursor.** `/editor/policy` for the Public Health Policy Committee response sheet (seeded items, criteria, punch list). Gate is `canViewPolicyWork`: admin, `can_view_members`, or `is_board`. Not the public `/policy` archive and not parked T19 open windows. Preview only. Do not merge until Website QA and Josh. |
-| T58 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #112. Do not merge. Membership + reach use `canViewMemberRoster`. Headcount is derived from the current term (`renews_on` minus `membership_years`); lifetime and term-unknown actives count in the latest month only. Join/renewal/lapse dates are not stored. Pillar order is Membership, Finances, Reach, Impact. Reach is distribution only: Vercel daily series since 2026-09-16, top pages, list size at send (sent-count proxy), open and click rates, and clicked `/news` and `/policy` links. A weekly issue is status sent, recipients include list 3, and the name matches SAMPA Weekly Issue #N or the subject starts with "SAMPA Weekly:". List 8, list 13, and names containing makeup are excluded. A list-3 issue whose name contains TEST still counts. Click rate is capped at 100%. Membership and finance share `GET /api/newsletter-stats` (`section=membership|finance`) so the Hobby plan stays at 12 functions. Impact is outputs: policy filings from `listPolicyDocuments()` (monthly and cumulative), news articles by `published_at` where `status=published`, and the count of those weekly issues sent. CME says coming when the CME product is live. Jobs says coming when the jobs board is live. Opens, clicks, and pageviews stay in Reach. Finance is **admin only** (`canViewFinance`). Stripe balance transactions via existing `STRIPE_SECRET_KEY`. No bookkeeping source, so spend stays “not connected.” |
 | T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor (continued 2026-09-23).** PR #111 (preview only). PR #109 still stands: a president without `can_view_members` stays on the denial page, or goes to `/dashboard` once if the session dies — not back to the roster. Board / committee hats do not grant access. A viewer whose session drops to null is held on the page for `AUTH_NULL_HOLD_MS` before `/login`. Site traffic does not reload or refetch after a 403, and the card is behind the same gate. Do not merge until Website QA + Josh. |
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
@@ -79,11 +79,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T58 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Merged PR #112 → Production** (`4a63917`). Four pillars on `/editor/members`. Finance is admin only. T59 tightens the layout and adds the manual Relay balance. |
 | T53 | In-site site-traffic dashboard for roster viewers | cursor | 2026-09-18 | **Merged PR #106 → Production** (`a9d7808`). Site traffic card at the top of `/editor/members`. Gate is `canViewMemberRoster` (`admin` or `can_view_members`). Tracking-start note 2026-09-16. T58 extends this card. |
 | T54 | News bylines include credentials (PA-C) | egg | 2026-09-18 | **Merged PR #107 → Production** (`8241122`). Bylines append `profiles.credentials` (`Josh Luftig, PA-C`). Live `author_name` backfilled. SQL Editor still needs `supabase/migrations/2026-09-18-list-news-editors-credentials.sql` so the picker does not strip titles on save. |
 | T52 | Vercel Web Analytics for addictionpas.org | cursor | 2026-09-16 | **Merged PR #105 → Production** (`fe234d6`). `@vercel/analytics/react` `<Analytics />` at SPA root (`src/main.jsx`). Josh already Enabled the dashboard toggle. After this deploy, visit the live site once to confirm the Analytics tab starts receiving pageviews. |
 | T51 | CMS CY 2027 PFS public comment (CMS-1848-P) on /policy | cursor | 2026-09-16 | **Merged PR #104 → Production** (`b3ade23`). Fourth public comment: CMS-1848-P / Docket CMS-2026-2377 on `/policy` + `/policy/cms-pfs-cy-2027-1848-p` with branded PDF. Josh approved after Vercel preview + bodyHtml copy trim. |
-| T49 | Harrison Keyes Education Committee co-chair on About | cursor | 2026-09-11 | **Merged PR #102 → Production** (`ef9b908`). Shani Wilson appointed Harrison Education Committee co-chair. `/about#harrison-keyes`: DAL primary + `Education co-chair`. Bio/photo kept. Shani remains Education chair. |
 
 ### Task workflow (agents + humans)
 
