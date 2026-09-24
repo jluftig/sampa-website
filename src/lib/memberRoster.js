@@ -4,3 +4,9 @@
 export function canViewMemberRoster(profile) {
   return profile?.role === 'admin' || !!profile?.can_view_members;
 }
+
+// Stripe cash totals. No treasurer flag exists. is_board is a directory badge
+// and does not grant this.
+export function canViewFinance(profile) {
+  return profile?.role === 'admin';
+}
