@@ -18,7 +18,8 @@
     "test:site-traffic": "node --test scripts/verify-site-traffic.mjs",
     "test:newsletter-stats": "node --test scripts/verify-newsletter-stats.mjs",
     "test:org-dashboard": "node --test scripts/verify-org-dashboard.mjs",
-    "test:policy-impact": "node --test scripts/verify-policy-impact.mjs"
+    "test:policy-impact": "node --test scripts/verify-policy-impact.mjs",
+    "test:policy-work": "node --test scripts/verify-policy-work.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",

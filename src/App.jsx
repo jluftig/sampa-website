@@ -5,6 +5,7 @@ import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
 import RequireActiveMember from './components/RequireActiveMember';
 import RequireMemberViewer from './components/RequireMemberViewer';
+import RequirePolicyWork from './components/RequirePolicyWork';
 import Home from './pages/Home';
 
 // Route-level code splitting: the homepage loads eagerly; every other page
@@ -33,6 +34,7 @@ const PostEditor = lazy(() => import('./pages/PostEditor'));
 const AdminTags = lazy(() => import('./pages/AdminTags'));
 const AdminPeople = lazy(() => import('./pages/AdminPeople'));
 const AdminMembers = lazy(() => import('./pages/AdminMembers'));
+const PolicyWorkHub = lazy(() => import('./pages/PolicyWorkHub'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
@@ -120,6 +122,14 @@ function App() {
               <RequireMemberViewer>
                 <AdminMembers />
               </RequireMemberViewer>
+            }
+          />
+          <Route
+            path="/editor/policy"
+            element={
+              <RequirePolicyWork>
+                <PolicyWorkHub />
+              </RequirePolicyWork>
             }
           />
           <Route
