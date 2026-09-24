@@ -15,7 +15,8 @@
     "test:member-login": "node --test scripts/verify-member-login-routing.mjs",
     "test:auth-redirect": "node --test scripts/verify-auth-redirect-cycle.mjs",
     "test:cms-pfs-comment": "node scripts/verify-cms-pfs-comment.mjs",
-    "test:site-traffic": "node --test scripts/verify-site-traffic.mjs"
+    "test:site-traffic": "node --test scripts/verify-site-traffic.mjs",
+    "test:newsletter-stats": "node --test scripts/verify-newsletter-stats.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
