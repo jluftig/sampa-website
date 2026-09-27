@@ -16,6 +16,14 @@ export function isActiveMemberProfile(profile) {
   return profile?.membership_status === 'active';
 }
 
+// SQL is_active_member(): paid membership, or staff (editor/admin).
+// can_edit_news alone does not qualify. is_board does not qualify.
+export function isActiveMemberAccess(profile) {
+  return profile?.membership_status === 'active'
+    || profile?.role === 'editor'
+    || profile?.role === 'admin';
+}
+
 export function signedInHomePath(profile) {
   return isEditorProfile(profile) ? '/editor' : '/dashboard';
 }

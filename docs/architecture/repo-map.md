@@ -39,8 +39,11 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             proxies Vercel Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
   newsletter-stats.js       GET → SAMPA Updates list size + weekly issue stats + top links; same JWT gate;
                             read-only Brevo (`BREVO_API_KEY`, never `VITE_`).
-                            `?section=membership` and `?section=finance` share this function
-                            (Hobby plan allows 12 functions). Handlers live in `api/_lib/`.
+                            `?section=membership`, `?section=finance`, and `?section=board`
+                            share this function (Hobby plan allows 12 functions). Board
+                            agendas/minutes (`api/_lib/boardMeetings.js`) require
+                            `is_active_member()` and are also reached at `/api/board-meetings`
+                            via vercel.json rewrite. Handlers live in `api/_lib/`.
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -66,13 +69,16 @@ src/
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
+    boardMeetings.js        Member-area Board schedule / agenda / minutes seed
     leadership.js           About-page leadership roster (preview; not a CMS)
   pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,
-                            MemberProfile, Privacy, Terms, EditorDashboard, PostEditor,
+                            MemberProfile, BoardMeetings, BoardMeetingView, Privacy, Terms,
+                            EditorDashboard, PostEditor,
                             AdminTags, AdminPeople, AdminMembers
 public/
   files/policy/             Official Policy PDFs (e.g. HHS RFI comment)
+  files/board/              Board agenda / minutes PDFs (drop files; wire paths in boardMeetings.js)
 supabase/
   schema.sql                SOURCE OF TRUTH (tables, RLS, functions, triggers, seed)
   migrations/               standalone per-change snippets (folded into schema.sql)
@@ -99,7 +105,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 |----------|--------|
 | Public | `/`, `/about` (`#leadership`), `/caq`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
-| Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
+| Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people` |
 | Member-viewer or admin | `/editor/members` (staff roster + Site traffic card; `canViewMemberRoster`) |

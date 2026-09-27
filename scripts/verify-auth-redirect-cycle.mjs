@@ -148,6 +148,45 @@ describe('redirect graph has no cycle', () => {
   });
 });
 
+const nonMember = { role: 'member', membership_status: null };
+
+describe('board pages do not redirect-loop', () => {
+  it('signed-out /board and /board/:slug land on login and stay', () => {
+    const hub = walkAuthRedirects('/board', signedOut);
+    assert.equal(hub.cycle, false);
+    assert.equal(hub.stuckAt, '/login?next=%2Fboard');
+    assert.equal(decideAuthRedirect(hub.stuckAt, signedOut), null);
+    const detail = walkAuthRedirects('/board/2026-04', signedOut);
+    assert.equal(detail.cycle, false);
+    assert.equal(detail.stuckAt, '/login?next=%2Fboard%2F2026-04');
+    assert.equal(decideAuthRedirect(detail.stuckAt, signedOut), null);
+  });
+
+  it('signed-in non-member stays on /board', () => {
+    assert.equal(decideAuthRedirect('/login?next=%2Fboard', authed(nonMember)), '/board');
+    const walk = walkAuthRedirects('/board', authed(nonMember));
+    assert.equal(walk.cycle, false);
+    assert.equal(walk.stuckAt, '/board');
+    assert.equal(decideAuthRedirect('/board/2026-09', authed(nonMember)), null);
+  });
+
+  it('active member stays on /board and on a meeting', () => {
+    const hub = walkAuthRedirects('/board', authed(member));
+    assert.equal(hub.cycle, false);
+    assert.equal(hub.stuckAt, '/board');
+    const detail = walkAuthRedirects('/board/2026-09', authed(member));
+    assert.equal(detail.cycle, false);
+    assert.equal(detail.stuckAt, '/board/2026-09');
+    assert.equal(decideAuthRedirect('/login?next=%2Fboard%2F2026-09', authed(member)), '/board/2026-09');
+  });
+
+  it('half-hydrated session on /board does not bounce to login', () => {
+    const walk = walkAuthRedirects('/board', halfSession);
+    assert.equal(walk.cycle, false);
+    assert.equal(walk.stuckAt, '/board');
+  });
+});
+
 function walkRosterGate(events) {
   let url = '/editor/members';
   let hadSession = false;

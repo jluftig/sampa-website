@@ -3,6 +3,7 @@ import { createTtlCache } from './_lib/ttl-cache.js';
 import { brevoGet, loadSentCampaigns } from './_lib/brevo-readonly.js';
 import { handleMembershipStats } from './_lib/membership-stats.js';
 import { handleFinanceStats } from './_lib/finance-stats.js';
+import { handleBoardMeetings } from './_lib/boardMeetingsHandler.js';
 import { canViewMemberRoster } from '../src/lib/memberRoster.js';
 import {
   brevoConfigFromEnv,
@@ -97,9 +98,17 @@ export async function handleNewsletterStats(request, deps = {}) {
   }
 }
 
-export async function GET(request) {
-  const section = new URL(request.url).searchParams.get('section');
+export function isBoardMeetingsRequest(request) {
+  const url = new URL(request.url);
+  if (url.searchParams.get('section') === 'board') return true;
+  return url.pathname === '/api/board-meetings' || url.pathname.endsWith('/board-meetings');
+}
+
+export async function GET(request, deps) {
+  const url = new URL(request.url);
+  const section = url.searchParams.get('section');
   if (section === 'membership') return handleMembershipStats(request);
   if (section === 'finance') return handleFinanceStats(request);
+  if (isBoardMeetingsRequest(request)) return handleBoardMeetings(request, deps);
   return handleNewsletterStats(request);
 }

@@ -31,6 +31,8 @@ function isGuardedPath(pathname) {
   return pathname === '/dashboard'
     || pathname === '/members'
     || pathname.startsWith('/members/')
+    || pathname === '/board'
+    || pathname.startsWith('/board/')
     || pathname === '/editor'
     || pathname.startsWith('/editor/');
 }
