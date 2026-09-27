@@ -12,7 +12,7 @@ import {
   shouldRetryAuthRecovery,
   stripAuthCallbackParams,
 } from './authSession';
-import { isEditorProfile } from './memberHome';
+import { isActiveMemberAccess, isEditorProfile } from './memberHome';
 import { canViewMemberRoster } from './memberRoster';
 
 const AuthContext = createContext(null);
@@ -258,7 +258,7 @@ export function AuthProvider({ children }) {
   // Paid membership only — used by /join to block duplicate checkouts.
   const isActiveMember = profile?.membership_status === 'active';
   // Matches SQL is_active_member(): paid members + staff (editors/admins).
-  const canAccessMemberDirectory = isActiveMember || role === 'editor' || isAdmin;
+  const canAccessMemberDirectory = isActiveMemberAccess(profile);
   // A just-expired token is still usable while recoverSession is in flight
   // (T46: don't bounce a checkout return to /login on a radio blip).
   // A session with no profiles row is never usable — that is the stale

@@ -17,6 +17,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/board-meetings",
+      "destination": "/api/newsletter-stats?section=board"
+    },
+    {
       "source": "/news/:slug",
       "has": [
         {

@@ -8,6 +8,19 @@ Helpers (SECURITY DEFINER, `search_path=public`):
 Gate future member-only content (e.g. CME) on `is_active_member()`  
 (`membership_status='active'` OR editors/admins).
 
+**Board meetings (T45):** `/board` + `/board/:slug` use the same client gate as
+the directory (`RequireActiveMember` / `canAccessMemberDirectory` /
+`isActiveMemberAccess`). That check is UX only. Agenda and minutes HTML live in
+`api/_lib/boardMeetings.js` and are returned by `GET /api/board-meetings`
+(rewritten to `newsletter-stats?section=board`, so it does not add a 13th
+serverless function). The handler calls `requireUser` and allows the response
+only when `isActiveMemberAccess` matches SQL `is_active_member()`
+(`membership_status = 'active'` OR role `editor`/`admin`). Otherwise 401 or
+403, with `cache-control: private, no-store`. Do not import the bodies module
+from `src/`. `is_board` stays a directory badge. PDFs dropped in
+`public/files/board/` are reachable by URL if someone knows the path; do not
+put confidential drafts there until there is an authenticated file route.
+
 ## Table rules (summary)
 
 | Area | Rule |
