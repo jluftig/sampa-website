@@ -8,7 +8,7 @@
 export const RESOURCES_HUB = {
   eyebrow: 'Practice resources',
   oneLiner:
-    'A first set of links you can open today — SAMPA’s own news, Key Points, and comments on access to medications for opioid use disorder, plus public clinical and public-health sources a PA treating addiction would actually use. This is not a protocol, not a dosing tool, and not CME. Links checked August 2026; open the source for the current text.',
+    'A first set of links you can open today — SAMPA’s own news, Key Points, and public comments, plus public clinical and public-health sources a PA treating addiction would actually use. This is not a protocol, not a dosing tool, and not CME. Links checked September 2026; open the source for the current text.',
   settingsIntro:
     'Addiction care is not only an OTP or specialty-clinic job. You may be starting treatment in an emergency department, continuing it on a hospital service, seeing someone in primary care or an FQHC, meeting people on the street, connecting by telehealth, staffing a bridge clinic, or practicing inside an opioid treatment program. The list below is written for that mix — so people can reach MOUD and quality treatment from the door they already walk through.',
   stillBuilding:
@@ -53,6 +53,36 @@ export const SAMPA_RESOURCES = [
     cta: 'Browse Key Points',
   },
   {
+    id: 'policy-cms-pfs',
+    origin: 'sampa',
+    title: 'CMS comment on the CY 2027 fee schedule',
+    blurb:
+      'Our September 2026 comment on the CY 2027 Medicare Physician Fee Schedule. It supports the proposed SBIRT and tobacco-cessation work values and PA-led shared medical appointments, asks CMS to keep those appointments open to tobacco, alcohol, and other substance use disorders, and asks CMS not to drop Quality ID 305.',
+    href: '/policy/cms-pfs-cy-2027-1848-p',
+    asOf: 'Submitted September 2026',
+    cta: 'Read the comment',
+  },
+  {
+    id: 'policy-asam-correctional',
+    origin: 'sampa',
+    title: 'ASAM comment on correctional and reentry standards',
+    blurb:
+      'Our August 2026 line-cited comments on ASAM’s draft correctional and reentry standards. They ask for uninterrupted MOUD at intake and release, practitioner-neutral telehealth and staffing language, and peer supports alongside medication.',
+    href: '/policy/asam-correctional-settings-2026',
+    asOf: 'Submitted August 2026',
+    cta: 'Read the comment',
+  },
+  {
+    id: 'policy-hrsa',
+    origin: 'sampa',
+    title: 'HRSA comment on psychedelic therapies',
+    blurb:
+      'Our August 2026 comment to HRSA on training and care-delivery models for potential FDA-approved psychedelic therapies. It asks that PAs be named as licensed medical providers for eligibility evaluation, session oversight, and follow-up.',
+    href: '/policy/hrsa-rfi-psychedelic-therapies-2026',
+    asOf: 'Submitted August 2026',
+    cta: 'Read the comment',
+  },
+  {
     id: 'policy-hhs',
     origin: 'sampa',
     title: 'HHS comment on access to MOUD',
@@ -67,7 +97,7 @@ export const SAMPA_RESOURCES = [
     origin: 'sampa',
     title: 'Policy hub',
     blurb:
-      'Where SAMPA publishes that public voice. Two comments are live (HHS on MOUD access; HRSA on emerging psychedelic therapies). Positions and statements are still ahead.',
+      'Where SAMPA publishes that public voice. Four comments are live: CMS on the CY 2027 fee schedule, ASAM on correctional and reentry standards, HRSA on emerging psychedelic therapies, and HHS on access to MOUD. Positions and statements are still ahead.',
     href: '/policy',
     cta: 'Open the policy hub',
   },
@@ -105,7 +135,7 @@ export const EXTERNAL_RESOURCES = [
       'The federal Treatment Improvement Protocol on methadone, buprenorphine, and naltrexone, plus the recovery supports that go with them. The document clinicians still open first for MOUD.',
     href: 'https://www.samhsa.gov/resource/ebp/tip-63-medications-opioid-use-disorder',
     external: true,
-    asOf: 'Revised 2021 · page checked August 2026',
+    asOf: 'Revised 2021 · page checked September 2026',
     cta: 'Open TIP 63',
   },
   {
@@ -117,7 +147,7 @@ export const EXTERNAL_RESOURCES = [
       'ASAM’s 2020 focused update — assessment, medications, special populations, and setting-specific recommendations. Society guideline, not a SAMPA protocol.',
     href: 'https://www.asam.org/quality-care/clinical-guidelines/national-practice-guideline',
     external: true,
-    asOf: '2020 focused update · page checked August 2026',
+    asOf: '2020 focused update · page checked September 2026',
     cta: 'Open the ASAM guideline',
   },
   {
@@ -129,7 +159,7 @@ export const EXTERNAL_RESOURCES = [
       'Federal DATA-waiver / X-waiver requirements are gone. A DEA registration with Schedule III authority is the federal prescribing baseline — then your state practice act. Confirm both before you write a first prescription.',
     href: 'https://www.samhsa.gov/substance-use/treatment/resources/mat-act',
     external: true,
-    asOf: 'Effective December 2022 · page checked August 2026',
+    asOf: 'Effective December 2022 · page checked September 2026',
     cta: 'Read the SAMHSA summary',
   },
   {
@@ -141,7 +171,7 @@ export const EXTERNAL_RESOURCES = [
       'What new or renewing DEA registrants must complete. This is a federal training attestation, not SAMPA CME, and it does not by itself authorize practice in your state.',
     href: 'https://www.samhsa.gov/substance-use/treatment/resources/mat-act/training-requirements',
     external: true,
-    asOf: 'In effect June 2023 · page checked August 2026',
+    asOf: 'In effect June 2023 · page checked September 2026',
     cta: 'See training requirements',
   },
   {
@@ -151,9 +181,9 @@ export const EXTERNAL_RESOURCES = [
     title: 'Medications for opioid use disorder',
     blurb:
       'FDA’s overview of approved buprenorphine, methadone, and naltrexone products. Use it to reach current labeling — do not treat this page as a dosing guide.',
-    href: 'https://www.fda.gov/drugs/information-drug-class/information-about-medications-opioid-use-disorder-moud',
+    href: 'https://www.fda.gov/drugs/food-and-drug-administration-overdose-prevention-framework/information-about-medications-opioid-use-disorder-moud',
     external: true,
-    asOf: 'Page checked August 2026',
+    asOf: 'Page checked September 2026',
     cta: 'Open the FDA MOUD page',
   },
   {
@@ -165,7 +195,7 @@ export const EXTERNAL_RESOURCES = [
       'Search the product you prescribe for the official Prescribing Information. Labeling changes; this is the lookup, not a standing SAMPA recommendation.',
     href: 'https://dailymed.nlm.nih.gov/dailymed/',
     external: true,
-    asOf: 'Page checked August 2026',
+    asOf: 'Page checked September 2026',
     cta: 'Search DailyMed',
   },
   {
@@ -177,7 +207,7 @@ export const EXTERNAL_RESOURCES = [
       'CDC’s clinician-facing summary of the 2022 pain-prescribing guideline — useful when you are treating pain and watching for opioid-related harm. It is not an OUD treatment guideline.',
     href: 'https://www.cdc.gov/overdose-prevention/hcp/clinical-guidance/index.html',
     external: true,
-    asOf: 'Guideline 2022 · page checked August 2026',
+    asOf: 'Guideline 2022 · page checked September 2026',
     cta: 'Open the CDC summary',
   },
   {
@@ -189,7 +219,7 @@ export const EXTERNAL_RESOURCES = [
       'CDC materials on naloxone for patients, families, and the people around them. Pair with your local standing-order or pharmacy-access rules.',
     href: 'https://www.cdc.gov/stopoverdose/naloxone/index.html',
     external: true,
-    asOf: 'Page checked August 2026',
+    asOf: 'Page checked September 2026',
     cta: 'Open CDC naloxone',
   },
   {
@@ -201,7 +231,7 @@ export const EXTERNAL_RESOURCES = [
       'The federal locator for treatment programs when you need a next door — OTP, residential, outpatient, or a program closer to where the patient lives.',
     href: 'https://findtreatment.gov/',
     external: true,
-    asOf: 'Page checked August 2026',
+    asOf: 'Page checked September 2026',
     cta: 'Search FindTreatment.gov',
   },
   {
@@ -213,7 +243,7 @@ export const EXTERNAL_RESOURCES = [
       'NIDA’s research-to-practice overview of why these medications work and what they do not replace. Good orientation if you are new to the field.',
     href: 'https://nida.nih.gov/research-topics/medications-opioid-use-disorder',
     external: true,
-    asOf: 'Page checked August 2026',
+    asOf: 'Page checked September 2026',
     cta: 'Open the NIDA overview',
   },
   {
@@ -225,7 +255,7 @@ export const EXTERNAL_RESOURCES = [
       'National mentoring and clinician education on medications for opioid use disorder. External training — not SAMPA CME, and not a substitute for your own credentialing.',
     href: 'https://pcssnow.org/',
     external: true,
-    asOf: 'Page checked August 2026',
+    asOf: 'Page checked September 2026',
     cta: 'Visit PCSS-MOUD',
   },
 ];
@@ -249,7 +279,7 @@ export const START_STEPS = [
   {
     n: '03',
     title: 'See what still blocks access',
-    body: 'Federal waiver rules fell. Patients still wait. Our HHS comment is the short map of the remaining barriers — useful before you assume the problem is only clinical.',
+    body: 'Federal waiver rules fell. Patients still wait. Our HHS comment is the short map of the remaining MOUD barriers. The CMS, ASAM, and HRSA comments are on the policy hub.',
     href: '/policy/hhs-rfi-chronic-disease-addiction-2026',
     cta: 'HHS comment',
   },
