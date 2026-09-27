@@ -10,7 +10,7 @@
 //     SAMPA_SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SERVICE_ROLE_KEY  (JWT service_role)
 //   SAMPA_AUTHOR_USER_ID   — profiles.id / auth.users id (Josh)
 // Optional:
-//   SAMPA_AUTHOR_NAME      — denormalized author_name (default: "Josh Luftig")
+//   SAMPA_AUTHOR_NAME      — denormalized author_name (default: profile full_name + credentials, e.g. "Josh Luftig, PA-C")
 //
 // Supabase key model (2025+): publishable (sb_publishable_...) replaces anon;
 // secret (sb_secret_...) replaces service_role. Both elevated keys bypass RLS.
@@ -38,6 +38,7 @@
 // }
 import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'node:fs';
+import { formatAuthorByline } from '../src/lib/format.js';
 
 const args = process.argv.slice(2);
 const validateOnly = args.includes('--validate-only');
@@ -76,7 +77,7 @@ function requireEnv() {
     process.env.SAMPA_SUPABASE_SERVICE_ROLE_KEY ||
     process.env.SUPABASE_SERVICE_ROLE_KEY;
   const authorId = process.env.SAMPA_AUTHOR_USER_ID;
-  const authorName = process.env.SAMPA_AUTHOR_NAME || 'Josh Luftig';
+  const authorNameOverride = process.env.SAMPA_AUTHOR_NAME || '';
 
   const missing = [];
   if (!url) missing.push('SUPABASE_URL (or VITE_SUPABASE_URL / SAMPA_SUPABASE_URL)');
@@ -99,7 +100,7 @@ function requireEnv() {
   ) {
     die('Refusing to run: that looks like a publishable/anon key. Use a Secret key (sb_secret_…).');
   }
-  return { url, serviceKey, authorId, authorName };
+  return { url, serviceKey, authorId, authorNameOverride };
 }
 
 function validatePayload(p) {
@@ -146,10 +147,22 @@ if (validateOnly) {
   process.exit(0);
 }
 
-const { url, serviceKey, authorId, authorName } = requireEnv();
+const { url, serviceKey, authorId, authorNameOverride } = requireEnv();
 const supabase = createClient(url, serviceKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
+
+const { data: authorProfile, error: authorProfErr } = await supabase
+  .from('profiles')
+  .select('full_name, credentials')
+  .eq('id', authorId)
+  .maybeSingle();
+if (authorProfErr) die(`Author profile lookup failed: ${authorProfErr.message}`);
+const authorName =
+  formatAuthorByline(
+    authorNameOverride || authorProfile?.full_name,
+    authorProfile?.credentials
+  ) || 'Josh Luftig, PA-C';
 
 const slug = payload.slug.trim();
 const { data: existing, error: existErr } = await supabase

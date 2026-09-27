@@ -22,6 +22,20 @@ export function formatDateOnly(value) {
   });
 }
 
+// "Josh Luftig" + "PA-C" → "Josh Luftig, PA-C". Does not double if the name
+// already ends with that credential string.
+export function formatAuthorByline(fullName, credentials) {
+  const name = String(fullName || '').trim();
+  const cred = String(credentials || '').trim();
+  if (!name) return cred;
+  if (!cred) return name;
+  const n = name.toLowerCase();
+  const c = cred.toLowerCase();
+  if (n === c) return name;
+  if (n.endsWith(`, ${c}`) || n.endsWith(` ${c}`)) return name;
+  return `${name}, ${cred}`;
+}
+
 // Join author display names for the denormalized posts.author_name byline
 // ("A", "A and B", "A, B, and C"). Empty / blank names are skipped.
 export function formatAuthorNames(names) {

@@ -22,12 +22,15 @@ Gate future member-only content (e.g. CME) on `is_active_member()`
 | comments / reactions | Public read on published; write `is_active_member()`; soft-delete rules; denormalized bylines |
 | member_import | SELECT admin or member-viewer; no client writes |
 | donations | SELECT own or staff viewers; **no** client writes — webhook only |
+| membership_invoice_requests | SELECT admin or member-viewer; **no** client writes — `create-invoice-request` service role only |
 
 ## Privilege escalation
 
 `guard_profile_role()` BEFORE UPDATE blocks non-admins from changing `role` or any
-membership/billing column. Bypass only when `auth.uid() IS NULL` (SQL editor /
-service_role / Stripe webhook).
+membership/billing column (including `patron`, `is_board`, `is_membership_committee`).
+Bypass only when `auth.uid() IS NULL`
+(SQL editor / service_role / Stripe webhook). `aapa_member` is self-writable (honor
+system; not verified) and is not in that guard.
 
 **`api/stripe-webhook.js` (service role) is the ONLY writer of membership columns.**
 
@@ -35,7 +38,11 @@ service_role / Stripe webhook).
 
 | Endpoint | Auth |
 |----------|------|
-| checkout / portal / delete-account | Valid Supabase JWT |
+| checkout / portal / delete-account / create-invoice-request | Valid Supabase JWT |
+| site-traffic | Valid Supabase JWT **and** `canViewMemberRoster` (`admin` or `can_view_members`) — same as `/editor/members` |
+| newsletter-stats | Valid Supabase JWT **and** `canViewMemberRoster` — same gate. Read-only Brevo (`BREVO_API_KEY` server-side) |
+| newsletter-stats?section=membership | Valid Supabase JWT **and** `canViewMemberRoster` — same gate. Aggregates only (no emails). Same function as newsletter-stats |
+| newsletter-stats?section=finance | Valid Supabase JWT, `canViewMemberRoster`, **and** `role = admin` (`canViewFinance`). Roster viewers who are not admins get `finance_restricted`. `is_board` does not grant it. Read-only Stripe balance transactions (`STRIPE_SECRET_KEY` server-side) |
 | create-donation-session | Public; optional JWT to link profile; amount validated server-side ($1–$50k) |
 | stripe-webhook | Stripe signature (`STRIPE_WEBHOOK_SECRET`) |
 | send-push | `x-push-secret` = `PUSH_WEBHOOK_SECRET` |

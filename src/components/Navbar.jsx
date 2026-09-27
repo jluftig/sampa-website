@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useAuth } from '../lib/AuthContext';
 import DonateLink from './DonateLink';
+import MemberLoginLink from './MemberLoginLink';
 
 export default function Navbar() {
   const navRef = useRef(null);
@@ -39,9 +40,16 @@ export default function Navbar() {
             Resources
             <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
-          <Link to="/about" className="hover:text-primary-text transition-colors">About</Link>
+          <Link to="/caq" className="hover:text-primary-text transition-colors">
+            CAQ
+            <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
+          <Link to="/about" className="hover:text-primary-text transition-colors">
+            About
+            <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
           <a href="/#programs" className="hover:text-primary-text transition-colors">Programs</a>
-          <a href="/#membership" className="hover:text-primary-text transition-colors">Membership</a>
+          <Link to="/join" className="hover:text-primary-text transition-colors">Membership</Link>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
           <DonateLink className="hover:text-primary-text transition-colors">Donate</DonateLink>
           {canAccessMemberDirectory && (
@@ -51,12 +59,9 @@ export default function Navbar() {
 
         {/* Desktop CTAs — Login secondary, Join primary */}
         <div className="hidden lg:flex items-center gap-2.5">
-          <Link
-            to="/dashboard"
+          <MemberLoginLink
             className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
-          >
-            Member Login
-          </Link>
+          />
           <Link to="/join" className="btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block">
             <span>Join</span>
           </Link>
@@ -92,22 +97,26 @@ export default function Navbar() {
             Resources
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
-          <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+          <Link to="/caq" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+            CAQ
+            <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
+          <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+            About
+            <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
           <a href="/#programs" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Programs</a>
-          <a href="/#membership" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</a>
+          <Link to="/join" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</Link>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
           <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</DonateLink>
           {canAccessMemberDirectory && (
             <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
           )}
           <div className="mt-2 pt-4 border-t border-primary/10 flex flex-col gap-2.5">
-            <Link
-              to="/dashboard"
+            <MemberLoginLink
               className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold text-center hover:bg-primary-text hover:text-white transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Member Login
-            </Link>
+            />
             <Link
               to="/join"
               className="bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full"

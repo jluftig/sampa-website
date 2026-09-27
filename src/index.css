@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    /* Floating nav is `fixed top-6` with a ~66px pill. Hash targets (#leadership,
+       /#programs, /#membership, person cards) need this much air or the H1 sits
+       under the bar. scroll-padding is honored by native hash jumps and by
+       scrollIntoView in current browsers. */
+    scroll-padding-top: 8rem;
+  }
+
   body {
     @apply font-sans;
   }

@@ -22,17 +22,26 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 - Peer contact **only** via `member_directory*` RPCs — never by opening profiles SELECT
 - Membership (webhook-written, guarded): `stripe_customer_id`, `membership_tier`,
   `membership_status` (`active`|`past_due`|`canceled`), `renews_on` (null + active = lifetime),
-  `cancel_at_period_end`, `membership_years` (1/2/3 or null)
+  `cancel_at_period_end`, `membership_years` (1/2/3 or null), `patron` (boolean, default
+  false — add-on, **never** a tier key; peer `/members` shows a Patron badge when true
+  via `member_directory*` RPCs)
+- `aapa_member` (nullable boolean) — honor-system “current AAPA member?” Self-writable
+  (not in `guard_profile_role`). We do not verify with AAPA. `aapa_member_id` is not
+  collected. Helps suggest Fellow vs Certified PA (`sustaining`) on `/join`.
 - `role` enum `user_role` = member|editor|admin (default member; `editor` legacy — UI
   normalizes to member + flags)
-- Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`, `is_board`
-  (Board independent of Admin)
+- Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`,
+  `is_board`, `is_membership_committee` (Board and Membership Committee are
+  independent of Admin). Roster + Site traffic use `canViewMemberRoster`
+  (`admin` or `can_view_members`). Committee/board hats do not open those
+  surfaces — also check **View members**.
 - `privileged_terms_accepted_at` — roster confidentiality click-accept (self-settable)
 
 ### Content
 - `posts` — title, slug, excerpt, body_html, cover, author_id/author_name (denormalized from
-  `post_authors`), status draft|published, published_at, source_* citation fields, `fts`
-- `post_authors` — ordered co-authors; `list_news_editors()` for picker
+  `post_authors`; byline is `full_name` + `profiles.credentials`, e.g. `Josh Luftig, PA-C`),
+  status draft|published, published_at, source_* citation fields, `fts`
+- `post_authors` — ordered co-authors; `list_news_editors()` for picker (includes credentials)
 - `tags` — UI term **keyword**; slug immutable in UI
 - `items` — Key Points; **ids are permanent share targets** `/news/<slug>#point-<id>`
 - `item_tags` — M2M
@@ -42,6 +51,9 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 
 ### Money & ops
 - `donations` — gifts only; webhook-written; no client write policy
+- `membership_invoice_requests` — employer invoice side door; service-role insert
+  from `api/create-invoice-request.js`; staff SELECT; no client writes. Does not
+  grant membership.
 - `audit_log` — permissions_changed + member_csv_export
 - `member_import` — pledge tracking; no client writes
 

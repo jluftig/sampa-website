@@ -36,9 +36,18 @@ export function MemberCard({ person }: { person: DirectoryMember }) {
             </Text>
           ) : null}
         </Text>
-        {person.is_board ? (
-          <View style={[styles.badge, { backgroundColor: theme.backgroundSelected }]}>
-            <Text style={[styles.badgeText, { color: theme.tint }]}>BOARD</Text>
+        {person.is_board || person.patron ? (
+          <View style={styles.badgeRow}>
+            {person.is_board ? (
+              <View style={[styles.badge, { backgroundColor: theme.backgroundSelected }]}>
+                <Text style={[styles.badgeText, { color: theme.tint }]}>BOARD</Text>
+              </View>
+            ) : null}
+            {person.patron ? (
+              <View style={[styles.badge, { backgroundColor: theme.backgroundSelected }]}>
+                <Text style={[styles.badgeText, { color: theme.tint }]}>PATRON</Text>
+              </View>
+            ) : null}
           </View>
         ) : null}
       </View>
@@ -96,6 +105,7 @@ const styles = StyleSheet.create({
   },
   name: { fontFamily: Fonts.semibold, fontSize: 17, lineHeight: 23, flex: 1 },
   credentials: { fontFamily: Fonts.sans, fontSize: 13 },
+  badgeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, maxWidth: '42%' },
   badge: { borderRadius: 999, paddingHorizontal: Spacing.two, paddingVertical: 3 },
   badgeText: { fontFamily: Fonts.mono, fontSize: 10, letterSpacing: 1 },
   line: { fontFamily: Fonts.sans, fontSize: 14, lineHeight: 20 },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Newspaper, Users, Mail, BookOpen, GraduationCap, Briefcase, ScrollText } from 'lucide-react';
+import { Newspaper, Users, Mail, BookOpen, GraduationCap, Briefcase, ScrollText, Award } from 'lucide-react';
 
 const live = [
   {
@@ -42,6 +42,14 @@ const live = [
 
 const building = [
   {
+    icon: Award,
+    title: 'Addiction Medicine CAQ',
+    desc: 'NCCPA approved development of a Certificate of Added Qualifications in Addiction Medicine after a SAMPA proposal. The exam is not open. This page tracks what NCCPA has published so far.',
+    href: '/caq',
+    cta: 'Read the CAQ page',
+    badge: 'In development',
+  },
+  {
     icon: GraduationCap,
     title: 'CME',
     desc: 'Continuing medical education tailored to addiction medicine—so your clinical skills keep pace with the field.',
@@ -55,7 +63,7 @@ const building = [
 
 export default function ValueProps() {
   return (
-    <section id="programs" className="py-24 bg-gradient-to-b from-transparent to-primary/5 px-4">
+    <section id="programs" className="scroll-mt-32 py-24 bg-gradient-to-b from-transparent to-primary/5 px-4">
       <div className="max-w-7xl mx-auto">
 
         <div className="text-center mb-16 md:mb-20">
@@ -115,23 +123,31 @@ export default function ValueProps() {
                     <Icon className="w-8 h-8 text-accent" aria-hidden="true" />
                   </div>
                   <span className="text-xs font-data uppercase tracking-wider text-text/50 font-semibold">
-                    Coming soon
+                    {p.badge || 'Coming soon'}
                   </span>
                 </div>
                 <h3 className="text-2xl font-bold font-sans tracking-tight mb-4 text-text/90 leading-snug">
                   {p.title}
                 </h3>
-                <p className="text-text/70 leading-relaxed text-lg">
+                <p className={`text-text/70 leading-relaxed text-lg${p.href ? ' mb-6' : ''}`}>
                   {p.desc}
                 </p>
+                {p.href && p.cta && (
+                  <Link
+                    to={p.href}
+                    className="font-semibold text-primary-text hover:underline"
+                  >
+                    {p.cta}
+                  </Link>
+                )}
               </div>
             );
           })}
         </div>
 
         <p className="text-center mt-12 text-text/60">
-          <Link to="/about#programs" className="font-semibold text-primary-text hover:underline">
-            Full program details on our About page
+          <Link to="/about" className="font-semibold text-primary-text hover:underline">
+            Meet the people who lead SAMPA
           </Link>
         </p>
 

@@ -66,7 +66,7 @@ Losing these is the main non-code risk. Product/engineering truth is in git + ST
 
 | Job | Where |
 |-----|--------|
-| Edit / publish news | Site → Member Login → Editor dashboard |
+| Edit / publish news | Site → Member Login (signed-in editors go to `/editor`; members go to `/dashboard`) |
 | Permissions / roster | `/editor/people`, `/editor/members` |
 | Hosting / rollbacks | Vercel → Deployments |
 | Database / auth / SQL | Supabase dashboard |

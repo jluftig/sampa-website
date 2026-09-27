@@ -8,7 +8,7 @@ export default function Membership() {
   const membershipTiers = MEMBERSHIP_TIERS;
 
   return (
-    <section id="membership" className="py-24 px-4 max-w-7xl mx-auto">
+    <section id="membership" className="scroll-mt-32 py-24 px-4 max-w-7xl mx-auto">
 
       {/* MEMBERSHIP SECTION */}
       <div className="text-center mb-16">
@@ -22,7 +22,12 @@ export default function Membership() {
           Join a national community of physician associates improving care for people and communities impacted by substance use disorders — whether you practice addiction medicine every day or meet it one patient at a time.
           Members get newly launched benefits: a daily news feed, member email updates (announcements and a weekly news roundup), a private peer networking directory (you control listing and contact details),
           and support for SAMPA’s policy hub—where we will grow a public voice for access to MOUD and MAT in federal and state policy, payment, and everyday practice (starting with federal comments).
-          Choose the level that fits your career stage — then confirm term and pay on the next step.
+          Members stay in the loop as the{' '}
+          <Link to="/caq" className="text-primary-text font-semibold hover:underline">
+            Addiction Medicine CAQ
+          </Link>
+          {' '}takes shape.
+          Choose the level that fits your career stage. On Join, pick a term and pay.
         </p>
       </div>
 
@@ -34,8 +39,8 @@ export default function Membership() {
         <div>
           <h3 className="font-bold text-xl text-primary-text mb-2">Multi-year savings when you join</h3>
           <p className="text-text/80 text-sm md:text-base leading-relaxed">
-            Annual prices shown below. On the next step you can choose a longer term and save{' '}
-            <strong>~10% for 2 years</strong> or <strong>up to ~20% for 3 years</strong>.
+            Annual prices shown below. On Join you can choose a longer term and save{' '}
+            <strong>10–13% for 2 years</strong> or <strong>17–20% for 3 years</strong>.
             <span className="block mt-1 text-xs opacity-70 italic">
               (Student and Pre-PA: up to 2 years. Legacy: optional $125 lifetime.)
             </span>
@@ -51,14 +56,24 @@ export default function Membership() {
               <div className="absolute top-6 -right-10 w-40 text-center bg-accent rotate-45 py-1 text-xs font-bold font-data tracking-wider uppercase shadow-md text-white">Featured</div>
             )}
             <div className="relative z-10">
-              <h3 className="text-xl tracking-tight font-bold mb-2">{tier.name}</h3>
-              <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-6 h-10`}>{tier.desc}</p>
+              {tier.lede && (
+                <p className={`text-xs font-semibold mb-1.5 ${tier.highlight ? 'text-white/85' : 'text-primary-text'}`}>
+                  {tier.lede}
+                </p>
+              )}
+              <h3 className={`text-xl tracking-tight font-bold ${tier.secondaryLabel ? 'mb-1' : 'mb-2'}`}>{tier.name}</h3>
+              {tier.secondaryLabel && (
+                <p className={`text-[11px] font-data tracking-wide mb-2 ${tier.highlight ? 'text-white/45' : 'text-text/40'}`}>
+                  {tier.secondaryLabel}
+                </p>
+              )}
+              <p className={`${tier.highlight ? 'text-white/70' : 'text-text/60'} text-sm mb-6 min-h-10`}>{tier.desc}</p>
               <div className={`text-4xl font-bold font-sans mb-8 ${tier.highlight ? 'text-white' : 'text-primary-text'}`}>
                 ${tier.prices[1]}<span className={`text-lg font-normal ${tier.highlight ? 'text-white/50' : 'text-text/50'}`}>/yr</span>
               </div>
             </div>
             <Link to={`/join?tier=${tier.key}`} className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 ${tier.highlight ? 'bg-gradient-to-r from-primary-text to-accent text-white hover:shadow-lg hover:scale-[1.02]' : 'border-2 border-primary-text text-primary-text hover:bg-primary-text/5'}`}>
-              Continue with {tier.name}
+              Join as {tier.name}
             </Link>
           </div>
         ))}

@@ -7,6 +7,8 @@
  * Framing: docs/architecture/policy-hub.md
  */
 
+import asamCorrectionalLineComments from './asam-correctional-line-comments-2026.json' with { type: 'json' };
+
 export const POLICY_TYPES = {
   position: {
     key: 'position',
@@ -18,7 +20,7 @@ export const POLICY_TYPES = {
     key: 'comment',
     label: 'Public comment',
     description:
-      'Response to a federal or state agency request for information or rulemaking.',
+      'Response to a federal or state agency request for information or rulemaking, or to a professional standards / clinical guidelines body.',
   },
   statement: {
     key: 'statement',
@@ -49,7 +51,7 @@ export const POLICY_LEVERS = [
   {
     lever: 'Payment',
     examples:
-      'Medicaid MOUD pay parity; prior auth reform; Medicare differentials; PA billing for Collaborative Care / behavioral health integration',
+      'Medicaid MOUD pay parity; prior auth reform; Medicare differentials; CY 2027 PFS (SBIRT, SUD shared medical appointments, visit-complexity, Quality ID 305); PA billing for Collaborative Care / behavioral health integration',
     artifact: 'Letters, positions, payer comments',
   },
   {
@@ -89,7 +91,7 @@ export const POLICY_HUB = {
   eyebrow: 'Access to evidence-based addiction care',
   title: 'Policy',
   oneLiner:
-    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments to federal agencies — to HHS on the chronic disease of addiction, and to HRSA on the safe rollout of emerging psychedelic therapies — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, payment systems, workforce rules, and everyday practice.',
+    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments — to HHS on the chronic disease of addiction, to HRSA on the safe rollout of emerging psychedelic therapies, to ASAM on correctional settings and reentry standards, and to CMS on the CY 2027 Medicare Physician Fee Schedule — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, clinical standards, payment systems, workforce rules, and everyday practice.',
   leversIntro:
     'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA will work on several fronts—not only federal dockets. These reflect the agenda in our first public comment and the work still ahead:',
   prioritiesIntro:
@@ -103,6 +105,16 @@ export const POLICY_HUB = {
 /** @typedef {'position' | 'comment' | 'statement'} PolicyType */
 
 /**
+ * @typedef {object} PolicyLineComment
+ * @property {number} page
+ * @property {number} line
+ * @property {string} title
+ * @property {string} [guideline]
+ * @property {string} comment
+ * @property {string | null} [revision]
+ */
+
+/**
  * @typedef {object} PolicyDocument
  * @property {string} slug
  * @property {PolicyType} type
@@ -110,16 +122,80 @@ export const POLICY_HUB = {
  * @property {string} summary
  * @property {string[]} themes
  * @property {string} [agency]
- * @property {string} [docket]
+ * @property {string} [docket] citation line; may include a sanitized <a> to the official source
  * @property {string} [submittedAt] ISO date (YYYY-MM-DD)
  * @property {string} publishedAt ISO date
  * @property {string} pdfUrl public path to PDF
  * @property {boolean} onBehalfOfMembers
  * @property {string} [bodyHtml] optional readable HTML summary
+ * @property {PolicyLineComment[]} [lineComments] optional line-survey comments with [P## L##] capsules
  */
+
+/** Format a page/line locator as a citation capsule, e.g. [P63 L24]. */
+export function formatCitationCapsule(page, line) {
+  return `[P${page} L${line}]`;
+}
 
 /** @type {PolicyDocument[]} */
 const DOCUMENTS = [
+  {
+    slug: 'cms-pfs-cy-2027-1848-p',
+    type: 'comment',
+    title:
+      'Response to the CY 2027 Medicare Physician Fee Schedule Proposed Rule (CMS-1848-P)',
+    summary:
+      'SAMPA’s September 2026 public comment to CMS on the CY 2027 Medicare Physician Fee Schedule proposed rule. The comment supports proposed SBIRT and tobacco-cessation work RVUs and PA-led shared medical appointments, asks CMS to include tobacco use disorder, alcohol use disorder, and other SUDs among SMA-eligible conditions and keep visit-complexity pay available for ongoing SUD/MOUD care, and opposes dropping Quality ID 305 from the APP Plus ACO measure set.',
+    themes: [
+      'SUPPORT finalize SBIRT and tobacco-cessation work RVUs as proposed (CPT 99406/99407; HCPCS G2011/G0396/G0397); apply the same adjustment to G0442/G0443 in a future rule',
+      'SUPPORT shared medical appointments (HCPCS GSMAS) with physician or qualified nonphysician practitioner / PA leadership — do not narrow to physician-led only',
+      'MODIFY the GSMAS eligible-condition list to expressly include tobacco use disorder, alcohol use disorder, and other substance use disorders',
+      'SUPPORT G2211 → percentage MOD1 (16% of the associated E/M) for all eligible practitioners',
+      'MODIFY/oppose ACO/LEAD-only MOD2 — extend visit-complexity to ongoing SUD/MOUD care; fallback is MOD1 only',
+      'OPPOSE removal of Quality ID 305 (Initiation and Engagement of SUD Treatment) from the APP Plus ACO measure set',
+    ],
+    agency: 'Centers for Medicare & Medicaid Services (CMS)',
+    docket:
+      'CMS-1848-P · Docket CMS-2026-2377 · <a href="https://www.regulations.gov/document/CMS-2026-2377-0002" target="_blank" rel="noopener noreferrer">Document ID CMS-2026-2377-0002</a>',
+    submittedAt: '2026-09-14',
+    publishedAt: '2026-09-14',
+    pdfUrl: '/files/policy/cms-pfs-cy-2027-1848-p.pdf',
+    onBehalfOfMembers: true,
+    bodyHtml: `
+<p>SAMPA submitted this response to the Calendar Year 2027 Medicare Physician Fee Schedule proposed rule (CMS-1848-P; Docket CMS-2026-2377; <a href="https://www.regulations.gov/document/CMS-2026-2377-0002" target="_blank" rel="noopener noreferrer">Document ID CMS-2026-2377-0002</a>; tracking number mu1-xtr9-b3nv) electronically via regulations.gov.</p>
+<p>The comment is limited to addiction-care payment and PA practice. SAMPA does not ask CMS to reverse the statutory conversion-factor change that expires after CY 2026. We ask CMS to finalize the addiction-care payment improvements already in this rule, and to modify a small number of proposals that would otherwise shrink access to SUD care furnished by physicians and qualified nonphysician practitioners, including PAs.</p>
+<p>Four numbered asks: (1) finalize SBIRT and tobacco-cessation work RVU inclusion as proposed; (2) finalize shared medical appointments (HCPCS GSMAS) with qualified nonphysician practitioner / PA leadership, and expressly include tobacco use disorder, alcohol use disorder, and other SUDs; (3) finalize G2211 as a 16% MOD1 percentage add-on and extend visit-complexity to ongoing SUD/MOUD care for all eligible practitioners — oppose ACO/LEAD-only MOD2 (fallback: MOD1 only); (4) retain Quality ID 305 (Initiation and Engagement of SUD Treatment) in the APP Plus ACO measure set.</p>
+<p>Download the PDF for the complete submitted comment, including quoted proposed text and suggested replacement language. Questions go to the SAMPA Public Health Policy Committee at policy@addictionpas.org.</p>
+`.trim(),
+  },
+  {
+    slug: 'asam-correctional-settings-2026',
+    type: 'comment',
+    title:
+      'Response to ASAM’s Correctional Settings & Community Reentry Standards (The ASAM Criteria, Volume 3)',
+    summary:
+      'SAMPA’s August 2026 public comment to ASAM on draft correctional and reentry standards. Seventeen line-cited comments urge uninterrupted MOUD at intake and release, practitioner-neutral telehealth and staffing language, closed methadone carve-outs, and peer supports alongside—not instead of—medication.',
+    themes: [
+      'Continue verified MOUD at intake; keep practitioner-neutral “prescriber” / APP language',
+      'Practitioner-neutral telehealth for addiction medication assessment and management',
+      'Close methadone “unavailable locally” carve-outs; require a documented access plan',
+      'Distinguish jail/prison health-system medical director (state law) from OTP medical director (physician under 42 CFR §8.2)',
+      'Peer/RSS alongside MOUD—not as a substitute or contingency for medication',
+      'Reentry: PA-accessible nodes, clinically adequate bridge supply, OTP linkage without forced interruption',
+    ],
+    agency: 'American Society of Addiction Medicine (ASAM)',
+    docket:
+      'Correctional Settings & Community Reentry Standards · The ASAM Criteria, Volume 3',
+    submittedAt: '2026-08-31',
+    publishedAt: '2026-08-31',
+    pdfUrl: '/files/policy/asam-correctional-settings-2026.pdf',
+    onBehalfOfMembers: true,
+    lineComments: asamCorrectionalLineComments,
+    bodyHtml: `
+<p>SAMPA submitted these comments through ASAM’s line-by-line public-comment survey on the draft Correctional Settings & Community Reentry Standards (The ASAM Criteria, Volume 3).</p>
+<p>The central message is access and continuity: standards should keep verified medications for opioid use disorder moving at intake, transfer, and release; use practitioner-neutral language for prescribers and telehealth; close methadone carve-outs that become permanent exemptions; distinguish jail/prison health-system medical directors (state law) from OTP medical directors (physician under 42 CFR §8.2); and treat peer and recovery support as complementary to MOUD—not a substitute or contingency. Naming PAs and other APPs as prescribers is how more people stay on treatment in APP-staffed facilities — a standard they cannot run is a standard that stops MOUD.</p>
+<p>Each submitted comment cites a single page and line from the official ASAM PDF, shown as capsules in the form <span class="font-data">[P63 L24]</span>. <a href="https://downloads.asam.org/sitefinity-production-blobs/docs/default-source/quality-science/correctional-criteria/correctional-settings-and-reentry-standards-for-public-comment_final-for-public-comment.pdf?sfvrsn=cc9e9d21_3" target="_blank" rel="noopener noreferrer">Download the PDF</a>. Questions go to the SAMPA Public Health Policy Committee at policy@addictionpas.org.</p>
+`.trim(),
+  },
   {
     slug: 'hrsa-rfi-psychedelic-therapies-2026',
     type: 'comment',

@@ -6,7 +6,7 @@ const CONTACT_FORM_URL = 'https://forms.gle/YqYYRVE9z2nCYdNz5';
 
 export default function Privacy() {
   return (
-    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="August 7, 2026">
+    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="August 25, 2026">
       <p>
         The Society of Addiction Medicine Physician Associates ("SAMPA," "we,"
         "us") operates <strong>www.addictionpas.org</strong>, a professional
@@ -21,6 +21,7 @@ export default function Privacy() {
         <li>You can read everything public on this site without an account, and we don't track who you are when you do.</li>
         <li>You can subscribe to <strong>SAMPA Updates</strong> by email without becoming a member (double opt-in via Brevo).</li>
         <li>If you create an account, we collect your name and email, plus any professional details you choose to add.</li>
+        <li>If you request an employer invoice, we collect member, employer, and accounts-payable details so we can prepare that invoice. Requesting an invoice does not charge a card or start membership.</li>
         <li>Active members can use a <strong>member networking directory</strong> to find each other. That directory is not public. You control whether you appear and whether peers see your email or phone.</li>
         <li>Payments are handled by Stripe — <strong>we never see or store your card number</strong>.</li>
         <li>This is a site for clinicians. <strong>We do not collect patient information of any kind.</strong></li>
@@ -88,6 +89,18 @@ export default function Privacy() {
         benefits. Stripe's handling of your data is described in{' '}
         <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">Stripe's privacy policy</a>.
       </p>
+      <h3>Employer / institutional invoices</h3>
+      <p>
+        If you use the optional invoice link on Join, we collect the member
+        name and email, optional credentials, employer or institution, accounts-
+        payable contact name and email, billing address, optional purchase-order
+        number, selected membership term, honor-system AAPA yes/no when Join
+        already asks it, and whether you want the Patron add-on. We use this
+        only to prepare a pre-payment invoice and a Stripe pay link for that
+        membership. Submitting the form does not charge a card and does not
+        activate membership. Staff are notified so a person can send the
+        invoice; the form itself does not email the member or the AP contact.
+      </p>
 
       <h3>Saved articles</h3>
       <p>
@@ -148,6 +161,7 @@ export default function Privacy() {
       <ul>
         <li>To operate your account, membership, and member benefits.</li>
         <li>To process dues and send receipts (via Stripe).</li>
+        <li>To prepare an employer invoice and pay link when you request one, and to notify SAMPA staff that the request landed.</li>
         <li>To run the member networking directory under the listing and contact choices you set.</li>
         <li>To operate membership (staff roster) for people authorized to manage memberships.</li>
         <li>To send <strong>SAMPA Updates</strong> and related organizational email — only if you've opted in (public double opt-in or member preference), and you can unsubscribe anytime.</li>

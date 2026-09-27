@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Instagram, Facebook } from 'lucide-react';
 import DonateLink from './DonateLink';
 import NewsletterSignup from './NewsletterSignup';
+import MemberLoginLink from './MemberLoginLink';
 
 export default function Footer() {
   const { pathname } = useLocation();
@@ -27,6 +28,19 @@ export default function Footer() {
             </p>
             <p className="text-white/50 max-w-sm text-xs font-data tracking-wide">
               501(c)(3) nonprofit · EIN 42-2288772
+            </p>
+            <p className="text-white/40 max-w-sm text-xs leading-relaxed">
+              Official website{' '}
+              <a
+                href="https://www.addictionpas.org"
+                className="text-white/60 hover:text-white underline underline-offset-2"
+              >
+                www.addictionpas.org
+              </a>
+              {' '}· @addictionpas.org email
+            </p>
+            <p className="text-white/40 max-w-sm text-xs leading-relaxed">
+              30 N Gould St Ste N, Sheridan, WY 82801
             </p>
             <div className="flex items-center gap-4">
               <a
@@ -55,19 +69,17 @@ export default function Footer() {
             <Link to="/news" className="hover:text-white transition-colors">News</Link>
             <Link to="/policy" className="hover:text-white transition-colors">Policy</Link>
             <Link to="/resources" className="hover:text-white transition-colors">Resources</Link>
+            <Link to="/caq" className="hover:text-white transition-colors">CAQ</Link>
             <a href="/#programs" className="hover:text-white transition-colors">Programs</a>
-            <a href="/#membership" className="hover:text-white transition-colors">Membership</a>
+            <Link to="/join" className="hover:text-white transition-colors">Membership</Link>
             <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Store</a>
             <DonateLink className="hover:text-white transition-colors">Donate</DonateLink>
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
             <a href="https://forms.gle/YqYYRVE9z2nCYdNz5" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>
-            <Link
-              to="/dashboard"
+            <MemberLoginLink
               className="px-4 py-2 rounded-full border border-white/40 text-white font-semibold hover:bg-white hover:text-text transition-colors"
-            >
-              Member Login
-            </Link>
+            />
           </div>
 
         </div>
@@ -78,6 +90,23 @@ export default function Footer() {
           </p>
           <p>
             SAMPA, Inc. is a 501(c)(3) nonprofit organization. EIN: 42-2288772.
+            SAMPA, Inc. operates{' '}
+            <a
+              href="https://www.addictionpas.org"
+              className="text-white/60 hover:text-white/80 underline underline-offset-2"
+            >
+              https://www.addictionpas.org
+            </a>{' '}
+            as its official website and @addictionpas.org email domain. The
+            shorter domain sampa.org was unavailable, so addictionpas.org is
+            used; the legal name has not changed.
+          </p>
+          <p className="mt-2">
+            Registered agent: 30 N Gould St Ste N, Sheridan, WY 82801
+            (Northwest Registered Agent Service Inc). Mailing address: PO Box 8,
+            Point Reyes Station, CA 94956.
+          </p>
+          <p className="mt-2">
             © {new Date().getFullYear()} SAMPA, Inc. All rights reserved.
           </p>
         </div>

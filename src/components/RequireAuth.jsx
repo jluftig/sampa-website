@@ -1,16 +1,15 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../lib/AuthContext';
+import { Navigate } from 'react-router-dom';
+import { useAuthGate } from './useAuthGate';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
 // Gate for member routes: any signed-in user qualifies (no role required).
 // Signed-out visitors are sent to /login and returned here afterwards.
 export default function RequireAuth({ children }) {
-  const { loading, user } = useAuth();
-  const location = useLocation();
+  const { checking, loginTo } = useAuthGate();
 
-  if (loading) {
+  if (checking) {
     return (
       <div className="relative min-h-screen bg-background text-text">
         <div className="noise-overlay pointer-events-none"></div>
@@ -23,9 +22,8 @@ export default function RequireAuth({ children }) {
     );
   }
 
-  if (!user) {
-    const next = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?next=${next}`} replace />;
+  if (loginTo) {
+    return <Navigate to={loginTo} replace />;
   }
 
   return children;

@@ -14,13 +14,18 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 4. `/join` blocks a second checkout while membership is already active — tier changes via
    Customer Portal.
 5. Webhook is the **sole** writer of membership columns on `profiles`.
+6. **Browser session survives navigation and Stripe return.** Membership webhook
+   can still activate a profile when the tab’s session dies; the member must
+   remain signed in to start a follow-on `/donate` or another checkout without
+   a new magic link. Guest donate stays public (no JWT required).
 
 ## Surfaces
 
 | Path | Job |
 |------|-----|
-| `/join` | Confirm tier/term → Checkout |
-| `/dashboard` | Status, portal, profile, directory privacy, saved articles |
+| `/join` | Honor-system AAPA yes/no (PA-path) → pick a tier and term → optional Patron → Stripe Checkout |
+| `/join/invoice` | Quiet employer-invoice side door (T38). Not a catalog, not Step 1. Sign-in required to submit so the pay link carries `supabase_user_id`. Does not charge or activate. |
+| `/dashboard` | Status, portal, profile, directory privacy, saved articles. Header **Member Login** lands here for signed-in members; editors go to `/editor` instead. A stale/held session without a profiles row is treated as signed-out (`/login`), not as “no membership yet.” Join upsell only when **this** live profile has no `membership_status`. |
 | `/donate` | Public gifts (one-time/monthly) — separate `donations` ledger |
 | `/members` | Peer directory (active members / staff), not staff roster |
 | `/editor/members` | Staff roster / pledges (member-viewer+) |
@@ -40,3 +45,82 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 3. `STRIPE_PRICE_<TIER>_<TERM>` Vercel env vars  
 
 Student/Pre-PA cap at 2-year; Legacy lifetime = active + `renews_on` null.
+
+Public display name for key `sustaining` is **Certified PA (not AAPA)**.
+Quiet secondary label **Sustaining rate** maps to the board doc. Do not present
+this card as extra support — Associate and Donate are the support paths.
+Fellow card leads with eligibility: AAPA members start here / NCCPA + AAPA,
+plus a short line that optional Patron puts a Patron badge on the directory listing.
+Stripe product / env keys stay `sustaining`.
+
+## Patron add-on (not a tier)
+
+Optional extra support on `/join` after a real tier is selected. Default **off**.
+Not a seventh card, not Platinum, not Associate, not `/donate`.
+
+- Copy: extra support + badge flex + gratitude (same sentence on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description). Directory badge is `profiles.patron`.
+- Amount: **+$25 × term years** (1yr +$25, 2yr +$50, 3yr +$75). Legacy lifetime **+$25 once**.
+  Fellow $50 + Patron $25 = $75.
+- Checkout body: `{ tier, duration, patron: true }`. Server adds a matching-term
+  Stripe `price_data` line item (recurring with the membership interval; lifetime
+  is one-time) — no new `STRIPE_PRICE_*` env required for preview.
+- Session / subscription metadata may include `patron=true`. **Never** set
+  `type=donation` on this session (that would skip the membership write).
+- Webhook writes `metadata.tier` to `membership_tier` and `metadata.patron` to
+  `profiles.patron` on **new** checkouts. Patron is never a `membership_tier`.
+- Existing members add Patron later from **`/dashboard` only** (quiet “Add
+  Patron” under Membership). Hidden if `patron` is already true or membership
+  is not active. `POST /api/add-patron` starts a **payment-mode** Checkout for
+  the current-term amount; webhook `addon=patron_upgrade` writes `patron` and
+  attaches the recurring Patron item to the existing subscription (`proration
+  none`) so renewals keep it. Does not send welcome. Not a campaign or banner.
+- Existing Sustaining accident cleanup is parked as STATUS **T36** — not this track.
+
+## Employer invoice (T38 — quiet side door)
+
+Academic / hospital PAs sometimes need a pre-payment invoice for employer
+reimbursement. This is **not** a `/membership` catalog and **not** a Step 1 in
+front of `/join`. Card payers never see a form unless they click the quiet
+“Need an invoice for your employer?” link after picking a real tier.
+
+1. `/join/invoice?tier=&term=` collects member, employer, AP, address, optional PO,
+   term, honor-system AAPA, Patron yes/no.
+2. `POST /api/create-invoice-request` (JWT required) stores
+   `membership_invoice_requests`, creates a Stripe **Payment Link** for the same
+   Price ids as `/join` checkout (+ Patron via lookup-key prices), and emails
+   **josh@** + **admin@** only (PDF + .docx attached). Do **not** email the
+   member or AP from this API.
+3. PDF is a real `%PDF` (pdf-lib Helvetica, no SVG, no webfonts). UK could not
+   open an SVG-based invoice in Aug 2026.
+4. When the link is paid, `checkout.session.completed` fires with
+   `metadata.supabase_user_id` / `tier` / `duration` / `patron` — the existing
+   webhook activates the profile. No second membership path.
+
+## Session continuity (web)
+
+Reported 2026-09-06 (Vic Holmes): mobile re-login on each screen change; laptop
+logged out after a 3-year membership Checkout before a separate $75 donate.
+
+- **Storage:** `src/lib/authStorage.js` — localStorage first; chunked `SameSite=Lax`
+  cookie mirror so Safari/ITP or an in-memory SDK fallback still has a session
+  after a full load. Production cookies use `Domain=.addictionpas.org` so apex
+  and www are not two logins.
+- **Refresh:** `src/lib/authSession.js` + `AuthContext` keep the last session
+  across a null `TOKEN_REFRESHED` / unexpected `SIGNED_OUT` and retry
+  `refreshSession` before the route guards treat the user as signed out.
+  Intentional `signOut()` is not retried. `?checkout=success` / `?status=success`
+  holds `loading` until recovery settles.
+- **Canonical origin:** `src/lib/siteUrl.js` (`requestSiteOrigin` in
+  `api/_lib/siteUrl.js`). OAuth, magic-link, Stripe success/cancel, portal
+  return, and invoice pay-link redirect use `https://www.addictionpas.org` when
+  the request is apex or www. Preview and localhost keep their own origin.
+  `vercel.json` 308s `addictionpas.org` → www. Client also replaces apex → www
+  before mount.
+- **Guest donate** is unchanged: `create-donation-session` does not call
+  `requireUser`; a JWT is attached only when one exists.
+
+Automated: `npm run test:session`. Still needs a human pass on **iOS Safari**
+(magic link → a few in-app navigations → `/join` 3-year Checkout → return
+`/dashboard?checkout=success` still signed in → `/donate` without a new link).
+
+Do not revive PR #73 (`/membership` Step 1).

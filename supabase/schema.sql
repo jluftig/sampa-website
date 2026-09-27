@@ -98,12 +98,16 @@ alter table public.profiles add column if not exists onboarded_at      timestamp
 -- legacy value and honored by is_editor()); can_view_members = READ-ONLY
 -- access to the member roster + pledge tracker (/editor/members) for the
 -- membership committee, treasurer, etc. is_board = SAMPA board member (badge
--- in the member directory; future board privileges TBD). Admins implicitly have
--- news + member-viewer capabilities; Board is independent (admin ≠ board).
+-- in the member directory; future board privileges TBD).
+-- is_membership_committee = Membership Committee (People checkbox; with
+-- is_board, gates the /dashboard Site traffic card). Admins implicitly have
+-- news + member-viewer capabilities; Board and Membership Committee are
+-- independent (admin ≠ board / committee unless checked).
 -- Flags are admin-set only (guarded by guard_profile_role).
 alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
 alter table public.profiles add column if not exists can_view_members boolean not null default false;
 alter table public.profiles add column if not exists is_board         boolean not null default false;
+alter table public.profiles add column if not exists is_membership_committee boolean not null default false;
 
 -- Member networking directory privacy (self-editable). Opt-out model:
 -- directory_visible defaults true so active members appear unless they hide.
@@ -133,6 +137,12 @@ alter table public.profiles add column if not exists cancel_at_period_end boolea
 -- Purchased term length in years (1/2/3; null = lifetime or pre-term data).
 -- Webhook-written from the subscription's price interval, shown on the roster.
 alter table public.profiles add column if not exists membership_years int;
+-- Optional extra support on top of a real membership_tier (fellow / sustaining / …).
+-- Never a tier key. Webhook-written from checkout metadata.patron. Default off.
+alter table public.profiles add column if not exists patron boolean not null default false;
+-- Honor-system AAPA membership (nullable). Self-writable — not in guard_profile_role.
+-- We do not verify with AAPA. aapa_member_id is NOT in this change.
+alter table public.profiles add column if not exists aapa_member boolean;
 
 create table if not exists public.tags (
   id          uuid primary key default gen_random_uuid(),
@@ -195,6 +205,36 @@ create unique index if not exists donations_session_uidx on public.donations (st
 create unique index if not exists donations_invoice_uidx on public.donations (stripe_invoice_id);
 create index if not exists donations_user_id_idx    on public.donations (user_id);
 create index if not exists donations_created_at_idx on public.donations (created_at desc);
+
+-- Employer invoice requests (T38). Quiet /join side door. Written ONLY by
+-- api/create-invoice-request.js (service role). Submit does not charge or
+-- activate membership. Staff may read; no client writes.
+create table if not exists public.membership_invoice_requests (
+  id                       uuid primary key default gen_random_uuid(),
+  created_at               timestamptz not null default now(),
+  user_id                  uuid references public.profiles(id) on delete set null,
+  invoice_number           text not null unique,
+  member_name              text not null,
+  member_email             text not null,
+  credentials              text,
+  employer                 text not null,
+  ap_name                  text not null,
+  ap_email                 text not null,
+  billing_address          text not null,
+  po_number                text,
+  tier                     text not null,
+  duration                 text not null,
+  aapa_member              boolean,
+  patron                   boolean not null default false,
+  amount_cents             integer not null,
+  stripe_payment_link_id   text,
+  stripe_payment_url       text,
+  status                   text not null default 'requested'
+);
+create index if not exists membership_invoice_requests_user_id_idx
+  on public.membership_invoice_requests (user_id);
+create index if not exists membership_invoice_requests_created_at_idx
+  on public.membership_invoice_requests (created_at desc);
 
 -- One-time staging for members who signed up via the pre-Stripe Google Form.
 -- Rows are matched by email at first login (see claim_member_import) to
@@ -358,6 +398,9 @@ begin
   if new.is_board is distinct from old.is_board then
     changes := changes || jsonb_build_object('is_board', jsonb_build_array(old.is_board, new.is_board));
   end if;
+  if new.is_membership_committee is distinct from old.is_membership_committee then
+    changes := changes || jsonb_build_object('is_membership_committee', jsonb_build_array(old.is_membership_committee, new.is_membership_committee));
+  end if;
   if changes <> '{}'::jsonb then
     insert into public.audit_log (actor_id, actor_email, action, target_email, detail)
     values (
@@ -392,9 +435,11 @@ begin
     or new.renews_on          is distinct from old.renews_on
     or new.cancel_at_period_end is distinct from old.cancel_at_period_end
     or new.membership_years   is distinct from old.membership_years
+    or new.patron             is distinct from old.patron
     or new.can_edit_news      is distinct from old.can_edit_news
     or new.can_view_members   is distinct from old.can_view_members
     or new.is_board           is distinct from old.is_board
+    or new.is_membership_committee is distinct from old.is_membership_committee
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;
@@ -431,6 +476,11 @@ alter table public.member_import enable row level security;
 -- management group (can_view_members) and admins may read ALL for cultivation.
 -- No write policies — only the Stripe webhook (service role) inserts.
 alter table public.donations enable row level security;
+alter table public.membership_invoice_requests enable row level security;
+
+drop policy if exists membership_invoice_requests_select on public.membership_invoice_requests;
+create policy membership_invoice_requests_select on public.membership_invoice_requests
+  for select using ( public.is_admin() or public.is_member_viewer() );
 
 drop policy if exists donations_select on public.donations;
 create policy donations_select on public.donations
@@ -788,6 +838,7 @@ returns table (
   state text,
   organizations jsonb,
   is_board boolean,
+  patron boolean,
   email text,
   phone text
 )
@@ -812,6 +863,7 @@ begin
     p.state,
     p.organizations,
     p.is_board,
+    p.patron,
     case
       when not p.share_email then null
       when coalesce(p.directory_use_account_contact, true) then p.email
@@ -894,6 +946,7 @@ returns table (
   state text,
   organizations jsonb,
   is_board boolean,
+  patron boolean,
   email text,
   phone text
 )
@@ -914,6 +967,7 @@ begin
     p.state,
     p.organizations,
     p.is_board,
+    p.patron,
     case
       when not p.share_email then null
       when coalesce(p.directory_use_account_contact, true) then p.email
@@ -981,11 +1035,13 @@ create policy device_tokens_delete on public.device_tokens
 -- Editors-only roster for the PostEditor co-author picker. SECURITY DEFINER so
 -- we never widen profiles SELECT RLS (own / admin / member-viewer only). Caller
 -- must be an editor; returns a hard allowlist of columns.
+drop function if exists public.list_news_editors();
 create or replace function public.list_news_editors()
 returns table (
   id uuid,
   full_name text,
-  email text
+  email text,
+  credentials text
 )
 language plpgsql stable security definer set search_path = public as $$
 begin
@@ -997,7 +1053,8 @@ begin
   select
     p.id,
     coalesce(nullif(btrim(p.full_name), ''), p.email) as full_name,
-    p.email
+    p.email,
+    nullif(btrim(p.credentials), '') as credentials
   from public.profiles p
   where p.role in ('editor', 'admin') or p.can_edit_news
   order by coalesce(nullif(btrim(p.full_name), ''), p.email);

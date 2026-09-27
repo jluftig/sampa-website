@@ -37,7 +37,7 @@ Repo: `jluftig/sampa-website`. Supabase ref: `xbzzawjnphpnexwfjtif`.
 
 **Write path:** STATUS first → architecture/CLAUDE if design/security changed → PARK only if mid-flight → HANDOFF only if bus-factor/accounts list changed.
 
-**Multi-machine / multi-agent:** GitHub `main` is SoR. Before executable work: `git pull`, claim a **Tasks** row in STATUS (`Owner` = `egg` \| `cursor` \| `josh`), move to **In Progress**, **commit+push immediately**, then code. No `TASKS.md`. First push wins on claim races. See STATUS **Task workflow**.
+**Multi-machine / multi-agent:** GitHub `main` is SoR. Before executable work: `git pull` if not current, **create** a **Tasks** row if none matches (next `T##`) or claim an existing Todo, set `Owner` = `egg` \| `cursor` \| `josh`, move to **In Progress**, **commit+push STATUS immediately**, then code. No `TASKS.md`. First push wins on claim races. See STATUS **Task workflow** + `.cursor/rules/status-claim-workflow.mdc`.
 
 ## Commands
 
@@ -54,13 +54,16 @@ Local: `.env.local`. Missing → blank page.
 
 **Server (Vercel only, never `VITE_`):**  
 `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY` (or Secret key),  
-optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOOK_SECRET`
+optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOOK_SECRET`,
+`VERCEL_WEB_ANALYTICS_TOKEN` (site-traffic dashboard; optional
+`VERCEL_WEB_ANALYTICS_PROJECT_ID` / `VERCEL_WEB_ANALYTICS_TEAM_ID` override
+system `VERCEL_PROJECT_ID` / `VERCEL_ORG_ID`)
 
 ## Short map
 
 | Path | Job |
 |------|-----|
-| `api/` | Checkout, portal, webhook, donate session, delete-account, send-push, share OG |
+| `api/` | Checkout, portal, webhook, donate session, invoice request, delete-account, send-push, share OG, site-traffic, newsletter-stats (`section=membership` and `section=finance` share that function) |
 | `src/lib/` | Supabase client, auth context, membership tiers, comments (shared w/ mobile) |
 | `src/pages/` | Public, member, editor, admin routes |
 | `supabase/schema.sql` | **DDL + RLS source of truth** |
@@ -76,6 +79,7 @@ Full tree + routes: **`docs/architecture/repo-map.md`**.
 
 - **RLS is the only real authz boundary.** Client checks = UX only.
 - Peer directory via **`member_directory*` RPCs only** — never open `profiles` SELECT to all members.
+- **`/editor/members` + Site traffic** share `canViewMemberRoster` (`admin` or `can_view_members`). Board / Membership Committee hats do not imply it.
 - **`guard_profile_role`** blocks self-grant of role/membership; webhook is sole membership writer.
 - Public aggregates must filter **`status='published'`** in app **and** in SQL RPCs (editors can see drafts via RLS).
 - No service_role / elevated key in client or `VITE_*`.
@@ -103,6 +107,8 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers.
 15. **Mobile shared lib:** `sampa-shared` → `src/lib`; no DOM/Vite-only code there.
 16. **No IAP** for memberships on iOS — website checkout only.
+17. **Web session continuity:** `createClient` uses `createAuthStorage()` (localStorage + first-party cookie backup, `Domain=.addictionpas.org` on prod). Auth/Stripe return URLs go through `clientSiteOrigin` / `requestSiteOrigin` (apex → `https://www.addictionpas.org`). `AuthContext` retries `refreshSession` on a transient null before treating the user as signed out. Do not revert to a bare `createClient` or `window.location.origin` for those redirects.
+18. **Member Login** (header/footer) is not a hard link to `/dashboard`. Signed-out → `/login`; signed-in editor/admin/`can_edit_news` → `/editor`; else `/dashboard`. A held/expired session that still has `user.email` but no `profiles` row is **signed-out** — send `/login`, do not show the no-membership upsell. Guarded routes keep that half-hydrated session on “Checking access…” (do not `<Navigate>` to `/login` while `user` is still set — that is the `/editor/members` ↔ `/login` reload loop). A guarded page that already had a user also holds “Checking access…” for `AUTH_NULL_HOLD_MS` after the session drops to null, unless the sign-out was intentional, so a privileged viewer is not sent to `/login` and straight back. After a real sign-in, `next=/editor/members` is honored only when `canViewMemberRoster`; otherwise `/editor` or `/dashboard`. Membership is keyed to **this** auth user’s `profiles.id`. Two Google logins = two profiles — do not look up membership by email, and do not invent a production account merge.
 
 ## Rollback (short)
 

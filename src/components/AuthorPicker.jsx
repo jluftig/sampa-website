@@ -1,9 +1,10 @@
 import React from 'react';
+import { formatAuthorByline } from '../lib/format';
 
 /**
  * Ordered co-author list for the post editor.
  * authors: [{ profileId, fullName }]
- * editors: [{ id, full_name, email }] from list_news_editors()
+ * editors: [{ id, full_name, email, credentials }] from list_news_editors()
  * First in the list is the primary author (posts.author_id).
  */
 export default function AuthorPicker({ authors, editors, onChange }) {
@@ -29,7 +30,7 @@ export default function AuthorPicker({ authors, editors, onChange }) {
     if (!id) return;
     const ed = editors.find((x) => x.id === id);
     if (!ed) return;
-    onChange([...authors, { profileId: ed.id, fullName: ed.full_name }]);
+    onChange([...authors, { profileId: ed.id, fullName: formatAuthorByline(ed.full_name, ed.credentials) }]);
   }
 
   return (
@@ -96,7 +97,7 @@ export default function AuthorPicker({ authors, editors, onChange }) {
           <option value="">+ Add co-author…</option>
           {available.map((ed) => (
             <option key={ed.id} value={ed.id}>
-              {ed.full_name}{ed.email && ed.full_name !== ed.email ? ` (${ed.email})` : ''}
+              {formatAuthorByline(ed.full_name, ed.credentials)}{ed.email && ed.full_name !== ed.email ? ` (${ed.email})` : ''}
             </option>
           ))}
         </select>

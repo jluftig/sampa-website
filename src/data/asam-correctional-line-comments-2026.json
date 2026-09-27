@@ -1,0 +1,138 @@
+[
+  {
+    "page": 11,
+    "line": 5,
+    "title": "Intake: continue verified MOUD; keep “prescriber”",
+    "guideline": "Verified medications (including medications for OUD) should be continued unless otherwise ordered by a prescriber based on documented clinical need.",
+    "comment": "Strongly support uninterrupted continuation of verified MOUD at intake. Please keep “prescriber” (not physician-only) as the authority to modify therapy, consistent with BJA/NIC jail withdrawal guidance that uses “physician” only when a physician is required and recognizes that NPs/PAs may diagnose and initiate treatment. Forced taper at booking drives post-release overdose risk and is operationally unworkable in APP-staffed jails.",
+    "revision": null
+  },
+  {
+    "page": 11,
+    "line": 8,
+    "title": "Intake: keep physician + APP pairing throughout Volume 3",
+    "guideline": "If staff are unable to verify the prescription prior to the next scheduled dose of the medication, the physician or advanced practice provider should be notified and they should make the determination of whether the medication should be continued pending verification.",
+    "comment": "Appreciate physician + APP pairing here. Please keep this inclusive throughout Volume 3 wherever medication continuation, induction, or telehealth medication management is described—do not narrow later sections to physician-only.",
+    "revision": null
+  },
+  {
+    "page": 11,
+    "line": 12,
+    "title": "Custody-assisted screening: no authority to deny MOUD",
+    "guideline": "Editorial Team asks about “well-trained and supervised custody staff conducting health screenings when health care professionals are not present.”",
+    "comment": "Custody-assisted screening may be a pragmatic bridge in understaffed jails ONLY with standardized protocols, immediate escalation pathways, and no authority to discontinue or deny MOUD. Prefer qualified health professionals whenever available. If retained, state explicitly that custody screening cannot delay verified MOUD continuation or APP/physician assessment for withdrawal.",
+    "revision": "If well-trained and supervised custody staff conduct intake health screenings when health care professionals are not present, such screening must follow standardized protocols with immediate escalation to a physician or advanced practice provider. Custody staff shall have no authority to discontinue, deny, or delay verified MOUD, and custody screening shall not delay continuation of verified addiction medications or APP/physician assessment for withdrawal. Qualified health professionals should conduct intake health screenings whenever available."
+  },
+  {
+    "page": 15,
+    "line": 2,
+    "title": "Telemedicine: practitioner-neutral, not specialty-physician-only",
+    "guideline": "…at risk for withdrawal when entering the facility. Consideration of addiction medication needs may occur through telemedicine.",
+    "comment": "Please affirm practitioner-neutral telemedicine for addiction medication assessment/management (physicians and APPs with appropriate DEA/state authority), not specialty-physician-only telehealth. Permanent SUD telehealth flexibilities with practitioner-neutral language are a core SAMPA policy priority—especially for rural and understaffed jails.",
+    "revision": "Consideration of addiction medication needs may occur through telemedicine with qualified practitioners (physicians and advanced practice providers with appropriate DEA registration and state authority)."
+  },
+  {
+    "page": 32,
+    "line": 32,
+    "title": "Reentry barrier: limited technology should not justify withholding telehealth",
+    "guideline": "Limited access to technology (eg, for telehealth or online support groups) — listed as a reentry barrier.",
+    "comment": "Good catch as a reentry barrier. Standards should push facilities/partners to solve telehealth access (device, privacy, broadband) rather than treat limited technology as an accepted reason to withhold remote MOUD/psychosocial care. Practitioner-neutral telehealth is a SAMPA priority.",
+    "revision": null
+  },
+  {
+    "page": 35,
+    "line": 14,
+    "title": "Methadone “unless unavailable locally” carve-out",
+    "guideline": "** Unless unavailable locally. (note that the standard of care for opioid withdrawal management includes treatment with buprenorphine or methadone.)",
+    "comment": "“Unless unavailable locally” risks becoming a permanent methadone carve-out. Prefer requiring facilities to ensure access via on-site OTP/medication unit, hospital/clinic pathway, community OTP partnership, or transport—consistent with ASAM correctional OUD policy and Part 8 practitioner models (PAs/NPs as OTP practitioners where state law allows; Medical Director remains a physician under §8.2).",
+    "revision": "** Facilities must ensure access to all FDA-approved medications for OUD via on-site OTP/medication unit, hospital/clinic pathway, community OTP partnership, or transport; local unavailability requires a documented access plan, not an exemption from the standard of care."
+  },
+  {
+    "page": 39,
+    "line": 16,
+    "title": "Jail medical director: state-law APP eligibility; OTP MD remains physician",
+    "guideline": "The medical director, who oversees medical care for the jail system, should be a physician with controlled substance prescribing authority.",
+    "comment": "Distinguish jail health-system medical director from OTP medical director. A SAMHSA-certified OTP medical director must be a physician (42 CFR §8.2). For jail health services, medical director eligibility varies by state law and program type—in some jurisdictions credentialed NPs and PAs may serve as medical director where state licensing rules allow (eg, Illinois permits PA/NP medical directors for certain SUD levels, but not OTP).",
+    "revision": "The medical director, who oversees medical care for the jail system, should be a licensed clinician with controlled substance prescribing authority who meets applicable state licensing and accreditation requirements; where state law permits, this may be a physician, nurse practitioner (NP), or Physician Associate/Assistant (PA). Where the jail operates or partners with a SAMHSA-certified opioid treatment program (OTP), the OTP medical director must be a physician (42 CFR §8.2). The medical director may delegate clinical MOUD responsibilities to credentialed NPs and PAs with prescriptive authority consistent with applicable federal and state law."
+  },
+  {
+    "page": 40,
+    "line": 25,
+    "title": "Jail allied health / peers: expected access alongside MOUD",
+    "guideline": "Jails may have allied health staff (eg, peer support specialists, patient navigators, non-clinical case managers, etc.) who support individuals who have SUD…",
+    "comment": "Support explicit peer/recovery support staffing. Please strengthen “may have” toward expected access to peer recovery services alongside MOUD (not as a substitute for medication).",
+    "revision": "Jails should have allied health staff (eg, peer support specialists, patient navigators, non-clinical case managers, etc.) who support individuals who have SUD and co-occurring mental health conditions alongside MOUD (not as a substitute for medication)."
+  },
+  {
+    "page": 47,
+    "line": 21,
+    "title": "Jail RSS required: MOUD not contingent on counseling/RSS",
+    "guideline": "All jails should provide RSS (eg, mutual support programs, peer support, vocational support) either directly or through formally affiliated organizations…",
+    "comment": "Strongly support required RSS/peer supports. Please clarify MOUD is not contingent on counseling/RSS participation (offer concurrently). Low-barrier medication + peers is central to PA patient advocacy in carceral and reentry settings.",
+    "revision": "All jails should provide RSS (eg, mutual support programs, peer support, vocational support) either directly or through formally affiliated organizations or providers (eg, certified peer support specialists, recovery community organizations [RCOs], recovery community centers [RCCs]) for individuals receiving SUD treatment services. RSS and counseling should be offered concurrently with MOUD and must not be a condition of receiving addiction medications."
+  },
+  {
+    "page": 52,
+    "line": 8,
+    "title": "Jail staffing: “physician supervisor” bottleneck",
+    "guideline": "The number of physicians and advanced practice providers the medical director or other physician supervisor can safely manage",
+    "comment": "“Physician supervisor” staffing-ratio language may be read to exclude PA/NP supervisory and collaborative practice models permitted under state law.",
+    "revision": "The number of physicians and advanced practice providers the medical director or other authorized clinical supervisor (physician or advanced practice provider, as applicable under state law) can safely manage"
+  },
+  {
+    "page": 63,
+    "line": 21,
+    "title": "Jail reentry resources: name PA-accessible nodes",
+    "guideline": "…home community (eg, OTPs, withdrawal management services, bridge clinics, crisis services)",
+    "comment": "Please name PA-accessible reentry nodes explicitly (bridge clinics, office-based MOUD, OTPs). Warm handoff should be to any eligible community MOUD practitioner—including PAs—not physician-appointment-only. Day-of-release gaps drive overdose mortality.",
+    "revision": "Written information on relevant treatment and recovery supportive resources in their home community (eg, OTPs, medication units, bridge clinics, office-based MOUD programs, withdrawal management services, crisis services), with warm handoff to any eligible MOUD practitioner—including physicians and advanced practice providers"
+  },
+  {
+    "page": 64,
+    "line": 30,
+    "title": "Jail release: clinically adequate bridge + timely follow-up",
+    "guideline": "Access to a clinically appropriate amount of the patient’s prescription medications, including addiction medications (if applicable), as a bridge until the patient can follow up with community MOUD practitioners (including physicians and advanced practice providers)",
+    "comment": "Strongly support bridge supply of addiction medications at release. Please specify a clinically adequate bridge (not token doses)—eg, a 1-month supply, or a monthly long-acting injectable buprenorphine (LAIB) administered prior to release—and same-week follow-up with a community MOUD practitioner (physician or APP). This is high-impact for PA-led reentry clinics.",
+    "revision": "Access to a clinically appropriate amount of the patient’s prescription medications, including addiction medications (if applicable)—eg, a 1-month supply, or a monthly long-acting injectable buprenorphine (LAIB) administered prior to release—as a bridge until the patient can follow up with community MOUD practitioners (including physicians and advanced practice providers), with that follow-up scheduled no later than 7 days post release (or sooner if clinically indicated)"
+  },
+  {
+    "page": 65,
+    "line": 1,
+    "title": "Jail methadone linkage: OTP coordination + practitioner-neutral clinicians",
+    "guideline": "Linkage to a community pharmacy or methadone treatment provider as applicable to facilitate sharing of medication records and provision of medication",
+    "comment": "Support linkage language. For methadone, specify OTP/medication-unit coordination and record-sharing so receiving practitioners (including PAs/NPs practicing in OTPs where allowed) can continue without forced interruption. Align with Part 8 practitioner definition and SAMHSA prison MOUD implementation guidance.",
+    "revision": "Linkage to a community OTP or medication unit (for methadone), pharmacy, or other MOUD provider as applicable to facilitate sharing of medication records and provision of medication, so receiving practitioners—including physicians and advanced practice providers authorized under applicable federal and state law—can continue treatment without forced interruption"
+  },
+  {
+    "page": 70,
+    "line": 3,
+    "title": "Prison medical director: same as jail (state law; OTP MD = physician)",
+    "guideline": "The medical director, who oversees medical care for the prison system should be a physician with controlled substance prescribing authority.",
+    "comment": "Same rationale as jail medical director (p.039). Distinguish prison health-system medical director from OTP medical director. A SAMHSA-certified OTP medical director must be a physician (42 CFR §8.2). For prison health services, medical director eligibility varies by state law and program type—in some jurisdictions credentialed NPs and PAs may serve as medical director where state licensing rules allow (eg, Illinois permits PA/NP medical directors for certain SUD levels, but not OTP).",
+    "revision": "The medical director, who oversees medical care for the prison system, should be a licensed clinician with controlled substance prescribing authority who meets applicable state licensing and accreditation requirements; where state law permits, this may be a physician, nurse practitioner (NP), or Physician Associate/Assistant (PA). Where the prison operates or partners with a SAMHSA-certified opioid treatment program (OTP), the OTP medical director must be a physician (42 CFR §8.2). The medical director may delegate clinical MOUD responsibilities to credentialed NPs and PAs with prescriptive authority consistent with applicable federal and state law."
+  },
+  {
+    "page": 82,
+    "line": 32,
+    "title": "Prison staffing: same “physician supervisor” concern",
+    "guideline": "The number of physicians and advanced practice providers the medical director or other physician supervisor can safely manage",
+    "comment": "Same rationale as jail staffing (p.052). “Physician supervisor” language may exclude APP supervisory and collaborative practice models permitted under state law.",
+    "revision": "The number of physicians and advanced practice providers the medical director or other authorized clinical supervisor (physician or advanced practice provider, as applicable under state law) can safely manage"
+  },
+  {
+    "page": 93,
+    "line": 1,
+    "title": "Prison methadone linkage: same as jail reentry",
+    "guideline": "Linkage to a community pharmacy or methadone treatment provider as applicable to facilitate sharing of medication records and provision of medication",
+    "comment": "Same rationale as jail methadone linkage (p.065). Support linkage language. For methadone, specify OTP/medication-unit coordination and record-sharing so receiving practitioners (including PAs/NPs practicing in OTPs where allowed) can continue without forced interruption. Align with Part 8 practitioner definition and SAMHSA prison MOUD implementation guidance.",
+    "revision": "Linkage to a community OTP or medication unit (for methadone), pharmacy, or other MOUD provider as applicable to facilitate sharing of medication records and provision of medication, so receiving practitioners—including physicians and advanced practice providers authorized under applicable federal and state law—can continue treatment without forced interruption"
+  },
+  {
+    "page": 95,
+    "line": 23,
+    "title": "Adolescents: APP consultation when specialist physician unavailable",
+    "guideline": "Addiction specialist physicians with at least 2 years of experience treating adolescents with SUD available as needed for consultation",
+    "comment": "Specialty physician consultation is valuable, but please also allow consultation from APPs with adolescent SUD competency and appropriate scope when a specialist physician is unavailable. Patients should not lose MOUD access due to specialist scarcity.",
+    "revision": "Addiction specialist physicians with at least 2 years of experience treating adolescents with SUD available as needed for consultation; where a specialist physician is unavailable, consultation may also be provided by advanced practice providers with adolescent SUD competency and appropriate scope under state law"
+  }
+]

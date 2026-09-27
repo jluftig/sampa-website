@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
+import { useAuthGate } from './useAuthGate';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -8,10 +9,10 @@ import Footer from './Footer';
 // active members and staff (editors/admins). Matches SQL is_active_member().
 // Non-members are pointed at /join; signed-out visitors go to /login.
 export default function RequireActiveMember({ children }) {
-  const { loading, user, canAccessMemberDirectory } = useAuth();
-  const location = useLocation();
+  const { canAccessMemberDirectory } = useAuth();
+  const { checking, loginTo } = useAuthGate();
 
-  if (loading) {
+  if (checking) {
     return (
       <div className="relative min-h-screen bg-background text-text">
         <div className="noise-overlay pointer-events-none"></div>
@@ -24,9 +25,8 @@ export default function RequireActiveMember({ children }) {
     );
   }
 
-  if (!user) {
-    const next = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?next=${next}`} replace />;
+  if (loginTo) {
+    return <Navigate to={loginTo} replace />;
   }
 
   if (!canAccessMemberDirectory) {

@@ -13,6 +13,7 @@ import {
   PersonPracticeSettings,
   PracticeSettingChips,
 } from '../components/PracticeSettingChips';
+import { DirectoryBadges } from '../components/DirectoryBadges';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -101,11 +102,7 @@ export default function MemberProfile() {
                   </p>
                 )}
               </div>
-              {person.is_board && (
-                <span className="px-3 py-1 rounded-full bg-primary-text/10 text-primary-text text-xs font-data font-semibold uppercase tracking-wider">
-                  Board
-                </span>
-              )}
+              <DirectoryBadges person={person} size="md" />
             </div>
 
             <PersonPracticeSettings person={person} className="mb-6" />

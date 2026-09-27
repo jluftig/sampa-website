@@ -55,9 +55,18 @@ export default function MemberProfileScreen() {
         <Text style={[styles.name, { color: theme.text }]}>
           {person.full_name || 'SAMPA member'}
         </Text>
-        {person.is_board ? (
-          <View style={[styles.badge, { backgroundColor: theme.backgroundSelected }]}>
-            <Text style={[styles.badgeText, { color: theme.tint }]}>BOARD</Text>
+        {person.is_board || person.patron ? (
+          <View style={styles.badgeRow}>
+            {person.is_board ? (
+              <View style={[styles.badge, { backgroundColor: theme.backgroundSelected }]}>
+                <Text style={[styles.badgeText, { color: theme.tint }]}>BOARD</Text>
+              </View>
+            ) : null}
+            {person.patron ? (
+              <View style={[styles.badge, { backgroundColor: theme.backgroundSelected }]}>
+                <Text style={[styles.badgeText, { color: theme.tint }]}>PATRON</Text>
+              </View>
+            ) : null}
           </View>
         ) : null}
       </View>
@@ -173,6 +182,7 @@ const styles = StyleSheet.create({
   },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.two },
   name: { fontFamily: Fonts.serifBold, fontSize: 28, lineHeight: 34, flex: 1 },
+  badgeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, maxWidth: '42%' },
   badge: { borderRadius: 999, paddingHorizontal: Spacing.two, paddingVertical: 4 },
   badgeText: { fontFamily: Fonts.mono, fontSize: 11, letterSpacing: 1 },
   credentials: { fontFamily: Fonts.medium, fontSize: 15 },

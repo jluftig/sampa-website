@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { slugify, slugifyWithDate } from '../lib/slug';
 import { draftKeyFor, readDraft, writeDraft, clearDraft, draftSignature, draftHasContent } from '../lib/draft';
-import { formatAuthorNames } from '../lib/format';
+import { formatAuthorByline, formatAuthorNames } from '../lib/format';
 import RichTextEditor from '../components/RichTextEditor';
 import AuthorPicker from '../components/AuthorPicker';
 import Navbar from '../components/Navbar';
@@ -14,7 +14,7 @@ function selfAuthor(user, profile) {
   if (!user) return null;
   return {
     profileId: user.id,
-    fullName: profile?.full_name || profile?.email || 'You',
+    fullName: formatAuthorByline(profile?.full_name || profile?.email || 'You', profile?.credentials),
   };
 }
 
@@ -125,7 +125,10 @@ export default function PostEditor() {
         const ed = byId.get(row.profile_id);
         return {
           profileId: row.profile_id,
-          fullName: ed?.full_name || row.display_name || 'Editor',
+          fullName: formatAuthorByline(
+            row.display_name || ed?.full_name || 'Editor',
+            ed?.credentials
+          ),
         };
       });
       // Legacy posts: author_id set but post_authors not yet backfilled.
@@ -133,7 +136,10 @@ export default function PostEditor() {
         const ed = byId.get(data.author_id);
         loadedAuthors = [{
           profileId: data.author_id,
-          fullName: ed?.full_name || data.author_name || 'Editor',
+          fullName: formatAuthorByline(
+            data.author_name || ed?.full_name || 'Editor',
+            ed?.credentials
+          ),
         }];
       }
       setAuthors(loadedAuthors);

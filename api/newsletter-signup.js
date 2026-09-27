@@ -1,4 +1,5 @@
 import { json } from './_lib/clients.js';
+import { requestSiteOrigin } from './_lib/siteUrl.js';
 
 // POST { email } → Brevo double opt-in → SAMPA Updates (catch-all).
 // Public endpoint — no account required. Contact is only added to the list
@@ -45,7 +46,7 @@ export async function POST(request) {
       );
     }
 
-    const origin = new URL(request.url).origin;
+    const origin = requestSiteOrigin(request);
     const redirectionUrl =
       process.env.BREVO_DOI_REDIRECT_URL || `${origin}/newsletter-confirmed`;
 
