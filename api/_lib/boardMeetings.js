@@ -127,7 +127,7 @@ const JULY_2026_AGENDA_HTML = `
 const JULY_2026_MINUTES_HTML = `
 <p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
 <p>July 2026 · Virtual · Chair: Shani Wilson, President</p>
-<p><strong>Present:</strong> Shani Wilson, Arianna Campbell, Kala Klug, Deanna Najera, Kerith Hartmann, Josh Luftig, Clarissa Peterson, Jonathan Cohen, Tasha Selinski, Harrison Keyes, Cheryl Vanderford, Olivia Sawh</p>
+<p><strong>Present:</strong> Shani Wilson, Arianna Campbell, Kala Klug, Deanna Najera, Kerith Hartmann, Josh Luftig, Clarissa Peterson, Jonathan Cohen, Tasha Seliski, Harrison Keyes, Cheryl Vanderford, Olivia Sawh</p>
 <p><strong>Absent:</strong> Jordan Vold, Megan Zawacki, Debra Newman, Kelsy Ruggiero, Edward Traverso, Eric Bergersen, Lamont Scott, Danielle Schmeling</p>
 <h3>Call to Order</h3>
 <p>President Shani Wilson called the meeting to order and welcomed returning and newly appointed Board members. Members introduced themselves and provided professional backgrounds.</p>
@@ -234,7 +234,7 @@ const MAY_2026_AGENDA_HTML = `
 const MAY_2026_MINUTES_HTML = `
 <p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
 <p>May 17, 2026 · 6:28–7:04 PM CT · Hybrid — AAPA New Orleans, Level 2, Room 278 + Virtual</p>
-<p><strong>Board present:</strong> Shani Wilson, Kala Klug, Josh Luftig, Tasha Selinski, Deanna Najera, Megan Zawacki, Arianna Campbell, Cheryl Vanderford.</p>
+<p><strong>Board present:</strong> Shani Wilson, Kala Klug, Josh Luftig, Tasha Seliski, Deanna Najera, Megan Zawacki, Arianna Campbell, Cheryl Vanderford.</p>
 <p><strong>General members present:</strong> Olivia Sawh, Ruth McDowell, Jennifer Clemente-Metz, Kari Hoover, Bernard Stuetz, Edward Traverso, Mercedes Dodge.</p>
 <p><strong>Board absent:</strong> Jordan Vold, Clarissa Peterson, Kerith Hartmann, Debra Newman, Kelsy Ruggiero. Quorum met.</p>
 <h3>Call to Order</h3>
@@ -280,7 +280,7 @@ const MARCH_2026_AGENDA_HTML = `
 const MARCH_2026_MINUTES_HTML = `
 <p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
 <p>March 11, 2026 · Virtual</p>
-<p><strong>Present:</strong> Shani Wilson, Jordan Vold, Kala Klug, Josh Luftig, Cheryl Vanderford, Tasha Selinski, Clarissa Peterson, Deanna Najera, Arianna Campbell, Kerith Hartmann, Debra Newman.</p>
+<p><strong>Present:</strong> Shani Wilson, Jordan Vold, Kala Klug, Josh Luftig, Cheryl Vanderford, Tasha Seliski, Clarissa Peterson, Deanna Najera, Arianna Campbell, Kerith Hartmann, Debra Newman.</p>
 <p><strong>Absent:</strong> Kelsy Ruggiero, Megan Zawacki.</p>
 <h3>Approval of February 2026 Minutes</h3>
 <p>February minutes were approved with edits: do not include a transcript link; remove vacation and Steelers notes; add roll call.</p>
@@ -299,7 +299,7 @@ const MARCH_2026_MINUTES_HTML = `
 <h3>Annual meeting</h3>
 <p>Annual Board meeting at AAPA, Sunday May 17, 6–7 PM.</p>
 <h3>Liaisons</h3>
-<p>Arianna Campbell approved as ASAM Liaison. Tasha Selinski approved as AMERSA Liaison.</p>
+<p>Arianna Campbell approved as ASAM Liaison. Tasha Seliski approved as AMERSA Liaison.</p>
 `.trim();
 
 const FEBRUARY_2026_AGENDA_HTML = `
@@ -354,8 +354,8 @@ const JANUARY_2026_AGENDA_HTML = `
 const JANUARY_2026_MINUTES_HTML = `
 <p><strong>SAMPA Board of Directors Meeting Minutes</strong></p>
 <p>January 14, 2026 · 7:03–8:06 PM Central · Virtual · Regular meeting</p>
-<p><strong>Present:</strong> Shani Wilson, PA-C; Kala Klug; Clarissa Peterson; Jordan Void; Josh Luftig; Megan Zawaki; Ariana (late).</p>
-<p><strong>Absent with notice:</strong> Tasha Selinski; Cheryl Vanderford (family emergency).</p>
+<p><strong>Present:</strong> Shani Wilson, PA-C; Kala Klug; Clarissa Peterson; Jordan Vold; Josh Luftig; Megan Zawacki; Ariana (late).</p>
+<p><strong>Absent with notice:</strong> Tasha Seliski; Cheryl Vanderford (family emergency).</p>
 <h3>Call to Order</h3>
 <p>The meeting ran 7:03–8:06 PM Central.</p>
 <h3>November 2025 minutes</h3>
@@ -391,8 +391,8 @@ const OCTOBER_2025_AGENDA_HTML = `
 const SEPTEMBER_2025_MINUTES_HTML = `
 <p><strong>SPAAM / early SAMPA Meeting Minutes</strong></p>
 <p>September 10, 2025 · 6:05–7:10 · Virtual</p>
-<p><strong>Present:</strong> Shani Wilson, Jordan Void, Cheryl Vanderford, Kala Klug, Clarissa Peterson, Arianna Campbell, Kerith Hartmann, Jim Anderson, Bernie.</p>
-<p><strong>Absent:</strong> Tasha Selinski.</p>
+<p><strong>Present:</strong> Shani Wilson, Jordan Vold, Cheryl Vanderford, Kala Klug, Clarissa Peterson, Arianna Campbell, Kerith Hartmann, Jim Anderson, Bernie.</p>
+<p><strong>Absent:</strong> Tasha Seliski.</p>
 <h3>Discussion</h3>
 <p>Education, membership, certification, finance, rebrand, and retreat planning.</p>
 `.trim();
