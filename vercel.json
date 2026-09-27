@@ -1,9 +1,25 @@
 {
   "redirects": [
     { "source": "/store", "destination": "https://sampastore.printful.me", "permanent": false },
-    { "source": "/merch", "destination": "https://sampastore.printful.me", "permanent": false }
+    { "source": "/merch", "destination": "https://sampastore.printful.me", "permanent": false },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "addictionpas.org" }],
+      "destination": "https://www.addictionpas.org/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "addictionpas.org" }],
+      "destination": "https://www.addictionpas.org/:path*",
+      "permanent": true
+    }
   ],
   "rewrites": [
+    {
+      "source": "/api/board-meetings",
+      "destination": "/api/newsletter-stats?section=board"
+    },
     {
       "source": "/news/:slug",
       "has": [

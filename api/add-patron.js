@@ -1,4 +1,5 @@
 import { stripeClient, supabaseAdmin, requireUser, json } from './_lib/clients.js';
+import { requestSiteOrigin } from './_lib/siteUrl.js';
 import { patronOneTimeLineItem } from './_lib/tiers.js';
 
 // POST → { url } of a Stripe Checkout session that only adds Patron.
@@ -34,7 +35,7 @@ export async function POST(request) {
         : Number(profile.membership_years) >= 1
           ? Number(profile.membership_years)
           : 1;
-    const origin = new URL(request.url).origin;
+    const origin = requestSiteOrigin(request);
     const metadata = {
       supabase_user_id: user.id,
       addon: 'patron_upgrade',

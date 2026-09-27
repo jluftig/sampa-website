@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-03 (T45 — AAPA-sparse hub copy pass, PR #97)
+**Last updated:** 2026-09-27 (T45 — board minutes leave the client bundle; server active-member gate. Draft PR #97. Do not merge.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,13 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Preview PR **#97** — do not merge. Copy pass: AAPA-sparse hub (full title, three tab labels, Records/Schedule intros, date lists). Posted bodies unchanged. Gated `is_active_member()`. |
+| T60 | Recent issues titles stay on one line | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #115. Reach drops a send whose name or subject contains TEST, or whose recipients include the Brevo test list. Those sends leave Recent issues and the campaign totals. Other parenthetical notes still come off the label. The row still truncates. Preview only. Do not merge until Website QA and Josh. |
+| T59 | Denser org dashboard + manual Relay balance | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #114. Do not merge. Follow-up to merged PR #112. Denser Membership, Finances, Reach, Impact, and roster table on `/editor/members`. Finance headline is a manual Relay balance of $2,457.00 (updated 2026-09-24), admin only via `canViewFinance`. Stripe dues stay secondary, labeled After fees. Preview only until Website QA and Josh. |
+| T57 | Internal PHP committee work tracker | cursor | 2026-09-24 | **Claimed cursor.** `/editor/policy` for the Public Health Policy Committee response sheet (seeded items, criteria, punch list). Gate is `canViewPolicyWork`: admin, `can_view_members`, or `is_board`. Not the public `/policy` archive and not parked T19 open windows. Preview only. Do not merge until Website QA and Josh. |
+| T56 | Homepage / `/editor/members` reload loop (Shani Wilson) | cursor | 2026-09-18 | **Claimed cursor (continued 2026-09-23).** PR #111 (preview only). PR #109 still stands: a president without `can_view_members` stays on the denial page, or goes to `/dashboard` once if the session dies — not back to the roster. Board / committee hats do not grant access. A viewer whose session drops to null is held on the page for `AUTH_NULL_HOLD_MS` before `/login`. Site traffic does not reload or refetch after a 403, and the card is behind the same gate. Do not merge until Website QA + Josh. |
+| T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
+| T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
+| T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Draft PR **#97**. Do not merge until independent Website QA GREEN and Josh’s screenshot yay. Agenda/minutes HTML lives in `api/_lib/boardMeetings.js` and is returned only after the server confirms a signed-in active member (or editor/admin), same rule as SQL `is_active_member()`. Client bundle must not contain the bodies. September 9, 2026 is past. April spellings follow `src/data/leadership.js` (Jordan Vold, Natasha “Tasha” Seliski). |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
@@ -74,11 +80,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
-| T44 | ASAM hub copy: pro-APP access tone (drop physician-gate) | egg | 2026-09-02 | **Merged PR #96 → Production** (`f40d7af`). Hub + comment PDF cover letter: name PAs/APPs so more people stay on MOUD. Filed 17 line comments unchanged. |
-| T43 | ASAM policy polish: source PDF link + SAMPA logo on comment PDF | cursor | 2026-09-02 | **Merged → Production.** Hub “Download the PDF” → ASAM official standards URL; SAMPA logo top-left on comment PDF. |
-| T42 | Publish ASAM correctional settings comment on `/policy` | cursor | 2026-09-02 | **Merged → Production** (direct `main`). PDF + hub detail with `[P## L##]` rounded-rect capsules; `lineComments` in seed data; alwaysApply Cursor STATUS claim rule. |
-| T41 | Josh live Patron copy (Join / invoice / dashboard / Stripe) | cursor | 2026-08-25 | **Merged PR #92 → Production** (`be1a28d`). Josh’s exact sentence (extra support + badge flex + gratitude) on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description. No SQL / email / About / Stripe Dashboard product edits. |
-| T40 | Patron directory badge + Join copy | cursor | 2026-08-25 | **Merged PR #91 → Production** (`da74fa4`). Fellow card + Patron checkbox mention the directory badge; leftover “This is not extra support.” dropped from Certified PA. Quiet `/dashboard` Add Patron for existing active non-Patron members. Peer `/members` Patron chip when `profiles.patron`. SQL applied in prod SQL Editor before merge. |
+| T58 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Merged PR #112 → Production** (`4a63917`). Four pillars on `/editor/members`. Finance is admin only. T59 tightens the layout and adds the manual Relay balance. |
+| T53 | In-site site-traffic dashboard for roster viewers | cursor | 2026-09-18 | **Merged PR #106 → Production** (`a9d7808`). Site traffic card at the top of `/editor/members`. Gate is `canViewMemberRoster` (`admin` or `can_view_members`). Tracking-start note 2026-09-16. T58 extends this card. |
+| T54 | News bylines include credentials (PA-C) | egg | 2026-09-18 | **Merged PR #107 → Production** (`8241122`). Bylines append `profiles.credentials` (`Josh Luftig, PA-C`). Live `author_name` backfilled. SQL Editor still needs `supabase/migrations/2026-09-18-list-news-editors-credentials.sql` so the picker does not strip titles on save. |
+| T52 | Vercel Web Analytics for addictionpas.org | cursor | 2026-09-16 | **Merged PR #105 → Production** (`fe234d6`). `@vercel/analytics/react` `<Analytics />` at SPA root (`src/main.jsx`). Josh already Enabled the dashboard toggle. After this deploy, visit the live site once to confirm the Analytics tab starts receiving pageviews. |
+| T51 | CMS CY 2027 PFS public comment (CMS-1848-P) on /policy | cursor | 2026-09-16 | **Merged PR #104 → Production** (`b3ade23`). Fourth public comment: CMS-1848-P / Docket CMS-2026-2377 on `/policy` + `/policy/cms-pfs-cy-2027-1848-p` with branded PDF. Josh approved after Vercel preview + bodyHtml copy trim. |
 
 ### Task workflow (agents + humans)
 
@@ -98,6 +104,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + preview).
 
+- **Vercel Web Analytics (T52, 2026-09-16)** — `@vercel/analytics` package is on production (`<Analytics />` from `@vercel/analytics/react` in `src/main.jsx`, not the Next.js `/next` import). Josh Enabled the dashboard toggle. After this deploy, visit www.addictionpas.org once to confirm pageviews appear in the Analytics tab.
 - **Marketing site** — homepage, dedicated **`/about`** page, privacy & terms
   (effective **July 11, 2026**; member directory fully disclosed; self-published
   for a small nonprofit — no outside counsel). **Ad Grants pass (2026-08-04):**
@@ -136,7 +143,12 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   `/members` via live `member_directory(..., settings_filter)`); legacy free-text
   fallback until re-save.
 - **Board capability** — `is_board` flag (People & permissions checkbox + directory
-  badge). Further board-only privileges not built yet.
+  badge). **T53 (live, PR #106):** Site traffic at the top of `/editor/members` for
+  the same people who can open the roster (`admin` or `can_view_members`).
+  **T58:** organization dashboard on that page (membership, finances, reach, and
+  impact for roster viewers; finance totals for administrators only).
+  Membership Committee is a People hat label — also check **View members** if
+  they should see the roster / Site traffic. Further board-only privileges TBD.
 - **Donations** — public `/donate` page (one-time + monthly), separate `donations`
   ledger in Supabase, donor column on the admin roster.
   **ON (2026-07-21):** restored after IRS 501(c)(3) determination for SAMPA, Inc.
@@ -146,9 +158,9 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 - **Policy hub** — public `/policy` + `/policy/:slug`. **Framing:** where SAMPA
   **will publish** its public voice for **access** to MAT/MOUD—not a “comments only”
   archive and not nav-labeled “Advocacy.” Nav stays **Policy**. Honest scope today:
-  three public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
+  four public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
   91 FR 43103; ASAM correctional settings & reentry **2026-08-31** with `[P## L##]`
-  capsules); levers table + Position/Statement
+  capsules; CMS CY 2027 PFS **CMS-1848-P** **2026-09-14**); levers table + Position/Statement
   types are **roadmap / intent** (“How we will improve access”, “What we will publish”).
   `/policy` also shows **Roadmap from our first comment** priorities seeded by that
   HHS RFI (telehealth, state/OTP alignment, workforce, payment, stigma/peers, data).
@@ -226,7 +238,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
   Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#106** (T53 Site traffic on `/editor/members` for roster viewers), **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#105** merged (**T52** Done → Production). **#104** merged (**T51** Done → Production). **#102** merged (**T49** Done → Production). **#101** merged (**T48** Done → Production). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -285,7 +297,8 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 ### Product — site polish / marketing
 
 - [x] **Night click-through fixes (T30)** — 2026-08-21. PR #80. Eric Bergersen house-voice PA; `/join` intro 10–13% / 17–20%; hash targets clear the sticky header; home SAMHSA citation is the survey name.
-- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closed, not merged (T31).
+- [x] **About / Leadership section (T23)** — 2026-08-19. PR #77. `/about#leadership` live; About nav New badge. Kerith form bio + form headshot. **T28 (2026-08-19, PR #78):** Josh Luftig bio naloxone line is more than **1.15 million** doses. **2026-08-25:** Josh confirmed the live roster is current; leftover `/leadership` draft PR #71 closed, not merged (T31). **T48 (2026-09-10, PR #101):** Kerith Hartmann ASIO officer after 2026-09-09 Board vote. **T49 (2026-09-11, PR #102):** Harrison Keyes Education Committee co-chair (DAL stays primary; Shani remains Education chair).
+
 - [x] **Jonathan Baker About card (T29)** — 2026-08-25. PR #79. Form bio + PA-C + LinkedIn live.
 - [x] **Jonathan Baker form headshot (T34)** — 2026-08-25. PR #84 → Production. House-style 640×640 form JPG at `public/leadership/jonathan-baker.jpg`.
 - [x] **Frictionless Join onboarding (T35)** — 2026-08-25. PR #85 → Production. One-page `/join`: no Step 2; Membership nav → `/join`; Certified PA (not AAPA) display name; AAPA yes/no; Patron +$25 add-on. SQL applied in prod SQL Editor before merge.
@@ -340,7 +353,7 @@ Deferred from the first directory ship:
   optional separate `/research` later. Keep distinct from News/Key Points. Do not
   shrink the hub to comments-only as corpus grows.
 - **CME content for members** — gate SELECT on existing `is_active_member()`.
-- **Board privileges** — `is_board` is badge-only today; decide board-only surfaces. **T45 (In Progress · cursor, PR #97):** `/board` agendas + minutes gated to **active members + staff** (not board-only). Confirm with Josh if that should tighten later.
+- **Board privileges** — `is_board` is a directory badge. **T53 (Done):** Site traffic card at the top of `/editor/members` for roster viewers (`admin` OR `can_view_members`; not `/dashboard`; Board/committee hats alone do not open it). **T58 (Done):** organization dashboard on that page. Membership counts and reach use the same roster gate. Finance totals are administrators only. **T45 (In Progress · cursor, draft PR #97):** member-area Board agendas and minutes. Bodies are not in the client bundle. The server route checks `is_active_member()` (active membership or editor/admin). Not board-only.
 - **In-app messaging / introductions** — not built; v1 uses mailto/tel only.
 
 ### Product — platforms
@@ -366,6 +379,12 @@ Deferred from the first directory ship:
 
 ## Recently shipped (newest first)
 
+- 2026-09-16 · **Vercel Web Analytics (T52)** — PR #105 (`fe234d6`). `@vercel/analytics/react` on the Vite SPA. Dashboard Enable already done. Visit the live site once after deploy to confirm data flows.
+- 2026-09-16 · **CMS CY 2027 PFS comment (T51)** — PR #104 (`b3ade23`). Fourth public comment on `/policy`: CMS-1848-P. Hub one-liner names CMS. PDF at `/files/policy/cms-pfs-cy-2027-1848-p.pdf`.
+- 2026-09-11 · **Harrison Keyes Education co-chair (T49)** — PR #102 (`ef9b908`). `/about#harrison-keyes` keeps DAL as primary role and lists Education co-chair. Form bio/photo kept. Shani remains Education chair.
+- 2026-09-10 · **Kerith Hartmann ASIO officer (T48)** — PR #101 (`1a18c24`). Board vote 2026-09-09. `/about#kerith-hartmann` lists her as ASIO (Advocacy, Success, and Impact Officer) with other officers. Form bio/photo kept.
+- 2026-09-06 · **Workspace domain transparency (T47)** — PR #100. Official-domain sentence + Wyoming registered-agent street (30 N Gould St Ste N, Sheridan) + mailing PO Box 8. No home street address.
+- 2026-09-06 · **Session persistence (T46)** — PR #99. Members stay signed in across mobile navigation and Stripe checkout return (cookie backup + refresh retry + www canonical URLs). Guest donate unchanged. Josh phone-testing on production.
 - 2026-09-02 · **ASAM policy polish (T43)** — “Download the PDF” links to ASAM’s official standards PDF; SAMPA logo top-left on the comment PDF.
 - 2026-09-02 · **ASAM correctional settings on `/policy` (T42)** — Public comment PDF + hub detail with `[P## L##]` rounded-rect capsules (`lineComments`). Hub one-liner names ASAM. Cursor alwaysApply STATUS claim rule.
 - 2026-08-25 · **Josh live Patron copy (T41)** — PR #92. Same sentence on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout: extra support + badge flex + gratitude. No SQL.

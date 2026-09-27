@@ -1,4 +1,5 @@
 import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
+import { requestSiteOrigin } from './_lib/siteUrl.js';
 
 // POST { amount, frequency, email? } → { url } of a Stripe Checkout session.
 // amount is in DOLLARS (we convert to cents); frequency is 'once' | 'monthly'.
@@ -55,7 +56,7 @@ export async function POST(request) {
       ...(user ? { supabase_user_id: user.id } : {}),
     };
     const email = ((body.email || user?.email) ?? '').trim() || null;
-    const origin = new URL(request.url).origin;
+    const origin = requestSiteOrigin(request);
 
     const session = await stripeClient().checkout.sessions.create({
       mode: isMonthly ? 'subscription' : 'payment',

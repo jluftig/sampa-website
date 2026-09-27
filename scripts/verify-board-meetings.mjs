@@ -1,20 +1,24 @@
 #!/usr/bin/env node
 // Assert T45 Board meeting pages: real Drive-backed seed, member gate, no Zoom secrets.
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { BOARD_HUB } from '../src/data/boardHub.js';
 import {
-  BOARD_HUB,
-  listBoardMeetings,
-  getBoardMeeting,
-  upcomingMeetings,
-  meetingsWithAgenda,
-  meetingsWithMinutes,
+  agendaListTitle,
   hasFullBody,
   hasListedDoc,
-  agendaListTitle,
-  recordListTitle,
   nextStandingBoardDates,
+  recordListTitle,
+  recordsEmptyCopy,
   secondWednesday,
-} from '../src/data/boardMeetings.js';
+} from '../src/data/boardSchedule.js';
+import {
+  getBoardMeeting,
+  listBoardMeetings,
+  meetingsWithAgenda,
+  meetingsWithMinutes,
+  publicMeeting,
+  upcomingMeetings,
+} from '../api/_lib/boardMeetings.js';
 
 const fail = (msg) => {
   console.error(`verify-board-meetings: ${msg}`);
@@ -81,8 +85,10 @@ if (!july.minutes.bodyHtml.includes('Shani Wilson')) fail('July minutes must nam
 if (!july.minutes.bodyHtml.includes('Directors-at-Large')) fail('July minutes missing ASIO motion');
 if (!july.minutes.bodyHtml.includes('Kala Klug')) fail('July minutes must credit the secretary');
 
-const sep = getBoardMeeting('2026-09');
-if (sep.status !== 'upcoming') fail('September 2026 must be upcoming');
+const asOf = new Date(2026, 8, 27, 12, 0, 0);
+const sep = getBoardMeeting('2026-09', asOf);
+if (sep.status !== 'completed') fail('September 9, 2026 must be past on 2026-09-27');
+if (sep.status === 'upcoming') fail('September 2026 must not be upcoming');
 if (!hasFullBody(sep.agenda)) fail('September 2026 agenda must have full posted HTML');
 if (sep.minutes.status !== 'not_yet') fail('September 2026 minutes are not posted yet');
 if (hasFullBody(sep.minutes)) fail('September 2026 minutes must stay empty');
@@ -128,6 +134,11 @@ if (apr.date !== '2026-04-08') fail('April 2026 date must be April 8');
 if (!apr.agenda.bodyHtml.includes('May 17, 2026')) fail('April agenda must name the hybrid next meeting');
 if (!apr.minutes.bodyHtml.includes('501(c)(3)')) fail('April minutes missing 501(c)(3) motion');
 if (!apr.minutes.bodyHtml.includes('Wyoming')) fail('April minutes must name Wyoming incorporation');
+if (!apr.minutes.bodyHtml.includes('Jordan Vold')) fail('April minutes must use Jordan Vold');
+if (!apr.minutes.bodyHtml.includes('Tasha Seliski')) fail('April minutes must use Tasha Seliski');
+if (/Jordan Void|Tasha Selinski/.test(apr.minutes.bodyHtml)) {
+  fail('April minutes still misspell Jordan Vold or Tasha Seliski');
+}
 
 const may = getBoardMeeting('2026-05');
 if (may.date !== '2026-05-17') fail('May 2026 date must be May 17');
@@ -166,8 +177,12 @@ if (leftoverOnFile.length) {
   fail(`Unexpected on_file stubs: ${leftoverOnFile.map((m) => m.slug).join(', ')}`);
 }
 
-if (upcomingMeetings(meetings)[0]?.slug !== '2026-09') {
-  fail('Next upcoming meeting should be September 2026');
+const listedOnSep27 = listBoardMeetings(asOf);
+if (upcomingMeetings(listedOnSep27, asOf).some((meeting) => meeting.slug === '2026-09')) {
+  fail('September 2026 must not be upcoming on 2026-09-27');
+}
+if (publicMeeting(sep, asOf).agenda?.bodyHtml || publicMeeting(sep, asOf).minutes?.bodyHtml) {
+  fail('Public catalog must omit agenda and minutes HTML');
 }
 if (meetingsWithAgenda(meetings).length < 9) fail('2026 agendas should all be listed');
 if (meetingsWithMinutes(meetings).length < 10) fail('Minutes list is too thin');
@@ -180,6 +195,19 @@ if (standing[0]?.date !== '2026-09-09' || standing[0]?.slug !== '2026-09') {
 }
 if (standing[1]?.date !== '2026-10-14' || standing[1]?.slug) {
   fail('Second standing date is Oct 14 2026 with no empty Oct stub');
+}
+const standingAfter = nextStandingBoardDates(2, asOf, listedOnSep27);
+if (standingAfter.some((row) => row.date === '2026-09-09')) {
+  fail('Schedule on 2026-09-27 must not list September 9 as upcoming');
+}
+if (standingAfter[0]?.date !== '2026-10-14') {
+  fail('Next standing date on 2026-09-27 is October 14, 2026');
+}
+if (recordsEmptyCopy(meetingsWithMinutes(listedOnSep27)) !== null) {
+  fail('Empty-state copy must not appear when minutes exist');
+}
+if (recordsEmptyCopy([]) !== 'No approved minutes yet.') {
+  fail('Empty minutes list uses the real empty state');
 }
 if (agendaListTitle(getBoardMeeting('2026-09')) !== 'September 9, 2026 Board Meeting') {
   fail('Agenda list titles must be date + Board Meeting');
@@ -195,7 +223,7 @@ function isoDate(d) {
   return `${y}-${m}-${day}`;
 }
 
-const seedSrc = readFileSync('src/data/boardMeetings.js', 'utf8');
+const seedSrc = readFileSync('api/_lib/boardMeetings.js', 'utf8');
 if (/zoom\.us/i.test(seedSrc) || /pwd=/i.test(seedSrc) || /passcode\s*[:=]/i.test(seedSrc) || /meeting[\s-]?id\s*[:=]/i.test(seedSrc)) {
   fail('Do not paste Zoom join URLs, meeting IDs, or passcodes');
 }
@@ -204,10 +232,11 @@ if (/coming soon/i.test(seedSrc)) fail('Do not leave coming-soon copy for listed
 const viewSrc = readFileSync('src/pages/BoardMeetingView.jsx', 'utf8');
 if (!viewSrc.includes('dangerouslySetInnerHTML')) fail('Meeting view must render seed HTML');
 if (!viewSrc.includes('DOMPurify')) fail('Meeting HTML must be sanitized');
+if (!viewSrc.includes('/api/board-meetings?slug=')) fail('Meeting view must load the body from the API');
 
 const hubSrc = readFileSync('src/pages/BoardMeetings.jsx', 'utf8');
-if (!hubSrc.includes('meetingsWithAgenda')) fail('Hub must list agendas from seed');
-if (!hubSrc.includes('meetingsWithMinutes')) fail('Hub must list minutes from seed');
+if (!hubSrc.includes('hasListedDoc')) fail('Hub must list agendas and minutes from the catalog');
+if (!hubSrc.includes('/api/board-meetings')) fail('Hub must load meetings from the API');
 if (!hubSrc.includes('role="tablist"')) fail('Hub must use the three AAPA-style tabs');
 if (!hubSrc.includes('Board Meeting Agendas') || !hubSrc.includes('Board Meeting Records') || !hubSrc.includes('Board Meeting Schedule')) {
   fail('Tab labels must be Board Meeting Agendas / Records / Schedule');
@@ -227,6 +256,15 @@ if (hubSrc.includes('SAMPA Board meeting schedule, newest first')) {
   fail('Do not keep the full-history schedule laundry list');
 }
 if (/year filter|workingYear filter/i.test(hubSrc)) fail('Do not add a year filter on the hub');
+if (/Nothing is posted yet/i.test(hubSrc) || /nothing is posted/i.test(hubSrc)) {
+  fail('Records copy must not say nothing is posted');
+}
+if (!hubSrc.includes('recordsEmptyCopy')) fail('Empty state must go through recordsEmptyCopy');
+const rowLine = hubSrc.split('\n').find((line) => line.includes('const rowClass'));
+if (!rowLine || /hover:/.test(rowLine)) fail('Non-clickable rows must not use hover affordance');
+if ((hubSrc.match(/hover:border-primary\/30/g) || []).length !== 1) {
+  fail('Hover affordance belongs on clickable rows only');
+}
 
 if (/disclaimer|executive.session|join links|on file until pasted/i.test(viewSrc)) {
   fail('Meeting detail must be title + agenda/minutes body only');
@@ -241,11 +279,36 @@ if ((appSrc.match(/deniedCopy="Board meeting agendas and minutes/g) || []).lengt
 
 const guardSrc = readFileSync('src/components/RequireActiveMember.jsx', 'utf8');
 if (!guardSrc.includes('canAccessMemberDirectory')) fail('Board reuses RequireActiveMember / is_active_member');
+if (!guardSrc.includes('useAuthGate')) fail('Member gate must keep the session-hold redirect behavior');
 
 const navSrc = readFileSync('src/components/Navbar.jsx', 'utf8');
 if ((navSrc.match(/to="\/board"/g) || []).length < 2) fail('Navbar needs desktop + mobile Board links');
 
 const dashSrc = readFileSync('src/pages/Dashboard.jsx', 'utf8');
 if (!dashSrc.includes('to="/board"')) fail('Dashboard must link Board meetings');
+
+const LEAKS = [
+  'Motion to Approve ASIO',
+  'Newsletter Sub Committee',
+  'Jordan Void (Vold)',
+  'SAMPA Annual BOD Meeting.pdf',
+];
+
+function walkSrc(dir, acc = []) {
+  for (const name of readdirSync(dir)) {
+    if (name === 'node_modules' || name === 'dist') continue;
+    const path = `${dir}/${name}`;
+    if (statSync(path).isDirectory()) walkSrc(path, acc);
+    else if (/\.(js|jsx|css|html|svg|json)$/.test(name)) acc.push(path);
+  }
+  return acc;
+}
+
+for (const file of walkSrc('src')) {
+  const text = readFileSync(file, 'utf8');
+  for (const phrase of LEAKS) {
+    if (text.includes(phrase)) fail(`${file} still contains minutes text: ${phrase}`);
+  }
+}
 
 console.log('verify-board-meetings: ok');

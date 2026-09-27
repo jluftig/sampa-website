@@ -1,33 +1,37 @@
 import React, { useState } from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
+import { decideAuthRedirect } from '../lib/authRedirect';
+import { oauthReturnPath, safeNext } from '../lib/memberHome';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-// Only follow in-app paths — never an absolute URL from the query string.
-function safeNext(raw) {
-  return raw && raw.startsWith('/') && !raw.startsWith('//') ? raw : '/dashboard';
-}
-
 export default function Login() {
-  const { user, loading, signInWithGoogle, signInWithEmail } = useAuth();
+  const { profile, sessionUsable, loading, signInWithGoogle, signInWithEmail } = useAuth();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
-  const next = safeNext(searchParams.get('next'));
+  const requestedNext = safeNext(searchParams.get('next'));
+  const oauthNext = oauthReturnPath(requestedNext);
+  const dest = decideAuthRedirect(location, { loading, sessionUsable, profile });
 
   const [email, setEmail] = useState('');
   const [linkState, setLinkState] = useState('idle'); // idle | sending | sent | error
 
-  // Already signed in? Continue to wherever they were headed.
-  if (!loading && user) {
-    return <Navigate to={next} replace />;
+  // Only continue when the session is usable (live token + profiles row).
+  // A held/expired session still has user.email — bouncing that to
+  // /dashboard is the no-membership upsell bug.
+  // dest is access-aware: /editor/members is not honored without roster access,
+  // so we cannot bounce Login ↔ RequireMemberViewer.
+  if (dest && dest !== `${location.pathname}${location.search}`) {
+    return <Navigate to={dest} replace />;
   }
 
   const sendMagicLink = async (e) => {
     e.preventDefault();
     if (!email.trim()) return;
     setLinkState('sending');
-    const { error } = await signInWithEmail(email.trim(), next);
+    const { error } = await signInWithEmail(email.trim(), oauthNext);
     setLinkState(error ? 'error' : 'sent');
   };
 
@@ -48,7 +52,7 @@ export default function Login() {
           </p>
 
           <button
-            onClick={() => signInWithGoogle(next)}
+            onClick={() => signInWithGoogle(oauthNext)}
             disabled={loading}
             className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-full border border-primary/20 font-semibold hover:bg-primary-text hover:text-white transition-colors disabled:opacity-50"
           >

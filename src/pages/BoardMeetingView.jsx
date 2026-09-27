@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { ArrowLeft, Download, FileText } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import {
-  BOARD_HUB,
-  getBoardMeeting,
-  agendaListTitle,
-  hasFullBody,
-} from '../data/boardMeetings';
+import { apiGet } from '../lib/api';
+import { BOARD_HUB } from '../data/boardHub';
+import { hasFullBody } from '../data/boardSchedule';
 import { formatDateOnly } from '../lib/format';
 
 function DocumentSection({ id, heading, doc }) {
+  if (!doc) return null;
   const safeBody = doc.bodyHtml
     ? DOMPurify.sanitize(doc.bodyHtml, { USE_PROFILES: { html: true } })
     : '';
@@ -69,18 +67,72 @@ function DocumentSection({ id, heading, doc }) {
 export default function BoardMeetingView() {
   const { slug } = useParams();
   const { hash } = useLocation();
-  const meeting = getBoardMeeting(slug);
+  const [meeting, setMeeting] = useState(undefined);
+  const [loadError, setLoadError] = useState(null);
 
   useEffect(() => {
-    if (!hash) return undefined;
+    let cancelled = false;
+    setMeeting(undefined);
+    setLoadError(null);
+    apiGet(`/api/board-meetings?slug=${encodeURIComponent(slug || '')}`)
+      .then((data) => {
+        if (!cancelled) setMeeting(data.meeting || null);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        if (err.status === 404) setMeeting(null);
+        else setLoadError(err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  useEffect(() => {
+    if (!hash || !meeting) return undefined;
     const id = hash.replace('#', '');
     const el = document.getElementById(id);
     if (!el) return undefined;
-    const t = requestAnimationFrame(() => {
+    const frame = requestAnimationFrame(() => {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-    return () => cancelAnimationFrame(t);
+    return () => cancelAnimationFrame(frame);
   }, [hash, meeting]);
+
+  if (loadError) {
+    return (
+      <div className="relative min-h-screen bg-background text-text">
+        <div className="noise-overlay pointer-events-none" />
+        <Navbar />
+        <main className="max-w-3xl mx-auto px-4 pt-32 pb-24 text-center">
+          <h1 className="text-3xl font-drama font-bold mb-4">
+            {loadError.status === 401
+              ? 'Sign in required'
+              : loadError.status === 403
+                ? 'Members only'
+                : 'Could not load this meeting'}
+          </h1>
+          <Link to="/board" className="text-primary-text font-semibold hover:underline">
+            ← {BOARD_HUB.title}
+          </Link>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (meeting === undefined) {
+    return (
+      <div className="relative min-h-screen bg-background text-text">
+        <div className="noise-overlay pointer-events-none" />
+        <Navbar />
+        <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
+          <p className="text-text/50 font-data">Loading…</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!meeting) {
     return (
@@ -113,7 +165,7 @@ export default function BoardMeetingView() {
         </Link>
 
         <h1 className="text-3xl md:text-4xl font-drama font-bold leading-tight mb-10">
-          {agendaListTitle(meeting)}
+          {meeting.agendaListTitle}
         </h1>
 
         <DocumentSection id="agenda" heading="Agenda" doc={meeting.agenda} />

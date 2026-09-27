@@ -1,16 +1,14 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { apiGet } from '../lib/api';
+import { BOARD_HUB } from '../data/boardHub';
 import {
-  BOARD_HUB,
-  listBoardMeetings,
-  meetingsWithAgenda,
-  meetingsWithMinutes,
-  agendaListTitle,
-  recordListTitle,
+  hasListedDoc,
   nextStandingBoardDates,
-} from '../data/boardMeetings';
+  recordsEmptyCopy,
+} from '../data/boardSchedule';
 
 const TABS = [
   { id: 'agendas', label: 'Board Meeting Agendas' },
@@ -20,7 +18,7 @@ const TABS = [
 
 function tabFromHash(hash) {
   const id = (hash || '').replace('#', '');
-  return TABS.some((t) => t.id === id) ? id : 'agendas';
+  return TABS.some((tab) => tab.id === id) ? id : 'agendas';
 }
 
 function CopyWithObserverEmail({ text }) {
@@ -45,27 +43,54 @@ function CopyWithObserverEmail({ text }) {
   );
 }
 
+const rowClass = 'block bg-white rounded-3xl border border-primary/10 px-6 py-5 font-bold text-text leading-snug';
+const linkClass = `${rowClass} hover:border-primary/30 hover:shadow-md transition-all`;
+
 function DateRow({ to, children }) {
-  const className =
-    'block bg-white rounded-3xl border border-primary/10 px-6 py-5 hover:border-primary/30 hover:shadow-md transition-all font-bold text-text leading-snug';
   if (to) {
     return (
-      <Link to={to} className={className}>
+      <Link to={to} className={linkClass}>
         {children}
       </Link>
     );
   }
-  return <div className={className}>{children}</div>;
+  return <div className={rowClass}>{children}</div>;
 }
 
 export default function BoardMeetings() {
-  const meetings = useMemo(() => listBoardMeetings(), []);
-  const agendas = useMemo(() => meetingsWithAgenda(meetings), [meetings]);
-  const records = useMemo(() => meetingsWithMinutes(meetings), [meetings]);
-  const standing = useMemo(() => nextStandingBoardDates(2, new Date(), meetings), [meetings]);
+  const [meetings, setMeetings] = useState(null);
+  const [loadError, setLoadError] = useState(null);
   const { hash } = useLocation();
   const navigate = useNavigate();
   const tab = tabFromHash(hash);
+
+  useEffect(() => {
+    let cancelled = false;
+    apiGet('/api/board-meetings')
+      .then((data) => {
+        if (!cancelled) setMeetings(data.meetings || []);
+      })
+      .catch((err) => {
+        if (!cancelled) setLoadError(err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const agendas = useMemo(
+    () => (meetings || []).filter((meeting) => hasListedDoc(meeting.agenda)),
+    [meetings],
+  );
+  const records = useMemo(
+    () => (meetings || []).filter((meeting) => hasListedDoc(meeting.minutes)),
+    [meetings],
+  );
+  const standing = useMemo(
+    () => nextStandingBoardDates(2, new Date(), meetings || []),
+    [meetings],
+  );
+  const recordsEmpty = recordsEmptyCopy(meetings ? records : null);
 
   const setTab = (id) => {
     navigate({ pathname: '/board', hash: id }, { replace: true });
@@ -88,30 +113,44 @@ export default function BoardMeetings() {
           aria-label="Board of Directors Meetings and Meeting Records"
           className="flex flex-wrap gap-2 mb-8"
         >
-          {TABS.map((t) => {
-            const selected = tab === t.id;
+          {TABS.map((item) => {
+            const selected = tab === item.id;
             return (
               <button
-                key={t.id}
+                key={item.id}
                 type="button"
                 role="tab"
-                id={`board-tab-${t.id}`}
+                id={`board-tab-${item.id}`}
                 aria-selected={selected}
-                aria-controls={`board-panel-${t.id}`}
-                onClick={() => setTab(t.id)}
+                aria-controls={`board-panel-${item.id}`}
+                onClick={() => setTab(item.id)}
                 className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
                   selected
                     ? 'bg-primary-text text-white'
                     : 'bg-white border border-primary/15 text-text/70 hover:border-primary/40'
                 }`}
               >
-                {t.label}
+                {item.label}
               </button>
             );
           })}
         </div>
 
-        {tab === 'agendas' && (
+        {loadError && (
+          <p className="text-text/70 mb-8" role="status">
+            {loadError.status === 401
+              ? 'Sign in required.'
+              : loadError.status === 403
+                ? 'Active membership required.'
+                : 'Board meetings could not be loaded.'}
+          </p>
+        )}
+
+        {!loadError && !meetings && (
+          <p className="text-text/50 font-data mb-8">Loading…</p>
+        )}
+
+        {tab === 'agendas' && meetings && (
           <section
             role="tabpanel"
             id="board-panel-agendas"
@@ -121,7 +160,7 @@ export default function BoardMeetings() {
               {agendas.map((meeting) => (
                 <li key={`${meeting.slug}-agenda`}>
                   <DateRow to={`/board/${meeting.slug}#agenda`}>
-                    {agendaListTitle(meeting)}
+                    {meeting.agendaListTitle}
                   </DateRow>
                 </li>
               ))}
@@ -129,7 +168,7 @@ export default function BoardMeetings() {
           </section>
         )}
 
-        {tab === 'records' && (
+        {tab === 'records' && meetings && (
           <section
             role="tabpanel"
             id="board-panel-records"
@@ -138,15 +177,19 @@ export default function BoardMeetings() {
             <p className="text-text/70 leading-relaxed max-w-3xl mb-8">
               {BOARD_HUB.recordsIntro}
             </p>
-            <ul className="space-y-4">
-              {records.map((meeting) => (
-                <li key={`${meeting.slug}-minutes`}>
-                  <DateRow to={`/board/${meeting.slug}#minutes`}>
-                    {recordListTitle(meeting)}
-                  </DateRow>
-                </li>
-              ))}
-            </ul>
+            {recordsEmpty ? (
+              <p className="text-text/60">{recordsEmpty}</p>
+            ) : (
+              <ul className="space-y-4">
+                {records.map((meeting) => (
+                  <li key={`${meeting.slug}-minutes`}>
+                    <DateRow to={`/board/${meeting.slug}#minutes`}>
+                      {meeting.recordListTitle}
+                    </DateRow>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         )}
 

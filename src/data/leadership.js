@@ -6,8 +6,9 @@
  * directory copy. Do not invent a clinical bio.
  *
  * Danielle Schmeling is not joining — do not add her.
- * ASIO, Immediate Past President, and Student DAL are vacant this year —
+ * Immediate Past President and Student DAL are vacant this year —
  * do not add unnamed or vacant cards.
+ * ASIO filled 2026-09-09 (Kerith Hartmann; Board vote).
  *
  * Add a person: append an object, give it a unique `id` and a `sort` that
  * lands where you want it (gaps of 10). Drop a headshot in
@@ -29,6 +30,7 @@ export const LEADERSHIP_PAGE = {
  * @property {string} name
  * @property {string} credentials
  * @property {string} role            Highest / primary SAMPA role
+ * @property {string} [roleExpand]    Optional expansion of an acronym role (e.g. ASIO)
  * @property {string[]} [also]        Other SAMPA roles, shown on the same card
  * @property {string|null} [location]
  * @property {boolean} [omitLocation]
@@ -101,6 +103,21 @@ export const LEADERSHIP = [
     linkedin: 'https://www.linkedin.com/in/jonathan-s-cohen-03821312',
   },
   {
+    id: 'kerith-hartmann',
+    sort: 45,
+    group: 'board',
+    name: 'Kerith Hartmann',
+    credentials: 'PA-C',
+    role: 'ASIO',
+    roleExpand: 'Advocacy, Success, and Impact Officer',
+    also: ['Certification Co-Chair', 'News and Newsletter Member'],
+    location: 'Portland, OR',
+    // Submitted Leadership Profile 2026-08-19. Keep as written.
+    // Officer title: Board vote 2026-09-09 (ASIO).
+    bio: 'Kerith Hartmann, PA-C, finds meaning in work through therapeutic relationships with patients as they navigate change. Her academic interests include teaching, interprofessional dialogue and supporting best practices. She leans on approaches based on patient-centered, trauma-informed and evidence-based care.',
+    photo: '/leadership/kerith-hartmann.jpg',
+  },
+  {
     id: 'arianna-campbell',
     sort: 50,
     group: 'board',
@@ -155,7 +172,9 @@ export const LEADERSHIP = [
     name: 'Harrison Paul Keyes',
     credentials: 'MPAS, PA-C',
     role: 'Director at large',
+    also: ['Education co-chair'],
     location: 'Boston, MA',
+    // Education Committee co-chair 2026-09-11 (Shani Wilson appointment). DAL stays primary.
     // Form bio dropped the leading H ("arrison Keyes…"); restored here.
     bio: 'Harrison Keyes currently practices in primary care at Boston Health Care for the Homeless Program. He started in the respite program following his graduation from the MGH Institute of Health Professions in 2018. During the COVID-19 pandemic, Harrison conducted the program’s COVID testing and screening endeavors across Boston’s shelter system. He now works as the medical director of the JYP clinic, overseeing the program’s largest outpatient site, offering primary care, psychiatry, Hep C and HIV care as well as addiction and recovery support. Harrison also volunteers as the Chief Delegate for the Massachusetts Association of PAs.',
     photo: '/leadership/harrison-keyes.jpg',
@@ -292,19 +311,6 @@ export const LEADERSHIP = [
     // Submitted Leadership Profile 2026-08-19. Third person from form.
     bio: 'Lamont Scott, PA-C, began his healthcare career as a U.S. Army combat medic serving in OIF/OEF. After the Army he trained at the University of Washington MEDEX PA Program in 2015. His first job was in family medicine at a community health center, and he now specializes in addiction medicine. He is a medical provider at a tribal-owned opioid treatment program and at a nonprofit low-barrier organization specializing in acute post-overdose care in downtown Seattle. He is completing doctorate studies at the University of Pittsburgh’s DMSc program, with expected completion in 2027. His research interests include the intersection of current methadone patients and their transition to LAI Buprenorphine. In his free time he enjoys traveling and trying new food spots. He is blessed to have a beautiful supportive wife and three wonderful children.',
     photo: '/leadership/lamont-scott.jpg',
-  },
-  {
-    id: 'kerith-hartmann',
-    sort: 200,
-    group: 'committees',
-    name: 'Kerith Hartmann',
-    credentials: 'PA-C',
-    role: 'Certification Co-Chair',
-    also: ['News and Newsletter Member'],
-    location: 'Portland, OR',
-    // Submitted Leadership Profile 2026-08-19. Keep as written.
-    bio: 'Kerith Hartmann, PA-C, finds meaning in work through therapeutic relationships with patients as they navigate change. Her academic interests include teaching, interprofessional dialogue and supporting best practices. She leans on approaches based on patient-centered, trauma-informed and evidence-based care.',
-    photo: '/leadership/kerith-hartmann.jpg',
   },
   {
     id: 'debra-newman',

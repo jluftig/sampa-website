@@ -8,6 +8,7 @@ import Footer from '../components/Footer';
 
 export default function EditorDashboard() {
   const { profile, signOut, isAdmin, canViewMembers } = useAuth();
+  const showRosterLink = canViewMembers;
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -88,7 +89,7 @@ export default function EditorDashboard() {
                 People & permissions
               </Link>
             )}
-            {canViewMembers && (
+            {showRosterLink && (
               <Link
                 to="/editor/members"
                 className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"

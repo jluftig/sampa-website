@@ -9,12 +9,17 @@ Gate future member-only content (e.g. CME) on `is_active_member()`
 (`membership_status='active'` OR editors/admins).
 
 **Board meetings (T45):** `/board` + `/board/:slug` use the same client gate as
-the directory (`RequireActiveMember` / `canAccessMemberDirectory`). `is_board`
-stays a directory badge — agendas and approved minutes are a **member**
-transparency surface, not a board-only working folder. Client checks are UX
-only. PDFs dropped in `public/files/board/` are reachable by URL if someone
-knows the path; do not put confidential drafts there until there is an
-authenticated file route.
+the directory (`RequireActiveMember` / `canAccessMemberDirectory` /
+`isActiveMemberAccess`). That check is UX only. Agenda and minutes HTML live in
+`api/_lib/boardMeetings.js` and are returned by `GET /api/board-meetings`
+(rewritten to `newsletter-stats?section=board`, so it does not add a 13th
+serverless function). The handler calls `requireUser` and allows the response
+only when `isActiveMemberAccess` matches SQL `is_active_member()`
+(`membership_status = 'active'` OR role `editor`/`admin`). Otherwise 401 or
+403, with `cache-control: private, no-store`. Do not import the bodies module
+from `src/`. `is_board` stays a directory badge. PDFs dropped in
+`public/files/board/` are reachable by URL if someone knows the path; do not
+put confidential drafts there until there is an authenticated file route.
 
 ## Table rules (summary)
 
@@ -35,7 +40,8 @@ authenticated file route.
 ## Privilege escalation
 
 `guard_profile_role()` BEFORE UPDATE blocks non-admins from changing `role` or any
-membership/billing column (including `patron`). Bypass only when `auth.uid() IS NULL`
+membership/billing column (including `patron`, `is_board`, `is_membership_committee`).
+Bypass only when `auth.uid() IS NULL`
 (SQL editor / service_role / Stripe webhook). `aapa_member` is self-writable (honor
 system; not verified) and is not in that guard.
 
@@ -46,6 +52,10 @@ system; not verified) and is not in that guard.
 | Endpoint | Auth |
 |----------|------|
 | checkout / portal / delete-account / create-invoice-request | Valid Supabase JWT |
+| site-traffic | Valid Supabase JWT **and** `canViewMemberRoster` (`admin` or `can_view_members`) — same as `/editor/members` |
+| newsletter-stats | Valid Supabase JWT **and** `canViewMemberRoster` — same gate. Read-only Brevo (`BREVO_API_KEY` server-side) |
+| newsletter-stats?section=membership | Valid Supabase JWT **and** `canViewMemberRoster` — same gate. Aggregates only (no emails). Same function as newsletter-stats |
+| newsletter-stats?section=finance | Valid Supabase JWT, `canViewMemberRoster`, **and** `role = admin` (`canViewFinance`). Roster viewers who are not admins get `finance_restricted`. `is_board` does not grant it. Read-only Stripe balance transactions (`STRIPE_SECRET_KEY` server-side) |
 | create-donation-session | Public; optional JWT to link profile; amount validated server-side ($1–$50k) |
 | stripe-webhook | Stripe signature (`STRIPE_WEBHOOK_SECRET`) |
 | send-push | `x-push-secret` = `PUSH_WEBHOOK_SECRET` |
