@@ -190,7 +190,7 @@ export const EXTERNAL_RESOURCES = [
     title: 'Naloxone and overdose response',
     blurb:
       'CDC materials on naloxone for patients, families, and the people around them. Pair with your local standing-order or pharmacy-access rules.',
-    href: 'https://www.cdc.gov/stopoverdose/naloxone/index.html',
+    href: 'https://www.cdc.gov/stop-overdose/caring/naloxone.html',
     external: true,
     asOf: 'Page checked September 2026',
     cta: 'Open CDC naloxone',
