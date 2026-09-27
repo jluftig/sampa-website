@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-27 (T32: `/resources` preview PR #75 refreshed onto main. Still draft. Do not merge until Website QA GREEN and Josh.)
+**Last updated:** 2026-09-27 (T32: PR #75 CDC naloxone link fixed after Website QA RED. Ready for review, not a draft. Preview only. Do not merge until Website QA GREEN and Josh. T61 survey backlog on main. #83 closed obsolete. Weekly at issue #04, Brevo campaign 30. Open preview PRs: #75, #97, #113.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -43,6 +43,7 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 
 | ID | Task | Owner | Notes |
 |----|------|-------|-------|
+| T61 | Bake Clarissa's Annual Membership Survey into the site | either | **Backlog.** Unassigned. Plan carried from closed PR #98 (T46 was reused for session persistence in #99). **Tier A** always-on profile fields: years PA, years addiction medicine, primary practice setting (existing chips), % clinical addiction time, practice model, MOUD prescribe Y/N/NA, telehealth + states, practice vs residence city/state for advocacy. **Tier B** signed-in annual survey as a year-keyed table: benefit prefs (up to 3), education topics/formats/priorities, speaking/volunteering, advocacy priorities/willingness, committee interest, networking, student engagement, leadership interest; free text stays survey responses. Job-hire leads defer to the Jobs pipeline. Do not long-term iframe the Google Form; retire it once the in-app survey works. **Phases:** Drive copy of Form, then Tier A, then in-app 2026 survey (Tier B), then retire Form. |
 | T36 | Sustaining accident cleanup (Fellow + Patron) | either | **Parked.** People who picked Sustaining thinking it was extra support. Shift those members to `fellow` + `patron` flag + Stripe item. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Rest still parked until Josh says. Not in T35 / PR #85 / T37. |
 | T19 | Policy ops tracker + open windows (hub) | either | Grill R1 locked 2026-08-10. [`PARK-policy-ops.md`](PARK-policy-ops.md) · *Resume SAMPA policy ops*. No build until Round 2. |
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
@@ -65,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T32 | Practice resources public /resources | cursor | 2026-09-27 | **Claimed cursor.** Draft PR #75 refreshed onto main. `/resources` in nav, footer, and About. Homepage Programs marks practice resources Live. SAMPA list includes the CMS CY 2027 PFS comment plus the HHS, HRSA, and ASAM comments now on `/policy`. Dates say September 2026. No bup dosing tool. CME and job board stay Coming soon. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot. |
+| T32 | Practice resources public /resources | cursor | 2026-09-27 | **Claimed cursor.** PR #75 is ready for review, not a draft. Website QA RED on the CDC naloxone card (`/stopoverdose/` 404). Card now points at `https://www.cdc.gov/stop-overdose/caring/naloxone.html`. `/resources` in nav, footer, and About. Homepage Programs marks practice resources Live. SAMPA list includes the CMS CY 2027 PFS comment plus the HHS, HRSA, and ASAM comments now on `/policy`. Dates say September 2026. No bup dosing tool. CME and job board stay Coming soon. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot. |
 | T60 | Recent issues titles stay on one line | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #115. Reach drops a send whose name or subject contains TEST, or whose recipients include the Brevo test list. Those sends leave Recent issues and the campaign totals. Other parenthetical notes still come off the label. The row still truncates. Preview only. Do not merge until Website QA and Josh. |
 | T59 | Denser org dashboard + manual Relay balance | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #114. Do not merge. Follow-up to merged PR #112. Denser Membership, Finances, Reach, Impact, and roster table on `/editor/members`. Finance headline is a manual Relay balance of $2,457.00 (updated 2026-09-24), admin only via `canViewFinance`. Stripe dues stay secondary, labeled After fees. Preview only until Website QA and Josh. |
 | T57 | Internal PHP committee work tracker | cursor | 2026-09-24 | **Claimed cursor.** `/editor/policy` for the Public Health Policy Committee response sheet (seeded items, criteria, punch list). Gate is `canViewPolicyWork`: admin, `can_view_members`, or `is_board`. Not the public `/policy` archive and not parked T19 open windows. Preview only. Do not merge until Website QA and Josh. |
@@ -73,7 +74,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | T55 | regulations.gov link on CMS CY 2027 PFS comment (CMS-1848-P) | cursor | 2026-09-18 | **Claimed cursor.** PR #108. Document ID CMS-2026-2377-0002 now links to regulations.gov on `/policy/cms-pfs-cy-2027-1848-p` (docket metadata + body citation). Follow-up to T51 / PR #104. |
 | T50 | Member Login routing for signed-in editors/members | cursor | 2026-09-14 | **Claimed cursor.** PR #103. Josh repro: stale session still shows luftig@gmail.com + no-membership `/dashboard`; Command-R signs him out and a real login reaches `/editor`. Treat held/expired session without a profiles row as signed-out (Member Login + `/dashboard` → `/login`). T46 hold-on-null kept. |
 | T45 | Board meeting agenda + minutes pages in the member-only area | cursor | 2026-09-03 | **Claimed cursor.** Mirror AAPA BOD meetings/records member setup: list of meetings, agenda docs, minutes/records. Seedable content (static module) so real PDFs can be added later. Preview PR only — do not merge until Josh reviews. |
-| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast **not** approved — needs explicit `send campaign N`. Clean draft **#19** (no TEST) — ⚠ **stale**: templates changed in PRs #66/#68/#69 (2026-08-12); rebuild from file **on Studio/Hermes** (laptop has no BREVO key). Sign-off Shani Wilson President (PR #67). Weekly #01 email copy stays here — draft PR #83 is preview-only, no production send (do not open a separate ticket). |
+| T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast sends are **not** pre-approved — each needs Josh's explicit `send campaign N`. Clean draft **#19** (no TEST) was ⚠ **stale** after templates changed in PRs #66/#68/#69 (2026-08-12); sign-off Shani Wilson President (PR #67). PR **#83** (Weekly #01 email copy) closed as obsolete on 2026-09-27. Weekly is at issue **#04** (Brevo campaign 30). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
 
 ### Done (last 5 only — older = git history)
@@ -233,12 +234,12 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   (`docs/email/templates/site-membership-launch.*` + logo `public/email/sampa-logo.png`);
   draft+test campaigns through **#5** (From info@ → `luftig@gmail.com`). CLI free-plan
   tag omit + FIRSTNAME map. Decisions locked in PARK + architecture.
-  **Import:** 120 contacts on **SAMPA Updates** (2026-08-07; no send). **Still open:** human approve first real send of Weekly #01;
-  site copy for member email is **Live** (PR #68 merged 2026-08-12).
+  **Import:** 120 contacts on **SAMPA Updates** (2026-08-07). PR **#83** (Weekly #01 email copy) closed as obsolete on 2026-09-27. Weekly is at issue **#04** (Brevo campaign 30).
+  Site copy for member email is **Live** (PR #68 merged 2026-08-12).
   Sticky: [`PARK-brevo-email.md`](PARK-brevo-email.md). How:
   [`architecture/email-brevo.md`](architecture/email-brevo.md).
-  Resume: *Resume SAMPA Brevo email*. **Draft+test only** — no mass send without explicit Josh.
-- **Leftover preview PRs (2026-08-25 review)** — still open, do not merge until Josh reviews: **#106** (T53 Site traffic on `/editor/members` for roster viewers), **#75** (T32 `/resources`), **#83** (T3 Weekly #01 email copy; no production send). **#105** merged (**T52** Done → Production). **#104** merged (**T51** Done → Production). **#102** merged (**T49** Done → Production). **#101** merged (**T48** Done → Production). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
+  Resume: *Resume SAMPA Brevo email*. No mass send without explicit Josh.
+- **Open preview PRs** — **#75** (T32 `/resources`, being finished), **#97** (T45 Board meeting agenda + minutes, being finished), **#113** (open draft, policy committee tracker). **#83** closed as obsolete on 2026-09-27. **#106** merged (**T53** Done → Production). **#105** merged (**T52** Done → Production). **#104** merged (**T51** Done → Production). **#102** merged (**T49** Done → Production). **#101** merged (**T48** Done → Production). **#55**, **#57**, and **#58** closed unmerged 2026-08-25 (Josh; do not reopen unless Josh asks). **#92** merged (**T41** Done → Production). **#91** merged (**T40** Done → Production). **#90** merged (**T39** Done → Production). **#89** merged (**T38** Done → Production). **#73** closed, not merged (**T33** stays killed). **#84** merged (**T34** Done → Production). **#86** merged (**T37** Done → Production). **#85** merged (**T35** Done → Production; Sustaining-card follow-up on main). **#79** merged (**T29** Done). **#71** and **#63** closed, not merged (**T31** Done). Live site has `/about` (Josh intro; no in-page leadership jump) + `/about#leadership` roster and `/join`; no `/leadership`, `/resources`, or `/membership` routes on `main`.
 
 ---
 
@@ -270,7 +271,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   / [`PARK-security-review.md`](PARK-security-review.md).
 - [ ] **Email / Brevo (T3 · egg in progress)** — **infra done** 2026-08-07 (API key, domain
   auth SPF/DKIM/DMARC + `em` brand, info@ From, Updates+Test lists, Weekly #01 draft+test).
-  **Still need:** human first production send; site copy flip In development → **Live**
+  PR **#83** closed as obsolete on 2026-09-27. Weekly is at issue **#04** (Brevo campaign 30). Site copy flip In development → **Live**
   done in PR #68 (launch day 2026-08-12). Later: member sync. Public DOI signup UI shipped (T5) — activate
   with DOI template + Vercel `BREVO_*`. See [`PARK-brevo-email.md`](PARK-brevo-email.md).
   **Also live:** Supabase auth SMTP via `no-reply@addictionpas.org` (separate from campaigns).
@@ -305,7 +306,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **AAPA status on staff members list (T37)** — 2026-08-25. PR #86 → Production. Honor-system AAPA Yes / No / — on `/editor/members` only.
 - [ ] **Sustaining accident cleanup (T36)** — parked. Fellow + `patron` + Stripe item for people who picked Sustaining as extra support. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Do not run the rest until Josh says.
 - [x] **About intro copy + drop leadership jump (T39)** — 2026-08-25. PR #90 → Production. Josh's two-sentence intro on `/about`; in-page Meet 2026–27 leadership jump removed. Roster unchanged.
-- [ ] **Practice resources `/resources` (T32)** — preview PR #75 refreshed 2026-09-27 (nav, footer, homepage Live, About link, CMS CY 2027 PFS plus the other live policy comments). Still draft. Do not merge until independent Website QA GREEN and Josh's screenshot.
+- [ ] **Practice resources `/resources` (T32)** — PR #75 is ready for review, not a draft. CDC naloxone link fixed 2026-09-27 after Website QA RED. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot.
 - [x] **Employer invoice side door on `/join` (T38)** — 2026-08-25. PR #89 → Production. Quiet link on live one-page `/join` after they pick a tier. SQL applied before merge. #73 stays killed.
 - [x] **Patron directory badge + Join copy (T40)** — 2026-08-25. PR #91 → Production. Fellow / checkbox / invoice copy + `/members` Patron badge + quiet dashboard Add Patron. SQL applied before merge.
 - [x] **Josh live Patron copy (T41)** — 2026-08-25. PR #92 → Production. Josh’s exact sentence (extra support + badge flex + gratitude) on Join, invoice, dashboard Add Patron, and Stripe Checkout description.
@@ -405,8 +406,7 @@ Deferred from the first directory ship:
 - 2026-08-07 · **Brevo domain + campaign path (T3 partial)** — `addictionpas.org`
   authenticated in Brevo (SPF + domain DKIM + DMARC; branded `em.` links); senders
   `info@` + `admin@` active; catch-all **SAMPA Updates** + Test; **SAMPA Weekly
-  Issue 01** branded HTML tested From info@ (draft only). Full track still In Progress
-  until Landing A + first real send — see Tasks **T3** + [`PARK-brevo-email.md`](PARK-brevo-email.md).
+  Issue 01** branded HTML tested From info@ (draft only, 2026-08-07). PR **#83** closed as obsolete on 2026-09-27; Weekly is at issue **#04** (Brevo campaign 30) — see Tasks **T3** + [`PARK-brevo-email.md`](PARK-brevo-email.md).
 - 2026-08-07 · **Practice settings on directory profiles** — curated multi-select
   per employer (`practice_settings` in org jsonb); soft color chips on web +
   mobile directory; OR-filter on `/members`; Other + optional note; legacy
