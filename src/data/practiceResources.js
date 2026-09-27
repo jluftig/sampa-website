@@ -1,10 +1,3 @@
-/**
- * First public Practice resources page — curated links, not protocols.
- * Page: /resources. Keep SAMPA vs external labels honest. Do not add the
- * buprenorphine dosing / COWS calculator (clinical hold on
- * feature/bup-dosing-tool). Do not claim CME.
- */
-
 export const RESOURCES_HUB = {
   eyebrow: 'Practice resources',
   oneLiner:
@@ -17,22 +10,6 @@ export const RESOURCES_HUB = {
     'This page collects public materials. It is not medical advice, not a treatment protocol, and does not offer CME credit. Read the source, check the date, and confirm FDA labeling plus your state practice rules before you prescribe. External sites are not SAMPA publications. SAMPA, Inc. is a 501(c)(3) public charity (EIN 42-2288772).',
 };
 
-/** @typedef {'sampa' | 'external'} ResourceOrigin */
-
-/**
- * @typedef {object} PracticeResource
- * @property {string} id
- * @property {ResourceOrigin} origin
- * @property {string} title
- * @property {string} blurb
- * @property {string} href
- * @property {boolean} [external]
- * @property {string} [source]
- * @property {string} [asOf]
- * @property {string} [cta]
- */
-
-/** SAMPA surfaces — fresh words, not homepage paste. */
 export const SAMPA_RESOURCES = [
   {
     id: 'news',
@@ -121,10 +98,6 @@ export const SAMPA_RESOURCES = [
   },
 ];
 
-/**
- * Established public sources. Link the landing page, not a dosing calculator.
- * Version notes are the publisher’s, not SAMPA clinical endorsement.
- */
 export const EXTERNAL_RESOURCES = [
   {
     id: 'tip-63',
@@ -260,7 +233,6 @@ export const EXTERNAL_RESOURCES = [
   },
 ];
 
-/** Ordered path for a PA new to addiction medicine. */
 export const START_STEPS = [
   {
     n: '01',
