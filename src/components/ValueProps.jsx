@@ -31,6 +31,13 @@ const live = [
     href: '/#updates-signup',
     cta: 'Get SAMPA Updates',
   },
+  {
+    icon: BookOpen,
+    title: 'Practice resources',
+    desc: 'A first set of links you can open today — SAMPA news and Key Points, our comments on MOUD access, and public clinical sources from SAMHSA, CDC, FDA, and ASAM.',
+    href: '/resources',
+    cta: 'Open practice resources',
+  },
 ];
 
 const building = [
@@ -41,11 +48,6 @@ const building = [
     href: '/caq',
     cta: 'Read the CAQ page',
     badge: 'In development',
-  },
-  {
-    icon: BookOpen,
-    title: 'Practice resources',
-    desc: 'Practical treatment guidance—current best practices you can bring to the patients in front of you.',
   },
   {
     icon: GraduationCap,

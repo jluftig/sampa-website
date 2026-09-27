@@ -26,6 +26,7 @@ const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const BoardMeetings = lazy(() => import('./pages/BoardMeetings'));
 const BoardMeetingView = lazy(() => import('./pages/BoardMeetingView'));
 const About = lazy(() => import('./pages/About'));
+const Resources = lazy(() => import('./pages/Resources'));
 const Caq = lazy(() => import('./pages/Caq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const NewsletterConfirmed = lazy(() => import('./pages/NewsletterConfirmed'));
@@ -56,6 +57,7 @@ function App() {
           <Route path="/join/invoice" element={<JoinInvoice />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/about" element={<About />} />
+          <Route path="/resources" element={<Resources />} />
           <Route path="/caq" element={<Caq />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/newsletter-confirmed" element={<NewsletterConfirmed />} />

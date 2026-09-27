@@ -69,9 +69,10 @@ src/
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
+    practiceResources.js    First public Practice resources page seed (`/resources`)
     boardMeetings.js        Member-area Board schedule / agenda / minutes seed
     leadership.js           About-page leadership roster (preview; not a CMS)
-  pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
+  pages/                    Home, About, Resources, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,
                             MemberProfile, BoardMeetings, BoardMeetingView, Privacy, Terms,
                             EditorDashboard, PostEditor,
@@ -103,7 +104,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about` (`#leadership`), `/caq`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
