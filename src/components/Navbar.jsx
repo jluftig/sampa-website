@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useAuth } from '../lib/AuthContext';
+import AnnouncementBanner from './AnnouncementBanner';
 import DonateLink from './DonateLink';
 import MemberLoginLink from './MemberLoginLink';
 
@@ -12,14 +13,16 @@ export default function Navbar() {
 
   useEffect(() => {
     gsap.fromTo(navRef.current,
-      { y: -100, opacity: 0 },
+      { y: '-100%', opacity: 0 },
       { y: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.2 }
     );
   }, []);
 
   return (
-    <nav ref={navRef} className="fixed top-6 left-0 right-0 z-50 px-4 md:px-8 flex flex-col items-center w-full max-w-7xl mx-auto">
-      <div className="bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-primary/10 px-6 py-3 flex items-center justify-between w-full">
+    <div ref={navRef} className="fixed top-0 inset-x-0 z-[60] flex flex-col pointer-events-none">
+      <AnnouncementBanner />
+      <div className="px-4 md:px-8 pt-6 flex flex-col items-center w-full max-w-7xl mx-auto">
+      <nav className="pointer-events-auto bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-primary/10 px-6 py-3 flex items-center justify-between w-full">
         <div className="flex items-center gap-3">
           <Link to="/">
             <img src="/SAMPA_no_bg.svg" alt="SAMPA Logo" className="h-10 object-contain" />
@@ -79,11 +82,11 @@ export default function Navbar() {
             )}
           </svg>
         </button>
-      </div>
+      </nav>
 
       {/* Mobile/Tablet Dropdown Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
+        <div className="pointer-events-auto lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
           <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
             News
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
@@ -125,6 +128,7 @@ export default function Navbar() {
           </div>
         </div>
       )}
-    </nav>
+      </div>
+    </div>
   );
 }

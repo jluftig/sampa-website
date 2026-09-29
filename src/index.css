@@ -8,7 +8,8 @@
        /#programs, /#membership, person cards) need this much air or the H1 sits
        under the bar. scroll-padding is honored by native hash jumps and by
        scrollIntoView in current browsers. */
-    scroll-padding-top: 8rem;
+    /* --announcement-h is 0 until the banner measures itself. */
+    scroll-padding-top: calc(8rem + var(--announcement-h, 0px));
   }
 
   body {
@@ -26,6 +27,20 @@
   .font-data {
     @apply font-mono;
   }
+}
+
+/* Unlayered so these beat Tailwind pt-32 / pt-40 / pt-24. The banner
+   sets --announcement-h; adding it keeps the gap under the floating pill. */
+html[data-announcement] main[class~="pt-32"] {
+  padding-top: calc(8rem + var(--announcement-h, 0px));
+}
+
+html[data-announcement] main[class~="pt-40"] {
+  padding-top: calc(10rem + var(--announcement-h, 0px));
+}
+
+html[data-announcement] .site-hero {
+  padding-top: calc(6rem + var(--announcement-h, 0px));
 }
 
 @layer utilities {
