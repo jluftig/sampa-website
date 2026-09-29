@@ -16,7 +16,7 @@ function readDismissed() {
       if (sessionStorage.getItem(storageKey(item.id)) === '1') ids.add(item.id);
     }
   } catch {
-    // Private mode can throw. The banner still shows.
+    /* ignore */
   }
   return ids;
 }
@@ -58,7 +58,7 @@ export default function AnnouncementBanner() {
     try {
       sessionStorage.setItem(storageKey(announcement.id), '1');
     } catch {
-      // Still hide it for this view if storage is blocked.
+      /* ignore */
     }
     setDismissed((prev) => {
       const next = new Set(prev);

@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-// Re-read the clock so a tab left open past the deadline drops the banner
-// without a reload. Visibility covers a laptop that slept across it.
 export function useAnnouncementNow() {
   const [now, setNow] = useState(() => Date.now());
 

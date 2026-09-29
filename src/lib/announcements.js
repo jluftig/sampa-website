@@ -1,14 +1,5 @@
-// Site-wide announcements. Add a row to reuse this for the next one.
-//
-// endsAt is an instant with an explicit offset. America/Los_Angeles is
-// UTC-7 (PDT) through the first Sunday in November and UTC-8 (PST) after.
-// The browser compares that instant to its clock, so a cached bundle still
-// expires on time. Do not gate this on a rebuild or an HTML cache header.
-
 export const GIVEAWAY_ID = 'psych-congress-pa-institute-2026';
 
-// Active through 2026-10-01 23:59 America/Los_Angeles. The next local
-// instant (2026-10-02 00:00 PDT) is closed.
 export const GIVEAWAY_ENDS_AT = '2026-10-01T23:59:59.999-07:00';
 
 export const ANNOUNCEMENTS = [

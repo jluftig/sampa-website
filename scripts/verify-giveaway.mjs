@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// Giveaway banner expiry. The date constant is the switch.
 import { readFileSync, statSync } from 'node:fs';
 import {
   ANNOUNCEMENTS,
@@ -24,7 +23,6 @@ if (!giveaway.message.includes('Orlando') || !giveaway.message.includes('Oct 1')
 }
 if (giveaway.linkLabel !== 'How to enter') fail('link label must be How to enter');
 
-// 2026-10-01 23:59:59.999 America/Los_Angeles (PDT, UTC-7).
 if (new Date(GIVEAWAY_ENDS_AT).toISOString() !== '2026-10-02T06:59:59.999Z') {
   fail(`endsAt parsed as ${new Date(GIVEAWAY_ENDS_AT).toISOString()}`);
 }

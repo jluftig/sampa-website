@@ -4,11 +4,6 @@
 
 @layer base {
   html {
-    /* Floating nav is `fixed top-6` with a ~66px pill. Hash targets (#leadership,
-       /#programs, /#membership, person cards) need this much air or the H1 sits
-       under the bar. scroll-padding is honored by native hash jumps and by
-       scrollIntoView in current browsers. */
-    /* --announcement-h is 0 until the banner measures itself. */
     scroll-padding-top: calc(8rem + var(--announcement-h, 0px));
   }
 
@@ -29,8 +24,6 @@
   }
 }
 
-/* Unlayered so these beat Tailwind pt-32 / pt-40 / pt-24. The banner
-   sets --announcement-h; adding it keeps the gap under the floating pill. */
 html[data-announcement] main[class~="pt-32"] {
   padding-top: calc(8rem + var(--announcement-h, 0px));
 }

@@ -5,7 +5,6 @@ import Footer from '../components/Footer';
 import { GIVEAWAY_ID, announcementById, isAnnouncementOpen } from '../lib/announcements';
 import { useAnnouncementNow } from '../lib/useAnnouncementNow';
 
-// Same account the footer already links.
 const SAMPA_INSTAGRAM = 'https://www.instagram.com/societyofaddictionmedicinepas/';
 const MINDSET_INSTAGRAM = 'https://www.instagram.com/pa_mindsetmatters/';
 
