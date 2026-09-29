@@ -157,7 +157,7 @@ test('seed file for 2026-09-29 loads with the published source URLs', () => {
       'https://jamanetwork.com/journals/jamainternalmedicine/article-abstract/2854606',
       'https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854496',
       'https://today.ucsd.edu/story/one-in-nine-older-adults-who-use-cannabis-meet-criteria-for-cannabis-use-disorder',
-      'https://www.aha.org/news/headline/2026-09-28-hrsa-awards-nearly-90-million-addiction-recovery-services-rural-areas',
+      'https://www.hrsa.gov/about/news/press-releases/expand-addiction-treatment-and-recovery-rural-communities',
       'https://www.cdc.gov/mmwr/volumes/75/wr/mm7533a2.htm',
     ],
   );
