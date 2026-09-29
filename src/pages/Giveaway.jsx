@@ -33,7 +33,7 @@ export default function Giveaway() {
 
 function GiveawayEnded() {
   return (
-    <header className="max-w-xl">
+    <header className="scroll-clear-header max-w-xl">
       <h1 className="text-3xl md:text-5xl font-drama font-bold leading-tight mb-4">
         This giveaway has ended
       </h1>
@@ -50,7 +50,7 @@ function GiveawayEnded() {
 function GiveawayOpen() {
   return (
     <>
-      <header className="mb-10">
+      <header className="scroll-clear-header mb-8">
         <div className="text-primary-text font-bold font-data tracking-widest text-xs mb-4 uppercase">
           The Podcast Mindset Matters × SAMPA
         </div>
@@ -63,17 +63,42 @@ function GiveawayOpen() {
         </p>
       </header>
 
+      <a
+        href="https://www.instagram.com/reel/DdwVzwmABiw/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="scroll-clear-header mb-10 flex items-center gap-4 rounded-3xl border border-[#8B1FC0]/25 bg-white p-5 shadow-md hover:border-[#8B1FC0]/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8B1FC0] focus-visible:ring-offset-2"
+      >
+        <span
+          aria-hidden="true"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#0E6B62,#8B1FC0)] text-white"
+        >
+          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5.14v13.72L19.5 12 8 5.14z" />
+          </svg>
+        </span>
+        <span className="min-w-0">
+          <span className="block text-base md:text-lg font-bold text-text leading-snug">
+            Watch the giveaway reel & enter on Instagram
+          </span>
+          <span className="mt-1 block text-sm text-text/70 leading-relaxed">
+            Mindset Matters × SAMPA giveaway reel · @pa_mindsetmatters
+          </span>
+        </span>
+      </a>
+
       <img
+        id="giveaway-flyer"
         src={FLYER_SRC}
         width={FLYER_WIDTH}
         height={FLYER_HEIGHT}
         alt="Psych Congress PA Institute Giveaway flyer from The Podcast Mindset Matters and SAMPA. Win a free conference registration in Orlando, December 4–6, 2026. Follow, like, tag, and comment on Instagram to enter. Giveaway ends October 1. Registration only; travel and lodging not included."
-        className="w-full max-w-md mx-auto rounded-3xl border border-primary/10 shadow-sm mb-10"
+        className="scroll-clear-header w-full max-w-md mx-auto rounded-3xl border border-primary/10 shadow-sm mb-10"
       />
 
       <section
         aria-labelledby="how-to-enter"
-        className="bg-white rounded-4xl border border-primary/10 shadow-sm p-8 md:p-10"
+        className="scroll-clear-header bg-white rounded-4xl border border-primary/10 shadow-sm p-8 md:p-10"
       >
         <h2 id="how-to-enter" className="text-2xl md:text-3xl font-drama font-bold mb-6">
           How to enter

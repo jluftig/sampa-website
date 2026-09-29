@@ -70,27 +70,28 @@ export default function AnnouncementBanner() {
   return (
     <div
       ref={ref}
-      className="pointer-events-auto bg-primary-text text-white"
+      className="pointer-events-auto bg-[linear-gradient(105deg,#0E6B62_0%,#8B1FC0_100%)] text-white"
       role="region"
       aria-label="Site announcement"
     >
-      <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-start gap-3">
-        <p className="flex-1 min-w-0 text-sm leading-snug">
-          {announcement.message}{' '}
-          <Link
-            to={announcement.href}
-            className="font-semibold underline underline-offset-2 whitespace-nowrap hover:text-white/80"
-          >
-            {announcement.linkLabel}
-          </Link>
+      <div className="max-w-7xl mx-auto px-4 py-3 md:py-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <p className="basis-full md:basis-auto md:flex-1 min-w-0 flex items-start gap-2 text-sm font-semibold leading-snug md:text-base md:font-bold">
+          <span aria-hidden="true" className="shrink-0 text-lg leading-none mt-0.5">🎁</span>
+          <span>{announcement.message}</span>
         </p>
+        <Link
+          to={announcement.href}
+          className="inline-flex min-h-10 items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-bold text-[#8B1FC0] shadow-sm hover:bg-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+        >
+          {announcement.linkLabel}
+        </Link>
         <button
           type="button"
           onClick={dismiss}
-          className="shrink-0 -mr-1 p-1 rounded-full text-white/80 hover:text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="ml-auto md:ml-0 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
           aria-label="Dismiss announcement"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
