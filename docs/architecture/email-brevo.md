@@ -133,6 +133,12 @@ Supabase profiles (opt-in members)
 - **Public signup (T5):** footer form → `api/newsletter-signup.js` → Brevo DOI →
   **SAMPA Updates** only. Confirm page: `/newsletter-confirmed`.
   Env: `BREVO_API_KEY`, `BREVO_LIST_UPDATES`, `BREVO_DOI_TEMPLATE_ID`.
+- **Daily roundup signup (T64):** form on `/news/daily` posts `list: "daily"`.
+  The handler maps that string to `BREVO_LIST_DAILY_NEWS` (the list does not exist yet).
+  Optional template `BREVO_DOI_TEMPLATE_ID_DAILY`, otherwise `BREVO_DOI_TEMPLATE_ID`.
+  Confirm page: `/newsletter-confirmed?list=daily`. Attribute `SOURCE=daily_roundup_signup`.
+  Unset list env returns 503 with "Daily email signup is coming soon." A missing `list`
+  field still writes SAMPA Updates only. The client cannot send a numeric list id.
 - Privacy: names **SAMPA Updates** + Brevo; link `/privacy`.
 - Later: member `newsletter_opt_in` sync; multi-topic prefs / preference center. 
 

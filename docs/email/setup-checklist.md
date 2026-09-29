@@ -91,6 +91,21 @@ BREVO_DOI_TEMPLATE_ID=13            # SAMPA Updates DOI (created 2026-08-07)
 - Members: verified via site auth (dashboard opt-in → sync later).  
 - Legacy Google Group: **Landing A** — see `google-group-import.md`.
 
+### Daily roundup list (T64)
+
+The `/news/daily` form posts `list: "daily"`. The server maps that to
+`BREVO_LIST_DAILY_NEWS`. Josh creates the Brevo list. It does not exist yet.
+Until the env var is set, the form gets "Daily email signup is coming soon. Please check back."
+
+```bash
+BREVO_LIST_DAILY_NEWS=             # numeric id, after the list exists
+# BREVO_DOI_TEMPLATE_ID_DAILY=     # optional; falls back to BREVO_DOI_TEMPLATE_ID
+```
+
+Confirm redirect is `${origin}/newsletter-confirmed?list=daily`.
+Attribute `SOURCE=daily_roundup_signup`. Do not point the SAMPA Updates DOI
+redirect at that query string. The footer form omits `list` and stays on Updates.
+
 ## 6. Smoke test
 
 ```bash
