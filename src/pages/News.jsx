@@ -52,6 +52,13 @@ export default function News() {
           </Link>
         </header>
 
+        <Link
+          to="/news/daily"
+          className="mb-12 block rounded-3xl bg-primary-text text-white px-6 py-5 md:px-8 text-lg md:text-xl font-semibold hover:opacity-95"
+        >
+          Today’s Daily Roundup →
+        </Link>
+
         {loading && (
           <p className="text-center text-text/50 font-data">Loading…</p>
         )}

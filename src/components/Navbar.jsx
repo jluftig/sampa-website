@@ -35,6 +35,9 @@ export default function Navbar() {
             News
             <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
+          <Link to="/news/daily" className="hover:text-primary-text transition-colors">
+            Daily Roundup
+          </Link>
           <Link to="/policy" className="hover:text-primary-text transition-colors">
             Policy
             <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
@@ -90,6 +93,9 @@ export default function Navbar() {
           <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
             News
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
+          <Link to="/news/daily" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+            Daily Roundup
           </Link>
           <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
             Policy

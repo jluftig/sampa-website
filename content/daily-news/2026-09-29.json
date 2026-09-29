@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-29",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Medetomidine withdrawal is driving ICU-level care",
+      "outlet": "JAMA Internal Medicine",
+      "date": "Sep 28",
+      "summary": "At two Penn hospitals, use of dexmedetomidine among inpatients with opioid use disorder rose from about 6% to about 20% after mid-2024. It reached about 32% in the last quarter they looked at. Hospitalist, ED, and consult teams should plan for alpha-2 withdrawal protocols and ICU beds.",
+      "url": "https://jamanetwork.com/journals/jamainternalmedicine/article-abstract/2854606"
+    },
+    {
+      "headline": "EHR nondrug pain pathway cuts opioids after surgery",
+      "outlet": "JAMA Network Open",
+      "date": "Sep 28",
+      "summary": "The NOHARM trial tested an EHR-embedded package of patient education, clinician decision support, and self-management tools at six surgical centers. It reduced in-hospital opioid use and opioid prescriptions at discharge. Pain interference, physical function, and safety outcomes did not get worse.",
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854496"
+    },
+    {
+      "headline": "One in nine older adults who use cannabis meet criteria for cannabis use disorder",
+      "outlet": "UC San Diego",
+      "date": "Sep 28",
+      "summary": "A study in Addiction found that 11.4% of U.S. adults 65 and older who used cannabis in the past year met DSM-5 criteria for cannabis use disorder. Most cases were mild, but nearly a quarter were moderate or severe. The authors urge routine cannabis screening in older-adult care.",
+      "url": "https://today.ucsd.edu/story/one-in-nine-older-adults-who-use-cannabis-meet-criteria-for-cannabis-use-disorder"
+    },
+    {
+      "headline": "HRSA awards $89.3 million for rural addiction and recovery care",
+      "outlet": "AHA News",
+      "date": "Sep 28",
+      "summary": "HRSA's Rural Communities Opioid Response Program is funding prevention, treatment, and recovery work in 45 states and one territory. This is separate from SAMHSA's $247.9 million announcement earlier this week. Rural clinics should watch for local awardees that add referral, workforce, and overdose-response capacity.",
+      "url": "https://www.aha.org/news/headline/2026-09-28-hrsa-awards-nearly-90-million-addiction-recovery-services-rural-areas"
+    },
+    {
+      "headline": "More pharmacies stock buprenorphine, but rural ED starts still lag",
+      "outlet": "CDC MMWR",
+      "date": "Aug 27",
+      "summary": "From 2019 to 2025, pharmacy buprenorphine availability rose from 65% to 80% in rural counties and from 65% to 72% in urban counties. Emergency department adoption rose to 31% in urban counties but only 10% in rural ones. Bridge, telehealth, and follow-up pathways still matter where ED starts are rare.",
+      "url": "https://www.cdc.gov/mmwr/volumes/75/wr/mm7533a2.htm"
+    }
+  ]
+}

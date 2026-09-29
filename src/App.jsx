@@ -10,6 +10,7 @@ import Home from './pages/Home';
 // Route-level code splitting: the homepage loads eagerly; every other page
 // (and its heavier dependencies — TipTap, DOMPurify) loads on demand.
 const News = lazy(() => import('./pages/News'));
+const DailyRoundup = lazy(() => import('./pages/DailyRoundup'));
 const PostView = lazy(() => import('./pages/PostView'));
 const Policy = lazy(() => import('./pages/Policy'));
 const PolicyView = lazy(() => import('./pages/PolicyView'));
@@ -46,6 +47,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
+          <Route path="/news/daily" element={<DailyRoundup />} />
+          <Route path="/news/daily/:date" element={<DailyRoundup />} />
           <Route path="/news/:slug" element={<PostView />} />
           <Route path="/policy" element={<Policy />} />
           <Route path="/policy/:slug" element={<PolicyView />} />

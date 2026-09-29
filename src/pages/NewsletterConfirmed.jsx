@@ -1,11 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { MailCheck } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 // Landing page after Brevo DOI confirmation click (redirectionUrl).
 export default function NewsletterConfirmed() {
+  const [params] = useSearchParams();
+  const daily = params.get('list') === 'daily';
+
   return (
     <div className="relative min-h-screen bg-background text-text">
       <div className="noise-overlay pointer-events-none"></div>
@@ -19,16 +22,16 @@ export default function NewsletterConfirmed() {
           You’re subscribed
         </h1>
         <p className="text-text/70 mb-8 leading-relaxed">
-          Thanks for confirming. You’ll receive SAMPA Updates — a weekly email
-          with practice news, society notes, and the policy changes that affect
-          your patients’ access to care. No membership required.
+          {daily
+            ? 'You’re subscribed to the SAMPA Daily Roundup. You’ll get the day’s five items by email. No membership required.'
+            : 'Thanks for confirming. You’ll receive SAMPA Updates — a weekly email with practice news, society notes, and the policy changes that affect your patients’ access to care. No membership required.'}
         </p>
         <div className="flex flex-wrap justify-center gap-4 text-sm font-semibold">
           <Link
-            to="/news"
+            to={daily ? '/news/daily' : '/news'}
             className="px-5 py-2.5 rounded-full bg-primary text-white hover:opacity-90 transition-opacity"
           >
-            Read the news
+            {daily ? 'Read today’s roundup' : 'Read the news'}
           </Link>
           <Link
             to="/join"
