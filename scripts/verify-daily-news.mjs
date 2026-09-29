@@ -126,6 +126,32 @@ test('seed file for 2026-09-29 loads with the published source URLs', () => {
   assert.equal(roundups.length, 1);
   assert.equal(formatRoundupDate(roundups[0].date), 'Tuesday, September 29, 2026');
   assert.deepEqual(
+    roundups[0].items.map((entry) => [entry.headline, entry.outlet, entry.date]),
+    [
+      ['Medetomidine withdrawal is driving ICU-level care', 'JAMA Internal Medicine', 'Sep 28'],
+      ['NOHARM trial', 'JAMA Network Open', 'Sep 28'],
+      ['One in nine older adult cannabis users meet criteria for cannabis use disorder', 'Addiction, UCSD', 'Sep 28'],
+      ['HRSA awarded $89.3M for rural addiction care', 'HRSA', 'Sep 25'],
+      ['CDC report on buprenorphine access', 'CDC MMWR', 'August, recirculated Sep 28'],
+    ],
+  );
+  assert.equal(
+    roundups[0].items[1].summary,
+    'Six surgical centers built a nondrug pain pathway into the medical record. It cut in-hospital opioids and discharge prescriptions without worsening pain, function, or safety.',
+  );
+  assert.equal(
+    roundups[0].items[2].summary,
+    "That's 11.4% of past-year users aged 65 and up. Most cases are mild, but nearly a quarter are moderate or severe, which makes a case for screening in primary care and geriatrics.",
+  );
+  assert.equal(
+    roundups[0].items[3].summary,
+    "The money comes through its Rural Communities Opioid Response Program and reaches 45 states and one territory. It's separate from Monday's $247.9M SAMHSA package.",
+  );
+  assert.equal(
+    roundups[0].items[4].summary,
+    'Rural pharmacy availability rose from 65% to 80%. Emergency departments starting patients on buprenorphine still lag, at about 10% in rural areas versus 31% in cities.',
+  );
+  assert.deepEqual(
     roundups[0].items.map((entry) => entry.url),
     [
       'https://jamanetwork.com/journals/jamainternalmedicine/article-abstract/2854606',
