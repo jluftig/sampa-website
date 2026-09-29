@@ -36,6 +36,10 @@ html[data-announcement] .site-hero {
   padding-top: calc(6rem + var(--announcement-h, 0px));
 }
 
+.scroll-clear-header {
+  scroll-margin-top: calc(8rem + var(--announcement-h, 0px));
+}
+
 @layer utilities {
   .noise-overlay {
     position: fixed;

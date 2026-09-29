@@ -43,6 +43,24 @@ const app = readFileSync('src/App.jsx', 'utf8');
 const navbar = readFileSync('src/components/Navbar.jsx', 'utf8');
 
 if (!page.includes('This giveaway has ended')) fail('ended state copy missing');
+
+const REEL_URL = 'https://www.instagram.com/reel/DdwVzwmABiw/';
+const reelTokens = page.match(/https:\/\/www\.instagram\.com\/reel\/[^\s"'`)<]+/g) || [];
+if (reelTokens.length !== 1 || reelTokens[0] !== REEL_URL) {
+  fail(`reel URL must be exactly ${REEL_URL}`);
+}
+if (reelTokens[0].includes('?') || reelTokens[0].includes('igsh') || page.includes('igsh')) {
+  fail('reel URL must not include igsh or a query');
+}
+const reelAt = page.indexOf(REEL_URL);
+const reelAnchor = page.slice(page.lastIndexOf('<a', reelAt), page.indexOf('>', reelAt));
+if (!reelAnchor.includes('target="_blank"')) fail('reel link needs target="_blank"');
+if (!reelAnchor.includes('noopener')) fail('reel link needs rel noopener');
+const endedFn = page.slice(page.indexOf('function GiveawayEnded'), page.indexOf('function GiveawayOpen'));
+if (endedFn.includes('/reel/') || endedFn.includes('Watch the giveaway reel')) {
+  fail('ended state must not show the reel CTA');
+}
+if (/<iframe/i.test(page) || page.includes('instagram.com/embed')) fail('no Instagram embed');
 if (!page.includes('https://www.instagram.com/pa_mindsetmatters/')) fail('mindset matters URL');
 if (!page.includes('https://www.instagram.com/societyofaddictionmedicinepas/')) fail('SAMPA instagram URL');
 if (!footer.includes('https://www.instagram.com/societyofaddictionmedicinepas/')) {
