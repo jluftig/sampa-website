@@ -25,6 +25,7 @@ const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
 const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const BoardMeetings = lazy(() => import('./pages/BoardMeetings'));
 const BoardMeetingView = lazy(() => import('./pages/BoardMeetingView'));
+const Giveaway = lazy(() => import('./pages/Giveaway'));
 const About = lazy(() => import('./pages/About'));
 const Caq = lazy(() => import('./pages/Caq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
@@ -55,6 +56,7 @@ function App() {
           <Route path="/join" element={<Join />} />
           <Route path="/join/invoice" element={<JoinInvoice />} />
           <Route path="/donate" element={<Donate />} />
+          <Route path="/giveaway" element={<Giveaway />} />
           <Route path="/about" element={<About />} />
           <Route path="/caq" element={<Caq />} />
           <Route path="/privacy" element={<Privacy />} />

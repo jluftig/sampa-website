@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-27 (T45 — board minutes leave the client bundle; server active-member gate. PR #97 ready for review; do not merge until Website QA GREEN and Josh’s screenshot yay. T61 backlog from #116. #83 closed obsolete; Weekly at issue #04, Brevo campaign 30. Open preview PRs: #75, #97, #113.)
+**Last updated:** 2026-09-28 (T62 — temporary Psych Congress PA Institute giveaway banner and `/giveaway`. Preview only. Do not merge until Josh reviews the Vercel preview.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,6 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T62 | Psych Congress giveaway banner + /giveaway | cursor | 2026-09-28 | **Claimed cursor.** PR **#117** (preview only). Dismissible public banner and `/giveaway` (flyer, entry steps, both Instagram accounts). Expires 2026-10-01 23:59 America/Los_Angeles via `GIVEAWAY_ENDS_AT` in `src/lib/announcements.js`. Do not merge until Josh reviews the Vercel preview. |
 | T60 | Recent issues titles stay on one line | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #115. Reach drops a send whose name or subject contains TEST, or whose recipients include the Brevo test list. Those sends leave Recent issues and the campaign totals. Other parenthetical notes still come off the label. The row still truncates. Preview only. Do not merge until Website QA and Josh. |
 | T59 | Denser org dashboard + manual Relay balance | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #114. Do not merge. Follow-up to merged PR #112. Denser Membership, Finances, Reach, Impact, and roster table on `/editor/members`. Finance headline is a manual Relay balance of $2,457.00 (updated 2026-09-24), admin only via `canViewFinance`. Stripe dues stay secondary, labeled After fees. Preview only until Website QA and Josh. |
 | T57 | Internal PHP committee work tracker | cursor | 2026-09-24 | **Claimed cursor.** `/editor/policy` for the Public Health Policy Committee response sheet (seeded items, criteria, punch list). Gate is `canViewPolicyWork`: admin, `can_view_members`, or `is_board`. Not the public `/policy` archive and not parked T19 open windows. Preview only. Do not merge until Website QA and Josh. |
