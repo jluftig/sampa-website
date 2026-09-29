@@ -43,6 +43,7 @@ export const LIST_ENV = {
   policy: 'BREVO_LIST_POLICY',
   jobs: 'BREVO_LIST_JOBS',
   cme: 'BREVO_LIST_CME',
+  daily_news: 'BREVO_LIST_DAILY_NEWS',
 };
 
 export function resolveListIds(keys) {

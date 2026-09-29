@@ -65,6 +65,7 @@ src/
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle
     tags.js                 collectPostTags(post)
+    dailyNews.js            build-time catalog of content/daily-news/*.json (newest first)
     slug.js format.js cite.js share.js
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
@@ -103,7 +104,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about` (`#leadership`), `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about` (`#leadership`), `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/:date` (JSON roundup; static segments before `/news/:slug`), `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/newsletter-confirmed` (`?list=daily` for the roundup list) |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |

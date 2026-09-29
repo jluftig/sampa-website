@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { roundups } from '../lib/dailyNews';
 import { collectPostTags } from '../lib/tags';
 import PostCard from './PostCard';
 
-// Homepage "Latest News" section — shows the three most recent published posts
-// and links through to the full /news page.
+const latestRoundup = roundups[0] || null;
+
 export default function NewsTeaser() {
   const [posts, setPosts] = useState([]);
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(Boolean(latestRoundup));
 
   useEffect(() => {
+    if (latestRoundup) return undefined;
     let active = true;
     (async () => {
       const { data } = await supabase
@@ -39,11 +41,30 @@ export default function NewsTeaser() {
           Original daily coverage of addiction medicine — the developments that matter for your patients and your practice.
         </p>
 
-        {loaded && posts.length === 0 && (
+        {latestRoundup && (
+          <ol className="text-left w-full max-w-3xl space-y-4 mb-12 list-decimal pl-6">
+            {latestRoundup.items.map((item) => (
+              <li key={item.url} className="text-base md:text-lg leading-relaxed">
+                <span className="font-semibold">{item.headline}</span>
+                {` (${item.outlet}, ${item.date}). `}
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-text font-semibold underline underline-offset-2"
+                >
+                  Source
+                </a>
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {!latestRoundup && loaded && posts.length === 0 && (
           <p className="text-text/50 mb-12">Our first issue is coming soon.</p>
         )}
 
-        {posts.length > 0 && (
+        {!latestRoundup && posts.length > 0 && (
           <div className="grid md:grid-cols-3 gap-8 w-full mb-12">
             {posts.map((post) => (
               <PostCard key={post.id} post={post} />
@@ -51,12 +72,22 @@ export default function NewsTeaser() {
           </div>
         )}
 
-        <Link
-          to="/news"
-          className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary-text hover:text-white font-semibold transition-colors"
-        >
-          View all news
-        </Link>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {latestRoundup && (
+            <Link
+              to="/news/daily"
+              className="whitespace-nowrap px-8 py-3 rounded-full bg-accent text-white font-semibold shadow-md hover:opacity-90 transition-opacity"
+            >
+              Read today&apos;s roundup
+            </Link>
+          )}
+          <Link
+            to="/news"
+            className="whitespace-nowrap px-8 py-3 rounded-full border border-primary/20 hover:bg-primary-text hover:text-white font-semibold transition-colors"
+          >
+            View all news
+          </Link>
+        </div>
       </div>
     </section>
   );

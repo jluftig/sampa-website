@@ -17,13 +17,16 @@ const esc = (s = '') =>
 export async function GET(request) {
   const reqUrl = new URL(request.url);
   const slug = reqUrl.searchParams.get('slug') || '';
-  const canonical = `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
+  const isDaily = slug === 'daily';
+  const canonical = isDaily
+    ? `${reqUrl.origin}/news/daily`
+    : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
 
   const supaUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
   let post = null;
-  if (slug && supaUrl && anonKey) {
+  if (slug && !isDaily && supaUrl && anonKey) {
     try {
       const res = await fetch(
         `${supaUrl}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}&status=eq.published` +
@@ -36,10 +39,11 @@ export async function GET(request) {
     }
   }
 
-  const title = post ? post.title : 'SAMPA News';
-  const description =
-    post?.excerpt ||
-    'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
+  const title = isDaily ? 'SAMPA Daily Roundup' : post ? post.title : 'SAMPA News';
+  const description = isDaily
+    ? 'Five short addiction-medicine items, published each weekday by SAMPA.'
+    : post?.excerpt ||
+      'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
   const image = post?.cover_image_url || '';
 
   const html = `<!doctype html>
@@ -67,7 +71,7 @@ ${image ? `<meta name="twitter:image" content="${esc(image)}">` : ''}
 </html>`;
 
   return new Response(html, {
-    status: post ? 200 : 404,
+    status: post || isDaily ? 200 : 404,
     headers: {
       'content-type': 'text/html; charset=utf-8',
       // Cache at the edge; a re-published post refreshes within 5 minutes.

@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-29",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Medetomidine withdrawal is driving ICU-level care",
+      "outlet": "JAMA Internal Medicine",
+      "date": "Sep 28",
+      "summary": "At two Penn hospitals, use of dexmedetomidine among inpatients with opioid use disorder rose from about 6% to about 20% after mid-2024. It reached about 32% in the last quarter they looked at. Hospitalist, ED, and consult teams should plan for alpha-2 withdrawal protocols and ICU beds.",
+      "url": "https://jamanetwork.com/journals/jamainternalmedicine/article-abstract/2854606"
+    },
+    {
+      "headline": "NOHARM trial",
+      "outlet": "JAMA Network Open",
+      "date": "Sep 28",
+      "summary": "Six surgical centers built a nondrug pain pathway into the medical record. It cut in-hospital opioids and discharge prescriptions without worsening pain, function, or safety.",
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854496"
+    },
+    {
+      "headline": "One in nine older adult cannabis users meet criteria for cannabis use disorder",
+      "outlet": "Addiction, UCSD",
+      "date": "Sep 28",
+      "summary": "That's 11.4% of past-year users aged 65 and up. Most cases are mild, but nearly a quarter are moderate or severe, which makes a case for screening in primary care and geriatrics.",
+      "url": "https://today.ucsd.edu/story/one-in-nine-older-adults-who-use-cannabis-meet-criteria-for-cannabis-use-disorder"
+    },
+    {
+      "headline": "HRSA awarded $89.3M for rural addiction care",
+      "outlet": "HRSA",
+      "date": "Sep 25",
+      "summary": "The money comes through its Rural Communities Opioid Response Program and reaches 45 states and one territory. It's separate from Monday's $247.9M SAMHSA package.",
+      "url": "https://www.hrsa.gov/about/news/press-releases/expand-addiction-treatment-and-recovery-rural-communities"
+    },
+    {
+      "headline": "CDC report on buprenorphine access",
+      "outlet": "CDC MMWR",
+      "date": "August, recirculated Sep 28",
+      "summary": "Rural pharmacy availability rose from 65% to 80%. Emergency departments starting patients on buprenorphine still lag, at about 10% in rural areas versus 31% in cities.",
+      "url": "https://www.cdc.gov/mmwr/volumes/75/wr/mm7533a2.htm"
+    }
+  ]
+}
