@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-30",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Black and Hispanic Medicaid patients get less buprenorphine after acute opioid encounters",
+      "outlet": "Journal of General Internal Medicine",
+      "date": "Sep 29",
+      "summary": "In a 19-state Medicaid cohort of 234,944 opioid-related ED, inpatient, and rehab/detox events (2016–2019), only 14.1% of patients filled buprenorphine and 3.8% filled naloxone within 30 days. Black and Hispanic beneficiaries had lower adjusted odds of 30-day buprenorphine fills and of retention (≥150 days’ supply in 180 days) than White patients across settings. Hospital and ED teams should treat every acute opioid encounter as a start-and-bridge moment and close equity gaps in discharge prescribing and follow-up.",
+      "url": "https://link.springer.com/article/10.1007/s11606-026-10838-0"
+    },
+    {
+      "headline": "Hospitalists get a practical playbook for medetomidine withdrawal",
+      "outlet": "Journal of Hospital Medicine",
+      "date": "Sep 29",
+      "summary": "A clinical progress note says medetomidine, an α2 agonist adulterant in the illicit opioid supply, should be suspected when overdoses respond poorly to naloxone and when opioid withdrawal features rebound sympathetic surge—hypertension, tachycardia, tremor, agitation, and refractory vomiting—despite opioid agonist treatment. Management pairs opioid withdrawal care with early α2 agonists and escalates to dexmedetomidine infusion for severe cases. This extends recent epidemiology into bedside recognition and ICU-capable protocols.",
+      "url": "https://doi.org/10.1002/jhm.70506"
+    },
+    {
+      "headline": "Extended-release opioids after hip or knee replacement linked to more persistent use",
+      "outlet": "Anesthesiology",
+      "date": "Sep 29",
+      "summary": "Among 258,525 Ontario adults with elective total hip or knee arthroplasty (2013–2022), 12.1% filled a new extended-release opioid within seven days of discharge. After propensity weighting, that fill was associated with higher persistent postoperative opioid use (aOR 1.08), 90-day readmissions (aOR 1.09), and ED visits (aOR 1.16). Guidelines already discourage EROs for acute surgical pain; these data reinforce short-acting multimodal regimens at discharge.",
+      "url": "https://pubs.asahq.org/anesthesiology/article-abstract/doi/10.1097/ALN.0000000000006400/149389/Receipt-of-Extended-Release-Opioids-After-Total"
+    },
+    {
+      "headline": "Alcohol-associated pancreatitis flags higher risk of advanced liver disease",
+      "outlet": "Journal of Gastroenterology and Hepatology",
+      "date": "Sep 28",
+      "summary": "In a matched U.S. cohort of 3,201 patients with first alcohol-associated pancreatitis versus alcohol withdrawal syndrome and no prior liver disease, pancreatitis carried a higher risk of advanced chronic liver disease over about 3.5 years (9.3% vs 7.0%; HR 1.29), driven by hepatic decompensation. Withdrawal patients had higher all-cause mortality and more AUD medication prescriptions. Pancreatitis admissions are a practical trigger for liver surveillance and AUD treatment linkage.",
+      "url": "https://doi.org/10.1111/jgh.70761"
+    },
+    {
+      "headline": "OSHA urges workplaces to stock naloxone and train for overdose response",
+      "outlet": "U.S. Department of Labor",
+      "date": "Sep 24",
+      "summary": "OSHA released a fact sheet, Opioid Overdose Rescue with Reversal Medications, advising employers to keep FDA-approved naloxone or nalmefene visible and accessible like AEDs, train workers on overdose signs, and always call 911 because reversal effects are temporary. The guidance creates no new compliance mandate and sits under the administration’s Great American Recovery Initiative. Occupational health and employee-assistance programs can use it to normalize workplace overdose kits.",
+      "url": "https://content.govdelivery.com/accounts/USDOL/bulletins/42c5ad7"
+    }
+  ]
+}
