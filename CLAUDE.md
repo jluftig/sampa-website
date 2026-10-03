@@ -104,7 +104,7 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 11. **Tier keys** sync three ways: `src/lib/membership.js`, `api/_lib/tiers.js`, `STRIPE_PRICE_*` env.
 12. **AuthContext** uses `select('*')` on profiles — tolerate additive migrations.
 13. **New RPCs** degrade gracefully if missing; still prefer migrate-before-code.
-14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers. Dated roundups (`/news/daily/:date`) use the same function with `slug=daily&date=`. Unknown dates return 404. Do not add a 13th `api/*.js` file.
+14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers. Dated roundups use `slug=daily&date=` and the path must be `YYYY-MM-DD` only, so `/news/daily/archive` and `/news/daily/tag/:slug` are not dates. `/news/daily` canonical (browser and bots) is the latest dated issue. Unknown dates return 404 to those crawlers; the SPA 404 sends `noindex`. Do not add a 13th `api/*.js` file.
 15. **Mobile shared lib:** `sampa-shared` → `src/lib`; no DOM/Vite-only code there.
 16. **No IAP** for memberships on iOS — website checkout only.
 17. **Web session continuity:** `createClient` uses `createAuthStorage()` (localStorage + first-party cookie backup, `Domain=.addictionpas.org` on prod). Auth/Stripe return URLs go through `clientSiteOrigin` / `requestSiteOrigin` (apex → `https://www.addictionpas.org`). `AuthContext` retries `refreshSession` on a transient null before treating the user as signed out. Do not revert to a bare `createClient` or `window.location.origin` for those redirects.

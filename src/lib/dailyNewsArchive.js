@@ -258,6 +258,10 @@ export function dailyCanonicalUrl(isoDate, origin = PRODUCTION_ORIGIN) {
   return `${base}/news/daily/${isoDate}`;
 }
 
+export function dailyPageRobots(status) {
+  return status === 'not-found' ? 'noindex' : null;
+}
+
 export function resolveDailyDate(date, roundups) {
   if (date == null || date === '') {
     return { status: 'latest', roundup: roundups?.[0] || null };

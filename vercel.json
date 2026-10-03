@@ -21,7 +21,18 @@
       "destination": "/api/newsletter-stats?section=board"
     },
     {
-      "source": "/news/daily/:date",
+      "source": "/news/daily/archive",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Slack-ImgProxy|TelegramBot|WhatsApp|Discordbot|Pinterestbot|redditbot|SkypeUriPreview|vkShare).*"
+        }
+      ],
+      "destination": "/api/share?slug=daily&view=archive"
+    },
+    {
+      "source": "/news/daily/:date(\\d{4}-\\d{2}-\\d{2})",
       "has": [
         {
           "type": "header",

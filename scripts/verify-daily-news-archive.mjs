@@ -9,6 +9,7 @@ import {
   buildSuggestionQueue,
   dailyCanonicalUrl,
   dailyNewsTitle,
+  dailyPageRobots,
   dailySitemapPaths,
   dispatchSuggestedTagNotice,
   matchTags,
@@ -236,6 +237,77 @@ test('router keeps archive and tag paths ahead of the dated page, and unknown da
   const editorAt = app.indexOf('path="/editor/daily-tags"');
   const editorIdAt = app.indexOf('path="/editor/:id"');
   assert.ok(editorAt > -1 && editorAt < editorIdAt);
+});
+
+function vercelSourceRegExp(source) {
+  let pattern = '';
+  for (let i = 0; i < source.length; i += 1) {
+    if (source[i] === ':') {
+      i += 1;
+      while (i < source.length && /[A-Za-z0-9_]/.test(source[i])) i += 1;
+      if (source[i] === '(') {
+        i += 1;
+        let depth = 1;
+        let custom = '';
+        while (i < source.length && depth > 0) {
+          if (source[i] === '(') depth += 1;
+          else if (source[i] === ')') {
+            depth -= 1;
+            if (depth === 0) break;
+          }
+          if (depth > 0) custom += source[i];
+          i += 1;
+        }
+        pattern += `(${custom})`;
+      } else {
+        pattern += '[^/]+';
+        i -= 1;
+      }
+    } else {
+      const ch = source[i];
+      pattern += /[.*+?^${}()|[\]\\]/.test(ch) ? `\\${ch}` : ch;
+    }
+  }
+  return new RegExp(`^${pattern}$`);
+}
+
+test('crawler rewrites keep archive and tag paths off the dated share route', async () => {
+  const config = JSON.parse(readFileSync('vercel.json', 'utf8'));
+  const crawlerRewrites = config.rewrites.filter((rule) =>
+    (rule.has || []).some((cond) => cond.type === 'header' && cond.key === 'user-agent'));
+  const dateRule = crawlerRewrites.find((rule) => String(rule.destination).includes('slug=daily&date='));
+  assert.ok(dateRule, 'dated crawler rewrite');
+  const dateRe = vercelSourceRegExp(dateRule.source);
+  assert.equal(dateRe.test('/news/daily/2026-09-30'), true);
+  assert.equal(dateRe.test('/news/daily/2026-10-02'), true);
+  assert.equal(dateRe.test('/news/daily/archive'), false);
+  assert.equal(dateRe.test('/news/daily/tag'), false);
+  assert.equal(dateRe.test('/news/daily/tag/buprenorphine'), false);
+
+  const caughtAsDate = crawlerRewrites.filter((rule) => {
+    const matches = ['/news/daily/archive', '/news/daily/tag', '/news/daily/tag/naloxone']
+      .some((path) => vercelSourceRegExp(rule.source).test(path));
+    return matches && String(rule.destination).includes('date=');
+  });
+  assert.deepEqual(caughtAsDate, []);
+
+  const archiveRule = crawlerRewrites.find((rule) => rule.source === '/news/daily/archive');
+  assert.equal(archiveRule.destination, '/api/share?slug=daily&view=archive');
+
+  const preview = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=daily&view=archive'));
+  assert.equal(preview.status, 200);
+  const html = await preview.text();
+  assert.match(html, /<title>Daily News archive \| SAMPA<\/title>/);
+  assert.match(html, /rel="canonical" href="https:\/\/www\.addictionpas\.org\/news\/daily\/archive"/);
+  assert.match(html, /og:url" content="https:\/\/www\.addictionpas\.org\/news\/daily\/archive"/);
+});
+
+test('an unknown daily date is noindex for the soft 404', () => {
+  assert.equal(dailyPageRobots('not-found'), 'noindex');
+  assert.equal(dailyPageRobots('ok'), null);
+  assert.equal(dailyPageRobots('latest'), null);
+  const page = readFileSync('src/pages/DailyRoundup.jsx', 'utf8');
+  assert.match(page, /robots: dailyPageRobots\(resolution\.status\)/);
 });
 
 test('share serves a dated roundup and 404s an unknown date', async () => {

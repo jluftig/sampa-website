@@ -97,7 +97,7 @@ scripts/
   sampa-post/               News post generator (repo agents)
   sampa-email/              Brevo campaigns (repo agents)
 mobile/                     Expo iOS/Android — separate build, same Supabase (see architecture/mobile.md)
-vercel.json                 SPA rewrite; apex→www; crawler UAs on /news/:slug and /news/daily/:date → /api/share
+vercel.json                 SPA rewrite; apex→www; crawler UAs on /news/:slug, /news/daily/archive, and /news/daily/YYYY-MM-DD only → /api/share
 ```
 
 Marketing email architecture: **`docs/architecture/email-brevo.md`**.

@@ -6,7 +6,7 @@ import NewsletterSignup from '../components/NewsletterSignup';
 import DailyItemList from '../components/DailyItemList';
 import { usePageMeta } from '../components/useDailyMeta';
 import { formatRoundupDate } from '../lib/dailyNews';
-import { dailyNewsTitle, resolveDailyDate } from '../lib/dailyNewsArchive';
+import { dailyNewsTitle, dailyPageRobots, resolveDailyDate } from '../lib/dailyNewsArchive';
 import { useDailyRoundups } from '../lib/useDailyRoundups';
 import NotFound from './NotFound';
 
@@ -22,6 +22,7 @@ export default function DailyRoundup() {
     title: resolution.status === 'not-found' ? null : title,
     path: resolution.status === 'not-found' || !roundup ? null : `/news/daily/${roundup.date}`,
     description: resolution.status === 'not-found' ? null : DESCRIPTION,
+    robots: dailyPageRobots(resolution.status),
   });
 
   if (resolution.status === 'not-found') return <NotFound />;

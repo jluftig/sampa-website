@@ -5,10 +5,13 @@
 // humans keep getting the SPA. Public data only: the query uses the
 // publishable anon key and filters status=published explicitly.
 
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { dailyNewsTitle } from '../src/lib/dailyNewsArchive.js';
-import { roundupFromEntry } from '../src/lib/dailyNewsLoad.js';
+import { collectRoundups, roundupFromEntry } from '../src/lib/dailyNewsLoad.js';
+
+const DAILY_DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
+const ARCHIVE_DESCRIPTION = 'Past SAMPA daily addiction-medicine roundups, newest first.';
 
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({
@@ -37,23 +40,49 @@ function publishedRoundup(date) {
   return result.ok ? result.roundup : null;
 }
 
+function latestRoundup() {
+  const dir = join(process.cwd(), 'content', 'daily-news');
+  let names = [];
+  try {
+    names = readdirSync(dir);
+  } catch {
+    return null;
+  }
+  const modules = {};
+  for (const name of names) {
+    if (!name.endsWith('.json')) continue;
+    try {
+      modules[`/content/daily-news/${name}`] = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+    } catch {
+      /* skip a file that is not JSON */
+    }
+  }
+  return collectRoundups(modules, () => {})[0] || null;
+}
+
 export async function GET(request) {
   const reqUrl = new URL(request.url);
   const slug = reqUrl.searchParams.get('slug') || '';
   const date = reqUrl.searchParams.get('date') || '';
+  const view = reqUrl.searchParams.get('view') || '';
   const isDaily = slug === 'daily';
-  const dated = isDaily && date ? publishedRoundup(date) : null;
-  if (isDaily && date && !dated) {
+  const isArchive = isDaily && view === 'archive';
+  const dated = isDaily && date && !isArchive ? publishedRoundup(date) : null;
+  if (isDaily && date && !isArchive && !dated) {
     return new Response('Not found', {
       status: 404,
       headers: { 'content-type': 'text/plain; charset=utf-8' },
     });
   }
-  const canonical = dated
-    ? `${reqUrl.origin}/news/daily/${dated.date}`
-    : isDaily
-      ? `${reqUrl.origin}/news/daily`
-      : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
+  const latest = isDaily && !date && !isArchive ? latestRoundup() : null;
+  const issue = dated || latest;
+  const canonical = isArchive
+    ? `${reqUrl.origin}/news/daily/archive`
+    : issue
+      ? `${reqUrl.origin}/news/daily/${issue.date}`
+      : isDaily
+        ? `${reqUrl.origin}/news/daily`
+        : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
 
   const supaUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
@@ -72,15 +101,19 @@ export async function GET(request) {
     }
   }
 
-  const title = dated
-    ? dailyNewsTitle(dated.date)
+  const title = isArchive
+    ? 'Daily News archive | SAMPA'
+    : issue
+      ? dailyNewsTitle(issue.date)
+      : isDaily
+        ? 'SAMPA Daily Roundup'
+        : post
+          ? post.title
+          : 'SAMPA News';
+  const description = isArchive
+    ? ARCHIVE_DESCRIPTION
     : isDaily
-      ? 'SAMPA Daily Roundup'
-      : post
-        ? post.title
-        : 'SAMPA News';
-  const description = isDaily
-    ? 'Five short addiction-medicine items, published each weekday by SAMPA.'
+      ? DAILY_DESCRIPTION
     : post?.excerpt ||
       'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
   const image = post?.cover_image_url || '';
@@ -110,7 +143,7 @@ ${image ? `<meta name="twitter:image" content="${esc(image)}">` : ''}
 </html>`;
 
   return new Response(html, {
-    status: post || dated || (isDaily && !date) ? 200 : 404,
+    status: post || issue || isArchive || (isDaily && !date) ? 200 : 404,
     headers: {
       'content-type': 'text/html; charset=utf-8',
       // Cache at the edge; a re-published post refreshes within 5 minutes.

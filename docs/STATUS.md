@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-03 (T65 — daily news archive prototype: dated pages, month-headed list, auto-tags, suggested-tag queue. Preview only. Do not merge until Website QA GREEN and Josh’s screenshot yay.)
+**Last updated:** 2026-10-03 (T65 — Website QA RED on draft PR #123: date-only crawler rewrite, noindex on unknown dates, `/news/daily` canonical matches bots. Still preview only. Do not merge.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,7 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T65 | Daily news archive: dated pages, month-headed list, auto-tags, suggested-tag queue | cursor | 2026-10-03 | **Claimed cursor.** Draft PR **#123** (preview only). Permanent `/news/daily/YYYY-MM-DD`, reader archive at `/news/daily/archive` (month headings inside one list, load-more; no week/month bin pages), deterministic keyword tags, admin `/editor/daily-tags` approve/dismiss. Email to Josh is stubbed. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
+| T65 | Daily news archive: dated pages, month-headed list, auto-tags, suggested-tag queue | cursor | 2026-10-03 | **Claimed cursor.** Draft PR **#123** (preview only). QA fix: crawler rewrite is `YYYY-MM-DD` only; archive has its own share preview; unknown dates are `noindex`; `/news/daily` canonical is the latest dated URL for browsers and bots. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T63 | Giveaway banner more eye-catching + Instagram reel on /giveaway | cursor | 2026-09-29 | **Claimed cursor.** PR **#118** (preview only). Brighter teal→violet banner with a “How to enter” pill, and an embed-free reel link on `/giveaway` (`https://www.instagram.com/reel/DdwVzwmABiw/`). Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T62 | Psych Congress giveaway banner + /giveaway | cursor | 2026-09-28 | **Claimed cursor.** PR **#117** (preview only). Dismissible public banner and `/giveaway` (flyer, entry steps, both Instagram accounts). Expires 2026-10-01 23:59 America/Los_Angeles via `GIVEAWAY_ENDS_AT` in `src/lib/announcements.js`. Do not merge until Josh reviews the Vercel preview. |
 | T60 | Recent issues titles stay on one line | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #115. Reach drops a send whose name or subject contains TEST, or whose recipients include the Brevo test list. Those sends leave Recent issues and the campaign totals. Other parenthetical notes still come off the label. The row still truncates. Preview only. Do not merge until Website QA and Josh. |

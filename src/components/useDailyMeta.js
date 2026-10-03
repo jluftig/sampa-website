@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { clientSiteOrigin } from '../lib/siteUrl';
 
-export function usePageMeta({ title, path, description }) {
+export function usePageMeta({ title, path, description, robots }) {
   useEffect(() => {
-    if (!title && !path) return undefined;
+    if (!title && !path && !robots) return undefined;
     const previousTitle = document.title;
     if (title) document.title = title;
 
@@ -18,6 +18,19 @@ export function usePageMeta({ title, path, description }) {
       }
       previousDescription = descriptionEl.getAttribute('content');
       descriptionEl.setAttribute('content', description);
+    }
+
+    let robotsEl = document.querySelector('meta[name="robots"]');
+    const createdRobots = !robotsEl;
+    let previousRobots = null;
+    if (robots) {
+      if (!robotsEl) {
+        robotsEl = document.createElement('meta');
+        robotsEl.setAttribute('name', 'robots');
+        document.head.appendChild(robotsEl);
+      }
+      previousRobots = robotsEl.getAttribute('content');
+      robotsEl.setAttribute('content', robots);
     }
 
     let link = document.querySelector('link[rel="canonical"]');
@@ -46,6 +59,11 @@ export function usePageMeta({ title, path, description }) {
         else if (previousHref == null) link.removeAttribute('href');
         else link.setAttribute('href', previousHref);
       }
+      if (robots) {
+        if (createdRobots) robotsEl.remove();
+        else if (previousRobots == null) robotsEl.removeAttribute('content');
+        else robotsEl.setAttribute('content', previousRobots);
+      }
     };
-  }, [title, path, description]);
+  }, [title, path, description, robots]);
 }
