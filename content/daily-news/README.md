@@ -24,3 +24,4 @@ Rules:
 - `items` holds 1 to 7 objects. Each object has `headline`, `outlet`, `date`, `summary`, and an `https://` `url`.
 - A file that fails those checks is skipped. The build still succeeds.
 - Commits that only add or replace a file in this folder stay content-only. No application code in those commits.
+- Keywords are not stored in the file. The site tags each item from a fixed vocabulary when it renders.

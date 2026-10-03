@@ -19,7 +19,11 @@ function FullPage({ children }) {
 // Gate for editor-only routes. Authentication is checked first (must be signed
 // in), then authorization (role must be editor or admin). Pass adminOnly to
 // further restrict to admins (e.g. tag management).
-export default function RequireEditor({ children, adminOnly = false }) {
+export default function RequireEditor({
+  children,
+  adminOnly = false,
+  adminDenied = 'Managing keywords is limited to administrators.',
+}) {
   const { isEditor, isAdmin } = useAuth();
   const { checking, loginTo } = useAuthGate();
 
@@ -48,7 +52,7 @@ export default function RequireEditor({ children, adminOnly = false }) {
       <FullPage>
         <h1 className="text-3xl font-drama font-bold mb-4">Admins only</h1>
         <p className="text-text/60 max-w-md mx-auto">
-          Managing keywords is limited to administrators.
+          {adminDenied}
         </p>
       </FullPage>
     );
