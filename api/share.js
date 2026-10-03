@@ -5,6 +5,11 @@
 // humans keep getting the SPA. Public data only: the query uses the
 // publishable anon key and filters status=published explicitly.
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { dailyNewsTitle } from '../src/lib/dailyNewsArchive.js';
+import { roundupFromEntry } from '../src/lib/dailyNewsLoad.js';
+
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({
     '&': '&amp;',
@@ -14,13 +19,41 @@ const esc = (s = '') =>
     "'": '&#39;',
   }[c]));
 
+function publishedRoundup(date) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return null;
+  let raw;
+  try {
+    raw = readFileSync(join(process.cwd(), 'content', 'daily-news', `${date}.json`), 'utf8');
+  } catch {
+    return null;
+  }
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  const result = roundupFromEntry(`/content/daily-news/${date}.json`, data);
+  return result.ok ? result.roundup : null;
+}
+
 export async function GET(request) {
   const reqUrl = new URL(request.url);
   const slug = reqUrl.searchParams.get('slug') || '';
+  const date = reqUrl.searchParams.get('date') || '';
   const isDaily = slug === 'daily';
-  const canonical = isDaily
-    ? `${reqUrl.origin}/news/daily`
-    : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
+  const dated = isDaily && date ? publishedRoundup(date) : null;
+  if (isDaily && date && !dated) {
+    return new Response('Not found', {
+      status: 404,
+      headers: { 'content-type': 'text/plain; charset=utf-8' },
+    });
+  }
+  const canonical = dated
+    ? `${reqUrl.origin}/news/daily/${dated.date}`
+    : isDaily
+      ? `${reqUrl.origin}/news/daily`
+      : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
 
   const supaUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
@@ -39,7 +72,13 @@ export async function GET(request) {
     }
   }
 
-  const title = isDaily ? 'SAMPA Daily Roundup' : post ? post.title : 'SAMPA News';
+  const title = dated
+    ? dailyNewsTitle(dated.date)
+    : isDaily
+      ? 'SAMPA Daily Roundup'
+      : post
+        ? post.title
+        : 'SAMPA News';
   const description = isDaily
     ? 'Five short addiction-medicine items, published each weekday by SAMPA.'
     : post?.excerpt ||
@@ -71,7 +110,7 @@ ${image ? `<meta name="twitter:image" content="${esc(image)}">` : ''}
 </html>`;
 
   return new Response(html, {
-    status: post || isDaily ? 200 : 404,
+    status: post || dated || (isDaily && !date) ? 200 : 404,
     headers: {
       'content-type': 'text/html; charset=utf-8',
       // Cache at the edge; a re-published post refreshes within 5 minutes.

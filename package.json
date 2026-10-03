@@ -22,7 +22,10 @@
     "test:org-dashboard": "node --test scripts/verify-org-dashboard.mjs",
     "test:policy-impact": "node --test scripts/verify-policy-impact.mjs",
     "test:giveaway": "node scripts/verify-giveaway.mjs",
-    "test:daily-news": "node --test scripts/verify-daily-news.mjs"
+    "test:daily-news": "node --test scripts/verify-daily-news.mjs",
+    "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",
+    "sitemap:daily": "node scripts/write-daily-sitemap.mjs",
+    "prebuild": "node scripts/write-daily-sitemap.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
