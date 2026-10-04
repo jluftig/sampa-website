@@ -3,34 +3,32 @@ import { Link, useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import NewsletterSignup from '../components/NewsletterSignup';
-import { formatRoundupDate, roundupByDate, roundups } from '../lib/dailyNews';
+import DailyItemList from '../components/DailyItemList';
+import { usePageMeta } from '../components/useDailyMeta';
+import { formatRoundupDate } from '../lib/dailyNews';
+import { dailyNewsTitle, dailyPageRobots, resolveDailyDate } from '../lib/dailyNewsArchive';
+import { useDailyRoundups } from '../lib/useDailyRoundups';
+import NotFound from './NotFound';
 
-function RoundupItems({ roundup }) {
-  return (
-    <ol className="list-decimal pl-6 space-y-6 text-lg leading-relaxed text-text/85">
-      {roundup.items.map((item) => (
-        <li key={item.url}>
-          <strong className="text-text">{item.headline}</strong>
-          {` (${item.outlet}, ${item.date}). `}
-          {item.summary}{' '}
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-text font-semibold underline underline-offset-2"
-          >
-            Source
-          </a>
-        </li>
-      ))}
-    </ol>
-  );
-}
+const DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
 
 export default function DailyRoundup() {
   const { date } = useParams();
-  const roundup = date ? roundupByDate(date) : roundups[0] || null;
-  const others = roundups.filter((entry) => entry.date !== roundup?.date);
+  const catalog = useDailyRoundups();
+  const resolution = resolveDailyDate(date, catalog);
+  const roundup = resolution.roundup;
+  const title = roundup ? dailyNewsTitle(roundup.date) : null;
+  usePageMeta({
+    title: resolution.status === 'not-found' ? null : title,
+    path: resolution.status === 'not-found' || !roundup ? null : `/news/daily/${roundup.date}`,
+    description: resolution.status === 'not-found' ? null : DESCRIPTION,
+    robots: dailyPageRobots(resolution.status),
+  });
+
+  if (resolution.status === 'not-found') return <NotFound />;
+
+  const onDatedPage = Boolean(date);
+  const isLatest = roundup && catalog[0]?.date === roundup.date;
 
   return (
     <div className="relative min-h-screen bg-background text-text">
@@ -46,44 +44,41 @@ export default function DailyRoundup() {
             <h1 className="text-4xl md:text-5xl font-drama font-bold mb-3">
               {roundup.title}
             </h1>
-            <p className="text-lg text-text/70 mb-10">{formatRoundupDate(roundup.date)}</p>
-            <RoundupItems roundup={roundup} />
+            <p className="text-lg text-text/70 mb-3">{formatRoundupDate(roundup.date)}</p>
+            <p className="text-sm text-text/60 mb-10 flex flex-wrap gap-x-4 gap-y-2">
+              {onDatedPage ? (
+                <span>Permanent page for this issue.</span>
+              ) : (
+                <Link
+                  to={`/news/daily/${roundup.date}`}
+                  className="text-primary-text font-semibold hover:underline"
+                >
+                  Permanent link for {formatRoundupDate(roundup.date)}
+                </Link>
+              )}
+              {!isLatest && (
+                <Link to="/news/daily" className="text-primary-text font-semibold hover:underline">
+                  Latest issue
+                </Link>
+              )}
+              <Link to="/news/daily/archive" className="text-primary-text font-semibold hover:underline">
+                All issues
+              </Link>
+            </p>
+            <DailyItemList items={roundup.items} />
           </>
         ) : (
           <>
             <h1 className="text-4xl md:text-5xl font-drama font-bold mb-4">
               Addiction Daily Roundup
             </h1>
-            <p className="text-lg text-text/70 mb-6">No roundup for that date.</p>
-            {date && (
-              <Link to="/news/daily" className="text-primary-text font-semibold hover:underline">
-                Back to the latest roundup
-              </Link>
-            )}
+            <p className="text-lg text-text/70">The first issue is on the way.</p>
           </>
         )}
 
         <div className="mt-14">
           <NewsletterSignup variant="card" list="daily" />
         </div>
-
-        {others.length > 0 && (
-          <nav className="mt-14" aria-label="Earlier roundups">
-            <h2 className="text-2xl font-drama font-bold mb-4">Earlier roundups</h2>
-            <ul className="space-y-2">
-              {others.map((entry) => (
-                <li key={entry.date}>
-                  <Link
-                    to={`/news/daily/${entry.date}`}
-                    className="text-primary-text font-semibold hover:underline"
-                  >
-                    {formatRoundupDate(entry.date)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
       </main>
 
       <Footer />

@@ -11,6 +11,8 @@ import Home from './pages/Home';
 // (and its heavier dependencies — TipTap, DOMPurify) loads on demand.
 const News = lazy(() => import('./pages/News'));
 const DailyRoundup = lazy(() => import('./pages/DailyRoundup'));
+const DailyArchive = lazy(() => import('./pages/DailyArchive'));
+const DailyTagView = lazy(() => import('./pages/DailyTagView'));
 const PostView = lazy(() => import('./pages/PostView'));
 const Policy = lazy(() => import('./pages/Policy'));
 const PolicyView = lazy(() => import('./pages/PolicyView'));
@@ -35,6 +37,7 @@ const Terms = lazy(() => import('./pages/Terms'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
 const PostEditor = lazy(() => import('./pages/PostEditor'));
 const AdminTags = lazy(() => import('./pages/AdminTags'));
+const SuggestedDailyTags = lazy(() => import('./pages/SuggestedDailyTags'));
 const AdminPeople = lazy(() => import('./pages/AdminPeople'));
 const AdminMembers = lazy(() => import('./pages/AdminMembers'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -48,7 +51,12 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/daily" element={<DailyRoundup />} />
+          <Route path="/news/daily/archive" element={<DailyArchive />} />
+          <Route path="/news/daily/tag/:slug" element={<DailyTagView />} />
           <Route path="/news/daily/:date" element={<DailyRoundup />} />
+          {import.meta.env.DEV && (
+            <Route path="/__preview/suggested-tags" element={<SuggestedDailyTags />} />
+          )}
           <Route path="/news/:slug" element={<PostView />} />
           <Route path="/policy" element={<Policy />} />
           <Route path="/policy/:slug" element={<PolicyView />} />
@@ -130,6 +138,14 @@ function App() {
             element={
               <RequireEditor adminOnly>
                 <AdminTags />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/daily-tags"
+            element={
+              <RequireEditor adminOnly adminDenied="Suggested tags are limited to administrators.">
+                <SuggestedDailyTags />
               </RequireEditor>
             }
           />

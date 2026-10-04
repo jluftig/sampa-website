@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-09-29 (T64 — daily addiction roundup at `/news/daily` plus daily-email opt-in. Draft PR #119. Preview only. Do not merge until Website QA GREEN and Josh’s screenshot yay.)
+**Last updated:** 2026-10-03 (T65 — Website QA RED on draft PR #123: date-only crawler rewrite, noindex on unknown dates, `/news/daily` canonical matches bots. Still preview only. Do not merge.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,7 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T64 | Daily addiction roundup on `/news/daily` + daily-email opt-in | cursor | 2026-09-29 | **Claimed cursor.** Draft PR **#119** (preview only). JSON files in `content/daily-news/`. Public `/news/daily` and `/news/daily/:date`. Opt-in extends `api/newsletter-signup.js` (`list: "daily"` → `BREVO_LIST_DAILY_NEWS`). No new `api/` file. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
+| T65 | Daily news archive: dated pages, month-headed list, auto-tags, suggested-tag queue | cursor | 2026-10-03 | **Claimed cursor.** Draft PR **#123** (preview only). QA fix: crawler rewrite is `YYYY-MM-DD` only; archive has its own share preview; unknown dates are `noindex`; `/news/daily` canonical is the latest dated URL for browsers and bots. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T63 | Giveaway banner more eye-catching + Instagram reel on /giveaway | cursor | 2026-09-29 | **Claimed cursor.** PR **#118** (preview only). Brighter teal→violet banner with a “How to enter” pill, and an embed-free reel link on `/giveaway` (`https://www.instagram.com/reel/DdwVzwmABiw/`). Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T62 | Psych Congress giveaway banner + /giveaway | cursor | 2026-09-28 | **Claimed cursor.** PR **#117** (preview only). Dismissible public banner and `/giveaway` (flyer, entry steps, both Instagram accounts). Expires 2026-10-01 23:59 America/Los_Angeles via `GIVEAWAY_ENDS_AT` in `src/lib/announcements.js`. Do not merge until Josh reviews the Vercel preview. |
 | T60 | Recent issues titles stay on one line | cursor | 2026-09-24 | **Claimed cursor.** Draft PR #115. Reach drops a send whose name or subject contains TEST, or whose recipients include the Brevo test list. Those sends leave Recent issues and the campaign totals. Other parenthetical notes still come off the label. The row still truncates. Preview only. Do not merge until Website QA and Josh. |
@@ -84,11 +84,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T64 | Daily addiction roundup on `/news/daily` + daily-email opt-in | cursor | 2026-09-29 | **Merged PR #119** (`41d82f4`) and content **#120** (`dcc59d8`). Weekday JSON roundup and daily-list opt-in. T65 is the archive prototype and is not merged. |
 | T58 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Merged PR #112 → Production** (`4a63917`). Four pillars on `/editor/members`. Finance is admin only. T59 tightens the layout and adds the manual Relay balance. |
 | T53 | In-site site-traffic dashboard for roster viewers | cursor | 2026-09-18 | **Merged PR #106 → Production** (`a9d7808`). Site traffic card at the top of `/editor/members`. Gate is `canViewMemberRoster` (`admin` or `can_view_members`). Tracking-start note 2026-09-16. T58 extends this card. |
 | T54 | News bylines include credentials (PA-C) | egg | 2026-09-18 | **Merged PR #107 → Production** (`8241122`). Bylines append `profiles.credentials` (`Josh Luftig, PA-C`). Live `author_name` backfilled. SQL Editor still needs `supabase/migrations/2026-09-18-list-news-editors-credentials.sql` so the picker does not strip titles on save. |
 | T52 | Vercel Web Analytics for addictionpas.org | cursor | 2026-09-16 | **Merged PR #105 → Production** (`fe234d6`). `@vercel/analytics/react` `<Analytics />` at SPA root (`src/main.jsx`). Josh already Enabled the dashboard toggle. After this deploy, visit the live site once to confirm the Analytics tab starts receiving pageviews. |
-| T51 | CMS CY 2027 PFS public comment (CMS-1848-P) on /policy | cursor | 2026-09-16 | **Merged PR #104 → Production** (`b3ade23`). Fourth public comment: CMS-1848-P / Docket CMS-2026-2377 on `/policy` + `/policy/cms-pfs-cy-2027-1848-p` with branded PDF. Josh approved after Vercel preview + bodyHtml copy trim. |
 
 ### Task workflow (agents + humans)
 

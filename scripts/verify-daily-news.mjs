@@ -239,15 +239,15 @@ test('duplicate Brevo contacts still look like a fresh signup', async () => {
   assert.equal(calls.length, 1);
 });
 
-test('share slug daily is a 200 SAMPA Daily Roundup page', async () => {
+test('share slug daily canonical is the latest dated issue', async () => {
   globalThis.fetch = async () => {
     throw new Error('supabase should not be called for the daily slug');
   };
   const res = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=daily'));
   assert.equal(res.status, 200);
   const html = await res.text();
-  assert.match(html, /<title>SAMPA Daily Roundup<\/title>/);
-  assert.match(html, /href="https:\/\/www\.addictionpas\.org\/news\/daily"/);
+  assert.match(html, /<title>Daily News – Sep 30, 2026 \| SAMPA<\/title>/);
+  assert.match(html, /rel="canonical" href="https:\/\/www\.addictionpas\.org\/news\/daily\/2026-09-30"/);
 });
 
 test('api stays at the Hobby plan limit of 12 functions', () => {

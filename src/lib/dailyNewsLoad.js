@@ -1,7 +1,7 @@
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const ITEM_FIELDS = ['headline', 'outlet', 'date', 'summary', 'url'];
 
-function isRealIsoDate(value) {
+export function isRealIsoDate(value) {
   if (typeof value !== 'string' || !ISO_DATE.test(value)) return false;
   const [year, month, day] = value.split('-').map(Number);
   const parsed = new Date(Date.UTC(year, month - 1, day));
