@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
@@ -11,7 +11,6 @@ import Home from './pages/Home';
 // (and its heavier dependencies — TipTap, DOMPurify) loads on demand.
 const News = lazy(() => import('./pages/News'));
 const DailyRoundup = lazy(() => import('./pages/DailyRoundup'));
-const DailyArchive = lazy(() => import('./pages/DailyArchive'));
 const DailyTagView = lazy(() => import('./pages/DailyTagView'));
 const PostView = lazy(() => import('./pages/PostView'));
 const Policy = lazy(() => import('./pages/Policy'));
@@ -51,7 +50,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/daily" element={<DailyRoundup />} />
-          <Route path="/news/daily/archive" element={<DailyArchive />} />
+          <Route path="/news/daily/archive" element={<Navigate to="/news" replace />} />
           <Route path="/news/daily/tag/:slug" element={<DailyTagView />} />
           <Route path="/news/daily/:date" element={<DailyRoundup />} />
           {import.meta.env.DEV && (

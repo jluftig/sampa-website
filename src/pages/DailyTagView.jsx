@@ -47,8 +47,8 @@ export default function DailyTagView() {
         <p className="text-lg text-text/70 mb-10">
           Items from the daily roundup with this keyword.
           {' '}
-          <Link to="/news/daily/archive" className="text-primary-text font-semibold hover:underline">
-            All issues
+          <Link to="/news" className="text-primary-text font-semibold hover:underline">
+            All news
           </Link>
         </p>
 

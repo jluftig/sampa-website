@@ -61,8 +61,8 @@ export default function DailyRoundup() {
                   Latest issue
                 </Link>
               )}
-              <Link to="/news/daily/archive" className="text-primary-text font-semibold hover:underline">
-                All issues
+              <Link to="/news" className="text-primary-text font-semibold hover:underline">
+                All news
               </Link>
             </p>
             <DailyItemList items={roundup.items} />

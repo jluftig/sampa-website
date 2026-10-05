@@ -33,10 +33,6 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-6 font-medium text-sm text-text/80">
           <Link to="/news" className="hover:text-primary-text transition-colors">
             News
-            <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
-          </Link>
-          <Link to="/news/daily" className="hover:text-primary-text transition-colors">
-            Daily Roundup
           </Link>
           <Link to="/policy" className="hover:text-primary-text transition-colors">
             Policy
@@ -92,10 +88,6 @@ export default function Navbar() {
         <div className="pointer-events-auto lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
           <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
             News
-            <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
-          </Link>
-          <Link to="/news/daily" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
-            Daily Roundup
           </Link>
           <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
             Policy
