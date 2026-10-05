@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-01",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Washington youth opioid overdoses fall toward prepandemic lows",
+      "outlet": "The Seattle Times",
+      "date": "Sep 30",
+      "summary": "Washington State Department of Health data show suspected opioid overdoses and emergency visits among youths have fallen 62% and 52%, respectively, from a pandemic-era peak in 2023, with 12 youth opioid deaths in 2024 versus 31 in 2022. Expanded youth buprenorphine access, Narcan vending machines, and settlement-funded prevention are credited, but clinicians warn against declaring the crisis solved. Pediatric and ED teams should keep screening, comfort meds, and buprenorphine starts ready as the illicit supply shifts.",
+      "url": "https://www.seattletimes.com/seattle-news/mental-health/youth-opioid-overdoses-in-wa-drop-toward-prepandemic-low/"
+    },
+    {
+      "headline": "Researchers urge guidelines for telehealth buprenorphine in pregnancy",
+      "outlet": "Psychiatric Times",
+      "date": "Sep 30",
+      "summary": "A JAMA Internal Medicine Viewpoint argues that permanent audio-only buprenorphine initiation (December 2025) and 12-month postpartum Medicaid coverage in 49 states plus D.C. create a rare chance to close the perinatal opioid use disorder treatment gap. Fewer than half of pregnant patients with OUD receive medications for OUD, and state telehealth rules, Medicaid parity gaps, and missing perinatal-specific guidelines still constrain uptake. PAs who prescribe via telehealth need clearer pathways for initiation, monitoring, and obstetric integration.",
+      "url": "https://www.psychiatrictimes.com/view/researchers-call-for-evidence-and-guidelines-on-telehealth-buprenorphine-for-perinatal-opioid-use-disorder"
+    },
+    {
+      "headline": "Massachusetts schedules kratom as hospitals see severe 7-OH withdrawal",
+      "outlet": "Boston Medical Center HealthCity",
+      "date": "Sep 28",
+      "summary": "Massachusetts placed all kratom products in Schedule I under an emergency order effective August 28, following federal action on concentrated 7-hydroxymitragynine. U.S. poison-center kratom exposures rose roughly 1,200% from 2015 to 2025, and concentrated 7-OH products can cause severe, fentanyl-like withdrawal that sometimes needs high-dose buprenorphine. Standard drug screens miss mitragynine and 7-OH, so ED and clinic teams should ask patients directly about kratom use.",
+      "url": "https://healthcity.bmc.org/what-is-kratom-the-fast-growing-product-faces-a-regulatory-reckoning"
+    },
+    {
+      "headline": "Synthetic orphines evade fentanyl test strips, poison center warns",
+      "outlet": "WTOP",
+      "date": "Sep 30",
+      "summary": "A University of Virginia toxicologist warns that synthetic opioids known as orphines can be as potent as fentanyl, are not FDA-approved, and do not register on fentanyl test strips. They appear in street heroin, counterfeit pills, and stimulants; naloxone may reverse overdoses but stronger exposures often need extra doses, and co-adulterants are not reversed. Harm-reduction counseling should note that a negative fentanyl strip does not mean the sample is opioid-free.",
+      "url": "https://wtop.com/virginia/2026/09/harddetect-synthetic-opioids-evade-fentanyl-test-strips-toxicologist-warns/"
+    },
+    {
+      "headline": "Over one in three first buprenorphine prescriptions went unfilled in 2024",
+      "outlet": "JAMA Network Open",
+      "date": "Aug 4",
+      "summary": "In a CDC-led Optum cohort of 1,428 commercially insured or Medicare Advantage adults with a first buprenorphine prescription for opioid use disorder (2020-2024), abandonment within 30 days rose from 19% to 37%, with 25.8% overall. Patients who abandoned fills were younger, more often Hispanic, more often commercially insured, and faced higher pharmacy deductibles. Clinics can cut the last-mile gap by dispensing at the visit, navigating pharmacy stock, and tracking prescribed-but-not-dispensed rates.",
+      "url": "https://doi.org/10.1001/jamanetworkopen.2026.27142"
+    }
+  ]
+}
