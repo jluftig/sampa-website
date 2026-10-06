@@ -24,6 +24,7 @@
     "test:giveaway": "node scripts/verify-giveaway.mjs",
     "test:daily-news": "node --test scripts/verify-daily-news.mjs",
     "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",
+    "test:news-feed": "node --test scripts/verify-news-feed.mjs",
     "sitemap:daily": "node scripts/write-daily-sitemap.mjs",
     "prebuild": "node scripts/write-daily-sitemap.mjs"
   },
