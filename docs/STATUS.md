@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-08 (T68 — board tabs, roster links, and signed-out Board nav. Preview only until Website QA and Josh.)
+**Last updated:** 2026-10-08 (T68 — draft PR #131, board tabs, roster links, and signed-out Board. Preview only until Website QA and Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,7 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T68 | Board tabs, roster links, and signed-out Board | cursor | 2026-10-08 | **Claimed cursor.** Items 1, 3, and 5 from the CoS navigation audit. Josh approved 2026-10-08. Shared tabs on `/board` and `/board/dashboard`, a dashboard button, roster ↔ dashboard links, Board in the signed-out nav, and a login line when `next` is `/board` or `/members`. Preview only. Do not merge until Website QA is green and Josh says yay. |
+| T68 | Board tabs, roster links, and signed-out Board | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#131** (preview only). Items 1, 3, and 5 from the CoS navigation audit. Josh approved 2026-10-08. Shared tabs on `/board` and `/board/dashboard`, a dashboard button, roster ↔ dashboard links, Board in the signed-out nav, and a login line when `next` is `/board` or `/members`. Do not merge until Website QA is green and Josh says yay. |
 | T67 | Move board minutes and Relay balance out of the public repo | cursor | 2026-10-08 | **Claimed cursor.** Stacked on the T66 dashboard branch. Meetings and the Relay balance move to Supabase. Seed file stays uncommitted. Leadership lists Membership and Finance co-chairs. Preview only. Do not merge until Website QA and Josh. |
 | T66 | Board dashboard at `/board/dashboard` + list snapshots | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#129** (preview only). Josh approved 2026-10-08 and already applied `supabase/migrations/2026-10-08-committee-chair-subscriber-snapshots.sql`. Org dashboard is at `/board/dashboard` for admin, `is_board`, and `is_committee_chair`. Finance uses that gate. `/board` shows aggregate counts only. Daily list 15 and Weekly list 3 growth come from `subscriber_snapshots` (cron needs `CRON_SECRET`; unset returns `{error:'unavailable'}`). The meetings link on the dashboard shows only for active members. Do not merge until Website QA and Josh. |
 | T65 | Daily news archive: dated pages, month-headed list, auto-tags, suggested-tag queue | cursor | 2026-10-03 | **Claimed cursor.** Draft PR **#123** (preview only). QA fix: crawler rewrite is `YYYY-MM-DD` only; archive has its own share preview; unknown dates are `noindex`; `/news/daily` canonical is the latest dated URL for browsers and bots. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
