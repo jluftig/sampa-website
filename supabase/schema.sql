@@ -97,17 +97,20 @@ alter table public.profiles add column if not exists onboarded_at      timestamp
 -- can_edit_news = write news posts (the old 'editor' role, which is kept as a
 -- legacy value and honored by is_editor()); can_view_members = READ-ONLY
 -- access to the member roster + pledge tracker (/editor/members) for the
--- membership committee, treasurer, etc. is_board = SAMPA board member (badge
--- in the member directory; future board privileges TBD).
--- is_membership_committee = Membership Committee (People checkbox; with
--- is_board, gates the /dashboard Site traffic card). Admins implicitly have
--- news + member-viewer capabilities; Board and Membership Committee are
--- independent (admin ≠ board / committee unless checked).
+-- membership committee, treasurer, etc. is_board = SAMPA board member
+-- (directory badge, and with is_committee_chair opens /board/dashboard
+-- including finances). is_membership_committee = Membership Committee
+-- (People checkbox only; it does not open the roster or the dashboard).
+-- is_committee_chair = committee chair (board dashboard, including finances).
+-- Admins implicitly have news + member-viewer + dashboard capabilities.
+-- Board, Membership Committee, and committee chair are independent
+-- (admin ≠ those hats unless checked). The roster stays can_view_members.
 -- Flags are admin-set only (guarded by guard_profile_role).
 alter table public.profiles add column if not exists can_edit_news    boolean not null default false;
 alter table public.profiles add column if not exists can_view_members boolean not null default false;
 alter table public.profiles add column if not exists is_board         boolean not null default false;
 alter table public.profiles add column if not exists is_membership_committee boolean not null default false;
+alter table public.profiles add column if not exists is_committee_chair boolean not null default false;
 
 -- Member networking directory privacy (self-editable). Opt-out model:
 -- directory_visible defaults true so active members appear unless they hide.
@@ -401,6 +404,9 @@ begin
   if new.is_membership_committee is distinct from old.is_membership_committee then
     changes := changes || jsonb_build_object('is_membership_committee', jsonb_build_array(old.is_membership_committee, new.is_membership_committee));
   end if;
+  if new.is_committee_chair is distinct from old.is_committee_chair then
+    changes := changes || jsonb_build_object('is_committee_chair', jsonb_build_array(old.is_committee_chair, new.is_committee_chair));
+  end if;
   if changes <> '{}'::jsonb then
     insert into public.audit_log (actor_id, actor_email, action, target_email, detail)
     values (
@@ -440,6 +446,7 @@ begin
     or new.can_view_members   is distinct from old.can_view_members
     or new.is_board           is distinct from old.is_board
     or new.is_membership_committee is distinct from old.is_membership_committee
+    or new.is_committee_chair is distinct from old.is_committee_chair
   ) then
     raise exception 'Only admins can change role or membership fields';
   end if;
@@ -503,6 +510,18 @@ create policy audit_log_select on public.audit_log
 drop policy if exists audit_log_insert on public.audit_log;
 create policy audit_log_insert on public.audit_log
   for insert with check ( actor_id = auth.uid() );
+
+-- One row per Brevo list per UTC day. Written by the subscriber-snapshot cron
+-- (service role). No client policies: members do not read this table directly.
+create table if not exists public.subscriber_snapshots (
+  snapshot_date       date not null,
+  list_id             integer not null,
+  total_subscribers   integer not null,
+  unique_subscribers  integer not null,
+  primary key (snapshot_date, list_id)
+);
+
+alter table public.subscriber_snapshots enable row level security;
 
 -- profiles: read own row, or all rows for admins and member-viewers (roster);
 -- update stays own-or-admin (role/membership/permission columns guarded above)

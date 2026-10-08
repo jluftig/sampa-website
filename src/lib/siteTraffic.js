@@ -1,7 +1,7 @@
-import { canViewMemberRoster } from './memberRoster.js';
+import { canViewBoardDashboard, canViewMemberRoster } from './memberRoster.js';
 
-export { canViewMemberRoster };
-export const canViewSiteTraffic = canViewMemberRoster;
+export { canViewBoardDashboard, canViewMemberRoster };
+export const canViewSiteTraffic = canViewBoardDashboard;
 
 export const TRAFFIC_RANGES = [7, 30];
 export const TOP_PATH_LIMIT = 10;

@@ -1,12 +1,17 @@
-// Who may open /editor/members (RequireMemberViewer). Site traffic uses this
-// same check — one source of truth. Admins imply view-members; Board and
-// Membership Committee do not (give them the View members checkbox).
+// Who may open /editor/members (RequireMemberViewer). Admins imply
+// view-members. Board, Membership Committee, and committee chair do not.
 export function canViewMemberRoster(profile) {
   return profile?.role === 'admin' || !!profile?.can_view_members;
 }
 
-// Stripe cash totals. No treasurer flag exists. is_board is a directory badge
-// and does not grant this.
+// Org dashboard at /board/dashboard, including finances. Any director may
+// see the financial records. Committee chairs share that gate.
+export function canViewBoardDashboard(profile) {
+  return profile?.role === 'admin'
+    || !!profile?.is_board
+    || !!profile?.is_committee_chair;
+}
+
 export function canViewFinance(profile) {
-  return profile?.role === 'admin';
+  return canViewBoardDashboard(profile);
 }
