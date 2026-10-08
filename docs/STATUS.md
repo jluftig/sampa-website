@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-08 (T66 — Board dashboard move claimed by cursor. Preview only until Website QA and Josh.)
+**Last updated:** 2026-10-08 (T67 — private board records and Relay balance claimed by cursor. Preview only until Website QA and Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,6 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T67 | Move board minutes and Relay balance out of the public repo | cursor | 2026-10-08 | **Claimed cursor.** Stacked on the T66 dashboard branch. Meetings and the Relay balance move to Supabase. Seed file stays uncommitted. Leadership lists Membership and Finance co-chairs. Preview only. Do not merge until Website QA and Josh. |
 | T66 | Board dashboard at `/board/dashboard` + list snapshots | cursor | 2026-10-08 | **Claimed cursor.** Josh approved 2026-10-08. Move the org dashboard off `/editor/members` onto `/board/dashboard` for admin, `is_board`, and a new `is_committee_chair` flag. Finance uses that same gate. `/board` gets aggregate member numbers only. Daily (Brevo list 15) and Weekly (list 3) growth from a once-a-day snapshot table. Preview only. Do not merge until Website QA and Josh. |
 | T65 | Daily news archive: dated pages, month-headed list, auto-tags, suggested-tag queue | cursor | 2026-10-03 | **Claimed cursor.** Draft PR **#123** (preview only). QA fix: crawler rewrite is `YYYY-MM-DD` only; archive has its own share preview; unknown dates are `noindex`; `/news/daily` canonical is the latest dated URL for browsers and bots. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T63 | Giveaway banner more eye-catching + Instagram reel on /giveaway | cursor | 2026-09-29 | **Claimed cursor.** PR **#118** (preview only). Brighter teal→violet banner with a “How to enter” pill, and an embed-free reel link on `/giveaway` (`https://www.instagram.com/reel/DdwVzwmABiw/`). Do not merge until Website QA GREEN and Josh’s screenshot yay. |
