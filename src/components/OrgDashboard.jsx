@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Briefcase, Landmark, Scale, Users } from 'lucide-react';
 import { apiGet } from '../lib/api';
+import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import MemberRosterLink from './MemberRosterLink';
 import { listPolicyDocuments } from '../data/policyDocuments';
 import { JOBS_PLACEHOLDER, shapeDatedOutput } from '../lib/educationImpact';
 import { shapePolicyImpact } from '../lib/policyImpact';
@@ -91,7 +93,7 @@ function useRosterGet(path) {
   return { stats, loading, error };
 }
 
-export function MembershipPanel({ loading, error, stats }) {
+export function MembershipPanel({ loading, error, stats, profile }) {
   const series = stats?.series || [];
   const hasSeries = series.some((point) => point.active);
 
@@ -156,6 +158,8 @@ export function MembershipPanel({ loading, error, stats }) {
           )}
         </>
       )}
+
+      <MemberRosterLink profile={profile} />
     </section>
   );
 }
@@ -496,8 +500,16 @@ function ImpactSection() {
 }
 
 function MembershipSection() {
+  const { profile } = useAuth();
   const { stats, loading, error } = useRosterGet('/api/newsletter-stats?section=membership');
-  return <MembershipPanel loading={loading} error={error} stats={stats} />;
+  return (
+    <MembershipPanel
+      loading={loading}
+      error={error}
+      stats={stats}
+      profile={profile}
+    />
+  );
 }
 
 function FinanceSection() {

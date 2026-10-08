@@ -10,6 +10,7 @@ import {
   recordsEmptyCopy,
 } from '../data/boardSchedule';
 import BoardNumbers from '../components/BoardNumbers';
+import BoardTabs from '../components/BoardTabs';
 
 const TABS = [
   { id: 'agendas', label: 'Board Meeting Agendas' },
@@ -103,6 +104,7 @@ export default function BoardMeetings() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-24">
+        <BoardTabs active="meetings" />
         <header className="max-w-4xl mb-10 md:mb-12">
           <h1 className="text-4xl md:text-6xl font-drama font-bold">
             {BOARD_HUB.title}

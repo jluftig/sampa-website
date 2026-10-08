@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import OrgDashboard from '../components/OrgDashboard';
+import BoardTabs from '../components/BoardTabs';
 import { useAuth } from '../lib/AuthContext';
 
 export default function BoardDashboard() {
@@ -12,6 +13,7 @@ export default function BoardDashboard() {
       <div className="noise-overlay pointer-events-none" />
       <Navbar />
       <main className="max-w-6xl mx-auto px-4 pt-32 pb-24">
+        <BoardTabs active="dashboard" />
         {canAccessMemberDirectory && (
           <Link to="/board" className="text-primary-text font-data text-sm font-semibold hover:underline">
             ← Board meetings

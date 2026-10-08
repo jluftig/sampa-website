@@ -95,3 +95,16 @@ export function memberLoginLabel({ user, profile, loading } = {}) {
   if (isEditorProfile(profile)) return 'Editor';
   return 'Dashboard';
 }
+
+export function rosterBackLink(profile) {
+  if (isEditorProfile(profile)) return { to: '/editor', label: '← Editor' };
+  return { to: '/dashboard', label: '← My account' };
+}
+
+export function memberBenefitSignInNote(next) {
+  const path = String(next || '').split('?')[0].split('#')[0];
+  const board = path === '/board' || path.startsWith('/board/');
+  const members = path === '/members' || path.startsWith('/members/');
+  if (!board && !members) return null;
+  return 'Board records are a member benefit. Sign in to continue.';
+}

@@ -8,6 +8,7 @@ import { apiGet } from '../lib/api';
 import { BOARD_HUB } from '../data/boardHub';
 import { hasFullBody } from '../data/boardSchedule';
 import { formatDateOnly } from '../lib/format';
+import BoardTabs from '../components/BoardTabs';
 
 function DocumentSection({ id, heading, doc }) {
   if (!doc) return null;
@@ -105,6 +106,7 @@ export default function BoardMeetingView() {
         <div className="noise-overlay pointer-events-none" />
         <Navbar />
         <main className="max-w-3xl mx-auto px-4 pt-32 pb-24 text-center">
+          <BoardTabs active="meetings" />
           <h1 className="text-3xl font-drama font-bold mb-4">
             {loadError.status === 401
               ? 'Sign in required'
@@ -127,6 +129,7 @@ export default function BoardMeetingView() {
         <div className="noise-overlay pointer-events-none" />
         <Navbar />
         <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
+          <BoardTabs active="meetings" />
           <p className="text-text/50 font-data">Loading…</p>
         </main>
         <Footer />
@@ -140,6 +143,7 @@ export default function BoardMeetingView() {
         <div className="noise-overlay pointer-events-none" />
         <Navbar />
         <main className="max-w-3xl mx-auto px-4 pt-32 pb-24 text-center">
+          <BoardTabs active="meetings" />
           <h1 className="text-3xl font-drama font-bold mb-4">Not found</h1>
           <Link to="/board" className="text-primary-text font-semibold hover:underline">
             ← {BOARD_HUB.title}
@@ -156,6 +160,7 @@ export default function BoardMeetingView() {
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-4 pt-32 pb-24">
+        <BoardTabs active="meetings" />
         <Link
           to="/board"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-text/50 hover:text-primary-text transition-colors mb-10"
