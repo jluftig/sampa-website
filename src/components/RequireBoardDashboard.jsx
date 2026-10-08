@@ -19,18 +19,21 @@ function Shell({ children }) {
 }
 
 export function BoardDashboardDenied() {
+  const { canAccessMemberDirectory } = useAuth();
   return (
     <Shell>
       <h1 className="text-3xl font-drama font-bold mb-4">Board dashboard</h1>
       <p className="text-text/60 max-w-md mx-auto mb-8">
         This dashboard is for administrators, board members, and committee chairs.
       </p>
-      <Link
-        to="/board"
-        className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-primary-text to-accent text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
-      >
-        Back to board meetings
-      </Link>
+      {canAccessMemberDirectory && (
+        <Link
+          to="/board"
+          className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-primary-text to-accent text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
+        >
+          Back to board meetings
+        </Link>
+      )}
     </Shell>
   );
 }

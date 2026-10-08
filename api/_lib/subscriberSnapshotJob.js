@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto';
 import { json } from './clients.js';
 import { brevoGet } from './brevo-readonly.js';
 import { brevoConfigFromEnv } from '../../src/lib/newsletterStats.js';
@@ -12,21 +13,25 @@ async function readList(get, apiKey, listId) {
   return { listId, payload };
 }
 
+function sameSecret(left, right) {
+  const a = Buffer.from(left);
+  const b = Buffer.from(right);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
+
 export function cronAuthorized(request, env) {
   const secret = env?.CRON_SECRET || '';
   if (!secret) return 'missing';
   const header = request.headers.get('authorization') || '';
-  return header === `Bearer ${secret}` ? 'ok' : 'rejected';
+  return sameSecret(header, `Bearer ${secret}`) ? 'ok' : 'rejected';
 }
 
 export async function handleSubscriberSnapshot(request, deps = {}) {
   const env = deps.env || process.env;
   const auth = cronAuthorized(request, env);
   if (auth === 'missing') {
-    return snapshotJson({
-      error: 'not_configured',
-      message: 'CRON_SECRET is not set.',
-    }, 503);
+    return snapshotJson({ error: 'unavailable' }, 503);
   }
   if (auth !== 'ok') return snapshotJson({ error: 'Not authorized' }, 401);
 

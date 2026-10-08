@@ -171,12 +171,17 @@ describe('subscriber snapshot job', () => {
       },
     }));
     assert.equal(missing.status, 503);
-    assert.equal(missing.body.error, 'not_configured');
+    assert.equal(missing.body.error, 'unavailable');
+    assert.equal(missing.body.message, undefined);
 
+    const secret = 'cron-secret';
+    const expected = `Bearer ${secret}`;
+    const sameLengthWrong = `Bearer ${'x'.repeat(secret.length)}`;
+    assert.equal(sameLengthWrong.length, expected.length);
     const wrong = await read(await handleSubscriberSnapshot(
-      request('/api/newsletter-stats?section=subscriber-snapshot', { authorization: 'Bearer nope' }),
+      request('/api/newsletter-stats?section=subscriber-snapshot', { authorization: sameLengthWrong }),
       {
-        env: { CRON_SECRET: 'cron-secret', BREVO_API_KEY: 'secret-brevo-key' },
+        env: { CRON_SECRET: secret, BREVO_API_KEY: 'secret-brevo-key' },
         upsertSnapshots: async () => {
           throw new Error('should not write');
         },
@@ -184,6 +189,18 @@ describe('subscriber snapshot job', () => {
     ));
     assert.equal(wrong.status, 401);
     assert.equal(wrong.body.error, 'Not authorized');
+
+    const short = await read(await handleSubscriberSnapshot(
+      request('/api/newsletter-stats?section=subscriber-snapshot', { authorization: 'Bearer nope' }),
+      {
+        env: { CRON_SECRET: secret, BREVO_API_KEY: 'secret-brevo-key' },
+        upsertSnapshots: async () => {
+          throw new Error('should not write');
+        },
+      },
+    ));
+    assert.equal(short.status, 401);
+    assert.equal(short.body.error, 'Not authorized');
   });
 });
 
@@ -238,6 +255,8 @@ describe('chair flag storage', () => {
     const people = readFileSync('src/pages/AdminPeople.jsx', 'utf8');
     const app = readFileSync('src/App.jsx', 'utf8');
     const gate = readFileSync('src/components/RequireBoardDashboard.jsx', 'utf8');
+    const page = readFileSync('src/pages/BoardDashboard.jsx', 'utf8');
+    const job = readFileSync('api/_lib/subscriberSnapshotJob.js', 'utf8');
     const roster = readFileSync('src/pages/AdminMembers.jsx', 'utf8');
     const hub = readFileSync('src/pages/BoardMeetings.jsx', 'utf8');
 
@@ -255,6 +274,12 @@ describe('chair flag storage', () => {
     assert.equal((gate.match(/<Navigate/g) || []).length, 1);
     assert.match(gate, /if \(loginTo\)/);
     assert.match(gate, /This dashboard is for administrators, board members, and committee chairs/);
+    assert.match(gate, /canAccessMemberDirectory &&/);
+    assert.match(gate, /Back to board meetings/);
+    assert.match(page, /canAccessMemberDirectory &&/);
+    assert.match(page, /to="\/board"/);
+    assert.match(job, /timingSafeEqual/);
+    assert.doesNotMatch(job, /header ===/);
     assert.doesNotMatch(roster, /<OrgDashboard/);
     assert.match(hub, /<BoardNumbers/);
   });
