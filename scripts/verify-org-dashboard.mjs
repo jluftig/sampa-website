@@ -171,7 +171,7 @@ describe('GET /api/membership-stats', () => {
 
     const member = await read(await handleMembershipStats(req(), {
       requireUser: async () => ({ id: 'u1' }),
-      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
+      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
       loadMembershipRows: async () => rows,
       now: NOW,
       cache: createTtlCache(),
@@ -180,11 +180,11 @@ describe('GET /api/membership-stats', () => {
     assert.equal(member.body.error, 'Not authorized');
   });
 
-  it('returns aggregates for a roster viewer and caches the month', async () => {
+  it('returns aggregates for a committee chair and caches the month', async () => {
     let loads = 0;
     const deps = {
       requireUser: async () => ({ id: 'viewer' }),
-      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
+      loadViewerProfile: async () => ({ role: 'member', is_committee_chair: true }),
       loadMembershipRows: async () => {
         loads += 1;
         return rows;
@@ -211,10 +211,12 @@ describe('GET /api/finance-stats', () => {
     return { status: res.status, body: await res.json(), cache: res.headers.get('cache-control') };
   }
 
-  it('keeps finance to administrators', () => {
+  it('opens finance to the board dashboard gate', () => {
     assert.equal(canViewFinance({ role: 'admin' }), true);
-    assert.equal(canViewFinance({ role: 'member', can_view_members: true, is_board: true }), false);
-    assert.equal(canViewFinance({ role: 'member', is_board: true }), false);
+    assert.equal(canViewFinance({ role: 'member', is_board: true }), true);
+    assert.equal(canViewFinance({ role: 'member', is_committee_chair: true }), true);
+    assert.equal(canViewFinance({ role: 'member', can_view_members: true }), false);
+    assert.equal(canViewFinance({ role: 'member', is_membership_committee: true }), false);
     assert.equal(canViewFinance(null), false);
   });
 
@@ -238,8 +240,8 @@ describe('GET /api/finance-stats', () => {
 
     const roster = await read(await handleFinanceStats(req(), {
       requireUser: async () => ({ id: 'u1' }),
-      loadViewerProfile: async () => ({ role: 'member', can_view_members: true, is_board: true }),
-      env: {},
+      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
+      env: { STRIPE_SECRET_KEY: 'sk_test_secret' },
       listTransactions: async () => {
         throw new Error('should not list');
       },
@@ -247,9 +249,22 @@ describe('GET /api/finance-stats', () => {
       cache: createTtlCache(),
     }));
     assert.equal(roster.status, 403);
-    assert.equal(roster.body.error, 'finance_restricted');
-    assert.equal(roster.body.message, 'Finance totals are limited to administrators.');
+    assert.equal(roster.body.error, 'Not authorized');
     assert.equal(roster.body.relay, undefined);
+
+    const director = await read(await handleFinanceStats(req(), {
+      requireUser: async () => ({ id: 'u1' }),
+      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
+      env: {},
+      listTransactions: async () => {
+        throw new Error('should not list');
+      },
+      now: NOW,
+      cache: createTtlCache(),
+    }));
+    assert.equal(director.status, 503);
+    assert.equal(director.body.error, 'not_configured');
+    assert.deepEqual(director.body.relay, manualRelayBalance);
   });
 
   it('omits the relay balance when a request fails before the admin gate', async () => {
