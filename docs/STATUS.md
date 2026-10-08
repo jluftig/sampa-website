@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-03 (T65 — Website QA RED on draft PR #123: date-only crawler rewrite, noindex on unknown dates, `/news/daily` canonical matches bots. Still preview only. Do not merge.)
+**Last updated:** 2026-10-08 (T66 — Board dashboard move claimed by cursor. Preview only until Website QA and Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,6 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T66 | Board dashboard at `/board/dashboard` + list snapshots | cursor | 2026-10-08 | **Claimed cursor.** Josh approved 2026-10-08. Move the org dashboard off `/editor/members` onto `/board/dashboard` for admin, `is_board`, and a new `is_committee_chair` flag. Finance uses that same gate. `/board` gets aggregate member numbers only. Daily (Brevo list 15) and Weekly (list 3) growth from a once-a-day snapshot table. Preview only. Do not merge until Website QA and Josh. |
 | T65 | Daily news archive: dated pages, month-headed list, auto-tags, suggested-tag queue | cursor | 2026-10-03 | **Claimed cursor.** Draft PR **#123** (preview only). QA fix: crawler rewrite is `YYYY-MM-DD` only; archive has its own share preview; unknown dates are `noindex`; `/news/daily` canonical is the latest dated URL for browsers and bots. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T63 | Giveaway banner more eye-catching + Instagram reel on /giveaway | cursor | 2026-09-29 | **Claimed cursor.** PR **#118** (preview only). Brighter teal→violet banner with a “How to enter” pill, and an embed-free reel link on `/giveaway` (`https://www.instagram.com/reel/DdwVzwmABiw/`). Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T62 | Psych Congress giveaway banner + /giveaway | cursor | 2026-09-28 | **Claimed cursor.** PR **#117** (preview only). Dismissible public banner and `/giveaway` (flyer, entry steps, both Instagram accounts). Expires 2026-10-01 23:59 America/Los_Angeles via `GIVEAWAY_ENDS_AT` in `src/lib/announcements.js`. Do not merge until Josh reviews the Vercel preview. |
