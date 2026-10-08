@@ -39,6 +39,32 @@ function shortDay(isoDate) {
   return `${Number(month)}/${Number(day)}`;
 }
 
+function growthLineName(source) {
+  if (source === 'snapshot') return 'Subscribers';
+  if (source === 'mixed') return 'Recipients, then subscribers';
+  return 'Campaign recipients';
+}
+
+function GrowthChart({ listSize, ariaLabel }) {
+  const points = listSize?.points || [];
+  if (!points.length) return null;
+  return (
+    <div className="text-text">
+      <h4 className="text-sm font-bold mt-3 mb-1">Subscribers over time</h4>
+      <p className="text-text/45 text-xs mb-2 max-w-xl">{listSize.note}</p>
+      <MiniLineChart
+        ariaLabel={ariaLabel}
+        categories={points.map((point) => shortDay(String(point.date || '').slice(0, 10)))}
+        lines={[{
+          name: growthLineName(listSize.source),
+          color: '#1E2A38',
+          values: points.map((point) => point.total || 0),
+        }]}
+      />
+    </div>
+  );
+}
+
 function Stat({ label, value }) {
   return (
     <div className="rounded-xl border border-primary/10 bg-primary/[0.03] px-3 py-2">
@@ -64,8 +90,8 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
             Site traffic
           </h3>
           <p className="text-text/50 text-xs mt-1 max-w-xl">
-            Aggregate visitors and pageviews for addictionpas.org. Same access
-            as the member roster — no individual visitors.
+            Aggregate visitors and pageviews for addictionpas.org. Board
+            dashboard only — no individual visitors.
           </p>
         </div>
         <div
@@ -176,9 +202,9 @@ export function NewsletterPanel({ loading, error, stats }) {
         Newsletter
       </h3>
       <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
-        SAMPA Weekly on list 3. List size at send is that issue&apos;s sent
-        count. Opens and clicks stay here. The test list and makeup catch-ups
-        are left out. Same access as the member roster.
+        SAMPA Weekly is Brevo list {stats?.listId || 3}. SAMPA Daily Roundup
+        is list {stats?.daily?.listId || 15}. Opens and clicks stay on the
+        weekly issues. The test list and makeup catch-ups are left out.
       </p>
 
       {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
@@ -252,23 +278,7 @@ export function NewsletterPanel({ loading, error, stats }) {
                   values: chronological.map((issue) => issue.openRate || 0),
                 }]}
               />
-              <h4 className="text-sm font-bold mt-3 mb-1">
-                {stats.listSize?.source === 'snapshot' ? 'Subscribers over time' : 'List size at send'}
-              </h4>
-              <p className="text-text/45 text-xs mb-2 max-w-xl">
-                {stats.listSize?.source === 'snapshot'
-                  ? 'Saved subscriber snapshots.'
-                  : 'Sent count for each issue. Brevo has no subscriber history.'}
-              </p>
-              <MiniLineChart
-                ariaLabel="List size at each weekly send"
-                categories={(stats.listSize?.points || chronological).map((point) => shortDay(String(point.date || point.sentAt || '').slice(0, 10)))}
-                lines={[{
-                  name: stats.listSize?.source === 'snapshot' ? 'Subscribers' : 'Sent',
-                  color: '#1E2A38',
-                  values: (stats.listSize?.points || chronological).map((point) => point.total ?? point.recipients ?? 0),
-                }]}
-              />
+              <GrowthChart listSize={stats.listSize} ariaLabel="Weekly subscriber growth" />
             </div>
           )}
 
@@ -379,6 +389,38 @@ export default function SiteTrafficCard() {
         error={newsletterError}
         stats={newsletter}
       />
+      <DailyListPanel stats={newsletter?.daily} loading={newsletterLoading} error={newsletterError} />
     </div>
+  );
+}
+
+export function DailyListPanel({ stats, loading, error }) {
+  const notConfigured = error?.code === 'not_configured' || error?.status === 503;
+  const count = stats?.subscribers;
+  return (
+    <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
+      <h3 className="text-base font-bold">Daily Roundup</h3>
+      <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
+        Brevo list {stats?.listId || 15}. Current subscriber count, plus growth
+        from the daily snapshot. Earlier points, when shown, are campaign
+        recipient counts.
+      </p>
+      {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
+      {!loading && notConfigured && (
+        <p className="text-text/60 text-sm">Newsletter stats not configured.</p>
+      )}
+      {!loading && error && !notConfigured && (
+        <p className="text-text/60 text-sm">Couldn&apos;t load the daily list right now.</p>
+      )}
+      {!loading && !error && (
+        <>
+          <Stat label="Subscribers" value={count == null ? '—' : formatCount(count)} />
+          <GrowthChart listSize={stats?.listSize} ariaLabel="Daily subscriber growth" />
+          {!stats?.listSize?.points?.length && (
+            <p className="text-text/50 text-xs mt-2">{stats?.listSize?.note}</p>
+          )}
+        </>
+      )}
+    </section>
   );
 }

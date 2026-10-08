@@ -292,20 +292,20 @@ describe('GET /api/newsletter-stats', () => {
     }));
     assert.equal(member.status, 403);
 
-    const boardOnly = await read(await handleNewsletterStats(req(), {
+    const committeeOnly = await read(await handleNewsletterStats(req(), {
       requireUser: async () => ({ id: 'u1' }),
-      loadViewerProfile: async () => ({ role: 'member', is_board: true, is_membership_committee: true }),
+      loadViewerProfile: async () => ({ role: 'member', is_membership_committee: true }),
       env: viewerEnv,
       brevoGet,
     }));
-    assert.equal(boardOnly.status, 403);
-    assert.equal(boardOnly.body.error, 'Not authorized');
+    assert.equal(committeeOnly.status, 403);
+    assert.equal(committeeOnly.body.error, 'Not authorized');
   });
 
   it('returns not_configured when BREVO_API_KEY is missing', async () => {
     const res = await read(await handleNewsletterStats(req(), {
       requireUser: async () => ({ id: 'viewer' }),
-      loadViewerProfile: async () => ({ can_view_members: true }),
+      loadViewerProfile: async () => ({ role: 'admin' }),
       env: {},
       brevoGet,
     }));
@@ -318,7 +318,7 @@ describe('GET /api/newsletter-stats', () => {
     const calls = [];
     const res = await read(await handleNewsletterStats(req(), {
       requireUser: async () => ({ id: 'viewer' }),
-      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
+      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
       env: viewerEnv,
       cache: createTtlCache(),
       brevoGet: async (key, path) => {
@@ -344,10 +344,11 @@ describe('GET /api/newsletter-stats', () => {
     assert.deepEqual(res.body.articles.map((row) => row.path), ['/news/example']);
     assert.equal(res.body.topLinks[0].id, 25);
     assert.equal(JSON.stringify(res.body).includes('secret-brevo-key'), false);
-    assert.equal(calls.length, 4);
+    assert.equal(calls.length, 5);
     assert.ok(calls.every((call) => call.key === 'secret-brevo-key'));
     const paths = calls.map((call) => call.path);
     assert.ok(paths.some((path) => path === '/contacts/lists/3'));
+    assert.ok(paths.some((path) => path === '/contacts/lists/15'));
     assert.ok(paths.some((path) => path.startsWith('/emailCampaigns?')));
   });
 
@@ -368,6 +369,6 @@ describe('GET /api/newsletter-stats', () => {
     const second = await read(await handleNewsletterStats(req(), deps));
     assert.equal(first.status, 200);
     assert.equal(second.body.latest.id, 25);
-    assert.equal(hits, 4);
+    assert.equal(hits, 5);
   });
 });

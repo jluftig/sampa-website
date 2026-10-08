@@ -31,10 +31,13 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 - `role` enum `user_role` = member|editor|admin (default member; `editor` legacy — UI
   normalizes to member + flags)
 - Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`,
-  `is_board`, `is_membership_committee` (Board and Membership Committee are
-  independent of Admin). Roster + Site traffic use `canViewMemberRoster`
-  (`admin` or `can_view_members`). Committee/board hats do not open those
-  surfaces — also check **View members**.
+  `is_board`, `is_membership_committee`, `is_committee_chair` (each hat is
+  independent of Admin). Roster uses `canViewMemberRoster` (`admin` or
+  `can_view_members`). The board dashboard, including finances, uses
+  `canViewBoardDashboard` (`admin` or `is_board` or `is_committee_chair`).
+- `subscriber_snapshots` — one row per Brevo list per UTC day
+  (`snapshot_date`, `list_id`, `total_subscribers`, `unique_subscribers`).
+  Service role writes it. RLS on, no client policies.
 - `privileged_terms_accepted_at` — roster confidentiality click-accept (self-settable)
 
 ### Content

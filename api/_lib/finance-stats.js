@@ -1,7 +1,8 @@
 import Stripe from 'stripe';
-import { requireUser, supabaseAdmin, json } from './clients.js';
+import { requireUser, json } from './clients.js';
 import { createTtlCache } from './ttl-cache.js';
-import { canViewFinance, canViewMemberRoster } from '../../src/lib/memberRoster.js';
+import { canViewBoardDashboard } from '../../src/lib/memberRoster.js';
+import { loadBoardDashboardProfile } from './boardDashboardAccess.js';
 import { financeConfigFromEnv, shapeFinanceStats } from '../../src/lib/financeStats.js';
 import { monthKeys } from '../../src/lib/membershipStats.js';
 import { manualRelayBalance } from '../../src/data/relayBalance.js';
@@ -15,13 +16,7 @@ function financeJson(body, status = 200) {
 }
 
 async function loadViewerProfile(userId) {
-  const admin = supabaseAdmin();
-  const { data } = await admin
-    .from('profiles')
-    .select('role, can_view_members')
-    .eq('id', userId)
-    .maybeSingle();
-  return data;
+  return loadBoardDashboardProfile(userId);
 }
 
 async function listStripeTransactions(sinceUnix, key) {
@@ -56,14 +51,8 @@ export async function handleFinanceStats(request, deps = {}) {
     if (!user) return financeJson({ error: 'Sign in required' }, 401);
 
     const profile = await loadProfile(user.id);
-    if (!canViewMemberRoster(profile)) {
+    if (!canViewBoardDashboard(profile)) {
       return financeJson({ error: 'Not authorized' }, 403);
-    }
-    if (!canViewFinance(profile)) {
-      return financeJson({
-        error: 'finance_restricted',
-        message: 'Finance totals are limited to administrators.',
-      }, 403);
     }
     includeRelay = true;
 

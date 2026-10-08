@@ -13,7 +13,7 @@ import {
   stripAuthCallbackParams,
 } from './authSession';
 import { isActiveMemberAccess, isEditorProfile } from './memberHome';
-import { canViewMemberRoster } from './memberRoster';
+import { canViewBoardDashboard, canViewMemberRoster } from './memberRoster';
 
 const AuthContext = createContext(null);
 
@@ -276,6 +276,7 @@ export function AuthProvider({ children }) {
     // is_board / is_membership_committee are explicit only (admin ≠ those hats).
     isEditor,
     canViewMembers: canViewMemberRoster(profile),
+    canViewBoardDashboard: canViewBoardDashboard(profile),
     isAdmin,
     isBoard: !!profile?.is_board,
     isMembershipCommittee: !!profile?.is_membership_committee,

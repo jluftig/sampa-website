@@ -9,11 +9,11 @@ import Footer from '../components/Footer';
 // Admin-only page: everyone who has signed in, with checkbox permissions.
 // Capabilities are independent (people wear multiple hats):
 //   Publish news  -> can_edit_news (news posts; the old 'editor' role)
-//   View members  -> can_view_members (READ-ONLY roster + pledge tracker +
-//                    Site traffic on /editor/members)
-//   Board         -> is_board (directory badge)
-//   Membership    -> is_membership_committee (People label; give View members
-//                    if they need the roster / Site traffic)
+//   View members  -> can_view_members (READ-ONLY roster + pledge tracker)
+//   Board         -> is_board (directory badge + board dashboard, including finances)
+//   Membership    -> is_membership_committee (People label; does not open the roster
+//                    or the dashboard)
+//   Committee chair -> is_committee_chair (board dashboard, including finances)
 //   Administrator -> role 'admin' (everything operational, incl. this page)
 // Saving normalizes the legacy 'editor' role value into the flag.
 // Board is independent of admin (admin ≠ board unless checked).
@@ -26,16 +26,20 @@ export default function AdminPeople() {
 
   async function load() {
     setLoading(true);
-    const cols = 'id, email, full_name, role, can_edit_news, can_view_members, is_board, is_membership_committee, created_at';
+    const full = 'id, email, full_name, role, can_edit_news, can_view_members, is_board, is_membership_committee, is_committee_chair, created_at';
+    const noChair = 'id, email, full_name, role, can_edit_news, can_view_members, is_board, is_membership_committee, created_at';
+    const legacy = 'id, email, full_name, role, can_edit_news, can_view_members, is_board, created_at';
     let { data, error } = await supabase
       .from('profiles')
-      .select(cols)
+      .select(full)
       .order('created_at', { ascending: true });
+    if (error && /is_committee_chair/i.test(error.message || '')) {
+      const retry = await supabase.from('profiles').select(noChair).order('created_at', { ascending: true });
+      data = retry.data;
+      error = retry.error;
+    }
     if (error && /is_membership_committee/i.test(error.message || '')) {
-      const retry = await supabase
-        .from('profiles')
-        .select('id, email, full_name, role, can_edit_news, can_view_members, is_board, created_at')
-        .order('created_at', { ascending: true });
+      const retry = await supabase.from('profiles').select(legacy).order('created_at', { ascending: true });
       data = retry.data;
       error = retry.error;
     }
@@ -52,6 +56,7 @@ export default function AdminPeople() {
     view: p.can_view_members,
     board: !!p.is_board,
     membershipCommittee: !!p.is_membership_committee,
+    committeeChair: !!p.is_committee_chair,
     admin: p.role === 'admin',
   });
 
@@ -64,14 +69,17 @@ export default function AdminPeople() {
       can_view_members: next.view,
       is_board: next.board,
       is_membership_committee: next.membershipCommittee,
+      is_committee_chair: next.committeeChair,
     };
     let { error } = await supabase.from('profiles').update(patch).eq('id', person.id);
-    if (error && /is_membership_committee/i.test(error.message || '')) {
-      const { is_membership_committee: _drop, ...older } = patch;
+    if (error && /is_committee_chair|is_membership_committee/i.test(error.message || '')) {
+      const older = { ...patch };
+      if (/is_committee_chair/i.test(error.message || '')) delete older.is_committee_chair;
+      if (/is_membership_committee/i.test(error.message || '')) delete older.is_membership_committee;
       const retry = await supabase.from('profiles').update(older).eq('id', person.id);
       error = retry.error;
       if (!error) {
-        setError('Membership Committee is not in the database yet — apply supabase/migrations/2026-09-16-membership-committee.sql, then refresh.');
+        setError('Apply supabase/migrations/2026-10-08-committee-chair-subscriber-snapshots.sql, then refresh.');
         setPeople((prev) => prev.map((p) => (p.id === person.id ? { ...p, ...older } : p)));
         setBusyId(null);
         return;
@@ -99,16 +107,16 @@ export default function AdminPeople() {
           People appear here after their first sign-in. Permissions are
           independent checkboxes — check as many as someone&apos;s hats require.
           <strong> Publish news</strong> lets them write and publish posts;
-          <strong> view members</strong> gives read-only access to the staff
-          roster, pledge tracker, membership counts, Site traffic, and newsletter
-          stats (for the membership committee, treasurer, and board);
-          <strong>Board</strong> marks a board member (directory badge);
-          <strong> Membership Committee</strong> is a hat label — also check
-          <strong> view members</strong> if they should see the roster,
-          membership counts, Site traffic, and newsletter stats;
-          <strong> administrators</strong> have operational access, including
-          this page, the roster, Site traffic, and finance totals. Board and
-          Membership Committee are separate from Admin and do not open finance.
+          <strong> View members</strong> is the read-only staff roster and
+          pledge tracker.
+          <strong> Board</strong> is the directory badge and opens the board
+          dashboard, including finances.
+          <strong> Membership Committee</strong> is a hat label and does not
+          open the roster or the dashboard.
+          <strong> Committee chair</strong> opens the board dashboard,
+          including finances.
+          <strong> Administrators</strong> have operational access, including
+          this page, the roster, and the board dashboard.
         </p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -191,6 +199,17 @@ export default function AdminPeople() {
                         className={checkboxCls}
                       />
                       Membership Committee
+                    </label>
+                    <label className={`flex items-center gap-2 ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
+                      <input
+                        type="checkbox"
+                        checked={p.committeeChair}
+                        disabled={disabled}
+                        title={isSelf ? "You can't change your own permissions" : 'Committee chair'}
+                        onChange={() => apply(person, { ...p, committeeChair: !p.committeeChair })}
+                        className={checkboxCls}
+                      />
+                      Committee chair
                     </label>
                     <label className={`flex items-center gap-2 font-semibold ${disabled ? 'opacity-60' : 'cursor-pointer'}`}>
                       <input

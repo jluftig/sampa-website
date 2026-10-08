@@ -5,6 +5,7 @@ import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
 import RequireActiveMember from './components/RequireActiveMember';
 import RequireMemberViewer from './components/RequireMemberViewer';
+import RequireBoardDashboard from './components/RequireBoardDashboard';
 import Home from './pages/Home';
 
 // Route-level code splitting: the homepage loads eagerly; every other page
@@ -26,6 +27,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
 const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const BoardMeetings = lazy(() => import('./pages/BoardMeetings'));
+const BoardDashboard = lazy(() => import('./pages/BoardDashboard'));
 const BoardMeetingView = lazy(() => import('./pages/BoardMeetingView'));
 const Giveaway = lazy(() => import('./pages/Giveaway'));
 const About = lazy(() => import('./pages/About'));
@@ -104,6 +106,14 @@ function App() {
               >
                 <BoardMeetings />
               </RequireActiveMember>
+            }
+          />
+          <Route
+            path="/board/dashboard"
+            element={
+              <RequireBoardDashboard>
+                <BoardDashboard />
+              </RequireBoardDashboard>
             }
           />
           <Route

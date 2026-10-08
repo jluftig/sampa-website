@@ -38,7 +38,9 @@ describe('canViewMemberRoster / Site traffic gate', () => {
     assert.equal(canViewMemberRoster({ can_view_members: true }), true);
     assert.equal(canViewMemberRoster({ role: 'member', can_view_members: true }), true);
     assert.equal(canViewSiteTraffic({ role: 'admin' }), true);
-    assert.equal(canViewSiteTraffic({ can_view_members: true }), true);
+    assert.equal(canViewSiteTraffic({ role: 'member', is_board: true }), true);
+    assert.equal(canViewSiteTraffic({ role: 'member', is_committee_chair: true }), true);
+    assert.equal(canViewSiteTraffic({ can_view_members: true }), false);
     assert.equal(canViewMemberRoster({ is_board: true }), false);
     assert.equal(canViewMemberRoster({ is_membership_committee: true }), false);
     assert.equal(canViewMemberRoster({ role: 'member' }), false);
@@ -177,11 +179,12 @@ describe('GET /api/site-traffic authZ', () => {
     }));
     assert.equal(anon.status, 401);
 
-    const boardOnly = await read(await handleSiteTraffic(req(), {
+    const rosterOnly = await read(await handleSiteTraffic(req(), {
       requireUser: async () => ({ id: 'u1' }),
-      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
+      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
+      env: {},
     }));
-    assert.equal(boardOnly.status, 403);
+    assert.equal(rosterOnly.status, 403);
 
     const committeeOnly = await read(await handleSiteTraffic(req(), {
       requireUser: async () => ({ id: 'u1' }),
@@ -191,7 +194,7 @@ describe('GET /api/site-traffic authZ', () => {
 
     const noToken = await read(await handleSiteTraffic(req(), {
       requireUser: async () => ({ id: 'u1' }),
-      loadViewerProfile: async () => ({ can_view_members: true }),
+      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
       env: {},
     }));
     assert.equal(noToken.status, 503);
@@ -220,11 +223,11 @@ describe('GET /api/site-traffic authZ', () => {
     assert.equal(JSON.stringify(body).includes('secret-token'), false);
   });
 
-  it('returns aggregates for a member-viewer without exposing the token', async () => {
+  it('returns aggregates for a board member without exposing the token', async () => {
     const calls = [];
     const res = await handleSiteTraffic(req('30'), {
       requireUser: async () => ({ id: 'viewer' }),
-      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
+      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
       env: {
         VERCEL_WEB_ANALYTICS_TOKEN: 'secret-token',
         VERCEL_PROJECT_ID: 'prj_1',
@@ -289,8 +292,9 @@ describe('wiring', () => {
     assert.match(migration, /add column if not exists is_membership_committee/);
     assert.match(people, /Membership Committee/);
     assert.match(people, /is_membership_committee/);
-    assert.match(people, /also check/);
-    assert.match(people, /view members/);
+    assert.match(people, /Committee chair/);
+    assert.match(people, /is_committee_chair/);
+    assert.match(people, /view members/i);
     assert.match(helper, /export function canViewMemberRoster/);
     assert.match(helper, /role === 'admin'/);
     assert.match(helper, /can_view_members/);
@@ -298,7 +302,8 @@ describe('wiring', () => {
     assert.doesNotMatch(dashboard, /SiteTrafficCard/);
     assert.doesNotMatch(dashboard, /OrgDashboard/);
     assert.doesNotMatch(dashboard, /canViewSiteTraffic/);
-    assert.match(roster, /OrgDashboard/);
+    assert.doesNotMatch(roster, /OrgDashboard/);
+    assert.match(roster, /\/board\/dashboard/);
     assert.doesNotMatch(roster, /SiteTrafficCard/);
     assert.match(org, /SiteTrafficCard/);
     assert.doesNotMatch(roster, /canViewSiteTraffic/);
@@ -308,14 +313,15 @@ describe('wiring', () => {
     assert.match(card, /apiGet\(`\/api\/site-traffic\?range=\$\{range\}`\)/);
     assert.match(card, /shouldRequestTraffic/);
     assert.doesNotMatch(card, /location\.reload|location\.assign|window\.location/);
-    assert.match(card, /Same access\s+as the member roster/);
+    assert.match(card, /Board\s+dashboard only/);
+    assert.match(card, /Daily Roundup/);
     assert.doesNotMatch(card, /Board and\s+Membership Committee only/);
     assert.equal(TRACKING_STARTED_NOTE, 'Tracking started on September 16, 2026.');
     const noteIdx = card.indexOf('{TRACKING_STARTED_NOTE}');
     const loadingIdx = card.indexOf('{loading &&');
     assert.ok(noteIdx > 0 && noteIdx < loadingIdx, 'start-date note must render whenever the card is shown');
-    assert.match(api, /canViewMemberRoster/);
-    assert.match(api, /select\('role, can_view_members'\)/);
+    assert.match(api, /canViewBoardDashboard/);
+    assert.doesNotMatch(api, /select\('role, can_view_members'\)/);
     assert.match(api, /queryVisits/);
     assert.match(claude, /VERCEL_WEB_ANALYTICS_TOKEN/);
   });
