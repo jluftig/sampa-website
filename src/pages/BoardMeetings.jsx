@@ -9,6 +9,7 @@ import {
   nextStandingBoardDates,
   recordsEmptyCopy,
 } from '../data/boardSchedule';
+import BoardNumbers from '../components/BoardNumbers';
 
 const TABS = [
   { id: 'agendas', label: 'Board Meeting Agendas' },
@@ -107,6 +108,8 @@ export default function BoardMeetings() {
             {BOARD_HUB.title}
           </h1>
         </header>
+
+        <BoardNumbers />
 
         <div
           role="tablist"

@@ -8,7 +8,6 @@ import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PrivilegedAccessAgreement from '../components/PrivilegedAccessAgreement';
-import OrgDashboard from '../components/OrgDashboard';
 
 const STATUS_FILTERS = [
   { key: 'all', label: 'All accounts' },
@@ -126,7 +125,7 @@ function toCsv(rows) {
 // status, counts by tier/state, and a CSV export of the filtered view. Reads
 // are allowed by the profiles RLS policy (admins see all rows).
 export default function AdminMembers() {
-  const { user, profile } = useAuth();
+  const { user, profile, canViewBoardDashboard } = useAuth();
   // Confidentiality agreement gate: no member data is fetched or rendered
   // until this person has click-accepted (timestamp on their profile).
   const accepted = !!profile?.privileged_terms_accepted_at;
@@ -283,10 +282,13 @@ export default function AdminMembers() {
         <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
           ← Dashboard
         </Link>
-
-        <div className="mt-3">
-          <OrgDashboard />
-        </div>
+        {canViewBoardDashboard && (
+          <p className="mt-3 text-sm">
+            <Link to="/board/dashboard" className="text-primary-text font-semibold hover:underline">
+              Organization dashboard
+            </Link>
+          </p>
+        )}
 
         {!accepted ? (
           <div className="mt-4">

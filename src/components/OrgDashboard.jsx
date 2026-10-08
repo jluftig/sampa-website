@@ -175,7 +175,7 @@ export function FinancePanel({ loading, error, stats }) {
       <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
         Operating cash is the Relay balance. Stripe figures are dues and
         donations that settled on the site. They are not the bank balance.
-        Administrators only.
+        Administrators, board members, and committee chairs.
       </p>
 
       {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
