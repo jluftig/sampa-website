@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-08",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Rhode Island audit finds every sampled opioid treatment claim fell short of state or federal rules",
+      "outlet": "WPRI",
+      "date": "Oct 7",
+      "summary": "A Rhode Island Auditor General review released Oct 7 found that all 100 sampled Medicaid opioid treatment claims from 2023 and 2024 failed at least one state or federal requirement, with 99 instances of noncompliance with medication treatment rules and 95 missing biopsychosocial assessments. It also flagged $875,696 in potential overpayments after the state's five opioid treatment providers billed daily instead of at the weekly bundled rate, and called state monitoring insufficient. Its call for stronger oversight and a block on duplicate daily claims signals closer scrutiny of opioid treatment program documentation and billing.",
+      "url": "https://www.wpri.com/health/audit-ris-opioid-treatment-providers-not-compliant-with-state-federal-regulations/"
+    },
+    {
+      "headline": "Hospital EHR algorithm flagged 9,140 records, but only 23 patients started buprenorphine",
+      "outlet": "Addiction Science & Clinical Practice",
+      "date": "Oct 8",
+      "summary": "Screening data from a randomized trial of in-hospital buprenorphine initiation at two urban teaching hospitals, recruiting from October 2022 to October 2024, showed that an automated electronic health record algorithm produced 9,140 records, 93% of which were excluded on manual review. Of 434 potentially eligible patients, 43 agreed to be assessed and 23 enrolled and started buprenorphine, a 5% initiation rate. The authors say a more precise algorithm could cut manual review, but patient concerns and stigma about buprenorphine remain ongoing obstacles to starting treatment during hospitalization.",
+      "url": "https://doi.org/10.1186/s13722-026-00731-w"
+    },
+    {
+      "headline": "More addiction training tied to less physician stigma, mainly by building confidence to treat",
+      "outlet": "Addiction Science & Clinical Practice",
+      "date": "Oct 8",
+      "summary": "A nationally representative survey of 855 U.S. primary care and emergency department physicians, conducted from 2020 to 2022, found that more addiction training was associated with lower stigma toward patients with alcohol, stimulant, and opioid use disorders. Training was also linked to more treatment, including alcohol use disorder care (prevalence ratio 1.19) and medications for opioid use disorder (1.09), and its link to lower stigma ran fully through physicians' perceived capability to care for these patients. The authors say training that builds that capability may improve attitudes and the quality of addiction care.",
+      "url": "https://doi.org/10.1186/s13722-026-00722-x"
+    },
+    {
+      "headline": "New York will require many private workplaces to stock naloxone starting Dec. 13",
+      "outlet": "Newsday",
+      "date": "Oct 8",
+      "summary": "A New York law signed by Governor Kathy Hochul in December 2025 takes effect Dec 13 and requires many privately operated workplaces, including shops and restaurants, to keep opioid overdose reversal medication such as naloxone with their first-aid supplies. Proposed state Labor Department rules, open for comment through Nov 22, tie the amount to workforce and workplace size and require trained company volunteers; government agencies are not covered. The law extends naloxone into everyday workplaces, where a trained coworker may be the first person able to respond to an overdose.",
+      "url": "https://www.newsday.com/news/health/opioid-overdose-naloxone-f1wz79x4"
+    },
+    {
+      "headline": "Everyday exposure to alcohol cues tied to higher odds of drinking in two cohorts",
+      "outlet": "Translational Psychiatry",
+      "date": "Oct 8",
+      "summary": "Using ecological momentary assessment, which captures experiences in real time during daily life, researchers followed 73 non-treatment-seeking people with alcohol use disorder and a replication cohort of 56 young adults screened for risky drinking. In both groups, moments of exposure to alcohol-related cues were linked to higher odds of drinking even after accounting for social context, mood, and event appraisal, and being with others or with drinking companions was also tied to drinking. The authors say exploratory profiles that looked more cue-reactive or more socially driven support testing personalized, context-aware interventions for alcohol use disorder.",
+      "url": "https://www.nature.com/articles/s41398-026-04506-4"
+    }
+  ]
+}
