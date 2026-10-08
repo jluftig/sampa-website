@@ -154,23 +154,40 @@ describe('roster back link', () => {
 });
 
 describe('login note for member areas', () => {
-  it('explains Board when next is /board', () => {
-    assert.equal(
-      memberBenefitSignInNote('/board'),
-      'Board records are a member benefit. Sign in to continue.',
-    );
+  const records = {
+    text: 'Board records are a member benefit. Sign in to continue.',
+    showJoin: true,
+  };
+  const directory = {
+    text: 'The member directory is a member benefit. Sign in to continue.',
+    showJoin: true,
+  };
+  const dashboard = {
+    text: 'Board members and committee chairs: sign in to view the dashboard.',
+    showJoin: false,
+  };
+
+  it('keeps the records line for /board and a meeting', () => {
+    assert.deepEqual(memberBenefitSignInNote('/board'), records);
+    assert.deepEqual(memberBenefitSignInNote('/board/2026-09'), records);
+    assert.deepEqual(memberBenefitSignInNote('/board?from=nav'), records);
   });
 
-  it('explains the same line for /members and a board dashboard return', () => {
-    const line = 'Board records are a member benefit. Sign in to continue.';
-    assert.equal(memberBenefitSignInNote('/members'), line);
-    assert.equal(memberBenefitSignInNote('/members/abc'), line);
-    assert.equal(memberBenefitSignInNote('/board/dashboard'), line);
+  it('uses the directory line for /members', () => {
+    assert.deepEqual(memberBenefitSignInNote('/members'), directory);
+    assert.deepEqual(memberBenefitSignInNote('/members/abc'), directory);
+    assert.deepEqual(memberBenefitSignInNote('/members/abc?x=1'), directory);
+  });
+
+  it('uses the dashboard line without a join link', () => {
+    assert.deepEqual(memberBenefitSignInNote('/board/dashboard'), dashboard);
+    assert.deepEqual(memberBenefitSignInNote('/board/dashboard#top'), dashboard);
   });
 
   it('stays quiet for other destinations', () => {
     assert.equal(memberBenefitSignInNote('/news'), null);
     assert.equal(memberBenefitSignInNote('/dashboard'), null);
+    assert.equal(memberBenefitSignInNote('/membership'), null);
     assert.equal(memberBenefitSignInNote(null), null);
   });
 });

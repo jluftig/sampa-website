@@ -53,10 +53,15 @@ export default function Login() {
           </p>
           {benefitNote && (
             <p className="text-sm text-text/80 mb-8">
-              {benefitNote}{' '}
-              <Link to="/join" className="font-semibold text-primary-text hover:underline">
-                Join SAMPA
-              </Link>
+              {benefitNote.text}
+              {benefitNote.showJoin && (
+                <>
+                  {' '}
+                  <Link to="/join" className="font-semibold text-primary-text hover:underline">
+                    Join SAMPA
+                  </Link>
+                </>
+              )}
             </p>
           )}
 

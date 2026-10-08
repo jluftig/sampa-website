@@ -101,10 +101,23 @@ export function rosterBackLink(profile) {
   return { to: '/dashboard', label: '← My account' };
 }
 
+const BOARD_RECORDS_NOTE = {
+  text: 'Board records are a member benefit. Sign in to continue.',
+  showJoin: true,
+};
+const MEMBER_DIRECTORY_NOTE = {
+  text: 'The member directory is a member benefit. Sign in to continue.',
+  showJoin: true,
+};
+const BOARD_DASHBOARD_NOTE = {
+  text: 'Board members and committee chairs: sign in to view the dashboard.',
+  showJoin: false,
+};
+
 export function memberBenefitSignInNote(next) {
-  const path = String(next || '').split('?')[0].split('#')[0];
-  const board = path === '/board' || path.startsWith('/board/');
-  const members = path === '/members' || path.startsWith('/members/');
-  if (!board && !members) return null;
-  return 'Board records are a member benefit. Sign in to continue.';
+  const path = pathOnly(next);
+  if (path === '/board/dashboard') return BOARD_DASHBOARD_NOTE;
+  if (path === '/board' || path.startsWith('/board/')) return BOARD_RECORDS_NOTE;
+  if (path === '/members' || path.startsWith('/members/')) return MEMBER_DIRECTORY_NOTE;
+  return null;
 }
