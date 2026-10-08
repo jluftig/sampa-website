@@ -40,6 +40,7 @@ const PostEditor = lazy(() => import('./pages/PostEditor'));
 const AdminTags = lazy(() => import('./pages/AdminTags'));
 const SuggestedDailyTags = lazy(() => import('./pages/SuggestedDailyTags'));
 const AdminPeople = lazy(() => import('./pages/AdminPeople'));
+const AdminRecords = lazy(() => import('./pages/AdminRecords'));
 const AdminMembers = lazy(() => import('./pages/AdminMembers'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -163,6 +164,14 @@ function App() {
             element={
               <RequireEditor adminOnly>
                 <AdminPeople />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/records"
+            element={
+              <RequireEditor adminOnly adminDenied="Board records and the Relay balance are limited to administrators.">
+                <AdminRecords />
               </RequireEditor>
             }
           />

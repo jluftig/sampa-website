@@ -38,6 +38,10 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 - `subscriber_snapshots` — one row per Brevo list per UTC day
   (`snapshot_date`, `list_id`, `total_subscribers`, `unique_subscribers`).
   Service role writes it. RLS on, no client policies.
+- `board_meetings` — agenda and minutes for `/board`. Select: `is_active_member()`.
+  Insert, update, and delete: `is_admin()`. Audit rows omit the HTML.
+- `relay_balances` — dated Relay entries (`amount_cents`, `as_of`). Select:
+  `can_view_board_dashboard()`. Insert: `is_admin()`. No client update or delete.
 - `privileged_terms_accepted_at` — roster confidentiality click-accept (self-settable)
 
 ### Content

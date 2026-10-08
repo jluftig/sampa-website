@@ -11,7 +11,7 @@ Gate future member-only content (e.g. CME) on `is_active_member()`
 **Board meetings (T45):** `/board` + `/board/:slug` use the same client gate as
 the directory (`RequireActiveMember` / `canAccessMemberDirectory` /
 `isActiveMemberAccess`). That check is UX only. Agenda and minutes HTML live in
-`api/_lib/boardMeetings.js` and are returned by `GET /api/board-meetings`
+`public.board_meetings` and are returned by `GET /api/board-meetings`
 (rewritten to `newsletter-stats?section=board`, so it does not add a 13th
 serverless function). The handler calls `requireUser` and allows the response
 only when `isActiveMemberAccess` matches SQL `is_active_member()`

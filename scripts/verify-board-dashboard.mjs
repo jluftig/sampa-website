@@ -13,7 +13,7 @@ import {
   snapshotRecord,
   snapshotsForList,
 } from '../src/lib/newsletterStats.js';
-import { manualRelayBalance } from '../src/data/relayBalance.js';
+const RELAY = { source: 'Relay', amountCents: 100000, updatedOn: '2026-01-15' };
 
 const NOW = new Date('2026-10-08T13:15:00.000Z');
 
@@ -60,6 +60,7 @@ describe('GET finance and board-numbers', () => {
     const chair = await read(await GET(request('/api/newsletter-stats?section=finance'), {
       requireUser: async () => ({ id: 'chair' }),
       loadViewerProfile: async () => ({ role: 'member', is_committee_chair: true }),
+      loadRelay: async () => RELAY,
       env: { STRIPE_SECRET_KEY: 'sk_test_secret' },
       now: NOW,
       listTransactions: async () => ([
@@ -68,7 +69,7 @@ describe('GET finance and board-numbers', () => {
     }));
     assert.equal(chair.status, 200);
     assert.equal(chair.body.revenueCents, 2500);
-    assert.deepEqual(chair.body.relay, manualRelayBalance);
+    assert.deepEqual(chair.body.relay, RELAY);
     assert.equal(JSON.stringify(chair.body).includes('sk_test_secret'), false);
   });
 
