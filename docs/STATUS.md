@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-08 (T67 — board minutes and Relay balance leaving the repo, stacked on T66. Preview only until Website QA and Josh.)
+**Last updated:** 2026-10-08 (T67 — draft PR #130, rebased onto the T66 dashboard head. Preview only until Website QA and Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,7 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T67 | Move board minutes and Relay balance out of the public repo | cursor | 2026-10-08 | **Claimed cursor.** Stacked on T66 (`cursor/board-dashboard-a588`). Meetings and the Relay balance move to Supabase. Seed file stays uncommitted. Leadership lists Membership and Finance co-chairs. Preview only. Do not merge until Website QA and Josh. |
+| T67 | Move board minutes and Relay balance out of the public repo | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#130**, stacked on T66 / #129. Meetings and the Relay balance move to Supabase. Seed file stays uncommitted. SQL: `supabase/migrations/2026-10-08-board-meetings-relay-balances.sql`. Leadership lists Membership and Finance co-chairs. Preview only. Do not merge until Website QA and Josh. |
 | T66 | Board dashboard at `/board/dashboard` + list snapshots | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#129** (preview only). Josh approved 2026-10-08 and already applied `supabase/migrations/2026-10-08-committee-chair-subscriber-snapshots.sql`. Org dashboard is at `/board/dashboard` for admin, `is_board`, and `is_committee_chair`. Finance uses that gate. `/board` shows aggregate counts only. Daily list 15 and Weekly list 3 growth come from `subscriber_snapshots` (cron needs `CRON_SECRET`; unset returns `{error:'unavailable'}`). The meetings link on the dashboard shows only for active members. Do not merge until Website QA and Josh. |
 | T65 | Daily news archive: dated pages, month-headed list, auto-tags, suggested-tag queue | cursor | 2026-10-03 | **Claimed cursor.** Draft PR **#123** (preview only). QA fix: crawler rewrite is `YYYY-MM-DD` only; archive has its own share preview; unknown dates are `noindex`; `/news/daily` canonical is the latest dated URL for browsers and bots. Do not merge until Website QA GREEN and Josh’s screenshot yay. |
 | T63 | Giveaway banner more eye-catching + Instagram reel on /giveaway | cursor | 2026-09-29 | **Claimed cursor.** PR **#118** (preview only). Brighter teal→violet banner with a “How to enter” pill, and an embed-free reel link on `/giveaway` (`https://www.instagram.com/reel/DdwVzwmABiw/`). Do not merge until Website QA GREEN and Josh’s screenshot yay. |
