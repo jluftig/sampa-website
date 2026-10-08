@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/newsletter-stats?section=subscriber-snapshot",
+      "schedule": "15 13 * * *"
+    }
+  ],
   "redirects": [
     { "source": "/store", "destination": "https://sampastore.printful.me", "permanent": false },
     { "source": "/merch", "destination": "https://sampastore.printful.me", "permanent": false },
