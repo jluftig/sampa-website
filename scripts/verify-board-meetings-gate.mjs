@@ -4,7 +4,33 @@ import { isActiveMemberAccess } from '../src/lib/memberHome.js';
 import { boardAccessStatus, handleBoardMeetings } from '../api/_lib/boardMeetingsHandler.js';
 import { GET, isBoardMeetingsRequest } from '../api/newsletter-stats.js';
 
-const PHRASE = 'Motion to Approve ASIO';
+const FIXTURE_BODY = 'Fixture agenda line';
+
+const FIXTURES = [
+  {
+    slug: '2026-09',
+    title: 'September fixture',
+    date: '2026-09-09',
+    time: '8 PM ET',
+    kind: 'regular',
+    format: 'virtual',
+    location: 'Virtual',
+    status: 'upcoming',
+    agenda: { status: 'posted', label: 'Meeting agenda', bodyHtml: `<p>${FIXTURE_BODY}</p>` },
+    minutes: { status: 'not_yet', label: 'Approved minutes', bodyHtml: null },
+  },
+  {
+    slug: '2026-04',
+    title: 'April fixture',
+    date: '2026-04-08',
+    kind: 'regular',
+    format: 'virtual',
+    location: 'Virtual',
+    status: 'completed',
+    agenda: { status: 'posted', bodyHtml: '<p>Fixture agenda</p>' },
+    minutes: { status: 'posted', bodyHtml: '<p>Fixture minutes for Riley Example</p>' },
+  },
+];
 
 function request(url, token) {
   return new Request(url, {
@@ -40,6 +66,7 @@ describe('GET /api/board-meetings', () => {
       today,
       requireUser: async () => user,
       loadProfile: async () => profile,
+      loadMeetings: async () => FIXTURES,
     };
   }
 
@@ -50,7 +77,7 @@ describe('GET /api/board-meetings', () => {
     ));
     assert.equal(res.status, 401);
     assert.equal(res.body.error, 'Sign in required');
-    assert.equal(JSON.stringify(res.body).includes(PHRASE), false);
+    assert.equal(JSON.stringify(res.body).includes(FIXTURE_BODY), false);
     assert.equal(res.cache, 'private, no-store');
   });
 
@@ -61,19 +88,18 @@ describe('GET /api/board-meetings', () => {
     ));
     assert.equal(res.status, 403);
     assert.equal(res.body.error, 'Active membership required');
-    assert.equal(JSON.stringify(res.body).includes(PHRASE), false);
+    assert.equal(JSON.stringify(res.body).includes(FIXTURE_BODY), false);
   });
 
-  it('returns the September agenda to an active member and marks that meeting past', async () => {
+  it('returns the fixture agenda to an active member and marks that meeting past', async () => {
     const res = await read(await handleBoardMeetings(
       request('https://www.addictionpas.org/api/board-meetings?slug=2026-09', 'token'),
       depsFor({ id: 'u1' }, { membership_status: 'active', role: 'member' }),
     ));
     assert.equal(res.status, 200);
     assert.equal(res.body.meeting.status, 'completed');
-    assert.equal(res.body.meeting.agenda.bodyHtml.includes(PHRASE), true);
+    assert.equal(res.body.meeting.agenda.bodyHtml.includes(FIXTURE_BODY), true);
     assert.equal(res.body.meeting.minutes.bodyHtml, null);
-    assert.equal(res.body.meeting.agenda.bodyHtml.includes('Jordan Vold'), false);
   });
 
   it('omits bodies from the catalog and includes them on a minutes slug', async () => {
@@ -83,16 +109,14 @@ describe('GET /api/board-meetings', () => {
       deps,
     ));
     assert.equal(list.status, 200);
-    assert.equal(JSON.stringify(list.body).includes(PHRASE), false);
+    assert.equal(JSON.stringify(list.body).includes(FIXTURE_BODY), false);
     assert.equal(list.body.meetings.find((meeting) => meeting.slug === '2026-09').status, 'completed');
     const april = await read(await handleBoardMeetings(
       request('https://www.addictionpas.org/api/board-meetings?slug=2026-04', 'token'),
       deps,
     ));
     assert.equal(april.status, 200);
-    assert.equal(april.body.meeting.minutes.bodyHtml.includes('Jordan Vold'), true);
-    assert.equal(april.body.meeting.minutes.bodyHtml.includes('Tasha Seliski'), true);
-    assert.equal(/Jordan Void|Tasha Selinski/.test(april.body.meeting.minutes.bodyHtml), false);
+    assert.equal(april.body.meeting.minutes.bodyHtml.includes('Riley Example'), true);
   });
 
   it('routes the board section before the roster gate', async () => {
@@ -103,6 +127,6 @@ describe('GET /api/board-meetings', () => {
       depsFor(null, null),
     ));
     assert.equal(res.status, 401);
-    assert.equal(JSON.stringify(res.body).includes(PHRASE), false);
+    assert.equal(JSON.stringify(res.body).includes(FIXTURE_BODY), false);
   });
 });
