@@ -282,7 +282,7 @@ if (!guardSrc.includes('canAccessMemberDirectory')) fail('Board reuses RequireAc
 if (!guardSrc.includes('useAuthGate')) fail('Member gate must keep the session-hold redirect behavior');
 
 const navSrc = readFileSync('src/components/Navbar.jsx', 'utf8');
-if ((navSrc.match(/to="\/board"/g) || []).length < 2) fail('Navbar needs desktop + mobile Board links');
+if ((navSrc.match(/<BoardNavLink/g) || []).length < 2) fail('Navbar needs desktop + mobile Board links');
 
 const dashSrc = readFileSync('src/pages/Dashboard.jsx', 'utf8');
 if (!dashSrc.includes('to="/board"')) fail('Dashboard must link Board meetings');

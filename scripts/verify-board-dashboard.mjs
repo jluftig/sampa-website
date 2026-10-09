@@ -276,7 +276,7 @@ describe('chair flag storage', () => {
     assert.match(gate, /This dashboard is for administrators, board members, and committee chairs/);
     assert.match(gate, /canAccessMemberDirectory &&/);
     assert.match(gate, /Back to board meetings/);
-    assert.match(page, /canAccessMemberDirectory &&/);
+    assert.match(page, /canAccessMemberDirectory && visibleBoardTabs\(profile\)\.length < 2/);
     assert.match(page, /to="\/board"/);
     assert.match(job, /timingSafeEqual/);
     assert.doesNotMatch(job, /header ===/);

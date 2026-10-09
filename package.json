@@ -21,6 +21,7 @@
     "test:newsletter-stats": "node --test scripts/verify-newsletter-stats.mjs",
     "test:org-dashboard": "node --test scripts/verify-org-dashboard.mjs",
     "test:board-dashboard": "node --test scripts/verify-board-dashboard.mjs",
+    "test:board-nav": "node --import ./scripts/register-jsx.mjs --test scripts/verify-board-nav.mjs",
     "test:policy-impact": "node --test scripts/verify-policy-impact.mjs",
     "test:giveaway": "node scripts/verify-giveaway.mjs",
     "test:daily-news": "node --test scripts/verify-daily-news.mjs",
@@ -50,6 +51,7 @@
     "@tailwindcss/typography": "^0.5.20",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
+    "esbuild": "^0.21.5",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "vite": "^5.2.0"

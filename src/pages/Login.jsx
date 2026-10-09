@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import { decideAuthRedirect } from '../lib/authRedirect';
-import { oauthReturnPath, safeNext } from '../lib/memberHome';
+import { memberBenefitSignInNote, oauthReturnPath, safeNext } from '../lib/memberHome';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -12,6 +12,7 @@ export default function Login() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const requestedNext = safeNext(searchParams.get('next'));
+  const benefitNote = memberBenefitSignInNote(requestedNext);
   const oauthNext = oauthReturnPath(requestedNext);
   const dest = decideAuthRedirect(location, { loading, sessionUsable, profile });
 
@@ -46,10 +47,23 @@ export default function Login() {
             Member Access
           </div>
           <h1 className="text-2xl md:text-3xl font-drama font-bold mb-3">Sign in</h1>
-          <p className="text-text/60 mb-8">
+          <p className={`text-text/60 ${benefitNote ? 'mb-4' : 'mb-8'}`}>
             Members sign in to save news articles, manage their membership and
             CME, and update their profile.
           </p>
+          {benefitNote && (
+            <p className="text-sm text-text/80 mb-8">
+              {benefitNote.text}
+              {benefitNote.showJoin && (
+                <>
+                  {' '}
+                  <Link to="/join" className="font-semibold text-primary-text hover:underline">
+                    Join SAMPA
+                  </Link>
+                </>
+              )}
+            </p>
+          )}
 
           <button
             onClick={() => signInWithGoogle(oauthNext)}

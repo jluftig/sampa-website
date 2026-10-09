@@ -2,9 +2,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useAuth } from '../lib/AuthContext';
+import { boardNavItem, boardNavPhase } from '../lib/boardNav';
 import AnnouncementBanner from './AnnouncementBanner';
 import DonateLink from './DonateLink';
 import MemberLoginLink from './MemberLoginLink';
+
+function BoardNavLink({ className, onClick }) {
+  const { loading, user, profile } = useAuth();
+  const item = boardNavItem({ phase: boardNavPhase({ loading, user, profile }), profile });
+  if (!item) return null;
+  return (
+    <Link to={item.to} className={className} onClick={onClick}>
+      {item.label}
+    </Link>
+  );
+}
 
 export default function Navbar() {
   const navRef = useRef(null);
@@ -51,11 +63,9 @@ export default function Navbar() {
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
           <DonateLink className="hover:text-primary-text transition-colors">Donate</DonateLink>
           {canAccessMemberDirectory && (
-            <>
-              <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
-              <Link to="/board" className="hover:text-primary-text transition-colors">Board</Link>
-            </>
+            <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
           )}
+          <BoardNavLink className="hover:text-primary-text transition-colors" />
         </div>
 
         {/* Desktop CTAs — Login secondary, Join primary */}
@@ -106,11 +116,12 @@ export default function Navbar() {
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
           <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</DonateLink>
           {canAccessMemberDirectory && (
-            <>
-              <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
-              <Link to="/board" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Board</Link>
-            </>
+            <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
           )}
+          <BoardNavLink
+            className="font-medium text-text hover:text-primary-text px-2 py-1"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
           <div className="mt-2 pt-4 border-t border-primary/10 flex flex-col gap-2.5">
             <MemberLoginLink
               className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold text-center hover:bg-primary-text hover:text-white transition-colors"
