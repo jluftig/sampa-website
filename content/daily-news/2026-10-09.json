@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-09",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Orphine opioids turn up in 22 states as cychlorphine drives a new wave since late 2025",
+      "outlet": "JAMA Psychiatry",
+      "date": "Oct 7",
+      "summary": "A research letter using national early-warning toxicology data from mid-2020 through mid-2026 found 142 biospecimens positive for orphine analogues, a class of potent synthetic opioids, across 22 states, with cychlorphine making up 72% and driving a second, larger wave that began in late 2025. Many specimens also held benzodiazepine-related (37%) or fentanyl-related (36%) compounds, and naloxone was present in 23%. Routine toxicology panels and fentanyl or nitazene test strips do not reliably detect orphines, so standard screens can miss them in a suspected opioid overdose.",
+      "url": "https://jamanetwork.com/journals/jamapsychiatry/fullarticle/2854890"
+    },
+    {
+      "headline": "Maine jails and prisons will be able to bill Medicaid for addiction treatment before release",
+      "outlet": "Lewiston Sun Journal",
+      "date": "Oct 8",
+      "summary": "CMS approved a Maine waiver letting jails and prisons bill MaineCare for certain services provided up to 60 days before a person's expected release, including medication treatment for substance use disorder, case management, and a 30-day medication supply at release. Maine counties spent more than $12.6 million last year on medication treatment and mental health care across 15 correctional facilities, often with grants and opioid settlement funds; billing starts July 1, 2028. It gives jails, required to offer medication treatment since a 2019 ruling, a steadier way to pay for care before release.",
+      "url": "https://www.sunjournal.com/2026/10/08/jails-prisons-can-now-bill-mainecare-for-some-clinical-services-including-addiction-treatment/"
+    },
+    {
+      "headline": "Michigan offers PA and other students up to $16,000 a year to enter opioid treatment work",
+      "outlet": "Michigan Department of Health and Human Services",
+      "date": "Oct 8",
+      "summary": "Michigan's health department is taking applications through Nov 9 for its Opioid Treatment Access Scholarship Program, offering up to $16,000 a year to bachelor's or master's students in PA, nurse practitioner, social work, counseling, marriage and family therapy, and public health programs. The $2.5 million round, funded by opioid settlement dollars, could support nearly 100 students, who must commit to at least two years of opioid treatment work in Michigan after graduation. It is a direct pipeline into addiction care for PA students as the state reports overdose deaths down 47% since 2021.",
+      "url": "https://www.michigan.gov/mdhhs/inside-mdhhs/newsroom/2026/10/08/miota-scholarship"
+    },
+    {
+      "headline": "Cochrane review links drug company gifts and meals to worse prescribing, including high-dose opioids",
+      "outlet": "Cochrane",
+      "date": "Oct 9",
+      "summary": "A Cochrane systematic review of 93 studies, 88% from the United States, found that drug company gifts and payments to doctors, including free meals, were linked to less appropriate prescribing, more prescriptions, and probably higher costs. Even inexpensive meals were associated with more opioid prescribing, and more payments from opioid manufacturers were linked to a greater likelihood of prescribing dangerously high opioid doses. The authors found that strict conflict-of-interest policies probably improve prescribing appropriateness, giving health systems a concrete way to limit industry influence.",
+      "url": "https://www.cochrane.org/about-us/news/pharmaceutical-company-marketing-negatively-influences-prescribing"
+    },
+    {
+      "headline": "CBN, a popular sleep-gummy cannabinoid, produced tolerance and withdrawal signs in mice",
+      "outlet": "UConn Today",
+      "date": "Oct 8",
+      "summary": "University of Connecticut researchers reporting in Drug and Alcohol Dependence found that mice given cannabinol (CBN) twice daily for three days became tolerant to it and showed withdrawal signs, such as head twitches and paw flutters, when it was stopped. Mice trained to recognize THC also responded to CBN as if it were THC, suggesting overlap with the receptor systems involved in cannabis dependence. The work is in mice, but with CBN widely sold in over-the-counter sleep gummies, tinctures, and capsules, it is a reason to ask patients about CBN use.",
+      "url": "https://today.uconn.edu/2026/10/common-herbal-sleep-aid-shows-signs-of-addictive-potential/"
+    }
+  ]
+}
