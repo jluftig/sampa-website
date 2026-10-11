@@ -3,9 +3,14 @@ import { describe, it } from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
+import { readFileSync } from 'node:fs';
 import { boardNavItem, visibleBoardTabs } from '../src/lib/boardNav.js';
 import { memberBenefitSignInNote, rosterBackLink } from '../src/lib/memberHome.js';
+import { joinCta, mySampaItems, showMySampa } from '../src/lib/mySampa.js';
+import { AuthContext } from '../src/lib/authState.js';
 import MemberRosterLink from '../src/components/MemberRosterLink.jsx';
+import Navbar from '../src/components/Navbar.jsx';
+import { MY_SAMPA_CASES } from './my-sampa-cases.mjs';
 
 const activeMember = { role: 'member', membership_status: 'active' };
 const boardOnly = { role: 'member', membership_status: 'canceled', is_board: true };
@@ -190,4 +195,81 @@ describe('login note for member areas', () => {
     assert.equal(memberBenefitSignInNote('/membership'), null);
     assert.equal(memberBenefitSignInNote(null), null);
   });
+});
+
+describe('My SAMPA menu and the Join CTA', () => {
+  for (const row of MY_SAMPA_CASES) {
+    it(`${row.name}: menu items and Join, Renew, or neither`, () => {
+      assert.equal(showMySampa(row.viewer), row.mySampa);
+      assert.deepEqual(mySampaItems(row.viewer), row.items);
+      assert.deepEqual(joinCta(row.viewer), row.cta);
+    });
+  }
+
+  it('Sign out is a menu action, and the header calls the intentional signOut', () => {
+    const signedIn = MY_SAMPA_CASES.find((row) => row.name === 'active');
+    const signOut = mySampaItems(signedIn.viewer).find((item) => item.label === 'Sign out');
+    assert.equal(signOut.action, 'sign-out');
+    assert.equal(signOut.to, undefined);
+
+    const navbar = readFileSync(new URL('../src/components/Navbar.jsx', import.meta.url), 'utf8');
+    assert.match(navbar, /signOut\(\)/);
+    assert.doesNotMatch(navbar, /supabase/);
+  });
+});
+
+function navbarHtml(viewer) {
+  const auth = {
+    ...viewer,
+    signOut() {},
+  };
+  return html(createElement(
+    AuthContext.Provider,
+    { value: auth },
+    createElement(Navbar),
+  ));
+}
+
+function topBar(markup) {
+  const at = markup.indexOf('My SAMPA');
+  return at === -1 ? markup : markup.slice(0, at);
+}
+
+describe('Navbar render', () => {
+  for (const row of MY_SAMPA_CASES) {
+    it(`${row.name}: Join, Renew, or My SAMPA, and Directory and Board leave the top bar when signed in`, () => {
+      const markup = navbarHtml(row.viewer);
+      assert.match(markup, />Membership</);
+
+      if (row.mySampa) {
+        assert.match(markup, /My SAMPA/);
+        assert.doesNotMatch(markup, /Member Login/);
+        assert.doesNotMatch(topBar(markup), /Directory/);
+        assert.doesNotMatch(topBar(markup), />Board</);
+      } else {
+        assert.match(markup, /Member Login/);
+        assert.doesNotMatch(markup, /My SAMPA/);
+      }
+
+      if (row.cta?.label === 'Join') {
+        assert.match(markup, />Join</);
+        assert.doesNotMatch(markup, />Renew</);
+      } else if (row.cta?.label === 'Renew') {
+        assert.match(markup, />Renew</);
+        assert.doesNotMatch(markup, />Join</);
+      } else {
+        assert.doesNotMatch(markup, />Join</);
+        assert.doesNotMatch(markup, />Renew</);
+      }
+
+      if (!row.mySampa && row.name !== 'loading') {
+        assert.match(markup, /href="\/board"/);
+        assert.match(markup, />Board</);
+      }
+      if (row.name === 'loading') {
+        assert.doesNotMatch(markup, />Board</);
+        assert.doesNotMatch(markup, /Directory/);
+      }
+    });
+  }
 });

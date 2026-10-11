@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
-import { useAuth } from '../lib/AuthContext';
+import { useAuth } from '../lib/authState';
 import { boardNavItem, boardNavPhase } from '../lib/boardNav';
+import { joinCta, mySampaItems, showMySampa } from '../lib/mySampa';
 import AnnouncementBanner from './AnnouncementBanner';
 import DonateLink from './DonateLink';
 import MemberLoginLink from './MemberLoginLink';
@@ -18,10 +19,103 @@ function BoardNavLink({ className, onClick }) {
   );
 }
 
+function MySampaEntries({ items, onNavigate, itemClass }) {
+  const { signOut } = useAuth();
+  return items.map((item) => {
+    if (item.action === 'sign-out') {
+      return (
+        <button
+          key={item.id}
+          type="button"
+          className={itemClass}
+          onClick={() => {
+            onNavigate?.();
+            signOut();
+          }}
+        >
+          {item.label}
+        </button>
+      );
+    }
+    return (
+      <Link key={item.id} to={item.to} className={itemClass} onClick={onNavigate}>
+        {item.label}
+      </Link>
+    );
+  });
+}
+
+function MySampaMenu({ items }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onPointer = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    const onKey = (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onPointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  return (
+    <div className="relative" ref={rootRef}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className={desktopLoginClass}
+        onClick={() => setOpen((value) => !value)}
+      >
+        My SAMPA
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-full mt-3 min-w-[12.5rem] rounded-2xl bg-white shadow-lg border border-primary/10 py-2 text-left z-20"
+        >
+          <MySampaEntries
+            items={items}
+            itemClass="block w-full text-left px-4 py-2 text-sm font-medium text-text hover:text-primary-text hover:bg-primary/5"
+            onNavigate={() => setOpen(false)}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HeaderCta({ cta, className, onClick }) {
+  if (!cta) return null;
+  return (
+    <Link to={cta.to} className={className} onClick={onClick}>
+      <span>{cta.label}</span>
+    </Link>
+  );
+}
+
+const desktopCtaClass = 'btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block';
+const mobileCtaClass = 'bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full';
+const desktopLoginClass = 'px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors';
+const mobileLoginClass = 'px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold text-center hover:bg-primary-text hover:text-white transition-colors';
+const mobileItemClass = 'font-medium text-text hover:text-primary-text px-2 py-1 text-left';
+
 export default function Navbar() {
   const navRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { canAccessMemberDirectory } = useAuth();
+  const { loading, user, profile } = useAuth();
+  const viewer = { loading, user, profile };
+  const signedIn = showMySampa(viewer);
+  const items = mySampaItems(viewer);
+  const cta = joinCta(viewer);
+  const closeMobile = () => setIsMobileMenuOpen(false);
 
   useEffect(() => {
     gsap.fromTo(navRef.current,
@@ -41,7 +135,6 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6 font-medium text-sm text-text/80">
           <Link to="/news" className="hover:text-primary-text transition-colors">
             News
@@ -62,26 +155,25 @@ export default function Navbar() {
           <Link to="/join" className="hover:text-primary-text transition-colors">Membership</Link>
           <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary-text transition-colors">Store</a>
           <DonateLink className="hover:text-primary-text transition-colors">Donate</DonateLink>
-          {canAccessMemberDirectory && (
-            <Link to="/members" className="hover:text-primary-text transition-colors">Directory</Link>
+          {!signedIn && (
+            <BoardNavLink className="hover:text-primary-text transition-colors" />
           )}
-          <BoardNavLink className="hover:text-primary-text transition-colors" />
         </div>
 
-        {/* Desktop CTAs — Login secondary, Join primary */}
         <div className="hidden lg:flex items-center gap-2.5">
-          <MemberLoginLink
-            className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
-          />
-          <Link to="/join" className="btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block">
-            <span>Join</span>
-          </Link>
+          {signedIn ? (
+            <MySampaMenu items={items} />
+          ) : (
+            <MemberLoginLink className={desktopLoginClass} />
+          )}
+          <HeaderCta cta={cta} className={desktopCtaClass} />
         </div>
 
-        {/* Mobile/Tablet Hamburger Toggle */}
         <button
           className="lg:hidden p-2 text-primary-text focus:outline-none"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-expanded={isMobileMenuOpen}
+          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isMobileMenuOpen ? (
@@ -93,47 +185,47 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile/Tablet Dropdown Menu */}
       {isMobileMenuOpen && (
-        <div className="pointer-events-auto lg:hidden w-full mt-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
-          <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+        <div className="pointer-events-auto lg:hidden w-full mt-2 max-h-[calc(100dvh-6.5rem)] overflow-y-auto bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-primary/10 p-4 flex flex-col gap-4">
+          <Link to="/news" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>
             News
           </Link>
-          <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>
             Policy
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
-          <Link to="/caq" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/caq" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>
             CAQ
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
-          <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/about" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>
             About
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
-          <a href="/#programs" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Programs</a>
-          <Link to="/join" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Membership</Link>
-          <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Store</a>
-          <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Donate</DonateLink>
-          {canAccessMemberDirectory && (
-            <Link to="/members" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={() => setIsMobileMenuOpen(false)}>Directory</Link>
-          )}
-          <BoardNavLink
-            className="font-medium text-text hover:text-primary-text px-2 py-1"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <div className="mt-2 pt-4 border-t border-primary/10 flex flex-col gap-2.5">
-            <MemberLoginLink
-              className="px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold text-center hover:bg-primary-text hover:text-white transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
+          <a href="/#programs" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>Programs</a>
+          <Link to="/join" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>Membership</Link>
+          <a href="https://sampastore.printful.me" target="_blank" rel="noopener noreferrer" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>Store</a>
+          <DonateLink className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>Donate</DonateLink>
+          {!signedIn && (
+            <BoardNavLink
+              className="font-medium text-text hover:text-primary-text px-2 py-1"
+              onClick={closeMobile}
             />
-            <Link
-              to="/join"
-              className="bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Join
-            </Link>
+          )}
+          <div className="mt-2 pt-4 border-t border-primary/10 flex flex-col gap-2.5">
+            {signedIn ? (
+              <>
+                <p className="px-2 text-xs font-data uppercase tracking-wider text-text/50">My SAMPA</p>
+                <MySampaEntries
+                  items={items}
+                  itemClass={mobileItemClass}
+                  onNavigate={closeMobile}
+                />
+              </>
+            ) : (
+              <MemberLoginLink className={mobileLoginClass} onClick={closeMobile} />
+            )}
+            <HeaderCta cta={cta} className={mobileCtaClass} onClick={closeMobile} />
           </div>
         </div>
       )}

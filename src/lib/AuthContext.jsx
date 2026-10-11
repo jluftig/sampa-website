@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AuthContext, useAuth } from './authState.js';
 import { supabase } from './supabaseClient';
 import { clientSiteOrigin } from './siteUrl';
 import {
@@ -15,7 +16,7 @@ import {
 import { isActiveMemberAccess, isEditorProfile } from './memberHome';
 import { canViewBoardDashboard, canViewMemberRoster } from './memberRoster';
 
-const AuthContext = createContext(null);
+export { AuthContext, useAuth };
 
 function currentSearch() {
   try { return window.location.search || ''; } catch { return ''; }
@@ -295,10 +296,4 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
-  return ctx;
 }
