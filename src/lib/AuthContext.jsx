@@ -11,6 +11,7 @@ import {
   shouldClearHeldSession,
   shouldHoldAuthReady,
   shouldRetryAuthRecovery,
+  signOutAttemptFailed,
   stripAuthCallbackParams,
 } from './authSession';
 import { isActiveMemberAccess, isEditorProfile } from './memberHome';
@@ -247,10 +248,21 @@ export function AuthProvider({ children }) {
       options: { emailRedirectTo: `${clientSiteOrigin()}${next}` },
     });
 
-  const signOut = () => {
+  const signOut = async () => {
     intentionalSignOutRef.current = true;
     setIntentionalSignOut(true);
-    return supabase.auth.signOut();
+    try {
+      const result = await supabase.auth.signOut();
+      if (signOutAttemptFailed(result)) {
+        intentionalSignOutRef.current = false;
+        setIntentionalSignOut(false);
+      }
+      return result;
+    } catch (error) {
+      intentionalSignOutRef.current = false;
+      setIntentionalSignOut(false);
+      throw error;
+    }
   };
 
   const role = profile?.role ?? null;
