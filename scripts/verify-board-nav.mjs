@@ -272,4 +272,21 @@ describe('Navbar render', () => {
       }
     });
   }
+
+  it('past_due Renew goes to the dashboard, and canceled Renew stays on checkout', () => {
+    const pastDue = navbarHtml(MY_SAMPA_CASES.find((row) => row.name === 'past_due').viewer);
+    const canceled = navbarHtml(MY_SAMPA_CASES.find((row) => row.name === 'canceled').viewer);
+    assert.match(pastDue, /href="\/dashboard"[^>]*>\s*<span>Renew<\/span>/);
+    assert.doesNotMatch(pastDue, /href="\/join"[^>]*>\s*<span>Renew<\/span>/);
+    assert.match(canceled, /href="\/join"[^>]*>\s*<span>Renew<\/span>/);
+
+    const navbar = readFileSync(new URL('../src/components/Navbar.jsx', import.meta.url), 'utf8');
+    const spots = navbar.match(/<HeaderCta\b[^/]*\/>/g) || [];
+    assert.equal(spots.length, 2);
+    for (const spot of spots) {
+      assert.match(spot, /cta=\{cta\}/);
+      assert.doesNotMatch(spot, /\bto=/);
+    }
+    assert.match(navbar, /to=\{cta\.to\}/);
+  });
 });

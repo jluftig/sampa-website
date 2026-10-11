@@ -8,7 +8,8 @@ const editor = { id: 'editor', label: 'Editor', to: '/editor' };
 const signOut = { id: 'sign-out', label: 'Sign out', action: 'sign-out' };
 
 const join = { label: 'Join', to: '/join' };
-const renew = { label: 'Renew', to: '/join' };
+const renewBilling = { label: 'Renew', to: '/dashboard' };
+const renewCheckout = { label: 'Renew', to: '/join' };
 
 export const MY_SAMPA_CASES = [
   {
@@ -66,7 +67,7 @@ export const MY_SAMPA_CASES = [
       profile: { role: 'member', membership_status: 'past_due' },
     },
     items: [account, signOut],
-    cta: renew,
+    cta: renewBilling,
     mySampa: true,
   },
   {
@@ -77,7 +78,7 @@ export const MY_SAMPA_CASES = [
       profile: { role: 'member', membership_status: 'canceled' },
     },
     items: [account, signOut],
-    cta: renew,
+    cta: renewCheckout,
     mySampa: true,
   },
   {
@@ -110,7 +111,7 @@ export const MY_SAMPA_CASES = [
       profile: { role: 'member', membership_status: 'canceled', is_board: true },
     },
     items: [account, dashboard, signOut],
-    cta: renew,
+    cta: renewCheckout,
     mySampa: true,
   },
   {
