@@ -29,6 +29,7 @@ import {
   shouldHoldAuthReady,
   nextSessionFromAuthEvent,
   refreshSessionWithRetry,
+  signOutAttemptFailed,
   stripAuthCallbackParams,
 } from '../src/lib/authSession.js';
 
@@ -172,6 +173,21 @@ describe('auth event recovery', () => {
       }),
       null,
     );
+  });
+
+  it('a failed sign-out drops the intentional flag', () => {
+    assert.equal(signOutAttemptFailed({ error: { message: 'network' } }), true);
+    assert.equal(signOutAttemptFailed({ error: null }), false);
+    assert.equal(signOutAttemptFailed(undefined, new Error('network')), true);
+    assert.equal(signOutAttemptFailed({}), false);
+
+    const authCtx = readFileSync('src/lib/AuthContext.jsx', 'utf8');
+    const start = authCtx.indexOf('const signOut = ');
+    const end = authCtx.indexOf('const role =', start);
+    const fn = authCtx.slice(start, end);
+    assert.match(fn, /signOutAttemptFailed/);
+    assert.match(fn, /intentionalSignOutRef\.current = false/);
+    assert.match(fn, /setIntentionalSignOut\(false\)/);
   });
 
   it('does not mark auth ready on a null INITIAL_SESSION before getSession settles', () => {
