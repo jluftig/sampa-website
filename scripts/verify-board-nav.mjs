@@ -215,6 +215,12 @@ describe('My SAMPA menu and the Join CTA', () => {
     const navbar = readFileSync(new URL('../src/components/Navbar.jsx', import.meta.url), 'utf8');
     assert.match(navbar, /signOut\(\)/);
     assert.doesNotMatch(navbar, /supabase/);
+    assert.match(navbar, /role="menu"/);
+    assert.match(navbar, /role="menuitem"/);
+    assert.match(navbar, /role="alert"/);
+    assert.match(navbar, /focusin/);
+    assert.match(navbar, /triggerRef\.current\?\.focus\(\)/);
+    assert.match(navbar, /console\.error\('Sign out failed'/);
   });
 });
 

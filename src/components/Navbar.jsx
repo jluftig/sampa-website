@@ -19,35 +19,63 @@ function BoardNavLink({ className, onClick }) {
   );
 }
 
-function MySampaEntries({ items, onNavigate, itemClass }) {
+function MySampaEntries({ items, onNavigate, itemClass, menu = false }) {
   const { signOut } = useAuth();
-  return items.map((item) => {
-    if (item.action === 'sign-out') {
-      return (
-        <button
-          key={item.id}
-          type="button"
-          className={itemClass}
-          onClick={() => {
-            onNavigate?.();
-            signOut();
-          }}
-        >
-          {item.label}
-        </button>
-      );
+  const [signOutError, setSignOutError] = useState('');
+
+  async function onSignOut() {
+    setSignOutError('');
+    try {
+      const result = await signOut();
+      if (result?.error) throw result.error;
+      onNavigate?.();
+    } catch (error) {
+      console.error('Sign out failed', error);
+      setSignOutError('Could not sign out. Try again.');
     }
-    return (
-      <Link key={item.id} to={item.to} className={itemClass} onClick={onNavigate}>
-        {item.label}
-      </Link>
-    );
-  });
+  }
+
+  return (
+    <>
+      {items.map((item) => {
+        const itemRole = menu ? 'menuitem' : undefined;
+        if (item.action === 'sign-out') {
+          return (
+            <button
+              key={item.id}
+              type="button"
+              role={itemRole}
+              className={itemClass}
+              onClick={() => { void onSignOut(); }}
+            >
+              {item.label}
+            </button>
+          );
+        }
+        return (
+          <Link
+            key={item.id}
+            to={item.to}
+            role={itemRole}
+            className={itemClass}
+            onClick={onNavigate}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+      {signOutError ? (
+        <p role="alert" className="px-4 py-2 text-xs text-red-600">{signOutError}</p>
+      ) : null}
+    </>
+  );
 }
 
 function MySampaMenu({ items }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
+  const triggerRef = useRef(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -55,19 +83,33 @@ function MySampaMenu({ items }) {
       if (!rootRef.current?.contains(event.target)) setOpen(false);
     };
     const onKey = (event) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+    const onFocusIn = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
     };
     document.addEventListener('mousedown', onPointer);
     document.addEventListener('keydown', onKey);
+    document.addEventListener('focusin', onFocusIn);
     return () => {
       document.removeEventListener('mousedown', onPointer);
       document.removeEventListener('keydown', onKey);
+      document.removeEventListener('focusin', onFocusIn);
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    menuRef.current?.querySelector('[role="menuitem"]')?.focus();
   }, [open]);
 
   return (
     <div className="relative" ref={rootRef}>
       <button
+        ref={triggerRef}
         type="button"
         aria-expanded={open}
         aria-haspopup="menu"
@@ -78,10 +120,12 @@ function MySampaMenu({ items }) {
       </button>
       {open && (
         <div
+          ref={menuRef}
           role="menu"
           className="absolute right-0 top-full mt-3 min-w-[12.5rem] rounded-2xl bg-white shadow-lg border border-primary/10 py-2 text-left z-20"
         >
           <MySampaEntries
+            menu
             items={items}
             itemClass="block w-full text-left px-4 py-2 text-sm font-medium text-text hover:text-primary-text hover:bg-primary/5"
             onNavigate={() => setOpen(false)}
