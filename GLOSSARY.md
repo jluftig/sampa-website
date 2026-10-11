@@ -36,4 +36,4 @@ Words as Josh and the site use them. No implementation details here (see `CLAUDE
 
 **My SAMPA**: The signed-in menu. It holds My account, Sign out, and Directory, Board, and Editor when that person is allowed in.
 
-**Renew**: What a lapsed member sees instead of Join. _Avoid_: Rejoin.
+**Renew**: What a lapsed member sees instead of Join. Past due, it means fix the payment. Canceled, it means start membership again. _Avoid_: Rejoin.
