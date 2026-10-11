@@ -219,7 +219,7 @@ describe('My SAMPA menu and the Join CTA', () => {
     assert.match(navbar, /role="menuitem"/);
     assert.match(navbar, /role="alert"/);
     assert.match(navbar, /focusin/);
-    assert.match(navbar, /triggerRef\.current\?\.focus\(\)/);
+    assert.match(navbar, /triggerRef\.current\?\.focus\(\{ focusVisible: true \}\)/);
     assert.match(navbar, /console\.error\('Sign out failed'/);
   });
 });

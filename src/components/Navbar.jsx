@@ -86,7 +86,7 @@ function MySampaMenu({ items }) {
       if (event.key !== 'Escape') return;
       event.preventDefault();
       setOpen(false);
-      triggerRef.current?.focus();
+      triggerRef.current?.focus({ focusVisible: true });
     };
     const onFocusIn = (event) => {
       if (!rootRef.current?.contains(event.target)) setOpen(false);
@@ -103,7 +103,7 @@ function MySampaMenu({ items }) {
 
   useEffect(() => {
     if (!open) return;
-    menuRef.current?.querySelector('[role="menuitem"]')?.focus();
+    menuRef.current?.querySelector('[role="menuitem"]')?.focus({ focusVisible: true });
   }, [open]);
 
   return (
@@ -127,7 +127,7 @@ function MySampaMenu({ items }) {
           <MySampaEntries
             menu
             items={items}
-            itemClass="block w-full text-left px-4 py-2 text-sm font-medium text-text hover:text-primary-text hover:bg-primary/5"
+            itemClass="block w-full text-left px-4 py-2 text-sm font-medium text-text hover:text-primary-text hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
             onNavigate={() => setOpen(false)}
           />
         </div>
@@ -147,7 +147,7 @@ function HeaderCta({ cta, className, onClick }) {
 
 const desktopCtaClass = 'btn-magnetic bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block';
 const mobileCtaClass = 'bg-accent text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md inline-block text-center w-full';
-const desktopLoginClass = 'px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors';
+const desktopLoginClass = 'px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
 const mobileLoginClass = 'px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold text-center hover:bg-primary-text hover:text-white transition-colors';
 const mobileItemClass = 'font-medium text-text hover:text-primary-text px-2 py-1 text-left';
 
