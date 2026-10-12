@@ -51,8 +51,11 @@ export default function BoardNumbers({ stats: providedStats, showDashboardLink }
       <div className="flex flex-wrap items-end justify-between gap-3 mb-3">
         <h2 className="text-xl font-drama font-bold">SAMPA by the numbers</h2>
         {linkToDashboard && (
-          <Link to="/board/dashboard" className="text-primary-text font-data text-sm font-semibold hover:underline">
-            Board dashboard
+          <Link
+            to="/board/dashboard"
+            className="inline-flex items-center px-4 py-2 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+          >
+            Open board dashboard
           </Link>
         )}
       </div>

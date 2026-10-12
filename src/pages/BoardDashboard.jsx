@@ -3,16 +3,20 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import OrgDashboard from '../components/OrgDashboard';
+import BoardTabs from '../components/BoardTabs';
 import { useAuth } from '../lib/AuthContext';
+import { visibleBoardTabs } from '../lib/boardNav';
 
 export default function BoardDashboard() {
-  const { canAccessMemberDirectory } = useAuth();
+  const { profile, canAccessMemberDirectory } = useAuth();
+  const showMeetingsLink = canAccessMemberDirectory && visibleBoardTabs(profile).length < 2;
   return (
     <div className="relative min-h-screen bg-background text-text">
       <div className="noise-overlay pointer-events-none" />
       <Navbar />
       <main className="max-w-6xl mx-auto px-4 pt-32 pb-24">
-        {canAccessMemberDirectory && (
+        <BoardTabs active="dashboard" />
+        {showMeetingsLink && (
           <Link to="/board" className="text-primary-text font-data text-sm font-semibold hover:underline">
             ← Board meetings
           </Link>

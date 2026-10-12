@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Download } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
+import { rosterBackLink } from '../lib/memberHome';
 import { tierByKey } from '../lib/membership';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
@@ -273,19 +274,24 @@ export default function AdminMembers() {
     }).then(() => {});
   };
 
+  const back = rosterBackLink(profile);
+
   return (
     <div className="relative min-h-screen bg-background text-text">
       <div className="noise-overlay pointer-events-none"></div>
       <Navbar />
 
       <main className="max-w-6xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
-          ← Dashboard
+        <Link to={back.to} className="text-primary-text font-data text-sm font-semibold hover:underline">
+          {back.label}
         </Link>
         {canViewBoardDashboard && (
-          <p className="mt-3 text-sm">
-            <Link to="/board/dashboard" className="text-primary-text font-semibold hover:underline">
-              Organization dashboard
+          <p className="mt-3">
+            <Link
+              to="/board/dashboard"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              Board dashboard
             </Link>
           </p>
         )}
