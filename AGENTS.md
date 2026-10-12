@@ -31,6 +31,14 @@ Session handoffs (when Egg/Cursor need full context transfer): `docs/HANDOFF-cur
 
 **DB migrations:** after writing/updating `supabase/migrations/`, `pbcopy < path` and tell the user it’s ready for the Supabase SQL Editor — gotcha 10 in `CLAUDE.md`.
 
+## Agent skills (workflow)
+
+Pocock workflow skills live in `.claude/skills/` (Claude Code and Cursor both load that folder). Flow: `grill-me` / `grill-with-docs` → `to-spec` → `to-tickets` → `implement` / `implement-spec` → `pr` → `retro`; `wait-what` re-pitches anything unclear. Source, license, and local changes: `.claude/skills/POCOCK-SKILLS.md`.
+
+- Issue tracker + labels: `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`
+- Domain docs: `GLOSSARY.md`, `docs/agents/domain.md`
+- **SAMPA ship rules override the skills** (preview PR only, Website QA, Josh merges): `docs/agents/sampa-pipeline.md`
+
 ## Reviewing files and localhost pages with human-review
 
 After writing an HTML or Markdown file the user will read, open it for them with

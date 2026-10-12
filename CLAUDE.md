@@ -72,6 +72,7 @@ system `VERCEL_PROJECT_ID` / `VERCEL_ORG_ID`)
 | `docs/email/` | Email playbooks + HTML templates (no secrets/CSVs) |
 | `.claude/skills/sampa-email/` | Repo agent skill for Brevo campaigns |
 | `.claude/skills/human-review/` | Visual HTML/Markdown/localhost review loop ([petergyang/human-review](https://github.com/petergyang/human-review)) |
+| `.claude/skills/grilling/` etc. | Pocock workflow skills (grill → spec → tickets → implement → PR → retro); see `## Agent skills` in `AGENTS.md` and `docs/agents/sampa-pipeline.md` |
 | `vercel.json` | SPA rewrite; crawler UAs on `/news/:slug` and `/news/daily/:date` → `/api/share` |
 Full tree + routes: **`docs/architecture/repo-map.md`**.
 
