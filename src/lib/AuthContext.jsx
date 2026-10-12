@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AuthContext, useAuth } from './authState.js';
 import { supabase } from './supabaseClient';
 import { clientSiteOrigin } from './siteUrl';
 import {
@@ -10,12 +11,13 @@ import {
   shouldClearHeldSession,
   shouldHoldAuthReady,
   shouldRetryAuthRecovery,
+  signOutAttemptFailed,
   stripAuthCallbackParams,
 } from './authSession';
 import { isActiveMemberAccess, isEditorProfile } from './memberHome';
 import { canViewBoardDashboard, canViewMemberRoster } from './memberRoster';
 
-const AuthContext = createContext(null);
+export { AuthContext, useAuth };
 
 function currentSearch() {
   try { return window.location.search || ''; } catch { return ''; }
@@ -246,10 +248,21 @@ export function AuthProvider({ children }) {
       options: { emailRedirectTo: `${clientSiteOrigin()}${next}` },
     });
 
-  const signOut = () => {
+  const signOut = async () => {
     intentionalSignOutRef.current = true;
     setIntentionalSignOut(true);
-    return supabase.auth.signOut();
+    try {
+      const result = await supabase.auth.signOut();
+      if (signOutAttemptFailed(result)) {
+        intentionalSignOutRef.current = false;
+        setIntentionalSignOut(false);
+      }
+      return result;
+    } catch (error) {
+      intentionalSignOutRef.current = false;
+      setIntentionalSignOut(false);
+      throw error;
+    }
   };
 
   const role = profile?.role ?? null;
@@ -295,10 +308,4 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
-  return ctx;
 }

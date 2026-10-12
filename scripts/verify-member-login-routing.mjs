@@ -14,6 +14,8 @@ import {
   safeNext,
   signedInHomePath,
 } from '../src/lib/memberHome.js';
+import { joinCta, mySampaItems, showMySampa } from '../src/lib/mySampa.js';
+import { MY_SAMPA_CASES } from './my-sampa-cases.mjs';
 
 const editor = { role: 'editor', email: 'josh@addictionpas.org', membership_status: 'active' };
 const admin = { role: 'admin', email: 'luftig@gmail.com', can_edit_news: true, membership_status: 'active' };
@@ -140,4 +142,14 @@ describe('header/footer and login wiring', () => {
     assert.match(dashboard, /!profile \?/);
     assert.match(dashboard, /profile\.membership_status/);
   });
+});
+
+describe('My SAMPA menu and the Join CTA', () => {
+  for (const row of MY_SAMPA_CASES) {
+    it(`${row.name}: menu items and Join, Renew, or neither`, () => {
+      assert.equal(showMySampa(row.viewer), row.mySampa);
+      assert.deepEqual(mySampaItems(row.viewer), row.items);
+      assert.deepEqual(joinCta(row.viewer), row.cta);
+    });
+  }
 });

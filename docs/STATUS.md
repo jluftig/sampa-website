@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-08 (T68 — draft PR #131, board tabs, roster links, and signed-out Board. Preview only until Website QA and Josh.)
+**Last updated:** 2026-10-12 (T69 — merged origin/main through a080a7c, the squashed #134 skills. Draft PR #138 still waits for Website QA and Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,6 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T69 | My SAMPA menu and Renew for lapsed members | cursor | 2026-10-11 | **Claimed cursor.** Draft PR **#138** (preview only). Part 1 of spec #135 / issue #136. Merged origin/main through a080a7c (#134 skills are on main). Signed-in header is a My SAMPA menu (My account, Directory, Board, Editor, Sign out). Directory and Board leave the top bar when signed in. Join hidden for active members and staff. past_due Renew → `/dashboard` (fix the card). canceled Renew stays `/join`. QA yellow fix on #138. Part 2 (board access without a paid membership) waits until #130 merges. Do not merge until Website QA and Josh. |
 | T68 | Board tabs, roster links, and signed-out Board | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#131** (preview only). Items 1, 3, and 5 from the CoS navigation audit. Josh approved 2026-10-08. Shared tabs on `/board` and `/board/dashboard`, a dashboard button, roster ↔ dashboard links, Board in the signed-out nav, and a login line when `next` is `/board` or `/members`. Do not merge until Website QA is green and Josh says yay. |
 | T67 | Move board minutes and Relay balance out of the public repo | cursor | 2026-10-08 | **Claimed cursor.** Stacked on the T66 dashboard branch. Meetings and the Relay balance move to Supabase. Seed file stays uncommitted. Leadership lists Membership and Finance co-chairs. Preview only. Do not merge until Website QA and Josh. |
 | T66 | Board dashboard at `/board/dashboard` + list snapshots | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#129** (preview only). Josh approved 2026-10-08 and already applied `supabase/migrations/2026-10-08-committee-chair-subscriber-snapshots.sql`. Org dashboard is at `/board/dashboard` for admin, `is_board`, and `is_committee_chair`. Finance uses that gate. `/board` shows aggregate counts only. Daily list 15 and Weekly list 3 growth come from `subscriber_snapshots` (cron needs `CRON_SECRET`; unset returns `{error:'unavailable'}`). The meetings link on the dashboard shows only for active members. Do not merge until Website QA and Josh. |

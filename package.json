@@ -22,6 +22,7 @@
     "test:org-dashboard": "node --test scripts/verify-org-dashboard.mjs",
     "test:board-dashboard": "node --test scripts/verify-board-dashboard.mjs",
     "test:board-nav": "node --import ./scripts/register-jsx.mjs --test scripts/verify-board-nav.mjs",
+    "test:my-sampa": "npm run test:board-nav && npm run test:member-login",
     "test:policy-impact": "node --test scripts/verify-policy-impact.mjs",
     "test:giveaway": "node scripts/verify-giveaway.mjs",
     "test:daily-news": "node --test scripts/verify-daily-news.mjs",
