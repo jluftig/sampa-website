@@ -32,7 +32,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 pt-24 pb-16 bg-gradient-to-br from-[#FBFCFC] via-[#F0F7F5] to-[#F6F0F8]"
+      className="site-hero relative min-h-screen overflow-hidden flex items-center justify-center px-4 pt-24 pb-16 bg-gradient-to-br from-[#FBFCFC] via-[#F0F7F5] to-[#F6F0F8]"
     >
       <div className="relative z-10 w-full flex flex-col items-center text-center">
         <div

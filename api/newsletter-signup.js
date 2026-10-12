@@ -1,15 +1,42 @@
 import { json } from './_lib/clients.js';
 import { requestSiteOrigin } from './_lib/siteUrl.js';
 
-// POST { email } → Brevo double opt-in → SAMPA Updates (catch-all).
-// Public endpoint — no account required. Contact is only added to the list
-// after the subscriber confirms via the Brevo DOI email.
+// POST { email, list? } → Brevo double opt-in.
+// list "daily" maps server-side to BREVO_LIST_DAILY_NEWS. Any other list
+// value, including a numeric id, stays on SAMPA Updates. The client never
+// chooses a Brevo list id.
 //
 // Vercel env (server): BREVO_API_KEY, BREVO_LIST_UPDATES, BREVO_DOI_TEMPLATE_ID
+// Daily: BREVO_LIST_DAILY_NEWS, optional BREVO_DOI_TEMPLATE_ID_DAILY
 // Optional: BREVO_DOI_REDIRECT_URL (defaults to /newsletter-confirmed on this origin)
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BREVO_BASE = 'https://api.brevo.com/v3';
+const DAILY_LIST = 'daily';
+const DAILY_MISSING = 'Daily email signup is coming soon. Please check back.';
+const UNAVAILABLE = 'Newsletter signup is temporarily unavailable. Please try again later.';
+
+function updatesTarget(origin) {
+  return {
+    listId: Number(process.env.BREVO_LIST_UPDATES),
+    templateId: Number(process.env.BREVO_DOI_TEMPLATE_ID),
+    source: 'public_signup',
+    redirectionUrl: process.env.BREVO_DOI_REDIRECT_URL || `${origin}/newsletter-confirmed`,
+    missingLog: 'newsletter-signup: missing BREVO_API_KEY, BREVO_LIST_UPDATES, or BREVO_DOI_TEMPLATE_ID',
+  };
+}
+
+function dailyTarget(origin) {
+  const listId = Number(process.env.BREVO_LIST_DAILY_NEWS);
+  return {
+    listId,
+    listMissing: !Number.isFinite(listId) || listId <= 0,
+    templateId: Number(process.env.BREVO_DOI_TEMPLATE_ID_DAILY || process.env.BREVO_DOI_TEMPLATE_ID),
+    source: 'daily_roundup_signup',
+    redirectionUrl: `${origin}/newsletter-confirmed?list=daily`,
+    missingLog: 'newsletter-signup: missing BREVO_API_KEY, BREVO_LIST_DAILY_NEWS, or a DOI template id',
+  };
+}
 
 export async function POST(request) {
   try {
@@ -27,9 +54,14 @@ export async function POST(request) {
       return json({ error: 'Please enter a valid email address.' }, 400);
     }
 
+    const origin = requestSiteOrigin(request);
+    const target = body.list === DAILY_LIST ? dailyTarget(origin) : updatesTarget(origin);
+    if (target.listMissing) {
+      return json({ error: DAILY_MISSING }, 503);
+    }
+
     const apiKey = process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
-    const listId = Number(process.env.BREVO_LIST_UPDATES);
-    const templateId = Number(process.env.BREVO_DOI_TEMPLATE_ID);
+    const { listId, templateId } = target;
     if (
       !apiKey ||
       !Number.isFinite(listId) ||
@@ -37,18 +69,9 @@ export async function POST(request) {
       !Number.isFinite(templateId) ||
       templateId <= 0
     ) {
-      console.error(
-        'newsletter-signup: missing BREVO_API_KEY, BREVO_LIST_UPDATES, or BREVO_DOI_TEMPLATE_ID',
-      );
-      return json(
-        { error: 'Newsletter signup is temporarily unavailable. Please try again later.' },
-        503,
-      );
+      console.error(target.missingLog);
+      return json({ error: UNAVAILABLE }, 503);
     }
-
-    const origin = requestSiteOrigin(request);
-    const redirectionUrl =
-      process.env.BREVO_DOI_REDIRECT_URL || `${origin}/newsletter-confirmed`;
 
     const res = await fetch(`${BREVO_BASE}/contacts/doubleOptinConfirmation`, {
       method: 'POST',
@@ -61,9 +84,9 @@ export async function POST(request) {
         email,
         includeListIds: [listId],
         templateId,
-        redirectionUrl,
+        redirectionUrl: target.redirectionUrl,
         attributes: {
-          SOURCE: 'public_signup',
+          SOURCE: target.source,
         },
       }),
     });

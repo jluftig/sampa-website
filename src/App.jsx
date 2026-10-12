@@ -1,15 +1,18 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
 import RequireActiveMember from './components/RequireActiveMember';
 import RequireMemberViewer from './components/RequireMemberViewer';
+import RequireBoardDashboard from './components/RequireBoardDashboard';
 import Home from './pages/Home';
 
 // Route-level code splitting: the homepage loads eagerly; every other page
 // (and its heavier dependencies — TipTap, DOMPurify) loads on demand.
 const News = lazy(() => import('./pages/News'));
+const DailyRoundup = lazy(() => import('./pages/DailyRoundup'));
+const DailyTagView = lazy(() => import('./pages/DailyTagView'));
 const PostView = lazy(() => import('./pages/PostView'));
 const Policy = lazy(() => import('./pages/Policy'));
 const PolicyView = lazy(() => import('./pages/PolicyView'));
@@ -24,7 +27,9 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
 const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const BoardMeetings = lazy(() => import('./pages/BoardMeetings'));
+const BoardDashboard = lazy(() => import('./pages/BoardDashboard'));
 const BoardMeetingView = lazy(() => import('./pages/BoardMeetingView'));
+const Giveaway = lazy(() => import('./pages/Giveaway'));
 const About = lazy(() => import('./pages/About'));
 const Resources = lazy(() => import('./pages/Resources'));
 const Caq = lazy(() => import('./pages/Caq'));
@@ -34,7 +39,9 @@ const Terms = lazy(() => import('./pages/Terms'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
 const PostEditor = lazy(() => import('./pages/PostEditor'));
 const AdminTags = lazy(() => import('./pages/AdminTags'));
+const SuggestedDailyTags = lazy(() => import('./pages/SuggestedDailyTags'));
 const AdminPeople = lazy(() => import('./pages/AdminPeople'));
+const AdminRecords = lazy(() => import('./pages/AdminRecords'));
 const AdminMembers = lazy(() => import('./pages/AdminMembers'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -46,6 +53,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
+          <Route path="/news/daily" element={<DailyRoundup />} />
+          <Route path="/news/daily/archive" element={<Navigate to="/news" replace />} />
+          <Route path="/news/daily/tag/:slug" element={<DailyTagView />} />
+          <Route path="/news/daily/:date" element={<DailyRoundup />} />
+          {import.meta.env.DEV && (
+            <Route path="/__preview/suggested-tags" element={<SuggestedDailyTags />} />
+          )}
           <Route path="/news/:slug" element={<PostView />} />
           <Route path="/policy" element={<Policy />} />
           <Route path="/policy/:slug" element={<PolicyView />} />
@@ -56,6 +70,7 @@ function App() {
           <Route path="/join" element={<Join />} />
           <Route path="/join/invoice" element={<JoinInvoice />} />
           <Route path="/donate" element={<Donate />} />
+          <Route path="/giveaway" element={<Giveaway />} />
           <Route path="/about" element={<About />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/caq" element={<Caq />} />
@@ -97,6 +112,14 @@ function App() {
             }
           />
           <Route
+            path="/board/dashboard"
+            element={
+              <RequireBoardDashboard>
+                <BoardDashboard />
+              </RequireBoardDashboard>
+            }
+          />
+          <Route
             path="/board/:slug"
             element={
               <RequireActiveMember
@@ -131,10 +154,26 @@ function App() {
             }
           />
           <Route
+            path="/editor/daily-tags"
+            element={
+              <RequireEditor adminOnly adminDenied="Suggested tags are limited to administrators.">
+                <SuggestedDailyTags />
+              </RequireEditor>
+            }
+          />
+          <Route
             path="/editor/people"
             element={
               <RequireEditor adminOnly>
                 <AdminPeople />
+              </RequireEditor>
+            }
+          />
+          <Route
+            path="/editor/records"
+            element={
+              <RequireEditor adminOnly adminDenied="Board records and the Relay balance are limited to administrators.">
+                <AdminRecords />
               </RequireEditor>
             }
           />

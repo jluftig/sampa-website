@@ -83,10 +83,26 @@ export default function EditorDashboard() {
             )}
             {isAdmin && (
               <Link
+                to="/editor/daily-tags"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
+              >
+                Suggested tags
+              </Link>
+            )}
+            {isAdmin && (
+              <Link
                 to="/editor/people"
                 className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
               >
                 People & permissions
+              </Link>
+            )}
+            {isAdmin && (
+              <Link
+                to="/editor/records"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
+              >
+                Records
               </Link>
             )}
             {showRosterLink && (

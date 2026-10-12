@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-06",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "FDA seeks input on early ibogaine trial design, proposing a 10 mg/kg starting-dose cap",
+      "outlet": "FDA",
+      "date": "Oct 5",
+      "summary": "FDA opened a request for information on how early-phase ibogaine trials should handle dose escalation, care setting, cardiac and neurologic safety monitoring, eligibility, and independent oversight, with a starting dose not to exceed 10 mg/kg. HHS is prioritizing adults with opioid use disorder and adults with PTSD for federally supported ibogaine research, and comments on Docket FDA-2026-N-10429 close Nov 20. The agency pairs its interest with serious safety concerns, so clinicians can expect any sanctioned trials to start small and be closely monitored.",
+      "url": "https://www.fda.gov/news-events/press-announcements/fda-seeks-public-input-support-ibogaine-research"
+    },
+    {
+      "headline": "Only 38% of U.S. pharmacists know rules already allow pharmacy methadone units",
+      "outlet": "Addiction Science & Clinical Practice",
+      "date": "Oct 5",
+      "summary": "A Duke-led national survey of 585 licensed pharmacists found 57.2% felt confident they could partner with an opioid treatment program to run a pharmacy methadone medication unit, but only 37.9% knew federal and state rules already allow the model. Just 25.1% said they were likely to build such a partnership, citing workload, regulation and liability, and lack of training. Closing that awareness gap through pharmacy boards and treatment program partnerships could bring methadone closer to patients who live far from a clinic.",
+      "url": "https://doi.org/10.1186/s13722-026-00724-9"
+    },
+    {
+      "headline": "States split on kratom rules as concentrated 7-OH products spread",
+      "outlet": "Stateline",
+      "date": "Oct 5",
+      "summary": "At least 31 states now regulate kratom, and Tennessee's July ban made it one of 14 states that prohibit it outright, while others such as Oklahoma cap 7-OH content and require labeling. Poison centers logged 3,190 kratom-related reports through June 2026, a pace nearly 68% above 2025, and DEA's proposed temporary Schedule I listing for concentrated 7-OH has not yet taken effect. Clinicians should ask about 7-OH products specifically, since the compound acts more directly on the mu-opioid receptor and withdrawal can be more severe than with leaf kratom.",
+      "url": "https://stateline.org/2026/10/05/kratom-7-oh-laws-diverge-amid-the-spread-of-potent-synthetic-products/"
+    },
+    {
+      "headline": "HHS names eight communities for $96 million STREETS homelessness and addiction program",
+      "outlet": "HHS",
+      "date": "Oct 2",
+      "summary": "SAMHSA's new STREETS program will give eight communities, including Detroit, Houston, Huntington (WV), Miami-Dade County, and Cherokee Nation, $3 million a year for four years to build coordinated care for people experiencing homelessness with serious mental illness, substance use disorders, or both. Grantees will pair street-based engagement and evidence-based treatment with recovery supports, housing, courts, and first responders under the administration's Treatment First approach. Treatment programs in those communities may see new referral pathways and partnership requests as the local systems stand up.",
+      "url": "https://www.hhs.gov/press-room/secretary-kennedy-announces-96-million-streets-program-homelessness-addiction.html"
+    },
+    {
+      "headline": "Frequent cannabis use tied to faster-worsening drug-resistant epilepsy",
+      "outlet": "Healio",
+      "date": "Oct 5",
+      "summary": "In a Washington University in St. Louis study of 64 patients with drug-resistant focal epilepsy, published in Epilepsia, the 22 who used cannabis at least 20 times a month reached an epilepsy monitoring unit a mean of 5 years after seizure onset, versus 18.1 years for nonusers. Focal to bilateral tonic-clonic seizures occurred in 90.9% of frequent users versus 57.2% of nonusers. The small retrospective study cannot prove cause, but it supports asking patients with epilepsy about heavy cannabis use.",
+      "url": "https://www.healio.com/news/neurology/20261005/frequent-cannabis-use-associated-with-greater-epilepsy-burden"
+    }
+  ]
+}

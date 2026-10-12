@@ -1,19 +1,24 @@
 export const UPDATES_LIST_ID = 3;
 export const TEST_LIST_ID = 8;
 export const MAKEUP_LIST_ID = 13;
+export const DAILY_LIST_ID = 15;
 export const RECENT_ISSUE_LIMIT = 12;
 export const WEEKLY_NAME = /SAMPA Weekly.*(Issue\s*#?\d+)/i;
 export const WEEKLY_SUBJECT_PREFIX = 'SAMPA Weekly:';
 export const SUBSCRIBER_SNAPSHOTS = [];
 
+function positiveListId(value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
 export function brevoConfigFromEnv(env = {}) {
   const apiKey = env.BREVO_API_KEY || env.SENDINBLUE_API_KEY || '';
-  const listId = Number(env.BREVO_LIST_UPDATES);
-  const testListId = Number(env.BREVO_LIST_TEST);
   return {
     apiKey,
-    listId: Number.isFinite(listId) && listId > 0 ? listId : UPDATES_LIST_ID,
-    testListId: Number.isFinite(testListId) && testListId > 0 ? testListId : TEST_LIST_ID,
+    listId: positiveListId(env.BREVO_LIST_UPDATES, UPDATES_LIST_ID),
+    testListId: positiveListId(env.BREVO_LIST_TEST, TEST_LIST_ID),
+    dailyListId: positiveListId(env.BREVO_LIST_DAILY_NEWS, DAILY_LIST_ID),
     configured: Boolean(apiKey),
   };
 }
@@ -129,6 +134,24 @@ export function toWeeklyIssue(campaign, options = {}) {
   };
 }
 
+export function isDailySend(campaign, options = {}) {
+  const dailyListId = Number(options.dailyListId ?? DAILY_LIST_ID);
+  if (!campaign || String(campaign.status || '').toLowerCase() !== 'sent') return false;
+  if (!Number.isFinite(dailyListId) || dailyListId <= 0) return false;
+  if (isTestCampaign(campaign, options)) return false;
+  return listIdsFromRecipients(campaign.recipients).includes(dailyListId);
+}
+
+export function selectDailySends(campaigns, options = {}) {
+  const limit = options.limit ?? 100;
+  const dailyListId = options.dailyListId ?? DAILY_LIST_ID;
+  return (Array.isArray(campaigns) ? campaigns : [])
+    .filter((campaign) => isDailySend(campaign, options))
+    .map((campaign) => toWeeklyIssue(campaign, { ...options, updatesListId: dailyListId }))
+    .sort((a, b) => String(b.sentAt || '').localeCompare(String(a.sentAt || '')))
+    .slice(0, limit);
+}
+
 export function selectWeeklyIssues(campaigns, options = {}) {
   const limit = options.limit ?? RECENT_ISSUE_LIMIT;
   return (Array.isArray(campaigns) ? campaigns : [])
@@ -188,25 +211,103 @@ export function articleClicks(linkGroups) {
     .sort((a, b) => b.clicks - a.clicks || a.path.localeCompare(b.path));
 }
 
-export function listSizeSeries(issues, snapshots = SUBSCRIBER_SNAPSHOTS) {
-  const snaps = (Array.isArray(snapshots) ? snapshots : [])
-    .filter((row) => row?.date)
-    .map((row) => ({
-      date: String(row.date),
-      total: Number(row.totalSubscribers) || 0,
-      unique: row.uniqueSubscribers == null ? null : Number(row.uniqueSubscribers) || 0,
-    }))
-    .sort((a, b) => a.date.localeCompare(b.date));
-  if (snaps.length) return { source: 'snapshot', points: snaps };
-  const points = [...(Array.isArray(issues) ? issues : [])]
+export function snapshotDate(now = new Date()) {
+  return new Date(now).toISOString().slice(0, 10);
+}
+
+export function snapshotRecord(date, listId, list) {
+  const total = Number(list?.totalSubscribers);
+  const totalSubscribers = Number.isFinite(total) && total >= 0 ? Math.round(total) : 0;
+  const uniqueRaw = list?.uniqueSubscribers;
+  const uniqueNum = Number(uniqueRaw);
+  const uniqueSubscribers = uniqueRaw == null || uniqueRaw === '' || !Number.isFinite(uniqueNum)
+    ? totalSubscribers
+    : Math.round(uniqueNum);
+  return {
+    snapshot_date: date,
+    list_id: Number(listId),
+    total_subscribers: totalSubscribers,
+    unique_subscribers: uniqueSubscribers,
+  };
+}
+
+export function normalizeSnapshotRows(rows) {
+  return (Array.isArray(rows) ? rows : [])
+    .map((row) => {
+      const date = String(row?.snapshot_date || row?.date || '').slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+      const total = Number(row.total_subscribers ?? row.totalSubscribers ?? row.total);
+      const uniqueRaw = row.unique_subscribers ?? row.uniqueSubscribers ?? row.unique;
+      const listId = Number(row.list_id ?? row.listId);
+      return {
+        date,
+        total: Number.isFinite(total) ? total : 0,
+        unique: uniqueRaw == null || uniqueRaw === '' ? null : (Number(uniqueRaw) || 0),
+        listId: Number.isFinite(listId) ? listId : null,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.listId || 0) - (b.listId || 0));
+}
+
+export function snapshotsForList(rows, listId) {
+  const id = Number(listId);
+  return normalizeSnapshotRows(rows).filter((row) => row.listId === id);
+}
+
+export function listGrowthSeries(issues, snapshots = SUBSCRIBER_SNAPSHOTS) {
+  const snaps = normalizeSnapshotRows(snapshots).map((row) => ({
+    date: row.date,
+    total: row.total,
+    unique: row.unique,
+    kind: 'snapshot',
+  }));
+  const sent = [...(Array.isArray(issues) ? issues : [])]
     .filter((issue) => issue?.sentAt)
     .sort((a, b) => String(a.sentAt).localeCompare(String(b.sentAt)))
     .map((issue) => ({
-      date: issue.sentAt,
+      date: String(issue.sentAt).slice(0, 10),
       total: Number(issue.recipients) || 0,
       issueId: issue.id,
+      kind: 'sent',
     }));
-  return { source: 'sent', points };
+  if (!snaps.length) {
+    return {
+      source: 'sent',
+      snapshotStart: null,
+      points: sent,
+      note: 'No subscriber snapshots yet. Points are campaign recipient counts, not list size. Collection starts the day the daily snapshot job runs.',
+    };
+  }
+  const snapshotStart = snaps[0].date;
+  const earlier = sent.filter((point) => point.date < snapshotStart);
+  return {
+    source: earlier.length ? 'mixed' : 'snapshot',
+    snapshotStart,
+    points: [...earlier, ...snaps],
+    note: earlier.length
+      ? `Subscriber snapshots start ${snapshotStart}. Earlier points are campaign recipient counts, not list size.`
+      : `Subscriber snapshots start ${snapshotStart}.`,
+  };
+}
+
+export function listSizeSeries(issues, snapshots = SUBSCRIBER_SNAPSHOTS) {
+  return listGrowthSeries(issues, snapshots);
+}
+
+export function shapeListReach({
+  subscribers,
+  listId,
+  listName,
+  issues,
+  snapshots,
+}) {
+  return {
+    listId,
+    listName: listName || '',
+    subscribers: subscribers == null ? null : (Number(subscribers) || 0),
+    listSize: listGrowthSeries(issues, snapshots),
+  };
 }
 
 export function shapeNewsletterStats({
@@ -216,10 +317,11 @@ export function shapeNewsletterStats({
   issues,
   topLinks,
   subscriberSnapshots,
+  daily,
 }) {
   const list = Array.isArray(issues) ? issues : [];
   const links = Array.isArray(topLinks) ? topLinks : [];
-  return {
+  const body = {
     listId,
     listName: listName || 'SAMPA Updates',
     subscribers: Number(subscribers) || 0,
@@ -227,7 +329,17 @@ export function shapeNewsletterStats({
     issues: list,
     topLinks: links,
     articles: articleClicks(links),
-    listSize: listSizeSeries(list, subscriberSnapshots),
+    listSize: listGrowthSeries(list, subscriberSnapshots),
     empty: list.length === 0,
   };
+  if (daily) {
+    body.daily = shapeListReach({
+      subscribers: daily.subscribers,
+      listId: daily.listId,
+      listName: daily.listName || 'SAMPA Daily Roundup',
+      issues: daily.issues,
+      snapshots: daily.subscriberSnapshots,
+    });
+  }
+  return body;
 }

@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-07",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Fear of precipitated withdrawal, not low readiness, drives ED buprenorphine refusals",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 6",
+      "summary": "A mixed-methods study of 82 adults with opioid use disorder who were offered buprenorphine at four emergency departments in South Carolina, Michigan, and Ohio found that 19 (23%) declined it. Among patients who explained declining, 50% cited concern about precipitated withdrawal or side effects, 32% did not want to be physically dependent on buprenorphine, and 23% named housing or logistical barriers, while treatment-readiness scores were nearly identical in those who accepted and declined. Addressing those specific concerns during the ED offer may raise uptake of a treatment that lowers mortality.",
+      "url": "https://doi.org/10.1001/jamanetworkopen.2026.37671"
+    },
+    {
+      "headline": "Methadone patients spend a mean 82.5 minutes and $15.80 traveling to each dosing visit",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 6",
+      "summary": "A survey of 98 patients at two Washington state opioid treatment programs found they spent a mean 82.5 minutes round trip (range 10 to 330) and $15.80 in travel-related costs per dosing visit; 55.1% drove themselves and 18.4% reported a disabling condition. Interviews with 16 patients showed that unpredictable clinic wait times and conflicts with work, medical, and family obligations mattered alongside distance, and participants said dosing visits kept them from working. The authors call for more flexible methadone delivery that cuts travel burden as essential to care quality and equity.",
+      "url": "https://doi.org/10.1001/jamanetworkopen.2026.37601"
+    },
+    {
+      "headline": "GLP-1 drugs tied to fewer overdoses in veterans with diabetes and OUD, with caveats",
+      "outlet": "Medscape",
+      "date": "Oct 6",
+      "summary": "In a propensity-matched VA study published in the Journal of Clinical Psychiatry, 315 veterans with type 2 diabetes and opioid use disorder who started semaglutide or tirzepatide were less likely to overdose within 12 months than matched patients on insulin (HR 0.32) or SGLT2 inhibitors (HR 0.25). There was no significant difference versus metformin, sulfonylureas, or DPP-4 inhibitors, overdose counts were small, and few events were documented as opioid-specific. An outside expert said GLP-1 drugs should not replace buprenorphine, methadone, extended-release naltrexone, or naloxone while randomized trials are underway.",
+      "url": "https://www.medscape.com/viewarticle/glp-1ras-show-promise-opioid-overdose-veterans-more-research-2026a10010te"
+    },
+    {
+      "headline": "Utah links four overdose deaths to cat's claw tablets laced with semi-synthetic kratom compounds",
+      "outlet": "Utah News Dispatch",
+      "date": "Oct 6",
+      "summary": "Utah health and agriculture officials said tablets sold as herbal cat's claw, under brand names such as Buzzers, contained the semi-synthetic kratom alkaloids MGPI and MGM-15, which DEA placed in Schedule I in August, after four Utahns died of overdoses linked to the products. The compounds act on opioid receptors, so naloxone can reverse an overdose, and treatment for opioid dependence and withdrawal is effective. Clinicians seeing unexplained opioid-like toxicity or withdrawal should ask about herbal products bought online or in smoke shops, not only about kratom by name.",
+      "url": "https://utahnewsdispatch.com/2026/10/06/utah-warning-kratom-cats-claw-products-after-overdoses/"
+    },
+    {
+      "headline": "Louisiana confirms cychlorphine, a potent new synthetic opioid, in at least two deaths",
+      "outlet": "KEDM Public Radio",
+      "date": "Oct 6",
+      "summary": "The Louisiana Department of Health said cychlorphine, an emerging synthetic opioid found in counterfeit pills and drug mixtures, has been linked to at least 55 deaths nationally in 2025 and 2026, with the highest prevalence in Ohio, Texas, and Tennessee. At least two Louisiana opioid-related deaths since December 2025 have confirmed its presence, and the department expects the numbers to change as toxicology testing expands. Naloxone works against cychlorphine, but its potency may require repeat doses, so responders and people who use opioids should be ready to re-dose.",
+      "url": "https://www.kedm.org/louisiana-news/2026-10-06/louisiana-department-of-health-reinforces-the-importance-of-naloxone-and-overdose-prevention-with-detection-of-cychlorphine"
+    }
+  ]
+}

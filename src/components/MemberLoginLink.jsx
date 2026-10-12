@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../lib/AuthContext';
+import { useAuth } from '../lib/authState';
 import { memberLoginHref, memberLoginLabel } from '../lib/memberHome';
 
 export default function MemberLoginLink({ className, onClick }) {

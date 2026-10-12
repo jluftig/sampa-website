@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { Download } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
+import { rosterBackLink } from '../lib/memberHome';
 import { tierByKey } from '../lib/membership';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PrivilegedAccessAgreement from '../components/PrivilegedAccessAgreement';
-import OrgDashboard from '../components/OrgDashboard';
 
 const STATUS_FILTERS = [
   { key: 'all', label: 'All accounts' },
@@ -126,7 +126,7 @@ function toCsv(rows) {
 // status, counts by tier/state, and a CSV export of the filtered view. Reads
 // are allowed by the profiles RLS policy (admins see all rows).
 export default function AdminMembers() {
-  const { user, profile } = useAuth();
+  const { user, profile, canViewBoardDashboard } = useAuth();
   // Confidentiality agreement gate: no member data is fetched or rendered
   // until this person has click-accepted (timestamp on their profile).
   const accepted = !!profile?.privileged_terms_accepted_at;
@@ -274,19 +274,27 @@ export default function AdminMembers() {
     }).then(() => {});
   };
 
+  const back = rosterBackLink(profile);
+
   return (
     <div className="relative min-h-screen bg-background text-text">
       <div className="noise-overlay pointer-events-none"></div>
       <Navbar />
 
       <main className="max-w-6xl mx-auto px-4 pt-40 pb-24">
-        <Link to="/editor" className="text-primary-text font-data text-sm font-semibold hover:underline">
-          ← Dashboard
+        <Link to={back.to} className="text-primary-text font-data text-sm font-semibold hover:underline">
+          {back.label}
         </Link>
-
-        <div className="mt-3">
-          <OrgDashboard />
-        </div>
+        {canViewBoardDashboard && (
+          <p className="mt-3">
+            <Link
+              to="/board/dashboard"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-primary-text text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              Board dashboard
+            </Link>
+          </p>
+        )}
 
         {!accepted ? (
           <div className="mt-4">

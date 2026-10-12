@@ -1,6 +1,7 @@
 import { requireUser, supabaseAdmin, json } from './clients.js';
 import { createTtlCache } from './ttl-cache.js';
-import { canViewMemberRoster } from '../../src/lib/memberRoster.js';
+import { canViewBoardDashboard } from '../../src/lib/memberRoster.js';
+import { loadBoardDashboardProfile } from './boardDashboardAccess.js';
 import { shapeMembershipStats } from '../../src/lib/membershipStats.js';
 
 const CACHE_MS = 5 * 60 * 1000;
@@ -12,16 +13,10 @@ function membershipJson(body, status = 200) {
 }
 
 async function loadViewerProfile(userId) {
-  const admin = supabaseAdmin();
-  const { data } = await admin
-    .from('profiles')
-    .select('role, can_view_members')
-    .eq('id', userId)
-    .maybeSingle();
-  return data;
+  return loadBoardDashboardProfile(userId);
 }
 
-async function loadMembershipRows() {
+export async function loadMembershipRows() {
   const admin = supabaseAdmin();
   const rows = [];
   const pageSize = 1000;
@@ -49,7 +44,7 @@ export async function handleMembershipStats(request, deps = {}) {
     if (!user) return membershipJson({ error: 'Sign in required' }, 401);
 
     const profile = await loadProfile(user.id);
-    if (!canViewMemberRoster(profile)) {
+    if (!canViewBoardDashboard(profile)) {
       return membershipJson({ error: 'Not authorized' }, 403);
     }
 
