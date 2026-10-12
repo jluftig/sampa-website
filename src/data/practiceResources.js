@@ -3,7 +3,7 @@ export const RESOURCES_HUB = {
   oneLiner:
     'A first set of links you can open today — SAMPA’s own news, Key Points, and public comments, plus public clinical and public-health sources a PA treating addiction would actually use. This is not a protocol, not a dosing tool, and not CME. Links checked September 2026; open the source for the current text.',
   settingsIntro:
-    'Addiction care is not only an OTP or specialty-clinic job. You may be starting treatment in an emergency department, continuing it on a hospital service, seeing someone in primary care or an FQHC, meeting people on the street, connecting by telehealth, staffing a bridge clinic, or practicing inside an opioid treatment program. The list below is written for that mix — so people can reach MOUD and quality treatment from the door they already walk through.',
+    'Addiction care is not only an OTP or specialty-clinic job. You may be starting treatment in an emergency department, continuing it on a hospital service, seeing someone in primary care or an FQHC, meeting people on the street, connecting by telehealth, staffing a bridge clinic, or practicing inside an opioid treatment program. The list below is written for that mix — so people can reach MOUD and quality treatment from the door they already walk through. For an emergency department or hospital start, open Bridge first.',
   stillBuilding:
     'Point-of-care practice tools are in clinical review and are not on this page yet. CME and a job board remain in development.',
   disclaimer:
@@ -99,6 +99,18 @@ export const SAMPA_RESOURCES = [
 ];
 
 export const EXTERNAL_RESOURCES = [
+  {
+    id: 'bridge',
+    origin: 'external',
+    source: 'Bridge',
+    title: 'Bridge',
+    blurb:
+      'Free, evidence-based tools and protocols for starting buprenorphine and other MOUD in an emergency department or hospital, and for navigating the person into ongoing care. Open the source for the current text. Do not treat it as a dosing guide.',
+    href: 'https://bridgetotreatment.org/',
+    external: true,
+    asOf: 'Page checked October 2026',
+    cta: 'Open Bridge',
+  },
   {
     id: 'tip-63',
     origin: 'external',
