@@ -97,6 +97,14 @@ export default function EditorDashboard() {
                 People & permissions
               </Link>
             )}
+            {isAdmin && (
+              <Link
+                to="/editor/records"
+                className="px-4 py-2.5 rounded-full border border-primary/20 text-sm font-semibold hover:bg-primary-text hover:text-white transition-colors"
+              >
+                Records
+              </Link>
+            )}
             {showRosterLink && (
               <Link
                 to="/editor/members"

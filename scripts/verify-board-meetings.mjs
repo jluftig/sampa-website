@@ -12,12 +12,12 @@ import {
   secondWednesday,
 } from '../src/data/boardSchedule.js';
 import {
-  getBoardMeeting,
-  listBoardMeetings,
   meetingsWithAgenda,
   meetingsWithMinutes,
+  memberMeeting,
   publicMeeting,
   upcomingMeetings,
+  withEffectiveStatus,
 } from '../api/_lib/boardMeetings.js';
 
 const fail = (msg) => {
@@ -50,20 +50,32 @@ if (/named roster|all-member blast|join links|executive.session|source of truth/
   fail('Hub copy must stay sparse — no extra access-policy essays');
 }
 
-const meetings = listBoardMeetings();
-const slugs = meetings.map((m) => m.slug);
-if (slugs[0] !== '2026-09') fail('List must be newest first (September 2026)');
-
-const required = [
-  '2026-09', '2026-08', '2026-07', '2026-06', '2026-05', '2026-04',
-  '2026-03', '2026-02', '2026-01', '2026-annual',
-  '2025-10', '2025-09', '2025-08', '2025-07', '2025-06', '2025-02',
-];
-for (const slug of required) {
-  if (!getBoardMeeting(slug)) fail(`Missing meeting ${slug}`);
-}
-if (getBoardMeeting('2026-fall')) fail('Placeholder 2026-fall must be gone');
-if (getBoardMeeting('not-a-meeting')) fail('Unknown slug must return null');
+const FIXTURE = withEffectiveStatus([
+  {
+    slug: '2026-09',
+    title: 'September fixture',
+    date: '2026-09-09',
+    time: '8 PM ET',
+    kind: 'regular',
+    format: 'virtual',
+    location: 'Virtual',
+    status: 'completed',
+    agenda: { status: 'posted', bodyHtml: '<p>Fixture agenda</p>' },
+    minutes: { status: 'not_yet', bodyHtml: null },
+  },
+  {
+    slug: '2026-08',
+    title: 'August fixture',
+    date: '2026-08-12',
+    kind: 'regular',
+    format: 'virtual',
+    location: 'Virtual',
+    status: 'completed',
+    agenda: { status: 'posted', bodyHtml: '<p>Fixture agenda</p>' },
+    minutes: { status: 'posted', bodyHtml: '<p>Fixture minutes</p>' },
+  },
+], new Date(2026, 8, 27, 12, 0, 0));
+const meetings = FIXTURE;
 
 const seen = new Set();
 for (const m of meetings) {
@@ -76,116 +88,22 @@ for (const m of meetings) {
   if (!ok.includes(m.minutes.status)) fail(`${m.slug} minutes status invalid`);
 }
 
-const july = getBoardMeeting('2026-07');
-if (!hasFullBody(july.agenda)) fail('July 2026 agenda must have full posted HTML');
-if (!hasFullBody(july.minutes)) fail('July 2026 minutes must have full posted HTML');
-if (!july.agenda.bodyHtml.includes('July 8, 2026')) fail('July agenda must name July 8, 2026');
-if (!july.agenda.bodyHtml.includes('Election Updates')) fail('July agenda missing business items');
-if (!july.minutes.bodyHtml.includes('Shani Wilson')) fail('July minutes must name the chair');
-if (!july.minutes.bodyHtml.includes('Directors-at-Large')) fail('July minutes missing ASIO motion');
-if (!july.minutes.bodyHtml.includes('Kala Klug')) fail('July minutes must credit the secretary');
-
 const asOf = new Date(2026, 8, 27, 12, 0, 0);
-const sep = getBoardMeeting('2026-09', asOf);
-if (sep.status !== 'completed') fail('September 9, 2026 must be past on 2026-09-27');
-if (sep.status === 'upcoming') fail('September 2026 must not be upcoming');
-if (!hasFullBody(sep.agenda)) fail('September 2026 agenda must have full posted HTML');
-if (sep.minutes.status !== 'not_yet') fail('September 2026 minutes are not posted yet');
-if (hasFullBody(sep.minutes)) fail('September 2026 minutes must stay empty');
-if (!sep.agenda.bodyHtml.includes('Motion to Approve ASIO')) fail('September agenda missing ASIO motion');
-if (!sep.agenda.bodyHtml.includes('October 14, 2026')) fail('September agenda must name the next meeting');
-if (!sep.agenda.bodyHtml.includes('Newsletter Sub Committee')) fail('September agenda missing Newsletter Sub Committee');
-
-const aug = getBoardMeeting('2026-08');
-if (!hasFullBody(aug.agenda)) fail('August 2026 agenda must have full posted HTML');
-if (!hasFullBody(aug.minutes)) fail('August 2026 minutes must have full posted HTML');
-if (!aug.agenda.bodyHtml.includes('September 9, 2026')) fail('August agenda must name the next meeting');
-if (!aug.minutes.bodyHtml.includes('Elections and Vacancies')) fail('August minutes missing Elections and Vacancies');
-if (!aug.minutes.bodyHtml.includes('ASIO')) fail('August minutes missing ASIO vacancy');
-if (!aug.minutes.bodyHtml.includes('Conflict of Interest')) fail('August minutes missing COI policy');
-
-const postedAgendas2026 = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
-for (const slug of postedAgendas2026) {
-  const m = getBoardMeeting(slug);
-  if (!hasFullBody(m.agenda)) fail(`${slug} agenda must be posted HTML`);
-}
-
-const postedMinutes2026 = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08'];
-for (const slug of postedMinutes2026) {
-  const m = getBoardMeeting(slug);
-  if (!hasFullBody(m.minutes)) fail(`${slug} minutes must be posted HTML`);
-}
-
-const jan = getBoardMeeting('2026-01');
-if (jan.date !== '2026-01-14') fail('January 2026 date must be January 14');
-if (!jan.minutes.bodyHtml.includes('Treasurer')) fail('January minutes missing Treasurer seating');
-
-const feb = getBoardMeeting('2026-02');
-if (feb.date !== '2026-02-11') fail('February 2026 date must be February 11');
-if (!feb.minutes.bodyHtml.includes('Addiction Medicine CAQ')) fail('February minutes missing CAQ approval');
-
-const mar = getBoardMeeting('2026-03');
-if (mar.date !== '2026-03-11') fail('March 2026 date must be March 11');
-if (!mar.minutes.bodyHtml.includes('501(c)(3)')) fail('March minutes missing 501(c)(3) motion');
-if (/transcript link/i.test(mar.minutes.bodyHtml) === false) fail('March minutes should record the no-transcript-link edit');
-
-const apr = getBoardMeeting('2026-04');
-if (apr.date !== '2026-04-08') fail('April 2026 date must be April 8');
-if (!apr.agenda.bodyHtml.includes('May 17, 2026')) fail('April agenda must name the hybrid next meeting');
-if (!apr.minutes.bodyHtml.includes('501(c)(3)')) fail('April minutes missing 501(c)(3) motion');
-if (!apr.minutes.bodyHtml.includes('Wyoming')) fail('April minutes must name Wyoming incorporation');
-if (!apr.minutes.bodyHtml.includes('Jordan Vold')) fail('April minutes must use Jordan Vold');
-if (!apr.minutes.bodyHtml.includes('Tasha Seliski')) fail('April minutes must use Tasha Seliski');
-if (/Jordan Void|Tasha Selinski/.test(apr.minutes.bodyHtml)) {
-  fail('April minutes still misspell Jordan Vold or Tasha Seliski');
-}
-
-const may = getBoardMeeting('2026-05');
-if (may.date !== '2026-05-17') fail('May 2026 date must be May 17');
-if (may.format !== 'hybrid') fail('May 2026 must be hybrid');
-if (!/Room 278/.test(may.location || '')) fail('May 2026 location must include Room 278');
-if (!may.agenda.bodyHtml.includes('AAPA New Orleans')) fail('May agenda must name AAPA New Orleans');
-if (!may.minutes.bodyHtml.includes('6:28')) fail('May minutes must include call-to-order time');
-
-const jun = getBoardMeeting('2026-06');
-if (jun.date !== '2026-06-10') fail('June 2026 date must be June 10');
-if (!jun.minutes.bodyHtml.includes('Wyoming')) fail('June minutes missing Wyoming bylaws approval');
-
-for (const slug of ['2025-02', '2025-06', '2025-07', '2025-08', '2025-09']) {
-  const m = getBoardMeeting(slug);
-  if (!hasFullBody(m.minutes)) fail(`${slug} minutes must be posted HTML`);
-  if (m.era !== 'spaam') fail(`${slug} must be labeled SPAAM / early SAMPA`);
-}
-
-const oct25 = getBoardMeeting('2025-10');
-if (!hasFullBody(oct25.agenda)) fail('October 2025 agenda must be posted HTML');
-if (oct25.minutes.status !== 'not_yet') fail('October 2025 minutes are not posted');
-if (oct25.era !== 'spaam') fail('October 2025 must be labeled SPAAM / early SAMPA');
-if (!/SPAAM/i.test(getBoardMeeting('2025-02').minutes.bodyHtml)) fail('February 2025 notes must say SPAAM');
-
-if (!hasListedDoc(getBoardMeeting('2026-annual').agenda)) {
-  fail('Annual 2026 materials must be listed');
-}
-if (hasFullBody(getBoardMeeting('2026-annual').agenda) || hasFullBody(getBoardMeeting('2026-annual').minutes)) {
-  fail('2026 annual PDF should stay on file until the body is pasted');
-}
-
-const leftoverOnFile = meetings.filter((m) => (
-  (m.agenda.status === 'on_file' || m.minutes.status === 'on_file') && m.slug !== '2026-annual'
-));
-if (leftoverOnFile.length) {
-  fail(`Unexpected on_file stubs: ${leftoverOnFile.map((m) => m.slug).join(', ')}`);
-}
-
-const listedOnSep27 = listBoardMeetings(asOf);
-if (upcomingMeetings(listedOnSep27, asOf).some((meeting) => meeting.slug === '2026-09')) {
-  fail('September 2026 must not be upcoming on 2026-09-27');
-}
-if (publicMeeting(sep, asOf).agenda?.bodyHtml || publicMeeting(sep, asOf).minutes?.bodyHtml) {
+const sep = meetings.find((meeting) => meeting.slug === '2026-09');
+const aug = meetings.find((meeting) => meeting.slug === '2026-08');
+if (sep.status !== 'completed') fail('September fixture must be completed');
+if (!hasFullBody(sep.agenda)) fail('Posted fixture agenda must count as a full body');
+if (hasFullBody(sep.minutes)) fail('not_yet fixture minutes must not count as a full body');
+if (!hasFullBody(aug.minutes)) fail('Posted fixture minutes must count as a full body');
+const listed = publicMeeting(sep, asOf);
+if (listed.agenda?.bodyHtml || listed.minutes?.bodyHtml) {
   fail('Public catalog must omit agenda and minutes HTML');
 }
-if (meetingsWithAgenda(meetings).length < 9) fail('2026 agendas should all be listed');
-if (meetingsWithMinutes(meetings).length < 10) fail('Minutes list is too thin');
+const full = memberMeeting(sep, asOf);
+if (!full.agenda.bodyHtml.includes('Fixture agenda')) fail('Member payload keeps the agenda body');
+if (full.minutes.bodyHtml) fail('Empty minutes stay empty on the member payload');
+if (meetingsWithAgenda(meetings).length !== 2) fail('Both fixture agendas are listed');
+if (meetingsWithMinutes(meetings).length !== 1) fail('Only the posted fixture minutes are listed');
 
 if (isoDate(secondWednesday(2026, 9)) !== '2026-09-09') fail('Sep 2026 second Wednesday is the 9th');
 if (isoDate(secondWednesday(2026, 10)) !== '2026-10-14') fail('Oct 2026 second Wednesday is the 14th');
@@ -196,23 +114,23 @@ if (standing[0]?.date !== '2026-09-09' || standing[0]?.slug !== '2026-09') {
 if (standing[1]?.date !== '2026-10-14' || standing[1]?.slug) {
   fail('Second standing date is Oct 14 2026 with no empty Oct stub');
 }
-const standingAfter = nextStandingBoardDates(2, asOf, listedOnSep27);
+const standingAfter = nextStandingBoardDates(2, asOf, meetings);
 if (standingAfter.some((row) => row.date === '2026-09-09')) {
   fail('Schedule on 2026-09-27 must not list September 9 as upcoming');
 }
 if (standingAfter[0]?.date !== '2026-10-14') {
   fail('Next standing date on 2026-09-27 is October 14, 2026');
 }
-if (recordsEmptyCopy(meetingsWithMinutes(listedOnSep27)) !== null) {
+if (recordsEmptyCopy(meetingsWithMinutes(meetings)) !== null) {
   fail('Empty-state copy must not appear when minutes exist');
 }
 if (recordsEmptyCopy([]) !== 'No approved minutes yet.') {
   fail('Empty minutes list uses the real empty state');
 }
-if (agendaListTitle(getBoardMeeting('2026-09')) !== 'September 9, 2026 Board Meeting') {
+if (agendaListTitle(sep) !== 'September 9, 2026 Board Meeting') {
   fail('Agenda list titles must be date + Board Meeting');
 }
-if (!recordListTitle(getBoardMeeting('2026-08')).includes('Virtual BOD')) {
+if (!recordListTitle(aug).includes('Virtual BOD')) {
   fail('Records list titles must use AAPA-style Virtual BOD');
 }
 
@@ -270,7 +188,32 @@ if (/disclaimer|executive.session|join links|on file until pasted/i.test(viewSrc
   fail('Meeting detail must be title + agenda/minutes body only');
 }
 
+const leaders = readFileSync('src/data/leadership.js', 'utf8');
+if (!leaders.includes("'Membership co-chair'")) fail('Josh and Clarissa must be Membership co-chairs');
+if (!leaders.includes("'Finance co-chair'")) fail('Josh and Jonathan must be Finance co-chairs');
+if (leaders.includes("'Membership chair'") || leaders.includes("'Finance chair'")) {
+  fail('Membership and Finance must not list a single chair');
+}
+const schema = readFileSync('supabase/schema.sql', 'utf8');
+if (!schema.includes('for select using ( public.is_active_member() )')) {
+  fail('Board meetings stay readable by active members');
+}
+if (!schema.includes('for select using ( public.can_view_board_dashboard() )')) {
+  fail('Relay balances stay on the board dashboard gate');
+}
+if (!schema.includes('for insert with check ( public.is_admin() )')) {
+  fail('Writing records stays admin-only');
+}
+const recordsPage = readFileSync('src/pages/AdminRecords.jsx', 'utf8');
+if (!recordsPage.includes('relay_balances') || !recordsPage.includes('board_meetings')) {
+  fail('Admin records page must edit both tables');
+}
+
 const appSrc = readFileSync('src/App.jsx', 'utf8');
+if (!appSrc.includes('path="/editor/records"')) fail('App must declare /editor/records');
+if (appSrc.indexOf('path="/editor/records"') > appSrc.indexOf('path="/editor/:id"')) {
+  fail('/editor/records must be registered before the post editor');
+}
 if (!appSrc.includes('path="/board"')) fail('App must declare /board');
 if (!appSrc.includes('path="/board/:slug"')) fail('App must declare /board/:slug');
 if ((appSrc.match(/deniedCopy="Board meeting agendas and minutes/g) || []).length < 2) {
@@ -288,15 +231,14 @@ const dashSrc = readFileSync('src/pages/Dashboard.jsx', 'utf8');
 if (!dashSrc.includes('to="/board"')) fail('Dashboard must link Board meetings');
 
 const LEAKS = [
-  'Motion to Approve ASIO',
-  'Newsletter Sub Committee',
-  'Jordan Void (Vold)',
-  'SAMPA Annual BOD Meeting.pdf',
+  'SEPTEMBER_2026_AGENDA_HTML',
+  ['24', '57', '00'].join(''),
+  'relayBalance',
 ];
 
 function walkSrc(dir, acc = []) {
   for (const name of readdirSync(dir)) {
-    if (name === 'node_modules' || name === 'dist') continue;
+    if (name === 'node_modules' || name === 'dist' || name === 'seed-private') continue;
     const path = `${dir}/${name}`;
     if (statSync(path).isDirectory()) walkSrc(path, acc);
     else if (/\.(js|jsx|css|html|svg|json)$/.test(name)) acc.push(path);
@@ -304,7 +246,7 @@ function walkSrc(dir, acc = []) {
   return acc;
 }
 
-for (const file of walkSrc('src')) {
+for (const file of [...walkSrc('src'), ...walkSrc('api'), ...walkSrc('supabase'), ...walkSrc('docs'), 'scripts/seed-private-records.mjs']) {
   const text = readFileSync(file, 'utf8');
   for (const phrase of LEAKS) {
     if (text.includes(phrase)) fail(`${file} still contains minutes text: ${phrase}`);

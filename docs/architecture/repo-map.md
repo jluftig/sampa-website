@@ -46,7 +46,7 @@ api/                        Vercel serverless functions (Web-handler signature: 
                             Finance uses the same dashboard gate. Board-numbers is
                             active members only and returns aggregates. The snapshot
                             section is the daily cron (`CRON_SECRET`). Board
-                            agendas/minutes (`api/_lib/boardMeetings.js`) require
+                            agendas/minutes (`public.board_meetings`) require
                             `is_active_member()` and are also reached at `/api/board-meetings`
                             via vercel.json rewrite. Handlers live in `api/_lib/`.
 src/
@@ -76,7 +76,7 @@ src/
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
-    boardMeetings.js        Member-area Board schedule / agenda / minutes seed
+    boardSchedule.js        Meeting labels and standing second-Wednesday dates
     leadership.js           About-page leadership roster (preview; not a CMS)
   pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,

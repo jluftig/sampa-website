@@ -11,7 +11,7 @@
 -- After apply: People & permissions → check Membership Committee for
 -- Clarissa Peterson (chair), Kelsy Babbitt Ruggiero, Megan Zawacki,
 -- Lamont Scott. Optional: Jonathan Baker (Membership advisor).
--- Josh is Membership chair and already is_board — no extra flag required.
+-- Membership Committee is a label. It does not open the roster or the dashboard.
 -- ============================================================================
 
 alter table public.profiles
