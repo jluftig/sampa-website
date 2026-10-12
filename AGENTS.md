@@ -35,6 +35,8 @@ Session handoffs (when Egg/Cursor need full context transfer): `docs/HANDOFF-cur
 
 Pocock workflow skills live in `.claude/skills/` (Claude Code and Cursor both load that folder). Flow: `grill-me` / `grill-with-docs` → `to-spec` → `to-tickets` → `implement` / `implement-spec` → `pr` → `retro`; `wait-what` re-pitches anything unclear. Source, license, and local changes: `.claude/skills/POCOCK-SKILLS.md`.
 
+Verification skills from pstack live in the same folder. `/create-verification-skill` and `/maintain-verification-skill` are upstream copies. `/verify-sampa-website` is the project skill for install, build, the dev server, the board-nav and member-login suites, and page checks. Source and license: `.claude/skills/PSTACK-VERIFICATION.md`.
+
 - Issue tracker + labels: `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`
 - Domain docs: `GLOSSARY.md`, `docs/agents/domain.md`
 - **SAMPA ship rules override the skills** (preview PR only, Website QA, Josh merges): `docs/agents/sampa-pipeline.md`

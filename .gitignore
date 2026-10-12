@@ -31,6 +31,9 @@ docs/assets/stock/cover-picks-*/
 # agent temp scripts
 scripts/_tmp_*
 
+# verification-skill proof (kept after server cleanup, not committed)
+/artifacts/
+
 # member data (this repo is PUBLIC — contact info must never be committed)
 *member-import*
 *Responses*.csv
