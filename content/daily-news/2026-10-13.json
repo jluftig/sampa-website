@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-13",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Phenobarbital and diazepam perform about the same for hospitalized alcohol withdrawal",
+      "outlet": "JAMA Internal Medicine",
+      "date": "Oct 12",
+      "summary": "A trial-emulation study of 24,643 adults admitted with alcohol withdrawal syndrome at 754 U.S. hospitals compared starting phenobarbital or diazepam on the day of admission. Hospital length of stay (4.1 vs 4.3 days) and invasive mechanical ventilation (3.1% vs 2.7%) did not differ, although self-directed discharge was less common with phenobarbital (9.5% vs 12.6%). The authors say the results suggest near therapeutic equivalence with long-acting benzodiazepines and call for head-to-head trials as more hospitals adopt phenobarbital protocols.",
+      "url": "https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2854918"
+    },
+    {
+      "headline": "Louisiana gets federal OK for Medicaid-covered addiction and mental health care before release",
+      "outlet": "Louisiana Illuminator",
+      "date": "Oct 12",
+      "summary": "The Louisiana Department of Health announced that CMS approved its Medicaid reentry demonstration, which covers care during the 60 days before a person leaves a state prison or participating parish jail. Covered services include behavioral health assessments and treatment, including for substance use disorder, lab and diagnostic services, and a 30-day supply of prescription medications at release, starting at Elayn Hunt Correctional Center in early 2027. Louisiana joins 18 other states with similar programs, which aim to keep treatment, including medications for opioid use disorder, from lapsing in the high-risk weeks after release.",
+      "url": "https://lailluminator.com/2026/10/12/medicaid-reentry/"
+    },
+    {
+      "headline": "Michigan puts $3.4M in opioid settlement funds toward 205 new recovery housing beds",
+      "outlet": "Michigan Department of Health and Human Services",
+      "date": "Oct 12",
+      "summary": "Michigan's health department and state housing authority awarded $3.4 million to 18 organizations to buy or lease 24 recovery residences in 14 counties, adding an estimated 205 beds. Earlier rounds of the Recovery Housing Investment Program created 136 beds, and the state says more than $12 million in settlement dollars has gone to over 50 community agencies in recent months. With more than $1.8 billion in settlement payments expected by 2040, recovery housing is one of the more concrete ways states are turning those funds into ongoing services.",
+      "url": "https://www.michigan.gov/mdhhs/inside-mdhhs/newsroom/2026/10/12/recovery-housing"
+    },
+    {
+      "headline": "Cannabis-related hospital admissions rose 49% over a decade in Victoria, Australia",
+      "outlet": "The Conversation",
+      "date": "Oct 12",
+      "summary": "Monash University researchers reviewed 39,565 cannabis-related hospital admissions in Victoria from 2013 to 2023 and found that admissions where cannabis was the main cause rose 49%, peaking in 2020 and 2021. Psychotic disorder accounted for 40.1% of those admissions, 68% of patients stayed longer than 24 hours, and more than 1,500 needed intensive care, with the largest increases among younger women and adults 65 and older. The authors, whose study appears in Addiction, say the findings support psychosis-risk screening before high-THC products are prescribed and prevention aimed at groups that campaigns rarely target.",
+      "url": "https://theconversation.com/cannabis-hospitalisations-up-49-in-a-decade-new-study-shows-292365"
+    },
+    {
+      "headline": "Brain-structure differences tied to problematic substance use shift across three life stages",
+      "outlet": "Nature Health",
+      "date": "Oct 12",
+      "summary": "Pooling imaging from 51,467 people aged 9 to 70 in four cohorts, including ABCD and UK Biobank, researchers found that gray-matter differences linked to problematic substance use followed distinct patterns before age 25, from 25 to 45, and after 45. Early differences tracked with impulsivity and rule-breaking, midlife differences centered on craving- and reward-related regions such as the insula, and later ones appeared as broader volume reductions that may reflect cumulative exposure. The largely cross-sectional study suggests prevention, early intervention, and health monitoring should be tailored to life stage.",
+      "url": "https://www.nature.com/articles/s44360-026-00204-z"
+    }
+  ]
+}
