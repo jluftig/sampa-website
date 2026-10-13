@@ -76,9 +76,10 @@ src/
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
+    practiceResources.js    First public Practice resources page seed (`/resources`)
     boardSchedule.js        Meeting labels and standing second-Wednesday dates
     leadership.js           About-page leadership roster (preview; not a CMS)
-  pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
+  pages/                    Home, About, Resources, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,
                             MemberProfile, BoardMeetings, BoardMeetingView, Privacy, Terms,
                             EditorDashboard, PostEditor,
@@ -111,7 +112,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about` (`#leadership`), `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/archive`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; archive and tag routes before `:date`; static segments before `/news/:slug`), `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/newsletter-confirmed` (`?list=daily` for the roundup list) |
+| Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/archive`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; archive and tag routes before `:date`; static segments before `/news/:slug`), `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/newsletter-confirmed` (`?list=daily` for the roundup list) |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule, plus aggregate member numbers), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
 | Admin, board, or committee chair | `/board/dashboard` (org dashboard, finances included — `canViewBoardDashboard`) |

@@ -187,6 +187,10 @@ export default function Navbar() {
             Policy
             <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
+          <Link to="/resources" className="hover:text-primary-text transition-colors">
+            Resources
+            <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
           <Link to="/caq" className="hover:text-primary-text transition-colors">
             CAQ
             <span className="ml-1 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
@@ -236,6 +240,10 @@ export default function Navbar() {
           </Link>
           <Link to="/policy" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>
             Policy
+            <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
+          </Link>
+          <Link to="/resources" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>
+            Resources
             <span className="ml-1.5 text-[10px] font-data uppercase tracking-wider text-accent font-semibold">New</span>
           </Link>
           <Link to="/caq" className="font-medium text-text hover:text-primary-text px-2 py-1" onClick={closeMobile}>

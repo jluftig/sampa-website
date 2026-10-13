@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-12 (T67 — draft PR #130 includes origin/main through #139. My SAMPA and board nav stay. Preview only until Website QA and Josh.)
+**Last updated:** 2026-10-12 (T32 — PR #75 adds Bridge as the first external practice resource. User-facing name is Bridge. Preview only until Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -44,7 +44,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 | ID | Task | Owner | Notes |
 |----|------|-------|-------|
 | T61 | Bake Clarissa's Annual Membership Survey into the site | either | **Backlog.** Unassigned. Plan carried from closed PR #98 (T46 was reused for session persistence in #99). **Tier A** always-on profile fields: years PA, years addiction medicine, primary practice setting (existing chips), % clinical addiction time, practice model, MOUD prescribe Y/N/NA, telehealth + states, practice vs residence city/state for advocacy. **Tier B** signed-in annual survey as a year-keyed table: benefit prefs (up to 3), education topics/formats/priorities, speaking/volunteering, advocacy priorities/willingness, committee interest, networking, student engagement, leadership interest; free text stays survey responses. Job-hire leads defer to the Jobs pipeline. Do not long-term iframe the Google Form; retire it once the in-app survey works. **Phases:** Drive copy of Form, then Tier A, then in-app 2026 survey (Tier B), then retire Form. |
-| T32 | Practice resources public /resources | either | Preview-only draft PR #75. Not on live site. About still treats practice resources as in-development. Preview only; do not merge until Josh reviews Vercel. |
 | T36 | Sustaining accident cleanup (Fellow + Patron) | either | **Parked.** People who picked Sustaining thinking it was extra support. Shift those members to `fellow` + `patron` flag + Stripe item. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Rest still parked until Josh says. Not in T35 / PR #85 / T37. |
 | T19 | Policy ops tracker + open windows (hub) | either | Grill R1 locked 2026-08-10. [`PARK-policy-ops.md`](PARK-policy-ops.md) · *Resume SAMPA policy ops*. No build until Round 2. |
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
@@ -67,6 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T32 | Practice resources public /resources | cursor | 2026-09-27 | **Claimed cursor.** PR #75 is ready for review, not a draft. Merged current main on 2026-10-12. Bridge is the first external card (`https://bridgetotreatment.org/`). User-facing name is Bridge. CDC naloxone points at `https://www.cdc.gov/stop-overdose/caring/naloxone.html`. `/resources` in nav, footer, and About. Homepage Programs marks practice resources Live. SAMPA list includes the CMS CY 2027 PFS comment plus the HHS, HRSA, and ASAM comments now on `/policy`. No bup dosing tool. CME and job board stay Coming soon. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot. |
 | T69 | My SAMPA menu and Renew for lapsed members | cursor | 2026-10-11 | **Claimed cursor.** Draft PR **#138** (preview only). Part 1 of spec #135 / issue #136. Merged origin/main through a080a7c (#134 skills are on main). Signed-in header is a My SAMPA menu (My account, Directory, Board, Editor, Sign out). Directory and Board leave the top bar when signed in. Join hidden for active members and staff. past_due Renew → `/dashboard` (fix the card). canceled Renew stays `/join`. QA yellow fix on #138. Part 2 (board access without a paid membership) waits until #130 merges. Do not merge until Website QA and Josh. |
 | T68 | Board tabs, roster links, and signed-out Board | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#131** (preview only). Items 1, 3, and 5 from the CoS navigation audit. Josh approved 2026-10-08. Shared tabs on `/board` and `/board/dashboard`, a dashboard button, roster ↔ dashboard links, Board in the signed-out nav, and a login line when `next` is `/board` or `/members`. Do not merge until Website QA is green and Josh says yay. |
 | T67 | Move board minutes and Relay balance out of the public repo | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#130**. Includes origin/main through #139 (dashboard #129, board nav #131, My SAMPA #138, verification skills #139). Meetings and the Relay balance move to Supabase. Seed file stays uncommitted. SQL: `supabase/migrations/2026-10-08-board-meetings-relay-balances.sql`. Leadership lists Membership and Finance co-chairs. Preview only. Do not merge until Website QA and Josh. |
@@ -313,7 +313,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
 - [x] **AAPA status on staff members list (T37)** — 2026-08-25. PR #86 → Production. Honor-system AAPA Yes / No / — on `/editor/members` only.
 - [ ] **Sustaining accident cleanup (T36)** — parked. Fellow + `patron` + Stripe item for people who picked Sustaining as extra support. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Do not run the rest until Josh says.
 - [x] **About intro copy + drop leadership jump (T39)** — 2026-08-25. PR #90 → Production. Josh's two-sentence intro on `/about`; in-page Meet 2026–27 leadership jump removed. Roster unchanged.
-- [ ] **Practice resources `/resources` (T32)** — preview-only PR #75; do not merge until Josh reviews Vercel.
+- [ ] **Practice resources `/resources` (T32)** — PR #75 is ready for review, not a draft. Bridge is the first external card (2026-10-12). CDC naloxone link fixed 2026-09-27 after Website QA RED. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot.
 - [x] **Employer invoice side door on `/join` (T38)** — 2026-08-25. PR #89 → Production. Quiet link on live one-page `/join` after they pick a tier. SQL applied before merge. #73 stays killed.
 - [x] **Patron directory badge + Join copy (T40)** — 2026-08-25. PR #91 → Production. Fellow / checkbox / invoice copy + `/members` Patron badge + quiet dashboard Add Patron. SQL applied before merge.
 - [x] **Josh live Patron copy (T41)** — 2026-08-25. PR #92 → Production. Josh’s exact sentence (extra support + badge flex + gratitude) on Join, invoice, dashboard Add Patron, and Stripe Checkout description.
