@@ -121,7 +121,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people`, `/editor/daily-tags` (suggested roundup keywords; email stubbed) |
 | Member-viewer or admin | `/editor/members` (staff roster only; `canViewMemberRoster`) |
-| Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin or `is_board`. Staff names, document links, and notes from `newsletter-stats?section=policy-work`) |
+| Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin or `is_board`. Internal cards from `newsletter-stats?section=policy-work`, which reads `POLICY_WORK_INTERNAL`) |
 
 Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/daily-tags`, `/editor/policy` **before** `/editor/:id`.
 Declare `/news/daily/archive` and `/news/daily/tag/:slug` **before** `/news/daily/:date`.

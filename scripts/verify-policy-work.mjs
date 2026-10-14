@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { canViewPolicyWork } from '../src/lib/policyWorkAccess.js';
@@ -175,6 +174,28 @@ describe('policy work seed', () => {
     }), true);
   });
 
+  it('shows a due date set on a filed response', () => {
+    const seed = listPolicyWorkItems();
+    const edited = seed.map((item) => (
+      item.id === 'php-2026-1' ? { ...item, dueDate: '2026-11-02' } : item
+    ));
+    const merged = mergePolicyWorkOverlay(seed, policyWorkOverlayFromEdits(seed, edited));
+    assert.equal(merged[0].status, 'filed');
+    assert.deepEqual(
+      upcomingPolicyWorkDeadlines(merged, '2026-10-14').map((item) => item.id),
+      ['php-2026-1'],
+    );
+  });
+
+  it('hides a due date on a declined response', () => {
+    const seed = listPolicyWorkItems();
+    const edited = seed.map((item) => (
+      item.id === 'php-2026-3' ? { ...item, status: 'declined', dueDate: '2026-11-02' } : item
+    ));
+    const merged = mergePolicyWorkOverlay(seed, policyWorkOverlayFromEdits(seed, edited));
+    assert.deepEqual(upcomingPolicyWorkDeadlines(merged, '2026-10-14'), []);
+  });
+
   it('shows submitted dates on the strip and no open dues in the seed', () => {
     const items = listPolicyWorkItems();
     assert.deepEqual(upcomingPolicyWorkDeadlines(items, '2026-09-24'), []);
@@ -261,27 +282,6 @@ describe('route wiring', () => {
   });
 });
 
-const INTERNAL_NEEDLES = [
-  'Brian Dautch',
-  'Jennifer Kolb',
-  '1SQWwYdfgSkxT8VYASlPZ4s4v-yGHdGBa',
-  '1d7vJlcLmm7go7S7WvWhXMbl06qBkejRTlDFk7Ut3B5o',
-  'Confirm the Google Doc matches the published HHS comment.',
-  'Keep this drug-testing statement separate from the correctional-settings comment on /policy.',
-  'Record the submission date and who received it. The sheet left both blank.',
-  'Confirm whether this row is the published HRSA psychedelic RFI comment.',
-];
-
-function filesUnder(dir) {
-  const found = [];
-  for (const name of readdirSync(dir)) {
-    const path = join(dir, name);
-    if (statSync(path).isDirectory()) found.push(...filesUnder(path));
-    else if (/\.(js|jsx|css|html|json)$/.test(name)) found.push(path);
-  }
-  return found;
-}
-
 async function readJson(res) {
   return {
     status: res.status,
@@ -291,85 +291,78 @@ async function readJson(res) {
 }
 
 describe('policy work internal payload', () => {
-  it('keeps staff names, document links, and notes out of src', () => {
-    const root = new URL('../src', import.meta.url).pathname;
-    const hits = [];
-    for (const file of filesUnder(root)) {
-      const text = readFileSync(file, 'utf8');
-      for (const needle of INTERNAL_NEEDLES) {
-        if (text.includes(needle)) hits.push(`${file} contains ${needle}`);
-      }
-    }
-    assert.deepEqual(hits, []);
+  const sample = JSON.stringify({
+    'php-2026-1': {
+      submittedTo: 'Sample Person',
+      packetUrl: 'https://example.com/policy-packet',
+      notes: { 'match-published': 'Sample note for the first row.' },
+    },
+    'php-2026-3': {
+      submittedTo: '',
+      packetUrl: null,
+      notes: { 'fill-sheet': 'Sample note for the third row.' },
+    },
   });
 
-  it('returns those cards from the API for admin or board only', async () => {
+  function authed(profile, env = { POLICY_WORK_INTERNAL: sample }) {
+    return {
+      requireUser: async () => ({ id: 'user' }),
+      loadViewerProfile: async () => profile,
+      env,
+    };
+  }
+
+  it('returns env cards for admin or board and nothing when the env is missing or invalid', async () => {
     const request = () => new Request('https://www.addictionpas.org/api/newsletter-stats?section=policy-work');
     const anon = await readJson(await GET(request(), { requireUser: async () => null }));
     assert.equal(anon.status, 401);
     assert.equal(anon.body.error, 'Sign in required');
     assert.equal(anon.cache, 'private, no-store');
 
-    const roster = await readJson(await GET(request(), {
-      requireUser: async () => ({ id: 'viewer' }),
-      loadViewerProfile: async () => viewer,
-    }));
+    const roster = await readJson(await GET(request(), authed(viewer)));
     assert.equal(roster.status, 403);
     assert.equal(roster.body.error, 'Not authorized');
     assert.equal(roster.body.items, undefined);
 
-    const chair = await readJson(await GET(request(), {
-      requireUser: async () => ({ id: 'chair' }),
-      loadViewerProfile: async () => ({ role: 'member', is_committee_chair: true }),
-    }));
+    const chair = await readJson(await GET(request(), authed({ role: 'member', is_committee_chair: true })));
     assert.equal(chair.status, 403);
     assert.equal(chair.body.items, undefined);
 
-    const board = await readJson(await GET(request(), {
-      requireUser: async () => ({ id: 'board' }),
-      loadViewerProfile: async () => president,
-    }));
+    const missing = await readJson(await GET(request(), authed(president, {})));
+    assert.equal(missing.status, 200);
+    assert.deepEqual(missing.body.items, []);
+
+    const invalid = await readJson(await GET(request(), authed(president, { POLICY_WORK_INTERNAL: '{' })));
+    assert.equal(invalid.status, 200);
+    assert.deepEqual(invalid.body.items, []);
+
+    const board = await readJson(await GET(request(), authed(president)));
     assert.equal(board.status, 200);
     assert.equal(board.cache, 'private, no-store');
-    assert.equal(board.body.items[0].submittedTo, 'Brian Dautch of AAPA');
-    assert.match(board.body.items[0].packetUrl, /1SQWwYdfgSkxT8VYASlPZ4s4v-yGHdGBa/);
-    assert.equal(
-      board.body.items[0].notes['match-published'],
-      'Confirm the Google Doc matches the published HHS comment.',
-    );
-    assert.equal(board.body.items[1].submittedTo, 'Jennifer Kolb of AAPA');
-    assert.match(board.body.items[1].packetUrl, /1d7vJlcLmm7go7S7WvWhXMbl06qBkejRTlDFk7Ut3B5o/);
-    assert.equal(
-      board.body.items[1].notes['separate-correctional'],
-      'Keep this drug-testing statement separate from the correctional-settings comment on /policy.',
-    );
-    assert.equal(board.body.items[2].submittedTo, '');
-    assert.equal(board.body.items[2].packetUrl, null);
-    assert.equal(
-      board.body.items[2].notes['fill-sheet'],
-      'Record the submission date and who received it. The sheet left both blank.',
-    );
-    assert.equal(
-      board.body.items[2].notes['match-published'],
-      'Confirm whether this row is the published HRSA psychedelic RFI comment.',
-    );
+    assert.equal(board.body.items[0].id, 'php-2026-1');
+    assert.equal(board.body.items[0].submittedTo, 'Sample Person');
+    assert.equal(board.body.items[0].packetUrl, 'https://example.com/policy-packet');
+    assert.equal(board.body.items[0].notes['match-published'], 'Sample note for the first row.');
+    assert.equal(board.body.items[1].id, 'php-2026-3');
+    assert.equal(board.body.items[1].submittedTo, '');
+    assert.equal(board.body.items[1].packetUrl, null);
+    assert.equal(board.body.items[1].notes['fill-sheet'], 'Sample note for the third row.');
 
-    const adminRes = await readJson(await GET(request(), {
-      requireUser: async () => ({ id: 'admin' }),
-      loadViewerProfile: async () => admin,
-    }));
+    const adminRes = await readJson(await GET(request(), authed(admin)));
     assert.equal(adminRes.status, 200);
-    assert.equal(adminRes.body.items[1].submittedTo, 'Jennifer Kolb of AAPA');
+    assert.equal(adminRes.body.items[0].submittedTo, 'Sample Person');
 
     const filled = applyPolicyWorkInternal(listPolicyWorkItems(), board.body.items);
-    assert.equal(filled[0].submittedTo, 'Brian Dautch of AAPA');
-    assert.equal(filled[0].punchList[0].text, 'Confirm the Google Doc matches the published HHS comment.');
+    assert.equal(filled[0].submittedTo, 'Sample Person');
+    assert.equal(filled[0].punchList[0].text, 'Sample note for the first row.');
     assert.equal(filled[0].punchList[0].done, false);
-    assert.equal(filled[1].publicPath, null);
-    assert.equal(filled[2].packetUrl, null);
-    assert.equal(
-      filled[2].punchList[0].text,
-      'Record the submission date and who received it. The sheet left both blank.',
-    );
+    assert.equal(filled[1].submittedTo, '');
+    assert.equal(filled[1].packetUrl, null);
+    assert.equal(filled[2].punchList[0].text, 'Sample note for the third row.');
+
+    const bare = applyPolicyWorkInternal(listPolicyWorkItems(), missing.body.items);
+    assert.equal(bare[0].submittedTo, '');
+    assert.equal(bare[0].packetUrl, null);
+    assert.equal(bare[0].punchList[0].text, '');
   });
 });

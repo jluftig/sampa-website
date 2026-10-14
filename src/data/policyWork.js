@@ -327,7 +327,6 @@ export function upcomingPolicyWorkDeadlines(items, today) {
     .filter((item) => (
       item.dueDate
       && item.dueDate >= day
-      && item.status !== 'filed'
       && item.status !== 'declined'
     ))
     .slice()

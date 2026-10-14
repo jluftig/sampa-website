@@ -109,8 +109,10 @@ sheet (HHS chronic disease, ASAM drug-testing CCS, HRSA psychedelic RFI).
 Blank sheet rows are omitted. Status is one of `watching`, `screening`,
 `drafting`, `chairs_review`, `filed`, `declined`. Each item stores a boolean
 per criterion and punch-list ids. Staff names (`submittedTo`), response-packet
-URLs, and punch-list sentences live in `api/_lib/policyWorkInternal.js` and
-are returned by `GET /api/newsletter-stats?section=policy-work`.
+URLs, and punch-list sentences are the server env var `POLICY_WORK_INTERNAL`,
+a JSON object keyed by item id. `GET /api/newsletter-stats?section=policy-work`
+returns them after the gate. A missing or invalid value returns no internal
+fields, and the page still renders. Do not commit that JSON.
 
 `hardScreenPasses` is true when `addiction_related` and `affects_pas` are both
 true, or when `priority_pa_org` is true (AAPA, NCCPA, ARC-PA, PAEA, or
@@ -127,7 +129,9 @@ the URL and see a 403 denial. `postAuthPath` treats `/editor/policy` like the
 roster path so a board member can return there and a member cannot loop.
 
 The public seed still ships in the client bundle. The three internal cards do
-not. Browser edits are a local overlay (`sampa.phpWorkOverlay.v1`) of status,
+not, and they are not stored in this repository. A due date set on a filed
+response still appears under Upcoming deadlines. A declined response does not.
+Browser edits are a local overlay (`sampa.phpWorkOverlay.v1`) of status,
 owner, due date, criteria, and punch checks. The overlay cannot store the
 internal cards.
 
