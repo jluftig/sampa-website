@@ -108,24 +108,28 @@ Seed module: `src/data/policyWork.js`. Three rows from the June 2026–2027
 sheet (HHS chronic disease, ASAM drug-testing CCS, HRSA psychedelic RFI).
 Blank sheet rows are omitted. Status is one of `watching`, `screening`,
 `drafting`, `chairs_review`, `filed`, `declined`. Each item stores a boolean
-per criterion and a punch list.
+per criterion and punch-list ids. Staff names (`submittedTo`), response-packet
+URLs, and punch-list sentences live in `api/_lib/policyWorkInternal.js` and
+are returned by `GET /api/newsletter-stats?section=policy-work`.
 
 `hardScreenPasses` is true when `addiction_related` and `affects_pas` are both
 true, or when `priority_pa_org` is true (AAPA, NCCPA, ARC-PA, PAEA, or
 constituent-status asks). Scorecard questions are the draft ATS-style list.
 `potential_harm` checked means the risk question is yes.
 
-Gate: `canViewPolicyWork` in `src/lib/policyWorkAccess.js`, used by
-`RequirePolicyWork`. Allowed profiles are `admin`, `can_view_members`, or
-`is_board`. `is_membership_committee` and news-editor access do not qualify.
-There is no `is_policy_committee` column. Signed-out visitors go to
-`/login?next=/editor/policy`. Signed-in people who fail the gate stay on the
-URL and see a 403 denial. `postAuthPath` treats `/editor/policy` like the
+Gate: `canViewPolicyWork` in `src/lib/policyWorkAccess.js`. Allowed profiles
+are `role = admin` or `is_board`. `can_view_members`, `is_committee_chair`,
+`is_membership_committee`, and news-editor access do not qualify. The page
+uses that check for the route. The API repeats it before it returns the
+internal cards. There is no `is_policy_committee` column. Signed-out visitors
+go to `/login?next=/editor/policy`. Signed-in people who fail the gate stay on
+the URL and see a 403 denial. `postAuthPath` treats `/editor/policy` like the
 roster path so a board member can return there and a member cannot loop.
 
-The seed ships in the client bundle. The route gate is UX. Google Doc links
-keep their own sharing settings. Browser edits are a local overlay
-(`sampa.phpWorkOverlay.v1`). The module remains the shared record.
+The public seed still ships in the client bundle. The three internal cards do
+not. Browser edits are a local overlay (`sampa.phpWorkOverlay.v1`) of status,
+owner, due date, criteria, and punch checks. The overlay cannot store the
+internal cards.
 
 ## Policy ops (adjacent track)
 

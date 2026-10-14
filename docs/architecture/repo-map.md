@@ -60,7 +60,7 @@ src/
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
     memberRoster.js         canViewMemberRoster — /editor/members; canViewBoardDashboard — /board/dashboard and finances
-    policyWorkAccess.js     canViewPolicyWork — /editor/policy (roster gate or is_board)
+    policyWorkAccess.js     canViewPolicyWork — /editor/policy (admin or is_board; not can_view_members)
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
     newsletterStats.js      Weekly list 3 and Daily list 15 filters, rates, and snapshot growth series
     policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
@@ -121,7 +121,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people`, `/editor/daily-tags` (suggested roundup keywords; email stubbed) |
 | Member-viewer or admin | `/editor/members` (staff roster only; `canViewMemberRoster`) |
-| Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin, `can_view_members`, or `is_board`) |
+| Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin or `is_board`. Staff names, document links, and notes from `newsletter-stats?section=policy-work`) |
 
 Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/daily-tags`, `/editor/policy` **before** `/editor/:id`.
 Declare `/news/daily/archive` and `/news/daily/tag/:slug` **before** `/news/daily/:date`.

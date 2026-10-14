@@ -107,9 +107,6 @@ export const POLICY_WORK_CRITERIA = [
 
 const CRITERION_IDS = POLICY_WORK_CRITERIA.map((row) => row.id);
 
-const HHS_PACKET = 'https://docs.google.com/document/d/1SQWwYdfgSkxT8VYASlPZ4s4v-yGHdGBa/edit?usp=share_link&ouid=104595662487774707106&rtpof=true&sd=true';
-const ASAM_PACKET = 'https://docs.google.com/document/d/1d7vJlcLmm7go7S7WvWhXMbl06qBkejRTlDFk7Ut3B5o/edit?usp=sharing';
-
 const ITEMS = [
   {
     id: 'php-2026-1',
@@ -119,9 +116,7 @@ const ITEMS = [
     status: 'filed',
     dueDate: null,
     submittedAt: '2026-07-05',
-    submittedTo: 'Brian Dautch of AAPA',
     owner: '',
-    packetUrl: HHS_PACKET,
     publicPath: '/policy/hhs-rfi-chronic-disease-addiction-2026',
     criteria: {
       addiction_related: true,
@@ -139,11 +134,7 @@ const ITEMS = [
       existing_position: false,
     },
     punchList: [
-      {
-        id: 'match-published',
-        text: 'Confirm the Google Doc matches the published HHS comment.',
-        done: false,
-      },
+      { id: 'match-published', done: false },
     ],
   },
   {
@@ -154,9 +145,7 @@ const ITEMS = [
     status: 'filed',
     dueDate: null,
     submittedAt: '2026-06-29',
-    submittedTo: 'Jennifer Kolb of AAPA',
     owner: '',
-    packetUrl: ASAM_PACKET,
     publicPath: null,
     criteria: {
       addiction_related: true,
@@ -174,11 +163,7 @@ const ITEMS = [
       existing_position: false,
     },
     punchList: [
-      {
-        id: 'separate-correctional',
-        text: 'Keep this drug-testing statement separate from the correctional-settings comment on /policy.',
-        done: false,
-      },
+      { id: 'separate-correctional', done: false },
     ],
   },
   {
@@ -189,9 +174,7 @@ const ITEMS = [
     status: 'screening',
     dueDate: null,
     submittedAt: null,
-    submittedTo: '',
     owner: '',
-    packetUrl: null,
     publicPath: '/policy/hrsa-rfi-psychedelic-therapies-2026',
     criteria: {
       addiction_related: true,
@@ -209,16 +192,8 @@ const ITEMS = [
       existing_position: false,
     },
     punchList: [
-      {
-        id: 'fill-sheet',
-        text: 'Record the submission date and who received it. The sheet left both blank.',
-        done: false,
-      },
-      {
-        id: 'match-published',
-        text: 'Confirm whether this row is the published HRSA psychedelic RFI comment.',
-        done: false,
-      },
+      { id: 'fill-sheet', done: false },
+      { id: 'match-published', done: false },
     ],
   },
 ];
@@ -233,6 +208,32 @@ function cloneItem(item) {
 
 export function listPolicyWorkItems() {
   return ITEMS.map(cloneItem);
+}
+
+export function applyPolicyWorkInternal(items, internal) {
+  const byId = new Map(
+    (Array.isArray(internal) ? internal : [])
+      .filter((row) => row && typeof row.id === 'string')
+      .map((row) => [row.id, row]),
+  );
+  return (items || []).map((item) => {
+    const extra = byId.get(item.id);
+    const notes = extra?.notes && typeof extra.notes === 'object' && !Array.isArray(extra.notes)
+      ? extra.notes
+      : {};
+    const packetUrl = typeof extra?.packetUrl === 'string' && extra.packetUrl
+      ? extra.packetUrl
+      : null;
+    return {
+      ...item,
+      submittedTo: typeof extra?.submittedTo === 'string' ? extra.submittedTo : '',
+      packetUrl,
+      punchList: (item.punchList || []).map((row) => ({
+        ...row,
+        text: typeof notes[row.id] === 'string' ? notes[row.id] : '',
+      })),
+    };
+  });
 }
 
 export function policyWorkStatusLabel(status) {

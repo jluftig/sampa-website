@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { canViewPolicyWork } from '../src/lib/policyWorkAccess.js';
@@ -21,7 +22,9 @@ import {
   policyWorkOverlayFromEdits,
   policyWorkTimeline,
   upcomingPolicyWorkDeadlines,
+  applyPolicyWorkInternal,
 } from '../src/data/policyWork.js';
+import { GET } from '../api/newsletter-stats.js';
 
 const president = {
   role: 'member',
@@ -42,16 +45,18 @@ function authed(profile) {
 }
 
 describe('canViewPolicyWork', () => {
-  it('allows admin, view-members, and board, and refuses the other hats', () => {
+  it('allows admin and board, and refuses view-members and the other hats', () => {
     assert.equal(canViewPolicyWork(admin), true);
-    assert.equal(canViewPolicyWork(viewer), true);
     assert.equal(canViewPolicyWork(president), true);
+    assert.equal(canViewPolicyWork(viewer), false);
+    assert.equal(canViewPolicyWork({ role: 'member', is_committee_chair: true }), false);
     assert.equal(canViewPolicyWork(editor), false);
     assert.equal(canViewPolicyWork(member), false);
     assert.equal(canViewPolicyWork(committee), false);
     assert.equal(canViewPolicyWork(null), false);
     assert.equal(canViewPolicyWork({ can_edit_news: true }), false);
     assert.equal(canViewMemberRoster(president), false);
+    assert.equal(canViewMemberRoster(viewer), true);
   });
 });
 
@@ -59,7 +64,9 @@ describe('postAuthPath for /editor/policy', () => {
   it('keeps a board member on the tracker and sends everyone else home', () => {
     assert.equal(postAuthPath(president, '/editor/policy'), '/editor/policy');
     assert.equal(postAuthPath(admin, '/editor/policy'), '/editor/policy');
-    assert.equal(postAuthPath(viewer, '/editor/policy'), '/editor/policy');
+    assert.equal(postAuthPath(viewer, '/editor/policy'), '/dashboard');
+    assert.equal(postAuthPath({ role: 'editor', can_view_members: true }, '/editor/policy'), '/editor');
+    assert.equal(postAuthPath({ role: 'member', is_committee_chair: true }, '/editor/policy'), '/dashboard');
     assert.equal(postAuthPath(member, '/editor/policy'), '/dashboard');
     assert.equal(postAuthPath(editor, '/editor/policy'), '/editor');
     assert.equal(postAuthPath(committee, '/editor/policy'), '/dashboard');
@@ -126,26 +133,23 @@ describe('policy work seed', () => {
     assert.equal(items[0].title, 'Comment on Chronic Disease of Addiction');
     assert.equal(items[0].status, 'filed');
     assert.equal(items[0].submittedAt, '2026-07-05');
-    assert.equal(items[0].submittedTo, 'Brian Dautch of AAPA');
-    assert.equal(
-      items[0].packetUrl,
-      'https://docs.google.com/document/d/1SQWwYdfgSkxT8VYASlPZ4s4v-yGHdGBa/edit?usp=share_link&ouid=104595662487774707106&rtpof=true&sd=true',
-    );
+    assert.equal(items[0].submittedTo, undefined);
+    assert.equal(items[0].packetUrl, undefined);
+    assert.equal(items[0].punchList[0].id, 'match-published');
+    assert.equal(items[0].punchList[0].text, undefined);
     assert.equal(items[0].publicPath, '/policy/hhs-rfi-chronic-disease-addiction-2026');
     assert.equal(items[1].organization, 'ASAM');
     assert.equal(items[1].status, 'filed');
     assert.equal(items[1].submittedAt, '2026-06-29');
-    assert.equal(items[1].submittedTo, 'Jennifer Kolb of AAPA');
+    assert.equal(items[1].submittedTo, undefined);
+    assert.equal(items[1].packetUrl, undefined);
     assert.equal(items[1].publicPath, null);
-    assert.equal(
-      items[1].packetUrl,
-      'https://docs.google.com/document/d/1d7vJlcLmm7go7S7WvWhXMbl06qBkejRTlDFk7Ut3B5o/edit?usp=sharing',
-    );
     assert.equal(items[2].organization, 'HRSA');
     assert.equal(items[2].status, 'screening');
     assert.equal(items[2].submittedAt, null);
-    assert.equal(items[2].submittedTo, '');
-    assert.equal(items[2].packetUrl, null);
+    assert.equal(items[2].submittedTo, undefined);
+    assert.equal(items[2].packetUrl, undefined);
+    assert.equal(items[2].publicPath, '/policy/hrsa-rfi-psychedelic-therapies-2026');
     assert.equal(items[2].criteria.priority_pa_org, false);
     assert.equal(items[2].punchList.length, 2);
   });
@@ -253,6 +257,119 @@ describe('route wiring', () => {
     assert.doesNotMatch(
       readFileSync(new URL('../src/pages/Policy.jsx', import.meta.url), 'utf8'),
       /policyWork/,
+    );
+  });
+});
+
+const INTERNAL_NEEDLES = [
+  'Brian Dautch',
+  'Jennifer Kolb',
+  '1SQWwYdfgSkxT8VYASlPZ4s4v-yGHdGBa',
+  '1d7vJlcLmm7go7S7WvWhXMbl06qBkejRTlDFk7Ut3B5o',
+  'Confirm the Google Doc matches the published HHS comment.',
+  'Keep this drug-testing statement separate from the correctional-settings comment on /policy.',
+  'Record the submission date and who received it. The sheet left both blank.',
+  'Confirm whether this row is the published HRSA psychedelic RFI comment.',
+];
+
+function filesUnder(dir) {
+  const found = [];
+  for (const name of readdirSync(dir)) {
+    const path = join(dir, name);
+    if (statSync(path).isDirectory()) found.push(...filesUnder(path));
+    else if (/\.(js|jsx|css|html|json)$/.test(name)) found.push(path);
+  }
+  return found;
+}
+
+async function readJson(res) {
+  return {
+    status: res.status,
+    body: await res.json(),
+    cache: res.headers.get('cache-control'),
+  };
+}
+
+describe('policy work internal payload', () => {
+  it('keeps staff names, document links, and notes out of src', () => {
+    const root = new URL('../src', import.meta.url).pathname;
+    const hits = [];
+    for (const file of filesUnder(root)) {
+      const text = readFileSync(file, 'utf8');
+      for (const needle of INTERNAL_NEEDLES) {
+        if (text.includes(needle)) hits.push(`${file} contains ${needle}`);
+      }
+    }
+    assert.deepEqual(hits, []);
+  });
+
+  it('returns those cards from the API for admin or board only', async () => {
+    const request = () => new Request('https://www.addictionpas.org/api/newsletter-stats?section=policy-work');
+    const anon = await readJson(await GET(request(), { requireUser: async () => null }));
+    assert.equal(anon.status, 401);
+    assert.equal(anon.body.error, 'Sign in required');
+    assert.equal(anon.cache, 'private, no-store');
+
+    const roster = await readJson(await GET(request(), {
+      requireUser: async () => ({ id: 'viewer' }),
+      loadViewerProfile: async () => viewer,
+    }));
+    assert.equal(roster.status, 403);
+    assert.equal(roster.body.error, 'Not authorized');
+    assert.equal(roster.body.items, undefined);
+
+    const chair = await readJson(await GET(request(), {
+      requireUser: async () => ({ id: 'chair' }),
+      loadViewerProfile: async () => ({ role: 'member', is_committee_chair: true }),
+    }));
+    assert.equal(chair.status, 403);
+    assert.equal(chair.body.items, undefined);
+
+    const board = await readJson(await GET(request(), {
+      requireUser: async () => ({ id: 'board' }),
+      loadViewerProfile: async () => president,
+    }));
+    assert.equal(board.status, 200);
+    assert.equal(board.cache, 'private, no-store');
+    assert.equal(board.body.items[0].submittedTo, 'Brian Dautch of AAPA');
+    assert.match(board.body.items[0].packetUrl, /1SQWwYdfgSkxT8VYASlPZ4s4v-yGHdGBa/);
+    assert.equal(
+      board.body.items[0].notes['match-published'],
+      'Confirm the Google Doc matches the published HHS comment.',
+    );
+    assert.equal(board.body.items[1].submittedTo, 'Jennifer Kolb of AAPA');
+    assert.match(board.body.items[1].packetUrl, /1d7vJlcLmm7go7S7WvWhXMbl06qBkejRTlDFk7Ut3B5o/);
+    assert.equal(
+      board.body.items[1].notes['separate-correctional'],
+      'Keep this drug-testing statement separate from the correctional-settings comment on /policy.',
+    );
+    assert.equal(board.body.items[2].submittedTo, '');
+    assert.equal(board.body.items[2].packetUrl, null);
+    assert.equal(
+      board.body.items[2].notes['fill-sheet'],
+      'Record the submission date and who received it. The sheet left both blank.',
+    );
+    assert.equal(
+      board.body.items[2].notes['match-published'],
+      'Confirm whether this row is the published HRSA psychedelic RFI comment.',
+    );
+
+    const adminRes = await readJson(await GET(request(), {
+      requireUser: async () => ({ id: 'admin' }),
+      loadViewerProfile: async () => admin,
+    }));
+    assert.equal(adminRes.status, 200);
+    assert.equal(adminRes.body.items[1].submittedTo, 'Jennifer Kolb of AAPA');
+
+    const filled = applyPolicyWorkInternal(listPolicyWorkItems(), board.body.items);
+    assert.equal(filled[0].submittedTo, 'Brian Dautch of AAPA');
+    assert.equal(filled[0].punchList[0].text, 'Confirm the Google Doc matches the published HHS comment.');
+    assert.equal(filled[0].punchList[0].done, false);
+    assert.equal(filled[1].publicPath, null);
+    assert.equal(filled[2].packetUrl, null);
+    assert.equal(
+      filled[2].punchList[0].text,
+      'Record the submission date and who received it. The sheet left both blank.',
     );
   });
 });

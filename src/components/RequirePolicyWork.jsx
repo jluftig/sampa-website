@@ -37,9 +37,8 @@ export default function RequirePolicyWork({ children }) {
           <p className="font-data text-xs tracking-widest uppercase text-text/40 mb-2">403</p>
           <h1 className="text-3xl font-drama font-bold mb-4">Policy committee access required</h1>
           <p className="text-text/60 max-w-md mx-auto">
-            This tracker is for administrators, people with view-members access,
-            and board members. News-editor access and the Membership Committee
-            hat do not include it.
+            This tracker is for administrators and board members. View-members
+            access, a committee chair hat, and news-editor access do not include it.
           </p>
         </main>
         <Footer />

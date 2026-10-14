@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useAuth } from '../lib/AuthContext';
+import { apiGet } from '../lib/api';
 import { formatDateOnly } from '../lib/format';
 import { signedInHomePath } from '../lib/memberHome';
 import {
   POLICY_WORK_CRITERIA,
   POLICY_WORK_OVERLAY_KEY,
   POLICY_WORK_STATUSES,
+  applyPolicyWorkInternal,
   hardScreenPasses,
   listPolicyWorkItems,
   mergePolicyWorkOverlay,
@@ -52,7 +54,6 @@ function writeStoredOverlay(overlay) {
     }
     localStorage.setItem(POLICY_WORK_OVERLAY_KEY, JSON.stringify(overlay));
   } catch {
-    // A full or blocked store still leaves the on-screen list usable.
   }
 }
 
@@ -60,16 +61,40 @@ export default function PolicyWorkHub() {
   const { profile } = useAuth();
   const home = signedInHomePath(profile);
   const seed = listPolicyWorkItems();
-  const [items, setItems] = useState(() => mergePolicyWorkOverlay(seed, readStoredOverlay()));
+  const [overlay, setOverlay] = useState(() => readStoredOverlay());
+  const [internal, setInternal] = useState(null);
+  const [internalState, setInternalState] = useState('loading');
+  const items = applyPolicyWorkInternal(
+    mergePolicyWorkOverlay(seed, overlay),
+    internalState === 'ready' ? internal : [],
+  );
   const today = todayIso();
   const deadlines = upcomingPolicyWorkDeadlines(items, today);
   const timeline = policyWorkTimeline(items);
   const hardScreen = POLICY_WORK_CRITERIA.filter((row) => row.group === 'hard_screen');
   const scorecard = POLICY_WORK_CRITERIA.filter((row) => row.group === 'scorecard');
 
+  useEffect(() => {
+    let cancelled = false;
+    apiGet('/api/newsletter-stats?section=policy-work')
+      .then((body) => {
+        if (cancelled) return;
+        setInternal(Array.isArray(body?.items) ? body.items : []);
+        setInternalState('ready');
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setInternalState('unavailable');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   function commit(next) {
-    setItems(next);
-    writeStoredOverlay(policyWorkOverlayFromEdits(seed, next));
+    const nextOverlay = policyWorkOverlayFromEdits(seed, next);
+    setOverlay(nextOverlay);
+    writeStoredOverlay(nextOverlay);
   }
 
   function patchItem(id, recipe) {
@@ -78,7 +103,7 @@ export default function PolicyWorkHub() {
 
   function resetVisit() {
     writeStoredOverlay({});
-    setItems(listPolicyWorkItems());
+    setOverlay({});
   }
 
   return (
@@ -99,7 +124,7 @@ export default function PolicyWorkHub() {
             <p className="text-text/60 mt-2 max-w-2xl text-sm">
               Response tracker for June 2026–2027. Seeded from the committee sheet.
               Checks you change here stay in this browser until you reset them.
-              The seed file is the shared record.
+              Staff names, document links, and notes load for administrators and board members.
             </p>
           </div>
           <button
@@ -206,19 +231,23 @@ export default function PolicyWorkHub() {
                     <p className="mt-2 text-sm font-normal text-text/70">
                       {item.submittedAt ? formatDateOnly(item.submittedAt) : 'Not recorded'}
                     </p>
-                    {item.submittedTo ? (
+                    {internalState === 'ready' && item.submittedTo ? (
                       <p className="text-sm font-normal text-text/70">{item.submittedTo}</p>
                     ) : null}
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-4 mt-4 text-sm">
-                  {item.packetUrl ? (
+                  {internalState === 'ready' && item.packetUrl ? (
                     <a className="text-primary-text font-semibold hover:underline" href={item.packetUrl} target="_blank" rel="noreferrer">
                       Response packet
                     </a>
                   ) : (
-                    <span className="text-text/40">No response packet on the sheet</span>
+                    <span className="text-text/40">
+                      {internalState === 'loading' && 'Loading the response packet.'}
+                      {internalState === 'unavailable' && 'Response packet unavailable.'}
+                      {internalState === 'ready' && 'No response packet on the sheet.'}
+                    </span>
                   )}
                   {item.publicPath ? (
                     <Link className="text-primary-text font-semibold hover:underline" to={item.publicPath}>
@@ -290,6 +319,11 @@ export default function PolicyWorkHub() {
 
                 <div className="mt-5">
                   <h3 className="font-semibold text-sm mb-2">Punch list</h3>
+                  {internalState !== 'ready' ? (
+                    <p className="text-sm text-text/50">
+                      {internalState === 'loading' ? 'Loading notes.' : 'Notes unavailable.'}
+                    </p>
+                  ) : (
                   <ul className="space-y-2">
                     {item.punchList.map((row) => (
                       <li key={row.id}>
@@ -310,6 +344,7 @@ export default function PolicyWorkHub() {
                       </li>
                     ))}
                   </ul>
+                  )}
                 </div>
               </article>
             );

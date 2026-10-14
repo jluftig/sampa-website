@@ -81,6 +81,7 @@ Full tree + routes: **`docs/architecture/repo-map.md`**.
 - **RLS is the only real authz boundary.** Client checks = UX only.
 - Peer directory via **`member_directory*` RPCs only** — never open `profiles` SELECT to all members.
 - **`/editor/members`** is `canViewMemberRoster` (`admin` or `can_view_members`). The org dashboard lives at `/board/dashboard` and uses `canViewBoardDashboard` (`admin` or `is_board` or `is_committee_chair`) on the page and on `site-traffic` / `newsletter-stats`, including finances. Board and Membership Committee hats do not open the roster. `is_committee_chair` does not open the roster.
+- **`/editor/policy`** is `canViewPolicyWork` (`admin` or `is_board`). `can_view_members` and `is_committee_chair` do not open it. Staff names, document links, and punch-list notes come from `GET /api/newsletter-stats?section=policy-work` after that same check. They do not ship in the client bundle. Do not add a 13th `api/*.js` file for them.
 - **`guard_profile_role`** blocks self-grant of role/membership; webhook is sole membership writer.
 - Public aggregates must filter **`status='published'`** in app **and** in SQL RPCs (editors can see drafts via RLS).
 - No service_role / elevated key in client or `VITE_*`.
