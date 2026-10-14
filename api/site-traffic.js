@@ -1,10 +1,11 @@
-import { requireUser, supabaseAdmin, json } from './_lib/clients.js';
+import { requireUser, json } from './_lib/clients.js';
 import { createTtlCache } from './_lib/ttl-cache.js';
 import { analyticsConfigFromEnv, queryVisits } from './_lib/vercel-analytics.js';
+import { loadBoardDashboardProfile } from './_lib/boardDashboardAccess.js';
 import {
   TOP_PATH_LIMIT,
   TRAFFIC_CACHE_MS,
-  canViewMemberRoster,
+  canViewBoardDashboard,
   fillDailySeries,
   normalizeDailySeries,
   normalizeTopPaths,
@@ -23,13 +24,7 @@ function trafficJson(body, status = 200) {
 }
 
 async function loadViewerProfile(userId) {
-  const admin = supabaseAdmin();
-  const { data } = await admin
-    .from('profiles')
-    .select('role, can_view_members')
-    .eq('id', userId)
-    .maybeSingle();
-  return data;
+  return loadBoardDashboardProfile(userId);
 }
 
 export async function handleSiteTraffic(request, deps = {}) {
@@ -45,7 +40,7 @@ export async function handleSiteTraffic(request, deps = {}) {
     if (!user) return trafficJson({ error: 'Sign in required' }, 401);
 
     const profile = await loadProfile(user.id);
-    if (!canViewMemberRoster(profile)) {
+    if (!canViewBoardDashboard(profile)) {
       return trafficJson({ error: 'Not authorized' }, 403);
     }
 

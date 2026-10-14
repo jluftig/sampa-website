@@ -1,15 +1,22 @@
-import { requireUser, supabaseAdmin, json } from './_lib/clients.js';
+import { requireUser, json } from './_lib/clients.js';
 import { createTtlCache } from './_lib/ttl-cache.js';
 import { brevoGet, loadSentCampaigns } from './_lib/brevo-readonly.js';
 import { handleMembershipStats } from './_lib/membership-stats.js';
 import { handleFinanceStats } from './_lib/finance-stats.js';
-import { canViewMemberRoster } from '../src/lib/memberRoster.js';
+import { handleBoardMeetings } from './_lib/boardMeetingsHandler.js';
+import { canViewBoardDashboard } from '../src/lib/memberRoster.js';
+import { loadBoardDashboardProfile } from './_lib/boardDashboardAccess.js';
+import { handleBoardNumbers } from './_lib/boardNumbers.js';
+import { handleSubscriberSnapshot } from './_lib/subscriberSnapshotJob.js';
 import {
   brevoConfigFromEnv,
+  selectDailySends,
   selectWeeklyIssues,
   shapeNewsletterStats,
+  snapshotsForList,
   topClickedLinks,
 } from '../src/lib/newsletterStats.js';
+import { loadSubscriberSnapshots } from './_lib/subscriberSnapshots.js';
 
 const CACHE_MS = 5 * 60 * 1000;
 const newsletterCache = createTtlCache();
@@ -20,13 +27,18 @@ function newsletterJson(body, status = 200) {
 }
 
 async function loadViewerProfile(userId) {
-  const admin = supabaseAdmin();
-  const { data } = await admin
-    .from('profiles')
-    .select('role, can_view_members')
-    .eq('id', userId)
-    .maybeSingle();
-  return data;
+  return loadBoardDashboardProfile(userId);
+}
+
+async function safeLoadSnapshots(loadSnapshots) {
+  if (loadSnapshots) return loadSnapshots();
+  try {
+    return await loadSubscriberSnapshots();
+  } catch (err) {
+    const message = err?.message || '';
+    if (/SUPABASE_|subscriber_snapshots|schema cache/i.test(message)) return [];
+    throw err;
+  }
 }
 
 export async function handleNewsletterStats(request, deps = {}) {
@@ -35,13 +47,14 @@ export async function handleNewsletterStats(request, deps = {}) {
   const env = deps.env || process.env;
   const get = deps.brevoGet || brevoGet;
   const cache = deps.cache || newsletterCache;
+  const loadSnaps = () => safeLoadSnapshots(deps.loadSnapshots);
 
   try {
     const user = await requireViewer(request);
     if (!user) return newsletterJson({ error: 'Sign in required' }, 401);
 
     const profile = await loadProfile(user.id);
-    if (!canViewMemberRoster(profile)) {
+    if (!canViewBoardDashboard(profile)) {
       return newsletterJson({ error: 'Not authorized' }, 403);
     }
 
@@ -53,17 +66,27 @@ export async function handleNewsletterStats(request, deps = {}) {
       }, 503);
     }
 
-    const cacheKey = `newsletter:${cfg.listId}`;
+    const cacheKey = `newsletter:${cfg.listId}:${cfg.dailyListId}`;
     const cached = cache.get(cacheKey);
     if (cached) return newsletterJson(cached);
 
-    const [list, campaigns] = await Promise.all([
+    const [list, dailyList, campaigns, snapshots] = await Promise.all([
       get(cfg.apiKey, `/contacts/lists/${cfg.listId}`),
+      Promise.resolve(get(cfg.apiKey, `/contacts/lists/${cfg.dailyListId}`)).catch((err) => {
+        console.error('newsletter-stats daily list:', err?.status || err?.message || err);
+        return null;
+      }),
       loadSentCampaigns(cfg.apiKey, get),
+      loadSnaps(),
     ]);
 
     const issues = selectWeeklyIssues(campaigns, {
       updatesListId: cfg.listId,
+      testListId: cfg.testListId,
+    });
+    const dailyIssues = selectDailySends(campaigns, {
+      dailyListId: cfg.dailyListId,
+      testListId: cfg.testListId,
     });
     const topLinks = [];
     for (const issue of issues.slice(0, 3)) {
@@ -84,6 +107,14 @@ export async function handleNewsletterStats(request, deps = {}) {
       listName: list?.name,
       issues,
       topLinks,
+      subscriberSnapshots: snapshotsForList(snapshots, cfg.listId),
+      daily: {
+        subscribers: dailyList ? dailyList.totalSubscribers : null,
+        listId: cfg.dailyListId,
+        listName: dailyList?.name || 'SAMPA Daily Roundup',
+        issues: dailyIssues,
+        subscriberSnapshots: snapshotsForList(snapshots, cfg.dailyListId),
+      },
     });
     cache.set(cacheKey, body, CACHE_MS);
     return newsletterJson(body);
@@ -96,9 +127,19 @@ export async function handleNewsletterStats(request, deps = {}) {
   }
 }
 
-export async function GET(request) {
-  const section = new URL(request.url).searchParams.get('section');
-  if (section === 'membership') return handleMembershipStats(request);
-  if (section === 'finance') return handleFinanceStats(request);
-  return handleNewsletterStats(request);
+export function isBoardMeetingsRequest(request) {
+  const url = new URL(request.url);
+  if (url.searchParams.get('section') === 'board') return true;
+  return url.pathname === '/api/board-meetings' || url.pathname.endsWith('/board-meetings');
+}
+
+export async function GET(request, deps) {
+  const url = new URL(request.url);
+  const section = url.searchParams.get('section');
+  if (section === 'membership') return handleMembershipStats(request, deps);
+  if (section === 'finance') return handleFinanceStats(request, deps);
+  if (section === 'board-numbers') return handleBoardNumbers(request, deps);
+  if (section === 'subscriber-snapshot') return handleSubscriberSnapshot(request, deps);
+  if (isBoardMeetingsRequest(request)) return handleBoardMeetings(request, deps);
+  return handleNewsletterStats(request, deps);
 }

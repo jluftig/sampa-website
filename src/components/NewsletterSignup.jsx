@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { apiPost } from '../lib/api';
 
-// Public signup → Brevo DOI → SAMPA Updates. No membership required.
-// Banner variant: large rounded chip above the footer (Bridge-style prominence).
-export default function NewsletterSignup({ variant = 'banner' }) {
+export default function NewsletterSignup({ variant = 'banner', list }) {
   const inputId = useId();
   const [email, setEmail] = useState('');
   const [honeypot, setHoneypot] = useState('');
@@ -21,6 +19,7 @@ export default function NewsletterSignup({ variant = 'banner' }) {
       await apiPost('/api/newsletter-signup', {
         email,
         company: honeypot,
+        ...(list ? { list } : {}),
       });
       setDone(true);
       setEmail('');
@@ -133,68 +132,80 @@ export default function NewsletterSignup({ variant = 'banner' }) {
     );
   }
 
-  // Compact fallback (unused on site today; kept for optional embeds)
-  return (
-    <div className="w-full max-w-md">
-      <p className="text-white font-semibold text-sm mb-1">SAMPA Updates</p>
-      <p className="text-white/55 text-xs mb-3 leading-relaxed">
-        News and organizational updates by email. No membership required.
-      </p>
-      {done ? (
-        <p className="text-sm text-white/80 leading-relaxed" role="status">
-          Check your inbox for a confirmation link. You won’t be added until you
-          confirm.
+  if (variant === 'card') {
+    const headingId = `${inputId}-heading`;
+    const daily = list === 'daily';
+    return (
+      <section
+        aria-labelledby={headingId}
+        className="bg-white rounded-3xl border border-primary/10 px-6 py-8 shadow-sm"
+      >
+        <h2 id={headingId} className="text-2xl font-drama font-bold mb-2">
+          {daily ? 'Get the daily roundup by email' : 'SAMPA Updates'}
+        </h2>
+        <p className="text-text/70 mb-6 leading-relaxed">
+          {daily
+            ? 'Five short items, each weekday. No membership required.'
+            : 'News and organizational updates by email. No membership required.'}
         </p>
-      ) : (
-        <form onSubmit={onSubmit} className="relative flex flex-col gap-2">
-          <label htmlFor={`${inputId}-compact`} className="sr-only">
-            Email address
-          </label>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              id={`${inputId}-compact`}
-              type="email"
-              name="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              disabled={busy}
-              className="flex-1 min-w-0 rounded-full bg-white/10 border border-white/25 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/40"
-            />
-            <input
-              type="text"
-              name="company"
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              value={honeypot}
-              onChange={(e) => setHoneypot(e.target.value)}
-              className="absolute -left-[9999px] h-0 w-0 opacity-0"
-            />
-            <button
-              type="submit"
-              disabled={busy}
-              className="shrink-0 rounded-full bg-white text-text px-5 py-2.5 text-sm font-semibold hover:bg-white/90 transition-colors disabled:opacity-60"
-            >
-              {busy ? 'Sending…' : 'Subscribe'}
-            </button>
-          </div>
-          {error && (
-            <p className="text-xs text-red-300" role="alert">
-              {error}
-            </p>
-          )}
-          <p className="text-[11px] text-white/40 leading-relaxed">
-            Double opt-in via Brevo.{' '}
-            <Link to="/privacy" className="underline underline-offset-2 hover:text-white/70">
-              Privacy Policy
-            </Link>
-            .
+        {done ? (
+          <p className="text-text leading-relaxed" role="status">
+            Check your inbox for a confirmation link. You won’t be added until you
+            confirm.
           </p>
-        </form>
-      )}
-    </div>
-  );
+        ) : (
+          <form onSubmit={onSubmit} className="relative flex flex-col gap-3">
+            <label htmlFor={`${inputId}-card`} className="text-sm font-semibold">
+              Email
+            </label>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                id={`${inputId}-card`}
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email address"
+                disabled={busy}
+                className="flex-1 min-w-0 rounded-full border border-primary/20 bg-background px-5 py-3 text-base text-text placeholder:text-text/40 focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-60"
+              />
+              <input
+                type="text"
+                name="company"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                className="absolute -left-[9999px] h-0 w-0 opacity-0"
+              />
+              <button
+                type="submit"
+                disabled={busy}
+                className="shrink-0 rounded-full bg-accent text-white px-7 py-3 text-base font-bold hover:opacity-90 transition-opacity disabled:opacity-60"
+              >
+                {busy ? 'Sending…' : 'Submit'}
+              </button>
+            </div>
+            {error && (
+              <p className="text-sm text-red-600" role="alert">
+                {error}
+              </p>
+            )}
+            <p className="text-xs text-text/55 leading-relaxed">
+              We’ll email a confirmation link (double opt-in). See our{' '}
+              <Link to="/privacy" className="underline underline-offset-2 hover:text-text">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          </form>
+        )}
+      </section>
+    );
+  }
+
+  return null;
 }

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AuthContext, useAuth } from './authState.js';
 import { supabase } from './supabaseClient';
 import { clientSiteOrigin } from './siteUrl';
 import {
@@ -10,12 +11,13 @@ import {
   shouldClearHeldSession,
   shouldHoldAuthReady,
   shouldRetryAuthRecovery,
+  signOutAttemptFailed,
   stripAuthCallbackParams,
 } from './authSession';
-import { isEditorProfile } from './memberHome';
-import { canViewMemberRoster } from './memberRoster';
+import { isActiveMemberAccess, isEditorProfile } from './memberHome';
+import { canViewBoardDashboard, canViewMemberRoster } from './memberRoster';
 
-const AuthContext = createContext(null);
+export { AuthContext, useAuth };
 
 function currentSearch() {
   try { return window.location.search || ''; } catch { return ''; }
@@ -246,10 +248,21 @@ export function AuthProvider({ children }) {
       options: { emailRedirectTo: `${clientSiteOrigin()}${next}` },
     });
 
-  const signOut = () => {
+  const signOut = async () => {
     intentionalSignOutRef.current = true;
     setIntentionalSignOut(true);
-    return supabase.auth.signOut();
+    try {
+      const result = await supabase.auth.signOut();
+      if (signOutAttemptFailed(result)) {
+        intentionalSignOutRef.current = false;
+        setIntentionalSignOut(false);
+      }
+      return result;
+    } catch (error) {
+      intentionalSignOutRef.current = false;
+      setIntentionalSignOut(false);
+      throw error;
+    }
   };
 
   const role = profile?.role ?? null;
@@ -258,7 +271,7 @@ export function AuthProvider({ children }) {
   // Paid membership only — used by /join to block duplicate checkouts.
   const isActiveMember = profile?.membership_status === 'active';
   // Matches SQL is_active_member(): paid members + staff (editors/admins).
-  const canAccessMemberDirectory = isActiveMember || role === 'editor' || isAdmin;
+  const canAccessMemberDirectory = isActiveMemberAccess(profile);
   // A just-expired token is still usable while recoverSession is in flight
   // (T46: don't bounce a checkout return to /login on a radio blip).
   // A session with no profiles row is never usable — that is the stale
@@ -276,6 +289,7 @@ export function AuthProvider({ children }) {
     // is_board / is_membership_committee are explicit only (admin ≠ those hats).
     isEditor,
     canViewMembers: canViewMemberRoster(profile),
+    canViewBoardDashboard: canViewBoardDashboard(profile),
     isAdmin,
     isBoard: !!profile?.is_board,
     isMembershipCommittee: !!profile?.is_membership_committee,
@@ -294,10 +308,4 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
-  return ctx;
 }

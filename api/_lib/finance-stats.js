@@ -1,12 +1,40 @@
 import Stripe from 'stripe';
 import { requireUser, supabaseAdmin, json } from './clients.js';
 import { createTtlCache } from './ttl-cache.js';
-import { canViewFinance, canViewMemberRoster } from '../../src/lib/memberRoster.js';
+import { canViewBoardDashboard } from '../../src/lib/memberRoster.js';
+import { loadBoardDashboardProfile } from './boardDashboardAccess.js';
 import { financeConfigFromEnv, shapeFinanceStats } from '../../src/lib/financeStats.js';
 import { monthKeys } from '../../src/lib/membershipStats.js';
-
 const CACHE_MS = 5 * 60 * 1000;
 const financeCache = createTtlCache();
+
+export function relayFromRow(row) {
+  if (!row || row.amount_cents == null) return null;
+  return {
+    source: row.source || 'Relay',
+    amountCents: row.amount_cents,
+    updatedOn: String(row.as_of).slice(0, 10),
+  };
+}
+
+function missingRelayTable(error) {
+  return /relay_balances|schema cache/i.test(error?.message || String(error || ''));
+}
+
+async function loadLatestRelay() {
+  const { data, error } = await supabaseAdmin()
+    .from('relay_balances')
+    .select('amount_cents, as_of, source')
+    .order('as_of', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) {
+    if (missingRelayTable(error)) return null;
+    throw error;
+  }
+  return relayFromRow(data);
+}
 
 function financeJson(body, status = 200) {
   const cacheControl = status === 200 ? 'private, max-age=300' : 'private, no-store';
@@ -14,13 +42,7 @@ function financeJson(body, status = 200) {
 }
 
 async function loadViewerProfile(userId) {
-  const admin = supabaseAdmin();
-  const { data } = await admin
-    .from('profiles')
-    .select('role, can_view_members')
-    .eq('id', userId)
-    .maybeSingle();
-  return data;
+  return loadBoardDashboardProfile(userId);
 }
 
 async function listStripeTransactions(sinceUnix, key) {
@@ -49,26 +71,26 @@ export async function handleFinanceStats(request, deps = {}) {
   const cache = deps.cache || financeCache;
   const listTransactions = deps.listTransactions || listStripeTransactions;
 
+  const loadRelay = deps.loadRelay || loadLatestRelay;
+  let includeRelay = false;
+  let relay = null;
   try {
     const user = await requireViewer(request);
     if (!user) return financeJson({ error: 'Sign in required' }, 401);
 
     const profile = await loadProfile(user.id);
-    if (!canViewMemberRoster(profile)) {
+    if (!canViewBoardDashboard(profile)) {
       return financeJson({ error: 'Not authorized' }, 403);
     }
-    if (!canViewFinance(profile)) {
-      return financeJson({
-        error: 'finance_restricted',
-        message: 'Finance totals are limited to administrators.',
-      }, 403);
-    }
+    includeRelay = true;
+    relay = await loadRelay();
 
     const cfg = financeConfigFromEnv(env);
     if (!cfg.configured) {
       return financeJson({
         error: 'not_configured',
         message: 'Finances not configured.',
+        relay,
       }, 503);
     }
 
@@ -78,7 +100,7 @@ export async function handleFinanceStats(request, deps = {}) {
 
     const since = new Date(`${monthKeys(now)[0]}-01T00:00:00.000Z`);
     const transactions = await listTransactions(Math.floor(since.getTime() / 1000), cfg.key);
-    const body = shapeFinanceStats(transactions, now);
+    const body = { ...shapeFinanceStats(transactions, now), relay };
     cache.set(cacheKey, body, CACHE_MS);
     return financeJson(body);
   } catch (err) {
@@ -86,6 +108,7 @@ export async function handleFinanceStats(request, deps = {}) {
     return financeJson({
       error: 'finance_error',
       message: 'Could not load finance stats right now.',
+      ...(includeRelay ? { relay } : {}),
     }, 502);
   }
 }

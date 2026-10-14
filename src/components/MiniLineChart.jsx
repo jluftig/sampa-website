@@ -24,9 +24,9 @@ export default function MiniLineChart({
   yMax,
   formatY = formatTick,
 }) {
-  const width = 360;
-  const height = 148;
-  const pad = { l: 36, r: 8, t: 12, b: 28 };
+  const width = 640;
+  const height = 96;
+  const pad = { l: 44, r: 8, t: 6, b: 18 };
   const all = lines.flatMap((line) => line.values || []);
   const peak = all.reduce((max, value) => Math.max(max, Number(value) || 0), 0);
   const max = yMax != null ? yMax : Math.max(1, Math.ceil(peak * 1.15));

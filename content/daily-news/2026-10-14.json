@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-14",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "CVS to pay $315M over alleged illegal opioid fills and false claims",
+      "outlet": "U.S. Department of Justice",
+      "date": "Oct 13",
+      "summary": "CVS Pharmacy and related entities agreed to pay $315 million to resolve allegations that from 2013 through 2025 they filled opioids and other controlled substances without a legitimate medical purpose and billed Medicare and other federal programs. The Justice Department said red flags included early fills, excessive quantities, and so-called trinity prescriptions combining an opioid, a benzodiazepine, and a muscle relaxant, often tied to performance metrics and understaffing. Alongside the payment, a DEA memorandum requires a public and employee hotline, proactive monitoring of dispensing patterns, and a process to evaluate suspected pill-mill prescribers.",
+      "url": "https://www.justice.gov/opa/pr/cvs-agrees-pay-315m-illegally-filling-unlawful-opioid-prescriptions-and-submitting-false"
+    },
+    {
+      "headline": "Pittsburgh partners launch $13.3M semaglutide trial for alcohol and opioid use",
+      "outlet": "EurekAlert",
+      "date": "Oct 13",
+      "summary": "The Center for Addiction Science, Policy and Research and Allegheny County Human Services announced a $13.3 million Arnold Ventures-funded randomized trial of weekly semaglutide added to usual care. Starting in early 2027, up to 1,200 adults with alcohol use disorder, opioid use disorder, or both, many at elevated criminal-justice risk, will be followed for 52 weeks, with UPMC Western Psychiatric Hospital as lead clinical site. Beyond substance use, the study will use county linked data on employment, housing, health care, and reincarceration, aiming for evidence local governments can adopt if results are positive.",
+      "url": "https://www.eurekalert.org/news-releases/1147116"
+    },
+    {
+      "headline": "Commercial OUD diagnoses rose 32.7% from 2022 to 2025, FAIR Health finds",
+      "outlet": "FAIR Health",
+      "date": "Oct 14",
+      "summary": "FAIR Health's updated Opioid Tracker shows commercially insured patients with an opioid use disorder diagnosis rose from 449 to 596 per 100,000 between 2022 and 2025, a 32.7% increase. Tennessee led states at 1,551 per 100,000 in 2025, followed by West Virginia, Mississippi, Arkansas, and Delaware, and the 41-to-50 age group accounted for 28.1% of diagnoses. Nurse practitioners were the fastest-growing specialty treating OUD, with claim-line share up 67% over the period, underscoring how diagnosis and treatment volume continue to climb even as overdose deaths have fallen.",
+      "url": "https://www.fairhealth.org/fh-trackers/opioid-abuse-map"
+    },
+    {
+      "headline": "Arizona high-dose opioid naloxone coprescribe law sharply raised fills",
+      "outlet": "American Journal of Preventive Medicine",
+      "date": "Oct 13",
+      "summary": "An interrupted time-series analysis of Arizona Controlled Substances Prescription Monitoring Program data from 2017 to 2022 evaluated the state's April 2018 law requiring naloxone with opioid prescriptions at or above 90 morphine milligram equivalents a day. Coprescribing spiked 331% for 90 to 119 MME and 360% for 120 MME or higher in the first two months, then leveled about twice the pre-law rate (97% and 123% higher). Spillover appeared at moderate doses (50 to 89 MME) and in standing-order pharmacist dispensing matched to opioid prescriptions, though the study could not measure overdose outcomes.",
+      "url": "https://experts.arizona.edu/en/publications/arizonas-naloxone-coprescription-law-impact-on-naloxone-prescript"
+    },
+    {
+      "headline": "Kappa opioid pathway in amygdala-BNST circuit drives stress drinking in mice",
+      "outlet": "Neuropsychopharmacology",
+      "date": "Oct 7",
+      "summary": "A preclinical study found that repeated social defeat stress raised alcohol intake and preference in both sexes, and that blocking kappa opioid receptors systemically or in the bed nucleus of the stria terminalis blunted that increase. Manipulating basolateral amygdala neurons that express kappa receptors and project to the BNST, or knocking down those receptors in the amygdala, likewise reduced stress-linked drinking, while stress activated dynorphin neurons in the dorsal raphe that project to the BNST. The authors flag the dynorphin/kappa system as a candidate target for alcohol use disorder shaped by social stress.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42844320"
+    }
+  ]
+}

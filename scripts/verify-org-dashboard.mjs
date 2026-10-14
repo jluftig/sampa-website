@@ -9,6 +9,7 @@ import { handleFinanceStats } from '../api/_lib/finance-stats.js';
 import { canViewFinance } from '../src/lib/memberRoster.js';
 import { shapeMembershipStats } from '../src/lib/membershipStats.js';
 import { shapeFinanceStats } from '../src/lib/financeStats.js';
+const RELAY = { source: 'Relay', amountCents: 100000, updatedOn: '2026-01-15' };
 
 const NOW = new Date('2026-09-24T12:00:00.000Z');
 
@@ -25,6 +26,12 @@ describe('hobby function budget', () => {
     const dashboard = readFileSync('src/components/OrgDashboard.jsx', 'utf8');
     assert.match(dashboard, /\/api\/newsletter-stats\?section=membership/);
     assert.match(dashboard, /\/api\/newsletter-stats\?section=finance/);
+    assert.match(dashboard, /Current balance/);
+    assert.match(dashboard, /Membership dues \(Stripe\)/);
+    assert.match(dashboard, /After fees/);
+    assert.doesNotMatch(dashboard, /label="Net"/);
+    assert.doesNotMatch(dashboard, /relayBalance/);
+    assert.doesNotMatch(readFileSync('api/_lib/finance-stats.js', 'utf8'), /relayBalance/);
   });
 });
 
@@ -162,7 +169,7 @@ describe('GET /api/membership-stats', () => {
 
     const member = await read(await handleMembershipStats(req(), {
       requireUser: async () => ({ id: 'u1' }),
-      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
+      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
       loadMembershipRows: async () => rows,
       now: NOW,
       cache: createTtlCache(),
@@ -171,11 +178,11 @@ describe('GET /api/membership-stats', () => {
     assert.equal(member.body.error, 'Not authorized');
   });
 
-  it('returns aggregates for a roster viewer and caches the month', async () => {
+  it('returns aggregates for a committee chair and caches the month', async () => {
     let loads = 0;
     const deps = {
       requireUser: async () => ({ id: 'viewer' }),
-      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
+      loadViewerProfile: async () => ({ role: 'member', is_committee_chair: true }),
       loadMembershipRows: async () => {
         loads += 1;
         return rows;
@@ -202,10 +209,12 @@ describe('GET /api/finance-stats', () => {
     return { status: res.status, body: await res.json(), cache: res.headers.get('cache-control') };
   }
 
-  it('keeps finance to administrators', () => {
+  it('opens finance to the board dashboard gate', () => {
     assert.equal(canViewFinance({ role: 'admin' }), true);
-    assert.equal(canViewFinance({ role: 'member', can_view_members: true, is_board: true }), false);
-    assert.equal(canViewFinance({ role: 'member', is_board: true }), false);
+    assert.equal(canViewFinance({ role: 'member', is_board: true }), true);
+    assert.equal(canViewFinance({ role: 'member', is_committee_chair: true }), true);
+    assert.equal(canViewFinance({ role: 'member', can_view_members: true }), false);
+    assert.equal(canViewFinance({ role: 'member', is_membership_committee: true }), false);
     assert.equal(canViewFinance(null), false);
   });
 
@@ -229,8 +238,8 @@ describe('GET /api/finance-stats', () => {
 
     const roster = await read(await handleFinanceStats(req(), {
       requireUser: async () => ({ id: 'u1' }),
-      loadViewerProfile: async () => ({ role: 'member', can_view_members: true, is_board: true }),
-      env: {},
+      loadViewerProfile: async () => ({ role: 'member', can_view_members: true }),
+      env: { STRIPE_SECRET_KEY: 'sk_test_secret' },
       listTransactions: async () => {
         throw new Error('should not list');
       },
@@ -238,14 +247,42 @@ describe('GET /api/finance-stats', () => {
       cache: createTtlCache(),
     }));
     assert.equal(roster.status, 403);
-    assert.equal(roster.body.error, 'finance_restricted');
-    assert.equal(roster.body.message, 'Finance totals are limited to administrators.');
+    assert.equal(roster.body.error, 'Not authorized');
+    assert.equal(roster.body.relay, undefined);
+
+    const director = await read(await handleFinanceStats(req(), {
+      requireUser: async () => ({ id: 'u1' }),
+      loadViewerProfile: async () => ({ role: 'member', is_board: true }),
+      loadRelay: async () => RELAY,
+      env: {},
+      listTransactions: async () => {
+        throw new Error('should not list');
+      },
+      now: NOW,
+      cache: createTtlCache(),
+    }));
+    assert.equal(director.status, 503);
+    assert.equal(director.body.error, 'not_configured');
+    assert.deepEqual(director.body.relay, RELAY);
+  });
+
+  it('omits the relay balance when a request fails before the admin gate', async () => {
+    const res = await read(await handleFinanceStats(req(), {
+      requireUser: async () => {
+        throw new Error('auth down');
+      },
+      now: NOW,
+      cache: createTtlCache(),
+    }));
+    assert.equal(res.status, 502);
+    assert.equal(res.body.relay, undefined);
   });
 
   it('returns not_configured when STRIPE_SECRET_KEY is missing', async () => {
     const res = await read(await handleFinanceStats(req(), {
       requireUser: async () => ({ id: 'admin' }),
       loadViewerProfile: async () => ({ role: 'admin' }),
+      loadRelay: async () => RELAY,
       env: {},
       now: NOW,
       cache: createTtlCache(),
@@ -253,6 +290,7 @@ describe('GET /api/finance-stats', () => {
     assert.equal(res.status, 503);
     assert.equal(res.body.error, 'not_configured');
     assert.equal(res.body.message, 'Finances not configured.');
+    assert.deepEqual(res.body.relay, RELAY);
     assert.equal(res.cache, 'private, no-store');
   });
 
@@ -263,6 +301,7 @@ describe('GET /api/finance-stats', () => {
     const deps = {
       requireUser: async () => ({ id: 'admin' }),
       loadViewerProfile: async () => ({ role: 'admin' }),
+      loadRelay: async () => RELAY,
       env: { STRIPE_SECRET_KEY: 'sk_test_secret' },
       now: NOW,
       cache: createTtlCache(),
@@ -286,9 +325,40 @@ describe('GET /api/finance-stats', () => {
     assert.equal(first.body.refundCents, 5000);
     assert.equal(first.body.feeCents, 175);
     assert.equal(first.body.netCents, -175);
+    assert.deepEqual(first.body.relay, RELAY);
     assert.equal(second.body.netCents, -175);
+    assert.deepEqual(second.body.relay, RELAY);
     assert.equal(hits, 1);
     assert.equal(seenKey, 'sk_test_secret');
     assert.equal(JSON.stringify(first.body).includes('sk_test_secret'), false);
+  });
+
+  it('still returns the relay balance when stripe listing throws for an admin', async () => {
+    const res = await read(await handleFinanceStats(req(), {
+      requireUser: async () => ({ id: 'admin' }),
+      loadViewerProfile: async () => ({ role: 'admin' }),
+      loadRelay: async () => RELAY,
+      env: { STRIPE_SECRET_KEY: 'sk_test_secret' },
+      listTransactions: async () => {
+        throw new Error('stripe down');
+      },
+      now: NOW,
+      cache: createTtlCache(),
+    }));
+    assert.equal(res.status, 502);
+    assert.deepEqual(res.body.relay, RELAY);
+  });
+});
+
+describe('recent issues row', () => {
+  it('keeps a long campaign title on one line beside the date', () => {
+    const card = readFileSync('src/components/SiteTrafficCard.jsx', 'utf8');
+    const start = card.indexOf('>Recent issues<');
+    const end = card.indexOf('</ul>', start);
+    const list = card.slice(start, end);
+    assert.equal(list.includes('flex-wrap'), false);
+    assert.match(list, /flex items-baseline justify-between gap-2/);
+    assert.match(list, /font-semibold text-sm min-w-0 truncate/);
+    assert.match(list, /text-text\/50 text-xs font-data shrink-0/);
   });
 });

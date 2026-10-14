@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "test:invoice-pdf": "node scripts/verify-invoice-pdf.mjs",
     "test:patron-copy": "node scripts/verify-patron-copy.mjs",
+    "test:board-meetings": "node scripts/verify-board-meetings.mjs",
+    "test:board-gate": "node --test scripts/verify-board-meetings-gate.mjs",
     "test:session": "node --test scripts/verify-session-persistence.mjs",
     "test:kerith-asio": "node scripts/verify-kerith-asio.mjs",
     "test:harrison-education": "node scripts/verify-harrison-education-cochair.mjs",
@@ -18,8 +20,17 @@
     "test:site-traffic": "node --test scripts/verify-site-traffic.mjs",
     "test:newsletter-stats": "node --test scripts/verify-newsletter-stats.mjs",
     "test:org-dashboard": "node --test scripts/verify-org-dashboard.mjs",
+    "test:board-dashboard": "node --test scripts/verify-board-dashboard.mjs",
+    "test:board-nav": "node --import ./scripts/register-jsx.mjs --test scripts/verify-board-nav.mjs",
+    "test:my-sampa": "npm run test:board-nav && npm run test:member-login",
     "test:policy-impact": "node --test scripts/verify-policy-impact.mjs",
-    "test:policy-work": "node --test scripts/verify-policy-work.mjs"
+    "test:policy-work": "node --test scripts/verify-policy-work.mjs",
+    "test:giveaway": "node scripts/verify-giveaway.mjs",
+    "test:daily-news": "node --test scripts/verify-daily-news.mjs",
+    "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",
+    "test:news-feed": "node --test scripts/verify-news-feed.mjs",
+    "sitemap:daily": "node scripts/write-daily-sitemap.mjs",
+    "prebuild": "node scripts/write-daily-sitemap.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
@@ -42,6 +53,7 @@
     "@tailwindcss/typography": "^0.5.20",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
+    "esbuild": "^0.21.5",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "vite": "^5.2.0"

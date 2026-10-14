@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-05",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Only 3% of Medicaid-enrolled youths with OUD stayed on medication for 180 days",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 2",
+      "summary": "A national cohort of 229,847 Medicaid-enrolled youths aged 13 to 25 with opioid use disorder found that 50.7% started treatment within 14 days of diagnosis, 32.9% engaged in care, and 15.2% received medication for OUD. Among youths who engaged in treatment, only 6.6% of adolescents under 18 received medication versus 51.2% of young adults, and just 3.1% of all youths stayed on medication for 180 days or more. The steepest drop-offs were among younger adolescents and racially minoritized youths, pointing to pediatric and young-adult settings where earlier medication offers and retention support could matter most.",
+      "url": "https://doi.org/10.1001/jamanetworkopen.2026.37263"
+    },
+    {
+      "headline": "Longer MOUD use around delivery tied to lower late-postpartum overdose and death",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 2",
+      "summary": "In a Vanderbilt-led study of 9,360 Tennessee Medicaid pregnancies, more days of dispensed buprenorphine or naltrexone from 90 days before to 41 days after delivery were associated with lower risk of overdose or death from 42 to 365 days postpartum. The one-year risk was 1.58%, and a 132-day supply was linked to about half the hazard of a one-day supply (adjusted hazard ratio 0.52). The observational findings support keeping MOUD continuous through delivery and beyond the six-week postpartum visit.",
+      "url": "https://doi.org/10.1001/jamanetworkopen.2026.37214"
+    },
+    {
+      "headline": "Minnesota launches statewide alert system for opioid overdose spikes",
+      "outlet": "ABC 6 News",
+      "date": "Oct 2",
+      "summary": "The Minnesota Department of Health launched MN-OD-ALERTS on Oct 1, using ambulance run data to detect unusual increases in opioid overdoses and checking hospital and community reports before alerting local and Tribal health agencies. Seventy-six counties have subscribed, and the state, which recorded 959 overdose deaths in 2024 and nearly 1,000 in 2025, plans to add other substances later. Earlier spike warnings give EDs, treatment programs, and outreach teams more time to prepare, including getting naloxone where it is needed.",
+      "url": "https://www.kaaltv.com/news/new-minnesota-alert-system-tracks-opioid-overdose-spikes/"
+    },
+    {
+      "headline": "Wales raises its minimum alcohol price 30%, to 65p per unit",
+      "outlet": "BBC News",
+      "date": "Oct 1",
+      "summary": "Wales raised its minimum unit price for alcohol from 50p to 65p on Oct 1, in line with Scotland, so a can of lager that sold for £1 now costs at least £1.30 and a £14 bottle of whisky at least £18.20. The Welsh government says the change could prevent more than 900 deaths over the next two decades, and Public Health Wales figures show alcohol-related deaths rose more than 50% between 2019 and 2023. U.S. policy leaders weighing alcohol pricing can watch Wales and Scotland as real-world tests of a price-floor approach.",
+      "url": "https://www.bbc.com/news/articles/cxr505v5g0gvo"
+    },
+    {
+      "headline": "HHS says states need consent to use SUD records for Medicaid work-requirement exemptions",
+      "outlet": "AHA News",
+      "date": "Sep 30",
+      "summary": "New HHS Office for Civil Rights guidance explains when state Medicaid agencies may use 42 CFR Part 2 substance use disorder records to verify that someone is excluded from the new Medicaid community engagement (work) requirement. Agencies need either a prior written consent covering treatment, payment, and health care operations or a separate written consent with the required Part 2 elements, such as the right to revoke. Clinicians and programs may field more consent requests as states implement the requirement by Jan 1, 2027.",
+      "url": "https://www.aha.org/news/headline/2026-09-30-hhs-clarifies-when-state-medicaid-agencies-can-use-patient-sud-records-verify-exemption-community"
+    }
+  ]
+}

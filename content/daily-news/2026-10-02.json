@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-02",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "New Jersey advocates flag opioid settlement spending on concerts and camps",
+      "outlet": "New Jersey Monitor",
+      "date": "Oct 1",
+      "summary": "Spending reports released Thursday show state, county, and municipal officials received more than $60 million in national opioid settlement funds over the past year, part of $1.1 billion New Jersey will get through 2038. Alongside treatment and harm reduction, municipalities paid for concerts, bounce houses, ice cream events, police gear, summer camps, and related \"prevention\" activities, prompting calls for tighter oversight and a pending transparency bill. Clinicians and policy leaders watching abatement dollars should track whether local spend reaches people harmed by the overdose crisis.",
+      "url": "https://newjerseymonitor.com/2026/10/01/opioid-settlement-spending-shows-need-for-more-oversight-nj-advocates-warn"
+    },
+    {
+      "headline": "U.S. benzodiazepine dispensing fell 26.7% from 2013 to 2024",
+      "outlet": "American Journal of Psychiatry",
+      "date": "Sep 30",
+      "summary": "In a Rutgers-led analysis of more than 1.1 billion benzodiazepine fills, annual dispensing prevalence dropped from 7.5% to 5.5%, with the steepest decline among adults aged 18 to 29 (-44.8%) and mean dose per fill down 18.3%. Primary care and psychiatry dispensed fewer scripts while advanced practice providers dispensed more; pain specialists saw the largest relative drop. Safer co-prescribing with opioids remains essential as benzodiazepines continue to appear in polysubstance overdose deaths.",
+      "url": "https://psychiatryonline.org/doi/full/10.1176/appi.ajp.20251346"
+    },
+    {
+      "headline": "Colorado launches statewide map of free and paid naloxone sites",
+      "outlet": "CU Anschutz",
+      "date": "Oct 1",
+      "summary": "The Injury and Violence Prevention Center released the Save a Life Colorado Naloxone Access Map at SaveALifeColorado.org, consolidating pharmacies, public health agencies, nonprofits, kiosks, and vending machines where naloxone is free or at cost. Leaders built it after communities asked for a single statewide finder, and they published a toolkit so other regions can copy the model. Clinicians and navigators can point patients, families, and coworkers to nearby kits instead of guessing pharmacy stock.",
+      "url": "https://news.cuanschutz.edu/coloradosph/ivpc-launches-online-map-to-help-coloradans-find-life-saving-naloxone"
+    },
+    {
+      "headline": "Review updates pregnancy and postpartum MOUD for the fentanyl era",
+      "outlet": "Medical Research Archives",
+      "date": "Sep 30",
+      "summary": "Mishka Terplan reviews how methadone and buprenorphine care is changing in pregnancy and postpartum, including weekly extended-release buprenorphine as an option and growing reassurance for continuing buprenorphine-naloxone rather than switching to monoproduct. High-dose and low-dose buprenorphine starts, methadone split dosing, and selective naltrexone continuation for already-stable patients are highlighted, with delivery framed as a continuum rather than a cue to interrupt treatment. PAs managing perinatal OUD should individualize formulation and dose instead of applying pregnancy-only defaults.",
+      "url": "https://doi.org/10.18103/mra.2026.0577"
+    },
+    {
+      "headline": "Pilot EEG study finds music therapy may ease addiction cravings",
+      "outlet": "Addiction Neuroscience",
+      "date": "Sep 30",
+      "summary": "In a London community pilot of 16 adults in treatment for alcohol and drug use, six weekly music therapy sessions plus usual care were linked to lower present-moment craving on a Craving Thermometer and to EEG changes including lower frontal beta activity versus usual care alone. Frontal alpha asymmetry findings suggested better control of emotions such as anger and frustration. Authors call the signal encouraging but say larger trials are needed before changing clinical practice.",
+      "url": "https://www.eurekalert.org/news-releases/1145763"
+    }
+  ]
+}

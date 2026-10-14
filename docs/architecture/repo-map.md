@@ -35,12 +35,20 @@ api/                        Vercel serverless functions (Web-handler signature: 
   share.js                  GET ?slug= → OG/Twitter meta HTML for social crawlers (anon key,
                             published only)
   site-traffic.js           GET ?range=7|30 → visitors/pageviews + top paths + daily series; JWT +
-                            canViewMemberRoster (admin or can_view_members);
+                            canViewBoardDashboard (admin, is_board, or is_committee_chair);
                             proxies Vercel Web Analytics (`VERCEL_WEB_ANALYTICS_TOKEN`)
-  newsletter-stats.js       GET → SAMPA Updates list size + weekly issue stats + top links; same JWT gate;
-                            read-only Brevo (`BREVO_API_KEY`, never `VITE_`).
-                            `?section=membership` and `?section=finance` share this function
-                            (Hobby plan allows 12 functions). Handlers live in `api/_lib/`.
+  newsletter-stats.js       GET → Weekly (list 3) and Daily (list 15) subscriber counts,
+                            weekly issue stats, and growth from subscriber_snapshots;
+                            JWT + canViewBoardDashboard. Read-only Brevo (`BREVO_API_KEY`).
+                            `?section=membership`, `?section=finance`, `?section=board-numbers`,
+                            `?section=subscriber-snapshot`, and `?section=board`
+                            share this function (Hobby plan allows 12 functions).
+                            Finance uses the same dashboard gate. Board-numbers is
+                            active members only and returns aggregates. The snapshot
+                            section is the daily cron (`CRON_SECRET`). Board
+                            agendas/minutes (`public.board_meetings`) require
+                            `is_active_member()` and are also reached at `/api/board-meetings`
+                            via vercel.json rewrite. Handlers live in `api/_lib/`.
 src/
   main.jsx                  BrowserRouter > AuthProvider > App
   App.jsx                   Routes (lazy-loaded except Home); catch-all NotFound
@@ -51,10 +59,10 @@ src/
     authStorage.js          localStorage + cookie session mirror
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
-    memberRoster.js         canViewMemberRoster — /editor/members + Site traffic; canViewFinance is admin only
+    memberRoster.js         canViewMemberRoster — /editor/members; canViewBoardDashboard — /board/dashboard and finances
     policyWorkAccess.js     canViewPolicyWork — /editor/policy (roster gate or is_board)
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
-    newsletterStats.js      list-3 weekly filter (name/subject; lists 8 and 13 out) + rates for Reach
+    newsletterStats.js      Weekly list 3 and Daily list 15 filters, rates, and snapshot growth series
     policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
     educationImpact.js      published-news and issues-sent series; CME and jobs are placeholders
     membershipStats.js      current-term headcount series (not a stored snapshot)
@@ -63,18 +71,25 @@ src/
     comments.js             REACTIONS + normalizeCommentBody (shared with mobile)
     useFavorites.js         saved-post ids + optimistic toggle
     tags.js                 collectPostTags(post)
+    dailyNews.js            build-time catalog of content/daily-news/*.json (newest first)
+    dailyNewsArchive.js     dated-route resolver, archive paging, month index, keyword tags
     slug.js format.js cite.js share.js
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
     policyWork.js           PHP committee tracker seed (internal /editor/policy)
+    practiceResources.js    First public Practice resources page seed (`/resources`)
+    boardSchedule.js        Meeting labels and standing second-Wednesday dates
     leadership.js           About-page leadership roster (preview; not a CMS)
-  pages/                    Home, About, News, PostView, Policy, PolicyView, Tags, TagView, Search,
+  pages/                    Home, About, Resources, News, PostView, Policy, PolicyView, Tags, TagView, Search,
                             Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,
-                            MemberProfile, Privacy, Terms, EditorDashboard, PostEditor,
-                            AdminTags, AdminPeople, AdminMembers
+                            MemberProfile, BoardMeetings, BoardMeetingView, Privacy, Terms,
+                            EditorDashboard, PostEditor,
+                            AdminTags, AdminPeople, AdminMembers, DailyArchive, DailyTagView,
+                            SuggestedDailyTags
 public/
   files/policy/             Official Policy PDFs (e.g. HHS RFI comment)
+  files/board/              Board agenda / minutes PDFs (drop files; wire paths in boardMeetings.js)
 supabase/
   schema.sql                SOURCE OF TRUTH (tables, RLS, functions, triggers, seed)
   migrations/               standalone per-change snippets (folded into schema.sql)
@@ -90,7 +105,7 @@ scripts/
   sampa-post/               News post generator (repo agents)
   sampa-email/              Brevo campaigns (repo agents)
 mobile/                     Expo iOS/Android — separate build, same Supabase (see architecture/mobile.md)
-vercel.json                 SPA rewrite; apex→www; crawler UAs on /news/:slug → /api/share
+vercel.json                 SPA rewrite; apex→www; crawler UAs on /news/:slug, /news/daily/archive, and /news/daily/YYYY-MM-DD only → /api/share
 ```
 
 Marketing email architecture: **`docs/architecture/email-brevo.md`**.
@@ -99,15 +114,17 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about` (`#leadership`), `/caq`, `/news`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms` |
+| Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/archive`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; archive and tag routes before `:date`; static segments before `/news/:slug`), `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/newsletter-confirmed` (`?list=daily` for the roundup list) |
 | Signed-in | `/dashboard` |
-| Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster) |
+| Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule, plus aggregate member numbers), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
+| Admin, board, or committee chair | `/board/dashboard` (org dashboard, finances included — `canViewBoardDashboard`) |
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
-| Admin | `/editor/keywords`, `/editor/people` |
-| Member-viewer or admin | `/editor/members` (staff roster + Site traffic card; `canViewMemberRoster`) |
+| Admin | `/editor/keywords`, `/editor/people`, `/editor/daily-tags` (suggested roundup keywords; email stubbed) |
+| Member-viewer or admin | `/editor/members` (staff roster only; `canViewMemberRoster`) |
 | Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin, `can_view_members`, or `is_board`) |
 
-Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/policy` **before** `/editor/:id`.  
+Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/daily-tags`, `/editor/policy` **before** `/editor/:id`.
+Declare `/news/daily/archive` and `/news/daily/tag/:slug` **before** `/news/daily/:date`.
 `/login?next=` must be an in-app path starting with `/` (not `//`).
 
-**Member Login** (header/footer): signed-out → `/login` (no next). After auth with no next, editors/admins/`can_edit_news` → `/editor`; everyone else → `/dashboard`. An explicit `next` is honored. A held/expired session that still has `user.email` but no `profiles` row is treated as signed-out (do not show the join upsell). Membership and editor flags are read from **this** auth user’s `profiles` row (id = Supabase user id), never by email. A second Google login is a second profile.
+**Member Login** (footer, and the header while signed out or still loading): signed-out → `/login` (no next). After a profile loads, the header is the **My SAMPA** menu. My account goes to `/dashboard`. Editor is a separate item for staff (`/editor`). Directory and Board sit in that menu, not the top bar. Join stays for signed-out visitors and accounts with no membership. Active members and staff do not see it. A past-due member sees **Renew** to `/dashboard`. A canceled member sees **Renew** to `/join`. After auth with no next, editors/admins/`can_edit_news` → `/editor`; everyone else → `/dashboard`. An explicit `next` is honored. A held/expired session that still has `user.email` but no `profiles` row is treated as signed-out (do not show the join upsell). Membership and editor flags are read from **this** auth user’s `profiles` row (id = Supabase user id), never by email. A second Google login is a second profile.

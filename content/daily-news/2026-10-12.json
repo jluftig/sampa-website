@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-12",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Ontario medical regulator moves to tighten safer-supply opioid prescribing rules",
+      "outlet": "Global News Canada",
+      "date": "Oct 10",
+      "summary": "The College of Physicians and Surgeons of Ontario is proposing that physicians prescribe safer-supply medications only alongside opioid agonist therapy such as methadone, limit safer supply to eight weeks, and require consumption in front of health-care professionals. The college said the changes build on May 2026 rules that already required in-person assessment and offering agonist therapy first, citing diversion concerns. Its board is expected to vote on the amendments Oct 13, with support from the provincial health minister.",
+      "url": "https://newsglobalcanada.com/2026/10/10/ontarios-medical-regulator-looking-to-clamp-down-on-prescribing-safer-supply-drugs/"
+    },
+    {
+      "headline": "Maine jail wins $3.1M SAMHSA grant to keep monthly injectable buprenorphine going",
+      "outlet": "Central Maine",
+      "date": "Oct 8",
+      "summary": "Somerset County Jail in Madison secured a five-year SAMHSA award totaling about $3.1 million to continue its extended-release buprenorphine injection program, which replaced daily dosing in 2022. Officials framed the grant as a bridge until MaineCare reentry billing for addiction treatment can start around 2028\u20132029, and said it will also fund methamphetamine overdose response, reentry support, and technical help for other Maine jails. The program costs roughly $1 million a year and has been linked to lower post-release overdose risk and better treatment continuity.",
+      "url": "https://www.centralmaine.com/2026/10/08/somerset-county-jail-gets-3m-boost-for-addiction-treatment-program/"
+    },
+    {
+      "headline": "Four mobile methadone units cut rural travel times across Massachusetts",
+      "outlet": "Institute for Community Health",
+      "date": "Oct 8",
+      "summary": "Massachusetts now runs four opioid treatment program mobile medication units, two in rural areas, funded through the Bureau of Substance Addiction Services. A 2024 state report found 55 brick-and-mortar OTPs clustered around cities; evaluators describe patients whose round trips once took hours now reaching a unit in about 15 minutes. Staff also reported calmer dosing visits and sharper adherence, including one patient who went from frequent missed doses to 30 straight days of medication after a unit opened.",
+      "url": "https://icommunityhealth.org/2026/10/08/moving-the-door-how-opioid-treatment-programs-mobile-medication-units-mmus-are-revolutionizing-methadone-access-in-massachusetts/"
+    },
+    {
+      "headline": "CDC essay urges community pharmacies to become routine harm-reduction hubs",
+      "outlet": "Preventing Chronic Disease (CDC)",
+      "date": "Oct 8",
+      "summary": "A peer-reviewed CDC Preventing Chronic Disease essay argues that community pharmacies should move from request-driven naloxone and uneven syringe sales to protocol-based overdose prevention, sterile syringe access with disposal, and formal referrals to medications for opioid use disorder. The authors note more than 80,000 opioid overdose deaths in 2024 and cite rural stock and distance gaps, including a Georgia survey in which only 55% of rural pharmacies stocked naloxone. They call for training, reimbursement, and public-health partnerships so pharmacies function as permanent prevention infrastructure rather than pilots.",
+      "url": "https://www.cdc.gov/pcd/issues/2026/26_0181.htm"
+    },
+    {
+      "headline": "White-matter MRI patterns differ across opioid, cannabis, and nicotine dependence",
+      "outlet": "Translational Psychiatry",
+      "date": "Oct 9",
+      "summary": "A dual-center diffusion MRI study of 87 people with substance use disorders and 53 nonsmoking controls found widespread white-matter changes in opioid and cannabis dependence, with more limited anterior and callosal changes in nicotine dependence. In cannabis dependence, higher orientation dispersion in the middle longitudinal fasciculus tracked steeper delay discounting (r = 0.41), an association tied in exploratory models to heavier daily use. All opioid-dependent participants were on substitution therapy, so findings should not be generalized to active illicit opioid use.",
+      "url": "https://www.nature.com/articles/s41398-026-04491-8"
+    }
+  ]
+}

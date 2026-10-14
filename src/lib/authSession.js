@@ -44,6 +44,10 @@ export function shouldRetryAuthRecovery({
   return false;
 }
 
+export function signOutAttemptFailed(result, thrown) {
+  return thrown != null || result?.error != null;
+}
+
 export function nextSessionFromAuthEvent({ event, incoming, previous, intentionalSignOut } = {}) {
   if (intentionalSignOut) return incoming ?? null;
   if (incoming) return incoming;

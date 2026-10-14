@@ -84,8 +84,9 @@ export default function AboutPage() {
             </h2>
             <p className="mb-6">
               This page is who we are and who leads. Daily news,
-              the program catalog, the Addiction Medicine CAQ, policy comments,
-              membership, and giving each have their own home.
+              the program catalog, the Addiction Medicine CAQ, practice
+              resources, policy comments, membership, and giving each have
+              their own home.
             </p>
             <ul className="flex flex-col sm:flex-wrap sm:flex-row gap-x-6 gap-y-3 text-base font-semibold">
               <li>
@@ -101,6 +102,11 @@ export default function AboutPage() {
               <li>
                 <Link to="/caq" className="text-primary-text hover:underline">
                   Addiction Medicine CAQ
+                </Link>
+              </li>
+              <li>
+                <Link to="/resources" className="text-primary-text hover:underline">
+                  Practice resources
                 </Link>
               </li>
               <li>
@@ -129,8 +135,9 @@ export default function AboutPage() {
               Join the work
             </h2>
             <p className="mb-8">
-              Membership opens the peer directory. A gift keeps the work going.
-              Both serve the same end: patients reaching care.
+              Membership opens the peer directory and Board meeting records.
+              A gift keeps the work going. Both serve the same end: patients
+              reaching care.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Link
