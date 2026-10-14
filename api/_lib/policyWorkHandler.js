@@ -6,15 +6,15 @@ function policyJson(body, status = 200) {
   return json(body, status, { 'cache-control': 'private, no-store' });
 }
 
-export function itemsFromPolicyWorkInternal(raw) {
-  if (typeof raw !== 'string' || !raw.trim()) return [];
+export function readPolicyWorkInternal(raw) {
+  if (typeof raw !== 'string' || !raw.trim()) return { ok: false, items: [] };
   let data;
   try {
     data = JSON.parse(raw);
   } catch {
-    return [];
+    return { ok: false, items: [] };
   }
-  if (!data || typeof data !== 'object' || Array.isArray(data)) return [];
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return { ok: false, items: [] };
   const items = [];
   for (const [id, row] of Object.entries(data)) {
     if (!id || !row || typeof row !== 'object' || Array.isArray(row)) continue;
@@ -26,12 +26,17 @@ export function itemsFromPolicyWorkInternal(raw) {
     }
     items.push({
       id,
+      owner: typeof row.owner === 'string' ? row.owner : '',
       submittedTo: typeof row.submittedTo === 'string' ? row.submittedTo : '',
       packetUrl: typeof row.packetUrl === 'string' && row.packetUrl ? row.packetUrl : null,
       notes,
     });
   }
-  return items;
+  return { ok: true, items };
+}
+
+export function itemsFromPolicyWorkInternal(raw) {
+  return readPolicyWorkInternal(raw).items;
 }
 
 export async function handlePolicyWork(request, deps = {}) {
@@ -45,7 +50,13 @@ export async function handlePolicyWork(request, deps = {}) {
     const profile = await loadProfile(user.id);
     if (!canViewPolicyWork(profile)) return policyJson({ error: 'Not authorized' }, 403);
 
-    return policyJson({ items: itemsFromPolicyWorkInternal(env.POLICY_WORK_INTERNAL) });
+    const parsed = readPolicyWorkInternal(env.POLICY_WORK_INTERNAL);
+    if (!parsed.ok) {
+      console.warn('policy-work: POLICY_WORK_INTERNAL is missing or invalid');
+      return policyJson({ items: [], internalDetailsUnavailable: true });
+    }
+
+    return policyJson({ items: parsed.items });
   } catch (err) {
     console.error('policy-work:', err?.message || err);
     return policyJson({

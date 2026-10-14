@@ -275,6 +275,12 @@ describe('route wiring', () => {
     const page = readFileSync(new URL('../src/pages/PolicyWorkHub.jsx', import.meta.url), 'utf8');
     assert.match(page, /listPolicyWorkItems/);
     assert.match(page, /Punch list/);
+    assert.match(page, /Internal details unavailable/);
+    assert.doesNotMatch(page, /policyWorkTimeline/);
+    const deadlinesBox = page.slice(page.indexOf('aria-label="Deadlines"'), page.indexOf('space-y-6'));
+    assert.match(deadlinesBox, /No open due dates on the sheet yet/);
+    assert.match(deadlinesBox, /deadlines\.map/);
+    assert.doesNotMatch(deadlinesBox, /Submitted |No date|timeline/);
     assert.doesNotMatch(
       readFileSync(new URL('../src/pages/Policy.jsx', import.meta.url), 'utf8'),
       /policyWork/,
@@ -293,6 +299,7 @@ async function readJson(res) {
 describe('policy work internal payload', () => {
   const sample = JSON.stringify({
     'php-2026-1': {
+      owner: 'Sample Owner',
       submittedTo: 'Sample Person',
       packetUrl: 'https://example.com/policy-packet',
       notes: { 'match-published': 'Sample note for the first row.' },
@@ -314,6 +321,10 @@ describe('policy work internal payload', () => {
 
   it('returns env cards for admin or board and nothing when the env is missing or invalid', async () => {
     const request = () => new Request('https://www.addictionpas.org/api/newsletter-stats?section=policy-work');
+    const warnings = [];
+    const originalWarn = console.warn;
+    console.warn = (...args) => warnings.push(args.join(' '));
+    try {
     const anon = await readJson(await GET(request(), { requireUser: async () => null }));
     assert.equal(anon.status, 401);
     assert.equal(anon.body.error, 'Sign in required');
@@ -331,19 +342,27 @@ describe('policy work internal payload', () => {
     const missing = await readJson(await GET(request(), authed(president, {})));
     assert.equal(missing.status, 200);
     assert.deepEqual(missing.body.items, []);
+    assert.equal(missing.body.internalDetailsUnavailable, true);
 
-    const invalid = await readJson(await GET(request(), authed(president, { POLICY_WORK_INTERNAL: '{' })));
+    const leaked = 'do-not-log-this-env-value';
+    const invalid = await readJson(await GET(request(), authed(president, { POLICY_WORK_INTERNAL: leaked })));
     assert.equal(invalid.status, 200);
     assert.deepEqual(invalid.body.items, []);
+    assert.equal(invalid.body.internalDetailsUnavailable, true);
+    assert.match(warnings.join('\n'), /POLICY_WORK_INTERNAL is missing or invalid/);
+    assert.equal(warnings.some((line) => line.includes(leaked)), false);
 
     const board = await readJson(await GET(request(), authed(president)));
     assert.equal(board.status, 200);
     assert.equal(board.cache, 'private, no-store');
     assert.equal(board.body.items[0].id, 'php-2026-1');
+    assert.equal(board.body.internalDetailsUnavailable, undefined);
+    assert.equal(board.body.items[0].owner, 'Sample Owner');
     assert.equal(board.body.items[0].submittedTo, 'Sample Person');
     assert.equal(board.body.items[0].packetUrl, 'https://example.com/policy-packet');
     assert.equal(board.body.items[0].notes['match-published'], 'Sample note for the first row.');
     assert.equal(board.body.items[1].id, 'php-2026-3');
+    assert.equal(board.body.items[1].owner, '');
     assert.equal(board.body.items[1].submittedTo, '');
     assert.equal(board.body.items[1].packetUrl, null);
     assert.equal(board.body.items[1].notes['fill-sheet'], 'Sample note for the third row.');
@@ -353,6 +372,7 @@ describe('policy work internal payload', () => {
     assert.equal(adminRes.body.items[0].submittedTo, 'Sample Person');
 
     const filled = applyPolicyWorkInternal(listPolicyWorkItems(), board.body.items);
+    assert.equal(filled[0].owner, 'Sample Owner');
     assert.equal(filled[0].submittedTo, 'Sample Person');
     assert.equal(filled[0].punchList[0].text, 'Sample note for the first row.');
     assert.equal(filled[0].punchList[0].done, false);
@@ -361,8 +381,18 @@ describe('policy work internal payload', () => {
     assert.equal(filled[2].punchList[0].text, 'Sample note for the third row.');
 
     const bare = applyPolicyWorkInternal(listPolicyWorkItems(), missing.body.items);
+    assert.equal(bare[0].owner, '');
     assert.equal(bare[0].submittedTo, '');
     assert.equal(bare[0].packetUrl, null);
     assert.equal(bare[0].punchList[0].text, '');
+
+    const kept = applyPolicyWorkInternal(
+      mergePolicyWorkOverlay(listPolicyWorkItems(), { 'php-2026-1': { owner: 'Local Owner' } }),
+      board.body.items,
+    );
+    assert.equal(kept[0].owner, 'Local Owner');
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 });

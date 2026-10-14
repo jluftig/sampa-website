@@ -16,7 +16,6 @@ import {
   mergePolicyWorkOverlay,
   parsePolicyWorkOverlay,
   policyWorkOverlayFromEdits,
-  policyWorkTimeline,
   upcomingPolicyWorkDeadlines,
 } from '../data/policyWork';
 
@@ -64,13 +63,13 @@ export default function PolicyWorkHub() {
   const [overlay, setOverlay] = useState(() => readStoredOverlay());
   const [internal, setInternal] = useState(null);
   const [internalState, setInternalState] = useState('loading');
+  const [detailsUnavailable, setDetailsUnavailable] = useState(false);
   const items = applyPolicyWorkInternal(
     mergePolicyWorkOverlay(seed, overlay),
     internalState === 'ready' ? internal : [],
   );
   const today = todayIso();
   const deadlines = upcomingPolicyWorkDeadlines(items, today);
-  const timeline = policyWorkTimeline(items);
   const hardScreen = POLICY_WORK_CRITERIA.filter((row) => row.group === 'hard_screen');
   const scorecard = POLICY_WORK_CRITERIA.filter((row) => row.group === 'scorecard');
 
@@ -80,6 +79,7 @@ export default function PolicyWorkHub() {
       .then((body) => {
         if (cancelled) return;
         setInternal(Array.isArray(body?.items) ? body.items : []);
+        setDetailsUnavailable(body?.internalDetailsUnavailable === true);
         setInternalState('ready');
       })
       .catch(() => {
@@ -151,22 +151,6 @@ export default function PolicyWorkHub() {
               ))}
             </ul>
           )}
-          <ol className="mt-4 flex gap-3 overflow-x-auto pb-1 list-none">
-            {timeline.map((entry) => (
-              <li key={entry.itemId} className="min-w-[200px] rounded-xl border border-primary/10 px-4 py-3">
-                <p className="font-data text-xs text-text/50">
-                  {entry.kind === 'due' && 'Due '}
-                  {entry.kind === 'submitted' && 'Submitted '}
-                  {entry.kind === 'undated' && 'No date'}
-                  {entry.date ? formatDateOnly(entry.date) : ''}
-                </p>
-                <p className="font-semibold text-sm mt-1">
-                  {entry.responseNumber}. {entry.organization}
-                </p>
-                <p className="text-sm text-text/70 line-clamp-2">{entry.title}</p>
-              </li>
-            ))}
-          </ol>
         </section>
 
         <div className="space-y-6">
@@ -238,7 +222,9 @@ export default function PolicyWorkHub() {
                 </div>
 
                 <div className="flex flex-wrap gap-4 mt-4 text-sm">
-                  {internalState === 'ready' && item.packetUrl ? (
+                  {detailsUnavailable ? (
+                    <span className="text-text/60">Internal details unavailable.</span>
+                  ) : internalState === 'ready' && item.packetUrl ? (
                     <a className="text-primary-text font-semibold hover:underline" href={item.packetUrl} target="_blank" rel="noreferrer">
                       Response packet
                     </a>
@@ -319,7 +305,9 @@ export default function PolicyWorkHub() {
 
                 <div className="mt-5">
                   <h3 className="font-semibold text-sm mb-2">Punch list</h3>
-                  {internalState !== 'ready' ? (
+                  {detailsUnavailable ? (
+                    <p className="text-sm text-text/60">Internal details unavailable.</p>
+                  ) : internalState !== 'ready' ? (
                     <p className="text-sm text-text/50">
                       {internalState === 'loading' ? 'Loading notes.' : 'Notes unavailable.'}
                     </p>

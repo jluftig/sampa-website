@@ -108,11 +108,12 @@ Seed module: `src/data/policyWork.js`. Three rows from the June 2026–2027
 sheet (HHS chronic disease, ASAM drug-testing CCS, HRSA psychedelic RFI).
 Blank sheet rows are omitted. Status is one of `watching`, `screening`,
 `drafting`, `chairs_review`, `filed`, `declined`. Each item stores a boolean
-per criterion and punch-list ids. Staff names (`submittedTo`), response-packet
+per criterion and punch-list ids. Owner, staff names (`submittedTo`), response-packet
 URLs, and punch-list sentences are the server env var `POLICY_WORK_INTERNAL`,
 a JSON object keyed by item id. `GET /api/newsletter-stats?section=policy-work`
-returns them after the gate. A missing or invalid value returns no internal
-fields, and the page still renders. Do not commit that JSON.
+returns them after the gate. A missing or invalid value logs a server warning,
+returns no internal fields, and sets `internalDetailsUnavailable` so the page
+can show "Internal details unavailable." The page still renders. Do not commit that JSON.
 
 `hardScreenPasses` is true when `addiction_related` and `affects_pas` are both
 true, or when `priority_pa_org` is true (AAPA, NCCPA, ARC-PA, PAEA, or
@@ -128,9 +129,10 @@ go to `/login?next=/editor/policy`. Signed-in people who fail the gate stay on
 the URL and see a 403 denial. `postAuthPath` treats `/editor/policy` like the
 roster path so a board member can return there and a member cannot loop.
 
-The public seed still ships in the client bundle. The three internal cards do
-not, and they are not stored in this repository. A due date set on a filed
-response still appears under Upcoming deadlines. A declined response does not.
+The public seed still ships in the client bundle. The internal cards do
+not, and they are not stored in this repository. Upcoming deadlines lists only
+rows with an open due date. The empty sentence shows only when that list is
+empty. A declined response does not appear there.
 Browser edits are a local overlay (`sampa.phpWorkOverlay.v1`) of status,
 owner, due date, criteria, and punch checks. The overlay cannot store the
 internal cards.

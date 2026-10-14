@@ -224,8 +224,10 @@ export function applyPolicyWorkInternal(items, internal) {
     const packetUrl = typeof extra?.packetUrl === 'string' && extra.packetUrl
       ? extra.packetUrl
       : null;
+    const internalOwner = typeof extra?.owner === 'string' ? extra.owner.trim().slice(0, 120) : '';
     return {
       ...item,
+      owner: item.owner || internalOwner,
       submittedTo: typeof extra?.submittedTo === 'string' ? extra.submittedTo : '',
       packetUrl,
       punchList: (item.punchList || []).map((row) => ({
