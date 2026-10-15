@@ -60,6 +60,7 @@ system; not verified) and is not in that guard.
 | newsletter-stats?section=finance | Valid Supabase JWT **and** `canViewBoardDashboard` (same gate as the dashboard, not admin-only). Read-only Stripe balance transactions (`STRIPE_SECRET_KEY` server-side) |
 | newsletter-stats?section=board-numbers | Valid Supabase JWT **and** `is_active_member()` (`isActiveMemberAccess`). Active member count plus Weekly and Daily subscriber totals only |
 | newsletter-stats?section=subscriber-snapshot | `Authorization: Bearer CRON_SECRET` (Vercel cron). Upserts one snapshot row per list per UTC day. No user session |
+| newsletter-stats?section=policy-work | Valid Supabase JWT **and** `canViewPolicyWork` (`role = admin` or `is_board`). `can_view_members` and `is_committee_chair` get 403. Reads `POLICY_WORK_INTERNAL` (server env, JSON keyed by item id, including `owner`). Missing or invalid JSON logs a warning and returns `internalDetailsUnavailable` with no internal fields. `cache-control: private, no-store`. Same function as newsletter-stats. Not in the client bundle or the repo |
 | create-donation-session | Public; optional JWT to link profile; amount validated server-side ($1–$50k) |
 | stripe-webhook | Stripe signature (`STRIPE_WEBHOOK_SECRET`) |
 | send-push | `x-push-secret` = `PUSH_WEBHOOK_SECRET` |

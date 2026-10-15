@@ -24,6 +24,8 @@
     "test:board-nav": "node --import ./scripts/register-jsx.mjs --test scripts/verify-board-nav.mjs",
     "test:my-sampa": "npm run test:board-nav && npm run test:member-login",
     "test:policy-impact": "node --test scripts/verify-policy-impact.mjs",
+    "test:policy-work": "node --test scripts/verify-policy-work.mjs",
+    "test:policy-work-bundle": "node scripts/verify-policy-work-bundle.mjs",
     "test:giveaway": "node scripts/verify-giveaway.mjs",
     "test:daily-news": "node --test scripts/verify-daily-news.mjs",
     "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",

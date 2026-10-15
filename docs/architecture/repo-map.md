@@ -60,6 +60,7 @@ src/
     authSession.js          transient-null recovery + callback URL cleanup
     membership.js           MEMBERSHIP_TIERS — keep in sync with api/_lib/tiers.js
     memberRoster.js         canViewMemberRoster — /editor/members; canViewBoardDashboard — /board/dashboard and finances
+    policyWorkAccess.js     canViewPolicyWork — /editor/policy (admin or is_board; not can_view_members)
     siteTraffic.js          range/window + Analytics shaping; re-exports roster gate
     newsletterStats.js      Weekly list 3 and Daily list 15 filters, rates, and snapshot growth series
     policyImpact.js         monthly + cumulative filing counts from listPolicyDocuments()
@@ -76,6 +77,7 @@ src/
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …
   data/
     policyDocuments.js      Policy hub seed + POLICY_LEVERS (see architecture/policy-hub.md)
+    policyWork.js           PHP committee tracker seed (internal /editor/policy)
     practiceResources.js    First public Practice resources page seed (`/resources`)
     boardSchedule.js        Meeting labels and standing second-Wednesday dates
     leadership.js           About-page leadership roster (preview; not a CMS)
@@ -119,9 +121,10 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 | Editor | `/editor`, `/editor/new`, `/editor/:id` |
 | Admin | `/editor/keywords`, `/editor/people`, `/editor/daily-tags` (suggested roundup keywords; email stubbed) |
 | Member-viewer or admin | `/editor/members` (staff roster only; `canViewMemberRoster`) |
+| Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin or `is_board`. Internal cards from `newsletter-stats?section=policy-work`, which reads `POLICY_WORK_INTERNAL`) |
 
-Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/daily-tags` **before** `/editor/:id`.
-Declare `/news/daily/archive` and `/news/daily/tag/:slug` **before** `/news/daily/:date`.  
+Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/daily-tags`, `/editor/policy` **before** `/editor/:id`.
+Declare `/news/daily/archive` and `/news/daily/tag/:slug` **before** `/news/daily/:date`.
 `/login?next=` must be an in-app path starting with `/` (not `//`).
 
 **Member Login** (footer, and the header while signed out or still loading): signed-out → `/login` (no next). After a profile loads, the header is the **My SAMPA** menu. My account goes to `/dashboard`. Editor is a separate item for staff (`/editor`). Directory and Board sit in that menu, not the top bar. Join stays for signed-out visitors and accounts with no membership. Active members and staff do not see it. A past-due member sees **Renew** to `/dashboard`. A canceled member sees **Renew** to `/join`. After auth with no next, editors/admins/`can_edit_news` → `/editor`; everyone else → `/dashboard`. An explicit `next` is honored. A held/expired session that still has `user.email` but no `profiles` row is treated as signed-out (do not show the join upsell). Membership and editor flags are read from **this** auth user’s `profiles` row (id = Supabase user id), never by email. A second Google login is a second profile.

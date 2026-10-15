@@ -5,6 +5,7 @@ import RequireEditor from './components/RequireEditor';
 import RequireAuth from './components/RequireAuth';
 import RequireActiveMember from './components/RequireActiveMember';
 import RequireMemberViewer from './components/RequireMemberViewer';
+import RequirePolicyWork from './components/RequirePolicyWork';
 import RequireBoardDashboard from './components/RequireBoardDashboard';
 import Home from './pages/Home';
 
@@ -43,6 +44,7 @@ const SuggestedDailyTags = lazy(() => import('./pages/SuggestedDailyTags'));
 const AdminPeople = lazy(() => import('./pages/AdminPeople'));
 const AdminRecords = lazy(() => import('./pages/AdminRecords'));
 const AdminMembers = lazy(() => import('./pages/AdminMembers'));
+const PolicyWorkHub = lazy(() => import('./pages/PolicyWorkHub'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
@@ -183,6 +185,14 @@ function App() {
               <RequireMemberViewer>
                 <AdminMembers />
               </RequireMemberViewer>
+            }
+          />
+          <Route
+            path="/editor/policy"
+            element={
+              <RequirePolicyWork>
+                <PolicyWorkHub />
+              </RequirePolicyWork>
             }
           />
           <Route

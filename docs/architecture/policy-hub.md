@@ -98,6 +98,47 @@ clusters.
 - First published artifact was an HHS public comment; empty Position/Statement
   slots stay intentional so comments do not redefine the whole category.
 
+## Committee work tracker (internal)
+
+`/editor/policy` is the Public Health Policy Committee response tracker.
+It is not the public archive on `/policy`, and it is not the parked open-windows
+table in [`docs/PARK-policy-ops.md`](../PARK-policy-ops.md) (T19).
+
+Seed module: `src/data/policyWork.js`. Three rows from the June 2026–2027
+sheet (HHS chronic disease, ASAM drug-testing CCS, HRSA psychedelic RFI).
+Blank sheet rows are omitted. Status is one of `watching`, `screening`,
+`drafting`, `chairs_review`, `filed`, `declined`. Each item stores a boolean
+per criterion and punch-list ids. Owner, staff names (`submittedTo`), response-packet
+URLs, and punch-list sentences are the server env var `POLICY_WORK_INTERNAL`,
+a JSON object keyed by item id. `GET /api/newsletter-stats?section=policy-work`
+returns them after the gate. A missing or invalid value logs a server warning,
+returns no internal fields, and sets `internalDetailsUnavailable` so the page
+can show "Internal details unavailable." The page still renders. Do not commit that JSON.
+
+`hardScreenPasses` is true when `addiction_related` and `affects_pas` are both
+true, or when `priority_pa_org` is true (AAPA, NCCPA, ARC-PA, PAEA, or
+constituent-status asks). Scorecard questions are the draft ATS-style list.
+`potential_harm` checked means the risk question is yes.
+
+Gate: `canViewPolicyWork` in `src/lib/policyWorkAccess.js`. Allowed profiles
+are `role = admin` or `is_board`. `can_view_members`, `is_committee_chair`,
+`is_membership_committee`, and news-editor access do not qualify. The page
+uses that check for the route. The API repeats it before it returns the
+internal cards. There is no `is_policy_committee` column. Signed-out visitors
+go to `/login?next=/editor/policy`. Signed-in people who fail the gate stay on
+the URL and see a 403 denial. `postAuthPath` treats `/editor/policy` like the
+roster path so a board member can return there and a member cannot loop.
+
+The public seed still ships in the client bundle. The internal cards do
+not, and they are not stored in this repository. Upcoming deadlines lists only
+rows with an open due date. The empty sentence shows only when that list is
+empty. A declined response does not appear there.
+Browser edits are a local overlay (`sampa.phpWorkOverlay.v1`) of status,
+owner, due date, criteria, and punch checks. The overlay is diffed against the
+seed plus env owners. A blank owner is kept. Other edits do not copy the env
+owner into the browser. Owner text is trimmed when the field blurs. The overlay
+cannot store the internal cards.
+
 ## Policy ops (adjacent track)
 
 Opportunity sensing, comment windows, and influence workflow are **not** the news

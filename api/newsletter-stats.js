@@ -8,6 +8,7 @@ import { canViewBoardDashboard } from '../src/lib/memberRoster.js';
 import { loadBoardDashboardProfile } from './_lib/boardDashboardAccess.js';
 import { handleBoardNumbers } from './_lib/boardNumbers.js';
 import { handleSubscriberSnapshot } from './_lib/subscriberSnapshotJob.js';
+import { handlePolicyWork } from './_lib/policyWorkHandler.js';
 import {
   brevoConfigFromEnv,
   selectDailySends,
@@ -140,6 +141,7 @@ export async function GET(request, deps) {
   if (section === 'finance') return handleFinanceStats(request, deps);
   if (section === 'board-numbers') return handleBoardNumbers(request, deps);
   if (section === 'subscriber-snapshot') return handleSubscriberSnapshot(request, deps);
+  if (section === 'policy-work') return handlePolicyWork(request, deps);
   if (isBoardMeetingsRequest(request)) return handleBoardMeetings(request, deps);
   return handleNewsletterStats(request, deps);
 }
