@@ -134,8 +134,10 @@ not, and they are not stored in this repository. Upcoming deadlines lists only
 rows with an open due date. The empty sentence shows only when that list is
 empty. A declined response does not appear there.
 Browser edits are a local overlay (`sampa.phpWorkOverlay.v1`) of status,
-owner, due date, criteria, and punch checks. The overlay cannot store the
-internal cards.
+owner, due date, criteria, and punch checks. The overlay is diffed against the
+seed plus env owners. A blank owner is kept. Other edits do not copy the env
+owner into the browser. Owner text is trimmed when the field blurs. The overlay
+cannot store the internal cards.
 
 ## Policy ops (adjacent track)
 

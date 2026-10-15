@@ -22,6 +22,7 @@ import {
   policyWorkTimeline,
   upcomingPolicyWorkDeadlines,
   applyPolicyWorkInternal,
+  trimPolicyWorkOwner,
 } from '../src/data/policyWork.js';
 import { GET } from '../api/newsletter-stats.js';
 
@@ -222,7 +223,8 @@ describe('browser overlay', () => {
       'php-2026-1': { status: 'nope' },
     });
     assert.equal(merged[2].status, 'drafting');
-    assert.equal(merged[2].owner, 'Deanna');
+    assert.equal(merged[2].owner, '  Deanna  ');
+    assert.equal(trimPolicyWorkOwner(merged[2].owner), 'Deanna');
     assert.equal(merged[2].dueDate, '2026-10-01');
     assert.equal(merged[2].criteria.priority_pa_org, true);
     assert.equal(merged[2].criteria.not_a_criterion, undefined);
@@ -257,6 +259,82 @@ describe('browser overlay', () => {
     assert.deepEqual(parsePolicyWorkOverlay('[]'), {});
     assert.deepEqual(parsePolicyWorkOverlay(null), {});
   });
+
+  it('keeps the space while typing First Last and trims on save', () => {
+    const seed = listPolicyWorkItems();
+    const baseline = applyPolicyWorkInternal(seed, [
+      { id: 'php-2026-1', owner: 'Sample Owner', submittedTo: '', packetUrl: null, notes: {} },
+    ]);
+    const typing = baseline.map((item) => (
+      item.id === 'php-2026-1' ? { ...item, owner: 'First ' } : item
+    ));
+    const mid = policyWorkOverlayFromEdits(baseline, typing);
+    assert.equal(mid['php-2026-1'].owner, 'First ');
+    const shown = mergePolicyWorkOverlay(baseline, mid);
+    assert.equal(shown[0].owner, 'First ');
+    const named = shown.map((item) => (
+      item.id === 'php-2026-1' ? { ...item, owner: 'First Last' } : item
+    ));
+    const saved = policyWorkOverlayFromEdits(baseline, named);
+    assert.equal(saved['php-2026-1'].owner, 'First Last');
+    assert.equal(mergePolicyWorkOverlay(baseline, saved)[0].owner, 'First Last');
+    const blurred = mergePolicyWorkOverlay(baseline, saved).map((item) => (
+      item.id === 'php-2026-1' ? { ...item, owner: trimPolicyWorkOwner(`  ${item.owner}  `) } : item
+    ));
+    assert.equal(policyWorkOverlayFromEdits(baseline, blurred)['php-2026-1'].owner, 'First Last');
+  });
+
+  it('does not persist env owners when another field changes', () => {
+    const seed = listPolicyWorkItems();
+    const internal = [
+      { id: 'php-2026-1', owner: 'Sample Owner', submittedTo: '', packetUrl: null, notes: {} },
+    ];
+    const baseline = applyPolicyWorkInternal(seed, internal);
+    assert.equal(baseline[0].owner, 'Sample Owner');
+    const edited = baseline.map((item) => (
+      item.id === 'php-2026-1'
+        ? {
+          ...item,
+          status: 'drafting',
+          criteria: { ...item.criteria, expertise: true },
+          punchList: item.punchList.map((row) => ({ ...row, done: true })),
+        }
+        : item
+    ));
+    const overlay = policyWorkOverlayFromEdits(baseline, edited);
+    assert.equal(Object.prototype.hasOwnProperty.call(overlay['php-2026-1'], 'owner'), false);
+    assert.equal(overlay['php-2026-1'].status, 'drafting');
+    const reloaded = mergePolicyWorkOverlay(
+      applyPolicyWorkInternal(seed, internal),
+      parsePolicyWorkOverlay(JSON.stringify(overlay)),
+    );
+    assert.equal(reloaded[0].owner, 'Sample Owner');
+    assert.equal(reloaded[0].status, 'drafting');
+  });
+
+  it('keeps a cleared owner after reload and restores the env owner on reset', () => {
+    const seed = listPolicyWorkItems();
+    const internal = [
+      { id: 'php-2026-1', owner: 'Sample Owner', submittedTo: '', packetUrl: null, notes: {} },
+      { id: 'php-2026-3', owner: '', submittedTo: '', packetUrl: null, notes: {} },
+    ];
+    const baseline = applyPolicyWorkInternal(seed, internal);
+    const cleared = baseline.map((item) => (
+      item.id === 'php-2026-1' ? { ...item, owner: '' } : item
+    ));
+    const overlay = policyWorkOverlayFromEdits(baseline, cleared);
+    assert.equal(overlay['php-2026-1'].owner, '');
+    assert.equal(Object.prototype.hasOwnProperty.call(overlay['php-2026-1'], 'owner'), true);
+    const stored = parsePolicyWorkOverlay(JSON.stringify(overlay));
+    const reloaded = mergePolicyWorkOverlay(applyPolicyWorkInternal(seed, internal), stored);
+    assert.equal(reloaded[0].owner, '');
+    assert.equal(applyPolicyWorkInternal(reloaded, internal)[0].owner, '');
+    const reset = mergePolicyWorkOverlay(applyPolicyWorkInternal(seed, internal), {});
+    assert.equal(reset[0].owner, 'Sample Owner');
+    assert.equal(reset[2].owner, '');
+    assert.notEqual(reset[2].owner, undefined);
+    assert.equal(String(reset[2].owner), '');
+  });
 });
 
 describe('route wiring', () => {
@@ -276,6 +354,10 @@ describe('route wiring', () => {
     assert.match(page, /listPolicyWorkItems/);
     assert.match(page, /Punch list/);
     assert.match(page, /Internal details unavailable/);
+    assert.match(page, /placeholder="Unassigned"/);
+    assert.match(page, /policyWorkOverlayFromEdits\(baseline/);
+    assert.match(page, /trimPolicyWorkOwner/);
+    assert.doesNotMatch(page, /policyWorkOverlayFromEdits\(seed/);
     assert.doesNotMatch(page, /policyWorkTimeline/);
     const deadlinesBox = page.slice(page.indexOf('aria-label="Deadlines"'), page.indexOf('space-y-6'));
     assert.match(deadlinesBox, /No open due dates on the sheet yet/);
@@ -379,6 +461,9 @@ describe('policy work internal payload', () => {
     assert.equal(filled[1].submittedTo, '');
     assert.equal(filled[1].packetUrl, null);
     assert.equal(filled[2].punchList[0].text, 'Sample note for the third row.');
+    assert.equal(filled[2].organization, 'HRSA');
+    assert.equal(filled[2].owner, '');
+    assert.notEqual(filled[2].owner, undefined);
 
     const bare = applyPolicyWorkInternal(listPolicyWorkItems(), missing.body.items);
     assert.equal(bare[0].owner, '');

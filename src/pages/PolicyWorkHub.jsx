@@ -16,6 +16,7 @@ import {
   mergePolicyWorkOverlay,
   parsePolicyWorkOverlay,
   policyWorkOverlayFromEdits,
+  trimPolicyWorkOwner,
   upcomingPolicyWorkDeadlines,
 } from '../data/policyWork';
 
@@ -64,10 +65,9 @@ export default function PolicyWorkHub() {
   const [internal, setInternal] = useState(null);
   const [internalState, setInternalState] = useState('loading');
   const [detailsUnavailable, setDetailsUnavailable] = useState(false);
-  const items = applyPolicyWorkInternal(
-    mergePolicyWorkOverlay(seed, overlay),
-    internalState === 'ready' ? internal : [],
-  );
+  const internalRows = internalState === 'ready' && Array.isArray(internal) ? internal : [];
+  const baseline = applyPolicyWorkInternal(seed, internalRows);
+  const items = mergePolicyWorkOverlay(baseline, overlay);
   const today = todayIso();
   const deadlines = upcomingPolicyWorkDeadlines(items, today);
   const hardScreen = POLICY_WORK_CRITERIA.filter((row) => row.group === 'hard_screen');
@@ -92,7 +92,7 @@ export default function PolicyWorkHub() {
   }, []);
 
   function commit(next) {
-    const nextOverlay = policyWorkOverlayFromEdits(seed, next);
+    const nextOverlay = policyWorkOverlayFromEdits(baseline, next);
     setOverlay(nextOverlay);
     writeStoredOverlay(nextOverlay);
   }
@@ -195,6 +195,10 @@ export default function PolicyWorkHub() {
                       onChange={(event) => patchItem(item.id, (current) => ({
                         ...current,
                         owner: event.target.value,
+                      }))}
+                      onBlur={(event) => patchItem(item.id, (current) => ({
+                        ...current,
+                        owner: trimPolicyWorkOwner(event.target.value),
                       }))}
                     />
                   </label>

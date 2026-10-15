@@ -224,10 +224,13 @@ export function applyPolicyWorkInternal(items, internal) {
     const packetUrl = typeof extra?.packetUrl === 'string' && extra.packetUrl
       ? extra.packetUrl
       : null;
-    const internalOwner = typeof extra?.owner === 'string' ? extra.owner.trim().slice(0, 120) : '';
+    const internalOwner = trimPolicyWorkOwner(extra?.owner);
+    const owner = item.ownerOverridden
+      ? (typeof item.owner === 'string' ? item.owner.slice(0, 120) : '')
+      : (typeof item.owner === 'string' && item.owner ? item.owner.slice(0, 120) : internalOwner);
     return {
       ...item,
-      owner: item.owner || internalOwner,
+      owner,
       submittedTo: typeof extra?.submittedTo === 'string' ? extra.submittedTo : '',
       packetUrl,
       punchList: (item.punchList || []).map((row) => ({
@@ -252,6 +255,10 @@ function isIsoDate(value) {
   return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
 }
 
+export function trimPolicyWorkOwner(value) {
+  return typeof value === 'string' ? value.trim().slice(0, 120) : '';
+}
+
 export function parsePolicyWorkOverlay(raw) {
   if (typeof raw !== 'string' || !raw) return {};
   try {
@@ -273,7 +280,10 @@ export function mergePolicyWorkOverlay(items, overlay) {
     const patch = overlay[item.id];
     if (!patch || typeof patch !== 'object' || Array.isArray(patch)) return next;
     if (STATUS_IDS.has(patch.status)) next.status = patch.status;
-    if (typeof patch.owner === 'string') next.owner = patch.owner.trim().slice(0, 120);
+    if (Object.prototype.hasOwnProperty.call(patch, 'owner')) {
+      next.owner = typeof patch.owner === 'string' ? patch.owner.slice(0, 120) : '';
+      next.ownerOverridden = true;
+    }
     if (patch.dueDate === null || patch.dueDate === '') next.dueDate = null;
     else if (isIsoDate(patch.dueDate)) next.dueDate = patch.dueDate;
     if (patch.criteria && typeof patch.criteria === 'object' && !Array.isArray(patch.criteria)) {
@@ -300,8 +310,8 @@ export function policyWorkOverlayFromEdits(seed, edited) {
     if (!base) continue;
     const patch = {};
     if (item.status !== base.status && STATUS_IDS.has(item.status)) patch.status = item.status;
-    if (item.owner !== base.owner && typeof item.owner === 'string') {
-      patch.owner = item.owner.trim().slice(0, 120);
+    if (typeof item.owner === 'string' && item.owner.slice(0, 120) !== base.owner) {
+      patch.owner = item.owner.slice(0, 120);
     }
     if (item.dueDate !== base.dueDate) {
       if (item.dueDate === null || item.dueDate === '') patch.dueDate = null;
