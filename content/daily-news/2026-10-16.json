@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-16",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "LA County confirms first fatal overdose tied to cychlorphine in the local supply",
+      "outlet": "LA County Department of Public Health",
+      "date": "Oct 15",
+      "summary": "A Los Angeles County health alert says the Medical Examiner linked a February death to cychlorphine, marking the first confirmed presence of the potent synthetic opioid in the county's illicit supply. Providers are told naloxone may need repeated and higher cumulative doses, and that routine urine immunoassays and fentanyl or nitazene strips do not detect it. The alert urges confirmatory specialty testing when overdose signs persist with negative screens and reminds clinicians that DEA placed cychlorphine in Schedule I in August.",
+      "url": "https://lacounty.gov/2026/10/15/first-fatal-overdose-tied-to-potent-opioid-cychlorphine-reported-in-los-angeles-county/"
+    },
+    {
+      "headline": "Bernalillo County declares a fentanyl emergency to speed treatment and street medicine",
+      "outlet": "Bernalillo County",
+      "date": "Oct 15",
+      "summary": "County commissioners voted 5-0 on Wednesday for a civil emergency declaration that gives the county manager authority to move faster on street medicine, detox, treatment, recovery supports, and real-time overdose tracking. Leaders said synthetic opioids accounted for under 15% of New Mexico overdoses before COVID and about 85% in 2025, and they are asking the state for matching emergency help. The declaration stays in force until commissioners change or end it.",
+      "url": "https://www.bernco.gov/blog/2026/10/15/bernalillo-county-approves-emergency-declaration-to-address-fentanyl-crisis/"
+    },
+    {
+      "headline": "Ontario regulator requires safer-supply opioids to be witnessed, paired with OAT",
+      "outlet": "College of Physicians and Surgeons of Ontario",
+      "date": "Oct 13",
+      "summary": "CPSO's board approved prescribing amendments that require safer-supply medication only alongside opioid agonist therapy, prescriptions marked \"safer supply\" and \"no carries,\" and a comprehensive in-person assessment at least monthly. The rules do not ban safer supply; they aim to curb diversion, with compliance expected by November 16. Clinicians should plan for supervised dosing capacity before the deadline.",
+      "url": "https://www.cpso.on.ca/News/News-Articles/CPSO-Board-Approves-Amendments-to-Strengthen-Safeg"
+    },
+    {
+      "headline": "Nearly 50 Ohio overdoses in three months tied to cychlorphine, recovery groups warn",
+      "outlet": "Spectrum News 1 Ohio",
+      "date": "Oct 15",
+      "summary": "Ohio recovery programs say a synthetic opioid also called N-propionitrile chlorphine has been linked to nearly 50 overdoses statewide over about three months and may be up to 100 times more potent than fentanyl. Advocates note it can appear in pressed pills or powder, is not detected by fentanyl test strips, and may need more than one naloxone dose. NIH materials cited in the report say the substance has turned up in oxycodone, methamphetamine, and cocaine samples.",
+      "url": "https://spectrumnews1.com/oh/columbus/news/2026/10/14/cychlorphine-in-ohio"
+    },
+    {
+      "headline": "Chatham-Kent warns of a spike: 13 suspected opioid poisonings in five days",
+      "outlet": "Chatham Daily News",
+      "date": "Oct 15",
+      "summary": "Chatham-Kent Public Health reported EMS answered 13 suspected opioid poisoning calls from October 9 to 13, about three a day and above the community's usual rate. The alert follows two recent Windsor-Essex drug-poisoning warnings and notes neighbors often see follow-on spikes. Partners cited heavier naloxone use, strong sedation, and a highly toxic supply, and urged never using alone, test doses, and carrying naloxone.",
+      "url": "https://www.chathamdailynews.ca/news/chatham-kent-public-health-officials-warn-of-increased-drug-poisonings/"
+    }
+  ]
+}
