@@ -23,7 +23,9 @@ function httpsUrl(value) {
 }
 
 function yearText(year) {
-  if (typeof year === 'number' && Number.isFinite(year)) return String(year);
+  if (typeof year === 'number' && Number.isInteger(year) && year >= 1000 && year <= 9999) {
+    return String(year);
+  }
   if (typeof year === 'string' && /^\d{4}$/.test(year)) return year;
   return '';
 }
@@ -85,7 +87,7 @@ function parseFile(path, mod) {
     const doi = trimmed(entry?.doi);
     const href = httpsUrl(entry?.url);
     const year = yearText(entry?.year);
-    if (!author || !entryTitle || !doi || !href || !year) {
+    if (!author || !entryTitle || !doi || !href || !year || /\s/.test(doi) || doi.startsWith('http')) {
       return skip('a furtherReading entry lacks trimmed author, title, doi, or an https URL, or year is not a number or a 4-digit string');
     }
     furtherReading.push({

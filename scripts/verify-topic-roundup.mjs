@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { readFileSync } from 'node:fs';
 import { AuthContext } from '../src/lib/authState.js';
 import { topicPage } from '../src/lib/topicRoundup.js';
-import { TopicRoundupPage } from '../src/pages/TopicRoundup.jsx';
+import { TopicRoundupPage } from '../src/pages/TopicRoundupPage.jsx';
 
 const seedPath = '/content/topic-roundup/2026-10-16.json';
 const seed = JSON.parse(readFileSync(new URL(`..${seedPath}`, import.meta.url), 'utf8'));
@@ -168,6 +168,12 @@ describe('topic routes stay out of the daily catalog', () => {
     assert.ok(topic < slug);
     assert.ok(dated < slug);
     assert.match(news, /to="\/news\/topic"/);
+    assert.match(
+      source('src/lib/topicRoundupCatalog.js'),
+      /import\.meta\.glob\('\/content\/topic-roundup\/\*\.json', \{ eager: true \}\)/,
+    );
+    assert.equal(source('src/pages/TopicRoundupPage.jsx').includes('import.meta.glob'), false);
+    assert.equal(source('src/lib/topicRoundup.js').includes('import.meta.glob'), false);
 
     for (const path of [
       'src/lib/dailyNews.js',

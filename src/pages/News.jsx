@@ -60,13 +60,14 @@ export default function News() {
           <div className="max-w-md mx-auto mt-8">
             <SearchBox />
           </div>
-          <Link to="/keywords" className="inline-block mt-6 text-primary-text font-semibold hover:underline">
-            Browse by keyword →
-          </Link>
-          {' '}
-          <Link to="/news/topic" className="inline-block mt-6 text-primary-text font-semibold hover:underline">
-            Friday topic roundup
-          </Link>
+          <p className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <Link to="/keywords" className="text-primary-text font-semibold hover:underline">
+              Browse by keyword →
+            </Link>
+            <Link to="/news/topic" className="text-primary-text font-semibold hover:underline">
+              Friday topic roundup →
+            </Link>
+          </p>
         </header>
 
         <div className="max-w-3xl mx-auto mb-14">
