@@ -63,6 +63,10 @@ export default function News() {
           <Link to="/keywords" className="inline-block mt-6 text-primary-text font-semibold hover:underline">
             Browse by keyword →
           </Link>
+          {' '}
+          <Link to="/news/topic" className="inline-block mt-6 text-primary-text font-semibold hover:underline">
+            Friday topic roundup
+          </Link>
         </header>
 
         <div className="max-w-3xl mx-auto mb-14">
