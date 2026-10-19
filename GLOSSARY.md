@@ -32,7 +32,7 @@ Words as Josh and the site use them. No implementation details here (see `CLAUDE
 
 **Daily Roundup**: The weekday news digest at `/news/daily`.
 
-**Topic Roundup**: The Friday page at `/news/topic`. Distinct from the Daily Roundup.
+**Weekly Topic Roundup**: The page at `/news/topic`. Distinct from the Daily Roundup.
 
 **Join**: Starting a new paid membership (`/join`).
 

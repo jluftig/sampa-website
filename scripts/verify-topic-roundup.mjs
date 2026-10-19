@@ -8,7 +8,7 @@ import { AuthContext } from '../src/lib/authState.js';
 import { topicPage } from '../src/lib/topicRoundup.js';
 import { TopicRoundupPage } from '../src/pages/TopicRoundupPage.jsx';
 
-const seedPath = '/content/topic-roundup/2026-10-16.json';
+const seedPath = '/content/topic-roundup/2026-10-19.json';
 const seed = JSON.parse(readFileSync(new URL(`..${seedPath}`, import.meta.url), 'utf8'));
 
 const tremontiLead = 'Tremonti et al. Patient Experience of Withdrawal During Methadone\u2013Buprenorphine Transfer: A Prospective Cohort Study (2026). ';
@@ -37,7 +37,7 @@ function source(path) {
 }
 
 describe('topic roundup seed', () => {
-  it('keeps the 2026-10-16 draft as the issue', () => {
+  it('keeps the 2026-10-19 draft as the issue', () => {
     const warnings = [];
     const modules = { [seedPath]: seed };
     const page = topicPage(undefined, modules, (message) => warnings.push(message));
@@ -45,11 +45,11 @@ describe('topic roundup seed', () => {
 
     assert.deepEqual(warnings, []);
     assert.equal(page.status, 'issue');
-    assert.equal(page.issue.date, '2026-10-16');
-    assert.equal(page.issue.weekday, 'Friday, October 16, 2026');
+    assert.equal(page.issue.date, '2026-10-19');
+    assert.equal(page.issue.weekday, 'Monday, October 19, 2026');
     assert.equal(page.issue.banner, 'Draft - pending clinical review');
     assert.equal(page.issue.isLatest, true);
-    assert.equal(page.issue.path, '/news/topic/2026-10-16');
+    assert.equal(page.issue.path, '/news/topic/2026-10-19');
     assert.equal(page.issue.items.length, 5);
     assert.equal(page.issue.furtherReading.length, 14);
     assert.deepEqual(page.issue.items, seed.items.map((item) => ({
@@ -142,15 +142,16 @@ describe('skipped and missing issues', () => {
     assert.deepEqual(topicPage(undefined, {}, (message) => warnings.push(message)), { status: 'empty' });
     assert.deepEqual(warnings, []);
     const markup = renderTopic(undefined, {});
-    assert.match(markup, /The first Friday topic roundup is on the way\./);
+    assert.match(markup, /<h1[^>]*>\s*Weekly Topic Roundup\s*<\/h1>/);
+    assert.match(markup, /The first Weekly Topic Roundup is on the way\./);
     assert.equal(markup.includes('Draft - pending clinical review'), false);
   });
 
   it('hides the banner when draft is false and keeps one period after et al', () => {
     const modules = { [seedPath]: { ...seed, draft: false } };
-    const page = topicPage('2026-10-16', modules, () => {});
+    const page = topicPage('2026-10-19', modules, () => {});
     assert.equal(page.issue.banner, null);
-    const markup = renderTopic('2026-10-16', modules);
+    const markup = renderTopic('2026-10-19', modules);
     assert.equal(markup.includes('Draft - pending clinical review'), false);
     assert.match(markup, /Tremonti et al\. Patient Experience of Withdrawal During Methadone\u2013Buprenorphine Transfer/);
     assert.equal(markup.includes('et al..'), false);
@@ -168,6 +169,9 @@ describe('topic routes stay out of the daily catalog', () => {
     assert.ok(topic < slug);
     assert.ok(dated < slug);
     assert.match(news, /to="\/news\/topic"/);
+    assert.match(news, /Weekly Topic Roundup →/);
+    assert.match(news, /to="\/subscriptions"/);
+    assert.match(news, />\s*Manage subscriptions\s*</);
     assert.match(
       source('src/lib/topicRoundupCatalog.js'),
       /import\.meta\.glob\('\/content\/topic-roundup\/\*\.json', \{ eager: true \}\)/,
