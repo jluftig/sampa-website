@@ -58,8 +58,7 @@ optional `SUPABASE_URL`, `STRIPE_PRICE_<TIER>_<1Y|2Y|3Y|LIFETIME>`, `PUSH_WEBHOO
 `POLICY_WORK_INTERNAL` (JSON object keyed by policy-work item id; missing or invalid yields no internal fields),
 `VERCEL_WEB_ANALYTICS_TOKEN` (site-traffic dashboard; optional
 `VERCEL_WEB_ANALYTICS_PROJECT_ID` / `VERCEL_WEB_ANALYTICS_TEAM_ID` override
-system `VERCEL_PROJECT_ID` / `VERCEL_ORG_ID`),
-`BREVO_API_KEY` (newsletter signup and `/subscriptions`), `BREVO_LIST_TOPIC`, `BREVO_DOI_TEMPLATE_TOPIC`
+system `VERCEL_PROJECT_ID` / `VERCEL_ORG_ID`)
 
 ## Short map
 
