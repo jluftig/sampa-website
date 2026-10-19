@@ -1,5 +1,6 @@
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { json } from './_lib/clients.js';
-import { requestSiteOrigin } from './_lib/siteUrl.js';
+import { PRODUCTION_ORIGIN, requestSiteOrigin } from './_lib/siteUrl.js';
 import { subscriptionLists } from './_lib/subscriptionLists.js';
 
 // POST { email, list? } → Brevo double opt-in for one list.
@@ -10,7 +11,9 @@ import { subscriptionLists } from './_lib/subscriptionLists.js';
 //
 // Vercel env (server): BREVO_API_KEY, BREVO_LIST_UPDATES, BREVO_DOI_TEMPLATE_ID
 // Daily form: BREVO_LIST_DAILY_NEWS, optional BREVO_DOI_TEMPLATE_ID_DAILY
-// Manage: BREVO_LIST_TOPIC, optional BREVO_DOI_TEMPLATE_TOPIC
+// Manage: BREVO_LIST_TOPIC, optional BREVO_DOI_TEMPLATE_TOPIC. Removals need a
+// confirmed email link; token key is SUBSCRIPTION_TOKEN_SECRET (falls back to a
+// key derived from BREVO_API_KEY). Optional BREVO_SENDER_NAME / BREVO_SENDER_EMAIL.
 // Optional: BREVO_DOI_REDIRECT_URL (defaults to /newsletter-confirmed on this origin)
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,6 +26,12 @@ const MANAGE_LISTS = 'Choose the lists to update.';
 const MANAGE_RATE = 'Please try again in a moment.';
 const MANAGE_UNAVAILABLE = 'Subscription updates are temporarily unavailable. Please try again later.';
 const MANAGE_FAILED = 'We could not update subscriptions right now. Please try again in a moment.';
+const MANAGE_PARTIAL = 'Some choices could not be saved. Please try again in a moment.';
+const CONFIRM_INVALID = 'That confirmation link is invalid or has expired. Please start again from Manage subscriptions.';
+const TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
+const EMAIL_WINDOW_MS = 60 * 60 * 1000;
+const EMAIL_MAX = 3;
+const emailHits = new Map();
 const MANAGE_WINDOW_MS = 10 * 60 * 1000;
 const MANAGE_MAX = 8;
 const manageHits = new Map();
@@ -128,12 +137,177 @@ async function removeAccepted(res) {
   if (res.status !== 400) return false;
   const { text, data } = await readBody(res);
   const blob = `${text}\n${JSON.stringify(data || {})}`;
-  return /not found|does not exist|invalid/i.test(blob);
+  // Only "the address is not on that list / not a contact" counts as removed.
+  // A generic 400 (for example invalid_parameter for a bad payload) is a failure.
+  return /already removed|does not exist|not found|not (?:in|part of|on) (?:the |this )?list/i.test(blob);
 }
 
 function confirmedUrl(origin, entry) {
   const base = `${origin}/newsletter-confirmed`;
   return entry.redirectQuery ? `${base}?${entry.redirectQuery}` : base;
+}
+
+// ---- Removal confirmation (ownership check) ---------------------------
+// A removal never happens on the first request. The address gets an email
+// with a signed, expiring link; only the click on that link removes lists.
+// The token is stateless (HMAC), so no new storage or api/ function is needed.
+
+function b64url(buf) {
+  return Buffer.from(buf).toString('base64url');
+}
+
+function tokenSecret() {
+  const explicit = process.env.SUBSCRIPTION_TOKEN_SECRET;
+  if (explicit) return explicit;
+  const apiKey = process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
+  if (!apiKey) return null;
+  // Derived key: the Brevo key itself is never exposed by the token.
+  return createHmac('sha256', apiKey).update('sampa-subscription-removal-v1').digest('hex');
+}
+
+function signRemoval(email, keys, now = Date.now()) {
+  const secret = tokenSecret();
+  if (!secret) return null;
+  const payload = b64url(JSON.stringify({ e: email, l: keys, x: now + TOKEN_TTL_MS }));
+  const sig = createHmac('sha256', secret).update(payload).digest('base64url');
+  return `${payload}.${sig}`;
+}
+
+function verifyRemoval(token, now = Date.now()) {
+  const secret = tokenSecret();
+  if (!secret || typeof token !== 'string' || token.length > 2000) return null;
+  const [payload, sig, extra] = token.split('.');
+  if (!payload || !sig || extra !== undefined) return null;
+  const expected = createHmac('sha256', secret).update(payload).digest('base64url');
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+  let data;
+  try {
+    data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+  } catch {
+    return null;
+  }
+  if (!data || typeof data.e !== 'string' || !Array.isArray(data.l) || !(data.x > now)) return null;
+  const keys = data.l.filter((key) => subscriptionLists.some((entry) => entry.key === key));
+  const email = normalizeEmail(data.e);
+  if (!email || !keys.length) return null;
+  return { email, keys };
+}
+
+function emailThrottled(email, now = Date.now()) {
+  const fresh = (emailHits.get(email) || []).filter((stamp) => now - stamp < EMAIL_WINDOW_MS);
+  if (fresh.length >= EMAIL_MAX) {
+    emailHits.set(email, fresh);
+    return true;
+  }
+  fresh.push(now);
+  emailHits.set(email, fresh);
+  return false;
+}
+
+async function onAnyList(apiKey, email, listIds) {
+  // Private lookup: used only to avoid emailing people who are not on a list.
+  // The response to the caller is identical either way.
+  try {
+    const res = await fetch(`${BREVO_BASE}/contacts/${encodeURIComponent(email)}`, {
+      headers: { accept: 'application/json', 'api-key': apiKey },
+    });
+    if (res.status === 404) return false;
+    if (!res.ok) return true; // unknown: err toward sending the (harmless) confirmation
+    const { data } = await readBody(res);
+    const ids = Array.isArray(data?.listIds) ? data.listIds.map(Number) : [];
+    return listIds.some((id) => ids.includes(id));
+  } catch {
+    return true;
+  }
+}
+
+// The emailed link carries a removal token, so it must never point at a host
+// taken blindly from request headers. Only production, Vercel previews, and
+// localhost are trusted; anything else falls back to production.
+function removalOrigin(origin) {
+  try {
+    const url = new URL(origin);
+    const host = url.hostname;
+    if (url.origin === PRODUCTION_ORIGIN) return PRODUCTION_ORIGIN;
+    if (url.protocol === 'https:' && host.endsWith('.vercel.app')) return url.origin;
+    if (host === 'localhost' || host === '127.0.0.1') return url.origin;
+  } catch {
+    // fall through
+  }
+  return PRODUCTION_ORIGIN;
+}
+
+async function sendRemovalEmail(apiKey, email, entries, origin) {
+  const token = signRemoval(email, entries.map((entry) => entry.key));
+  if (!token) return false;
+  const link = `${removalOrigin(origin)}/subscriptions?confirm=${encodeURIComponent(token)}`;
+  const names = entries.map((entry) => entry.label);
+  const items = names.map((name) => `<li>${name}</li>`).join('');
+  const res = await postBrevo(apiKey, `${BREVO_BASE}/smtp/email`, {
+    sender: {
+      name: process.env.BREVO_SENDER_NAME || 'SAMPA',
+      email: process.env.BREVO_SENDER_EMAIL || 'info@addictionpas.org',
+    },
+    to: [{ email }],
+    subject: 'Confirm your SAMPA email changes',
+    htmlContent:
+      `<p>Someone asked to stop these SAMPA emails for this address:</p><ul>${items}</ul>` +
+      `<p><a href="${link}">Confirm and stop these emails</a></p>` +
+      '<p>This link expires in 24 hours. If you did not ask for this, ignore this email and nothing changes.</p>',
+    textContent:
+      `Someone asked to stop these SAMPA emails for this address: ${names.join(', ')}.\n\n` +
+      `Confirm: ${link}\n\nThis link expires in 24 hours. If you did not ask for this, ignore this email and nothing changes.`,
+  });
+  return res.ok;
+}
+
+function outcome(results) {
+  const failed = results.filter((r) => r.status === 'failed').map((r) => r.key);
+  const notOpen = results.filter((r) => r.status === 'not_open').map((r) => r.key);
+  const handled = results.filter((r) => r.status === 'ok').map((r) => r.key);
+  return { failed, notOpen, handled };
+}
+
+async function confirmRemoval(request, body) {
+  if (manageRateLimited(`confirm:${clientIp(request)}`)) {
+    return json({ error: MANAGE_RATE }, 429);
+  }
+  const verified = verifyRemoval(body.confirm);
+  if (!verified) return json({ error: CONFIRM_INVALID }, 400);
+  const apiKey = process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
+  if (!apiKey) {
+    console.error('newsletter-signup: missing BREVO_API_KEY');
+    return json({ error: MANAGE_UNAVAILABLE }, 503);
+  }
+  const results = [];
+  for (const entry of subscriptionLists.filter((item) => verified.keys.includes(item.key))) {
+    const listId = positiveId(process.env[entry.listEnv]);
+    if (!listId) {
+      console.error(`newsletter-signup: missing ${entry.listEnv}`);
+      results.push({ key: entry.key, status: 'failed' });
+      continue;
+    }
+    try {
+      const res = await postBrevo(apiKey, `${BREVO_BASE}/contacts/lists/${listId}/contacts/remove`, {
+        emails: [verified.email],
+      });
+      if (await removeAccepted(res)) results.push({ key: entry.key, status: 'ok' });
+      else {
+        console.error('newsletter-signup: confirm remove failed', entry.key, res.status);
+        results.push({ key: entry.key, status: 'failed' });
+      }
+    } catch (err) {
+      console.error('newsletter-signup: confirm remove failed', entry.key, err?.message || err);
+      results.push({ key: entry.key, status: 'failed' });
+    }
+  }
+  const { failed, handled } = outcome(results);
+  if (failed.length) {
+    return json({ ok: false, error: MANAGE_PARTIAL, removed: handled, failed }, 502);
+  }
+  return json({ ok: true, removed: handled });
 }
 
 async function manageSubscriptions(request, body) {
@@ -176,48 +350,66 @@ async function manageSubscriptions(request, body) {
     return json({ error: MANAGE_UNAVAILABLE }, 503);
   }
 
-  for (const entry of resolved) {
-    if (choices[entry.key] && entry.templateOptional && !entry.templateId) {
-      console.warn(
-        `TODO: set ${entry.templateEnv}. The Weekly Topic Roundup double opt-in email cannot be sent until that template id is set in Vercel.`,
-      );
-    }
-  }
-
   const origin = requestSiteOrigin(request);
-  try {
-    for (const entry of resolved) {
-      if (choices[entry.key]) {
-        if (!entry.templateId) continue;
-        const res = await postBrevo(apiKey, `${BREVO_BASE}/contacts/doubleOptinConfirmation`, {
-          email,
-          includeListIds: [entry.listId],
-          templateId: entry.templateId,
-          redirectionUrl: confirmedUrl(origin, entry),
-          attributes: { SOURCE: entry.source },
-        });
-        if (!(await doiAccepted(res))) {
-          console.error('newsletter-signup: manage DOI failed', res.status);
-          return json({ error: MANAGE_FAILED }, 502);
-        }
-      } else {
-        const res = await postBrevo(
-          apiKey,
-          `${BREVO_BASE}/contacts/lists/${entry.listId}/contacts/remove`,
-          { emails: [email] },
-        );
-        if (!(await removeAccepted(res))) {
-          console.error('newsletter-signup: manage remove failed', res.status);
-          return json({ error: MANAGE_FAILED }, 502);
-        }
-      }
+  const results = [];
+
+  // 1) Checked lists: Brevo double opt-in. Each list is attempted on its own.
+  for (const entry of resolved.filter((item) => choices[item.key])) {
+    if (!entry.templateId) {
+      console.warn(
+        `TODO: set ${entry.templateEnv}. The ${entry.label} double opt-in email cannot be sent until that template id is set in Vercel.`,
+      );
+      results.push({ key: entry.key, status: 'not_open' });
+      continue;
     }
-  } catch (err) {
-    console.error('newsletter-signup: manage failed', err?.message || err);
-    return json({ error: MANAGE_FAILED }, 502);
+    try {
+      const res = await postBrevo(apiKey, `${BREVO_BASE}/contacts/doubleOptinConfirmation`, {
+        email,
+        includeListIds: [entry.listId],
+        templateId: entry.templateId,
+        redirectionUrl: confirmedUrl(origin, entry),
+        attributes: { SOURCE: entry.source },
+      });
+      if (await doiAccepted(res)) results.push({ key: entry.key, status: 'ok' });
+      else {
+        console.error('newsletter-signup: manage DOI failed', entry.key, res.status);
+        results.push({ key: entry.key, status: 'failed' });
+      }
+    } catch (err) {
+      console.error('newsletter-signup: manage DOI failed', entry.key, err?.message || err);
+      results.push({ key: entry.key, status: 'failed' });
+    }
   }
 
-  return json({ ok: true });
+  // 2) Unchecked lists: never removed here. One confirmation email to the
+  // address; removal happens only when its link is confirmed.
+  const unchecked = resolved.filter((item) => !choices[item.key]);
+  if (unchecked.length) {
+    try {
+      if (emailThrottled(email)) {
+        // Same answer as a sent email. Nothing is revealed.
+        unchecked.forEach((entry) => results.push({ key: entry.key, status: 'ok' }));
+      } else if (!tokenSecret()) {
+        unchecked.forEach((entry) => results.push({ key: entry.key, status: 'failed' }));
+      } else if (!(await onAnyList(apiKey, email, unchecked.map((entry) => entry.listId)))) {
+        unchecked.forEach((entry) => results.push({ key: entry.key, status: 'ok' }));
+      } else {
+        const sent = await sendRemovalEmail(apiKey, email, unchecked, origin);
+        if (!sent) console.error('newsletter-signup: removal confirmation email failed');
+        unchecked.forEach((entry) => results.push({ key: entry.key, status: sent ? 'ok' : 'failed' }));
+      }
+    } catch (err) {
+      console.error('newsletter-signup: removal confirmation failed', err?.message || err);
+      unchecked.forEach((entry) => results.push({ key: entry.key, status: 'failed' }));
+    }
+  }
+
+  const { failed, notOpen } = outcome(results);
+  const sentDoi = results.some((r) => r.status === 'ok' && choices[r.key]);
+  if (failed.length) {
+    return json({ ok: false, error: MANAGE_PARTIAL, failed, notOpen, sentDoi }, 502);
+  }
+  return json({ ok: true, notOpen, sentDoi });
 }
 
 async function signup(request, body) {
@@ -284,6 +476,7 @@ async function signup(request, body) {
 export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}));
+    if (typeof body.confirm === 'string') return await confirmRemoval(request, body);
     if (isPlainObject(body.lists)) return await manageSubscriptions(request, body);
     return await signup(request, body);
   } catch (err) {

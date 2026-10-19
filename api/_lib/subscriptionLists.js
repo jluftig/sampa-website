@@ -4,6 +4,7 @@
 export const subscriptionLists = [
   {
     key: 'daily',
+    label: 'Daily News Roundup',
     listEnv: 'BREVO_LIST_DAILY_NEWS',
     templateEnv: 'BREVO_DOI_TEMPLATE_ID_DAILY',
     templateOptional: false,
@@ -12,6 +13,7 @@ export const subscriptionLists = [
   },
   {
     key: 'weekly',
+    label: 'Weekly Newsletter',
     listEnv: 'BREVO_LIST_UPDATES',
     templateEnv: 'BREVO_DOI_TEMPLATE_ID',
     templateOptional: false,
@@ -20,6 +22,7 @@ export const subscriptionLists = [
   },
   {
     key: 'topic',
+    label: 'Weekly Topic Roundup',
     listEnv: 'BREVO_LIST_TOPIC',
     templateEnv: 'BREVO_DOI_TEMPLATE_TOPIC',
     templateOptional: true,

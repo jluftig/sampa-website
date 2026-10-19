@@ -1,4 +1,5 @@
 import React, { useId, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { apiPost } from '../lib/api';
@@ -9,21 +10,91 @@ const CHOICES = [
   { key: 'topic', label: 'Weekly Topic Roundup' },
 ];
 
+const LABELS = Object.fromEntries(CHOICES.map((choice) => [choice.key, choice.label]));
+
+function names(keys) {
+  return (keys || []).map((key) => LABELS[key]).filter(Boolean).join(', ');
+}
+
+// The token payload is signed server-side; reading the list names here is
+// display only. The server verifies the signature before removing anything.
+function tokenLists(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')));
+    return (payload.l || []).filter((key) => LABELS[key]);
+  } catch {
+    return [];
+  }
+}
+
+function ConfirmRemoval({ token }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+  const [removed, setRemoved] = useState(null);
+  const lists = tokenLists(token);
+
+  const onConfirm = async () => {
+    setError(null);
+    setBusy(true);
+    try {
+      const data = await apiPost('/api/newsletter-signup', { confirm: token });
+      setRemoved(data.removed || []);
+    } catch (err) {
+      const failed = err.data?.failed;
+      setError(
+        failed?.length
+          ? `We could not remove: ${names(failed)}. ${names(err.data.removed) ? `Removed: ${names(err.data.removed)}. ` : ''}Please select Confirm again to retry.`
+          : err.message || 'Subscription update failed. Please try again.',
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (removed) {
+    return (
+      <p className="text-text leading-relaxed" role="status">
+        Done. This address will no longer receive: {names(removed) || 'the lists you chose'}.
+      </p>
+    );
+  }
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-text/70 leading-relaxed">
+        Confirm that you want to stop receiving {lists.length ? names(lists) : 'the SAMPA emails you chose'}. Nothing changes until you confirm.
+      </p>
+      {error ? (
+        <p className="text-sm text-red-600" role="alert">{error}</p>
+      ) : null}
+      <button
+        type="button"
+        onClick={onConfirm}
+        disabled={busy}
+        className="self-start rounded-full bg-accent text-white px-7 py-3 text-base font-bold hover:opacity-90 transition-opacity disabled:opacity-60"
+      >
+        {busy ? 'Saving…' : 'Confirm and stop these emails'}
+      </button>
+    </div>
+  );
+}
+
 export default function Subscriptions() {
+  const [params] = useSearchParams();
+  const confirmToken = params.get('confirm');
   const baseId = useId();
   const [email, setEmail] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [selected, setSelected] = useState({ daily: false, weekly: false, topic: false });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(null);
 
   const onSubmit = async (event) => {
     event.preventDefault();
     setError(null);
     setBusy(true);
     try {
-      await apiPost('/api/newsletter-signup', {
+      const data = await apiPost('/api/newsletter-signup', {
         email,
         company: honeypot,
         lists: {
@@ -32,9 +103,18 @@ export default function Subscriptions() {
           topic: selected.topic,
         },
       });
-      setDone(true);
+      setDone({
+        sentDoi: Boolean(data.sentDoi),
+        notOpen: data.notOpen || [],
+        asked: Object.keys(selected).filter((key) => !selected[key]).length > 0,
+      });
     } catch (err) {
-      setError(err.message || 'Subscription update failed. Please try again.');
+      const failed = err.data?.failed;
+      setError(
+        failed?.length
+          ? `We could not save: ${names(failed)}. Your other choices were received, so only retry the ones listed.`
+          : err.message || 'Subscription update failed. Please try again.',
+      );
     } finally {
       setBusy(false);
     }
@@ -53,13 +133,25 @@ export default function Subscriptions() {
           People can choose the SAMPA emails they want. No membership required.
         </p>
         <p className="text-text/70 mb-8 leading-relaxed">
-          Checked lists are subscribed, and unchecked lists are removed. New lists send a confirmation email before messages start. We do not show what is already on file.
+          Checked lists send a confirmation email before messages start. For unchecked lists, we email the address a link to confirm before anything is removed, so nobody can change an address that is not theirs. We do not show what is already on file.
         </p>
 
-        {done ? (
-          <p className="text-text leading-relaxed" role="status">
-            Your choices were received. If you asked to join a list, check your inbox for a confirmation link before messages start.
-          </p>
+        {confirmToken ? (
+          <ConfirmRemoval token={confirmToken} />
+        ) : done ? (
+          <div className="text-text leading-relaxed flex flex-col gap-3" role="status">
+            {done.sentDoi ? (
+              <p>Your choices were received. Check your inbox for a confirmation link for the lists you chose before messages start.</p>
+            ) : (
+              <p>Your choices were received.</p>
+            )}
+            {done.notOpen.length ? (
+              <p>{names(done.notOpen)} signup is not open yet, so we did not sign you up for it. Please check back later.</p>
+            ) : null}
+            {done.asked ? (
+              <p>If this address is on any list you left unchecked, we sent an email with a link to confirm removing it. Nothing is removed until that link is used.</p>
+            ) : null}
+          </div>
         ) : (
           <form onSubmit={onSubmit} className="relative flex flex-col gap-5">
             <div className="flex flex-col gap-2">
