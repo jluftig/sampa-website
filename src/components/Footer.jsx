@@ -7,7 +7,7 @@ import MemberLoginLink from './MemberLoginLink';
 
 export default function Footer() {
   const { pathname } = useLocation();
-  const showSignup = pathname !== '/newsletter-confirmed' && pathname !== '/subscriptions';
+  const showSignup = pathname !== '/newsletter-confirmed';
 
   return (
     <>
@@ -67,7 +67,6 @@ export default function Footer() {
           <div className="flex flex-wrap justify-center md:justify-end items-center gap-x-8 gap-y-3 text-sm font-medium text-white/60">
             <Link to="/about" className="hover:text-white transition-colors">About</Link>
             <Link to="/news" className="hover:text-white transition-colors">News</Link>
-            <Link to="/subscriptions" className="hover:text-white transition-colors">Manage subscriptions</Link>
             <Link to="/policy" className="hover:text-white transition-colors">Policy</Link>
             <Link to="/resources" className="hover:text-white transition-colors">Resources</Link>
             <Link to="/caq" className="hover:text-white transition-colors">CAQ</Link>
