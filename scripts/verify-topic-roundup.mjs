@@ -170,8 +170,10 @@ describe('topic routes stay out of the daily catalog', () => {
     assert.ok(dated < slug);
     assert.match(news, /to="\/news\/topic"/);
     assert.match(news, /Weekly Topic Roundup →/);
-    assert.match(news, /to="\/subscriptions"/);
-    assert.match(news, />\s*Manage subscriptions\s*</);
+    assert.equal(news.includes('/subscriptions'), false);
+    const page = source('src/pages/TopicRoundupPage.jsx');
+    assert.match(page, /path = `\/news\/topic\/\$\{issue\.date\}`;/);
+    assert.equal(/dated \?[^\n]*\/news\/topic/.test(page), false);
     assert.match(
       source('src/lib/topicRoundupCatalog.js'),
       /import\.meta\.glob\('\/content\/topic-roundup\/\*\.json', \{ eager: true \}\)/,

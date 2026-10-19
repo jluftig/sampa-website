@@ -25,7 +25,7 @@ export function TopicRoundupPage({ date, modules }) {
     path = '/news/topic';
   } else if (issue) {
     title = issue.title;
-    path = dated ? `/news/topic/${issue.date}` : '/news/topic';
+    path = `/news/topic/${issue.date}`;
     robots = issue.banner ? 'noindex' : null;
   }
 

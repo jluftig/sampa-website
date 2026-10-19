@@ -31,7 +31,7 @@
       "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2026/210136s012lbl.pdf"
     },
     {
-      "headline": "Scottish prison service evaluation: 93.8% of 134 adults retained on long-acting injectable buprenorphine, including people tapered from methadone above 30 mg",
+      "headline": "Scottish prison service evaluation of 134 adults reports 93.8% retention on long-acting injectable buprenorphine, including people tapered from methadone above 30 mg",
       "outlet": "Substance Abuse and Rehabilitation",
       "date": "2025-04-15",
       "summary": "An NHS Forth Valley service evaluation of 134 adults in custody found 93.8% were retained on monthly long-acting injectable buprenorphine for 12 months or until release or transfer. People who tapered from methadone above 30 mg per day to 30 mg or less before switching had median global TSQM satisfaction scores above 80 at all timepoints, though lower than those starting from 30 mg or less. The study was observational, relied on self-reported drug use, and was run jointly with the manufacturer, so it supports feasibility of a taper-then-switch approach in custody rather than comparative effectiveness.",
@@ -139,17 +139,17 @@
     }
   ],
   "consideredSkipped": [
-    "Several recent studies were left in Further reading rather than featured because they are not about moving people from methadone to long-acting injectable BUP: a 2026 prospective study of 117 people moving from methadone to BUP with oral low-dose or stop-and-start approaches (Tremonti et al.); a 2026 harm reduction series of 24 people starting BUP in the context of fentanyl use (O’Conor et al.); a 2025 randomized trial of rapid versus standard extended-release BUP induction, mostly in people using fentanyl, with its accompanying editorial (Shiwach et al.; Thakrar); and a 2026 Norwegian cohort of 424 people in opioid agonist treatment (Jobling et al.).",
-    "A 2025 scoping review (Siu et al.), a 2025 feasibility study (Naren et al.), a 2026 Canadian Family Physician article (Aboud and Albert), and a 2025 study of 177 people using oral micro-dosing (Nairn et al.) were judged adjacent to the topic and are listed under Further reading.",
+    "Several recent studies were left in Further reading rather than featured because they are not about moving people from methadone to long-acting injectable BUP: a 2026 prospective study of 117 people moving from methadone to BUP with low-dose or stop-and-start approaches (Tremonti et al.); a 2026 case series of 24 people starting direct-to-inject BUP at harm reduction and primary care sites (O’Conor et al.); a 2025 randomized trial of rapid versus standard extended-release BUP induction in people who inject opioids, use high doses, or use fentanyl, with its accompanying editorial (Shiwach et al.; Thakrar); and a 2026 Norwegian cohort of 424 people in opioid agonist treatment (Jobling et al.).",
+    "A 2025 scoping review (Siu et al.), a 2025 feasibility study (Naren et al.), a 2026 Canadian Family Physician article (Aboud and Albert), and a 2025 study of 177 people using micro-dosing (Nairn et al.) were judged adjacent to the topic and are listed under Further reading.",
     "Older papers from 2021 to 2024 (Lintzeris et al., Soyka and Groß, Seval et al., Praeger et al., and O’Conor et al. 2024) remain useful background and are listed under Further reading only.",
     "A conference poster from Lisbon Addictions 2024 reported a 20-person inpatient program moving people from high-dose methadone to injectable BUP (19 of 20 completed). It was not featured because it is a conference abstract that has not been peer reviewed, and the conference web page that hosted it is no longer available at a stable address.",
     "Clinical guidance pages from NICE, SIGN (2022), and the Regional Medicines Optimisation Committees were not used because they are undated or older than this roundup’s window."
   ],
   "notes": [
-    "The evidence base is thin. Most of what is featured is case reports and case series, and only item 1 is about moving people from methadone to injectable BUP and was published in 2026. These reports cannot show how often problems or successes occur.",
-    "Item 5 is deliberate background. It was published in April 2025, older than the other items, and it was designed and funded together with Camurus, the manufacturer of Buvidal (sold as Brixadi in the U.S.). Its 93.8% retention figure is the one reported in the abstract; the full text gives 93.9% when three people transferred between prisons are excluded.",
+    "The evidence base is thin. Most of what is featured is case reports and case series, and items 1, 2, and 3 are all 2026 reports on moving people from methadone to buprenorphine (one 15-patient case series and two single-patient case reports). These reports cannot show how often problems or successes occur.",
+    "Item 5 is deliberate background. It was published in April 2025, older than the 2026 items, and it was designed and funded together with Camurus, the manufacturer of Buvidal (sold as Brixadi in the U.S.). Its 93.8% retention figure is the one reported in the abstract; the full text gives 93.9% when three people transferred between prisons are excluded.",
     "Date notes: item 2 uses its April 1, 2026 online date. Item 4 uses the FDA approval date of December 22, 2025 for the label revised in December 2025; the label does not give a methadone-specific transition schedule. Item 3 uses its March 13, 2026 online-first date; the journal issue is dated July 2026.",
-    "Item 3 was summarized from the published abstract because the full text could not be accessed.",
+    "Item 2's details (four transdermal patches, a planned methadone cut of half on day 3, a 300 mg extended-release injection on day 5, methadone 140 mg) were checked against the open-access full text. Item 3 was summarized from the published abstract because the full text could not be accessed.",
     "In Further reading, one author is listed by last name, two authors as “Last and Last”, and three or more as the first author’s last name plus “et al.”"
   ],
   "draft": true
