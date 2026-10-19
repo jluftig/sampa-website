@@ -36,6 +36,7 @@ const Resources = lazy(() => import('./pages/Resources'));
 const Caq = lazy(() => import('./pages/Caq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const NewsletterConfirmed = lazy(() => import('./pages/NewsletterConfirmed'));
+const Subscriptions = lazy(() => import('./pages/Subscriptions'));
 const Terms = lazy(() => import('./pages/Terms'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
 const PostEditor = lazy(() => import('./pages/PostEditor'));
@@ -78,6 +79,7 @@ function App() {
           <Route path="/caq" element={<Caq />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/newsletter-confirmed" element={<NewsletterConfirmed />} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
           <Route path="/terms" element={<Terms />} />
           <Route
             path="/dashboard"
