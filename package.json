@@ -28,6 +28,7 @@
     "test:policy-work-bundle": "node scripts/verify-policy-work-bundle.mjs",
     "test:giveaway": "node scripts/verify-giveaway.mjs",
     "test:daily-news": "node --test scripts/verify-daily-news.mjs",
+    "test:subscriptions": "node --test scripts/verify-subscriptions.mjs && node --import ./scripts/register-jsx.mjs --test scripts/verify-subscriptions-page.mjs",
     "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",
     "test:news-feed": "node --test scripts/verify-news-feed.mjs",
     "sitemap:daily": "node scripts/write-daily-sitemap.mjs",

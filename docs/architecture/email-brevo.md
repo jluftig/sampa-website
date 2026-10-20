@@ -132,15 +132,29 @@ Supabase profiles (opt-in members)
 
 - **Public signup (T5):** footer form → `api/newsletter-signup.js` → Brevo DOI →
   **SAMPA Updates** only. Confirm page: `/newsletter-confirmed`.
-  Env: `BREVO_API_KEY`, `BREVO_LIST_UPDATES`, `BREVO_DOI_TEMPLATE_ID`.
-- **Daily roundup signup (T64):** form on `/news/daily` posts `list: "daily"`.
-  The handler maps that string to `BREVO_LIST_DAILY_NEWS` (the list does not exist yet).
-  Optional template `BREVO_DOI_TEMPLATE_ID_DAILY`, otherwise `BREVO_DOI_TEMPLATE_ID`.
+  Env: `BREVO_API_KEY`, `BREVO_LIST_UPDATES` (production list id 3), `BREVO_DOI_TEMPLATE_ID` (production template id 13).
+- **Daily roundup signup (T64):** form on `/news/daily` still posts `list: "daily"`.
+  The handler maps that string to `BREVO_LIST_DAILY_NEWS` (production list id 15).
+  Template `BREVO_DOI_TEMPLATE_ID_DAILY` (production id 35). If that template is unset, this form falls back to `BREVO_DOI_TEMPLATE_ID`.
   Confirm page: `/newsletter-confirmed?list=daily`. Attribute `SOURCE=daily_roundup_signup`.
   Unset list env returns 503 with "Daily email signup is coming soon." A missing `list`
   field still writes SAMPA Updates only. The client cannot send a numeric list id.
+- **Manage subscriptions:** `/subscriptions` posts `{ email, lists: { daily, weekly, topic } }`
+  to the same `POST /api/newsletter-signup` handler. Checked lists are double opt-in.
+  Unchecked lists are never removed on that request. If the address is on any unchecked
+  list (private Brevo lookup), the handler emails it a signed link that expires in 24 hours
+  (`/subscriptions?confirm=<token>`, HMAC with `SUBSCRIPTION_TOKEN_SECRET`, or a key derived
+  from `BREVO_API_KEY` when that is unset). The page then needs a button click, which posts
+  `{ confirm }` and removes only the signed lists. Responses are the same whether or not the
+  address is on a list. Removal emails are limited to 3 per address per hour (per instance).
+  Each list is tried on its own; a partial failure returns 502 with `failed` list keys.
+  List env vars and production ids: `BREVO_LIST_DAILY_NEWS` 15, `BREVO_LIST_UPDATES` 3, `BREVO_LIST_TOPIC` 18.
+  Manage templates: daily `BREVO_DOI_TEMPLATE_ID_DAILY` 35 with no fallback to `BREVO_DOI_TEMPLATE_ID`, weekly `BREVO_DOI_TEMPLATE_ID` 13.
+  `BREVO_DOI_TEMPLATE_TOPIC` unset means a server-log TODO, no topic DOI send, and the page says Weekly Topic Roundup signup is not open yet (`notOpen: ["topic"]`).
+  Confirm redirects: `/newsletter-confirmed?list=daily`, `/newsletter-confirmed`, and `/newsletter-confirmed?list=topic`.
+  `BREVO_API_KEY` must be set in Vercel server env and must never be a `VITE_` var.
 - Privacy: names **SAMPA Updates** + Brevo; link `/privacy`.
-- Later: member `newsletter_opt_in` sync; multi-topic prefs / preference center. 
+- Later: member `newsletter_opt_in` sync. Public list choices are `/subscriptions`. 
 
 ## Related
 

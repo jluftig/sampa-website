@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-18 (T70 — Friday topic roundup page. Preview only until Josh.)
+**Last updated:** 2026-10-19 (T71, /subscriptions page. Preview only until Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,6 +67,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
 | T70 | Friday topic roundup page at /news/topic | cursor | 2026-10-18 | **Claimed cursor.** Public `/news/topic` (latest) and `/news/topic/YYYY-MM-DD` from `content/topic-roundup/2026-10-16.json`. Draft banner while `draft` is true. Not in the daily list, daily email, RSS, sitemap, or homepage. Preview PR only. Do not merge until Website QA and Josh. |
+| T71 | Manage subscriptions page at /subscriptions | cursor | 2026-10-19 | **Claimed cursor.** Draft PR (preview only), split out of #146. `/subscriptions` posts list choices (daily, weekly, topic) to `api/newsletter-signup.js`. Checked lists start Brevo double opt-in; unchecked lists are removed only after the address confirms an emailed link. Footer and News header link to it. `BREVO_DOI_TEMPLATE_TOPIC` still unset. Do not merge until Website QA and Josh. |
 | T32 | Practice resources public /resources | cursor | 2026-09-27 | **Claimed cursor.** PR #75 is ready for review, not a draft. Merged current main on 2026-10-12. Bridge is the first external card (`https://bridgetotreatment.org/`). User-facing name is Bridge. CDC naloxone points at `https://www.cdc.gov/stop-overdose/caring/naloxone.html`. `/resources` in nav, footer, and About. Homepage Programs marks practice resources Live. SAMPA list includes the CMS CY 2027 PFS comment plus the HHS, HRSA, and ASAM comments now on `/policy`. No bup dosing tool. CME and job board stay Coming soon. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot. |
 | T69 | My SAMPA menu and Renew for lapsed members | cursor | 2026-10-11 | **Claimed cursor.** Draft PR **#138** (preview only). Part 1 of spec #135 / issue #136. Merged origin/main through a080a7c (#134 skills are on main). Signed-in header is a My SAMPA menu (My account, Directory, Board, Editor, Sign out). Directory and Board leave the top bar when signed in. Join hidden for active members and staff. past_due Renew → `/dashboard` (fix the card). canceled Renew stays `/join`. QA yellow fix on #138. Part 2 (board access without a paid membership) waits until #130 merges. Do not merge until Website QA and Josh. |
 | T68 | Board tabs, roster links, and signed-out Board | cursor | 2026-10-08 | **Claimed cursor.** Draft PR **#131** (preview only). Items 1, 3, and 5 from the CoS navigation audit. Josh approved 2026-10-08. Shared tabs on `/board` and `/board/dashboard`, a dashboard button, roster ↔ dashboard links, Board in the signed-out nav, and a login line when `next` is `/board` or `/members`. Do not merge until Website QA is green and Josh says yay. |
