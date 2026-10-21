@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-21",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Most ED patients kept leftover opioids for months, and few said they would return them",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 20",
+      "summary": "In a Canadian cohort of 2,047 adults discharged from 7 emergency departments with an opioid prescription for acute pain, 84% had unused opioids at 2 weeks and only 7% stored them in a locked area. At 3 months, 62% of those who had stopped taking opioids still had leftovers at home, only 33.5% of participants said they would return them to a pharmacy if asked, and 26% said they would keep them regardless of incentive. The findings support right-sizing opioid prescriptions at ED discharge and pairing them with safe storage and take-back counseling.",
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/10.1001/jamanetworkopen.2026.39607"
+    },
+    {
+      "headline": "AGA update urges abstinence and yearly alcohol screening for patients with MetALD",
+      "outlet": "GI & Hepatology News",
+      "date": "Oct 20",
+      "summary": "A new American Gastroenterological Association clinical practice update gives nine best practice advice statements for metabolic dysfunction- and alcohol-associated liver disease (MetALD), estimated at 10% to 15% of steatotic liver disease. It advises assessing alcohol use at diagnosis and at least yearly with tools such as AUDIT-C and phosphatidylethanol (PEth) testing, advising patients to stop drinking, and offering medication plus behavioral treatment for moderate or severe alcohol use disorder. It gives clinicians a framework for treating the liver disease and alcohol use disorder together.",
+      "url": "https://news.gastro.org/issues/2026/october-2026/aga-advises-abstinence-annual-alcohol-screening-in-metald/"
+    },
+    {
+      "headline": "Albuquerque approves $5.2 million in opioid settlement funds for treatment navigation and sobering care",
+      "outlet": "nm.news",
+      "date": "Oct 20",
+      "summary": "The Albuquerque City Council unanimously approved $5.2 million in opioid settlement spending at its October 19 meeting, including $2 million to launch a treatment navigation and assessment program in the city's Gateway shelter system. The resolution also gives $1.4 million to the Medical Sobering Center, $300,000 to recovery housing, and $1.5 million for a second year of the APS Crossroads student substance use prevention and intervention program. Councilors asked for a three-year sustainability plan for the Gateway system, which costs about $26 million a year, a funding question many settlement-backed programs face.",
+      "url": "https://nm.news/2026/10/20/albuquerque-approves-millions-in-opioid-settlement-funds-heres-where-the-money-is-going/"
+    },
+    {
+      "headline": "Nine overdoses at once at a New Brunswick shelter used up a small town's ambulances",
+      "outlet": "CBC News",
+      "date": "Oct 20",
+      "summary": "First responders faced nine drug overdoses at once at the Lighthouse Lodge shelter in St. Stephen, New Brunswick, over the weekend; six were taken to hospital, one in a police car after local ambulances were used up, the mayor said. Medavie Health Services New Brunswick logged 19 suspected overdose calls from September 19 to October 19, 16 of them in the final week, and the substances involved have not been confirmed. The cluster shows how a contaminated supply can overwhelm rural emergency capacity, making naloxone access and surge planning essential.",
+      "url": "https://www.cbc.ca/news/canada/new-brunswick/st-stephen-drug-overdoses-9.7388803"
+    },
+    {
+      "headline": "Bill to add Medicare coverage of residential addiction treatment for seniors faces long odds",
+      "outlet": "Behavioral Health Business",
+      "date": "Oct 20",
+      "summary": "The reintroduced Residential Recovery for Seniors Act would let Medicare Part A cover non-hospital residential addiction treatment for people 65 and older, but the outlet reports its chances of becoming law are slim despite bipartisan support. Adults 65 and older accounted for 8,195 drug overdose deaths in 2024, per CDC data, and fewer than one in five Medicare enrollees with opioid use disorder receive medication for it. Until coverage changes, residential options for older adults stay scarce, putting more weight on screening in primary care and senior living settings.",
+      "url": "https://bhbusiness.com/2026/10/20/seniors-left-waiting-as-treatment-bill-faces-uphill-climb/"
+    }
+  ]
+}
