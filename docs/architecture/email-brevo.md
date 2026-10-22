@@ -79,7 +79,7 @@ Unsubscribe
 
 | Concern | System |
 |---------|--------|
-| Who receives marketing mail | **Brevo** list membership. Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_WEEKLY_TOPIC`) |
+| Who receives marketing mail | **Brevo** list membership. Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_TOPIC`) |
 | Who has a site account / paid membership | **Supabase** (+ Stripe) |
 | Legacy interest without an account | **Brevo** (optional future `email_prospects` table only if staff need in-app roster) |
 
@@ -142,8 +142,11 @@ Supabase profiles (opt-in members)
 - Privacy: names the three member lists and Brevo. Per-list switches live at `/dashboard/emails`. The email footer remains the full exit. Link `/privacy`.
 - Member choices: `/dashboard/emails` reads Brevo `listIds` and adds or removes
   one list. `newsletter_opt_in` mirrors SAMPA Updates so a renewal does not
-  re-add someone who turned that list off. Weekly Topic Roundup uses
-  `BREVO_LIST_WEEKLY_TOPIC` (no numeric fallback). 
+  re-add someone who turned that list off. After a footer unsubscribe, turning
+  one list on clears the blacklist and keeps the other non-Updates lists.
+  SAMPA Updates stays off unless that switch is the one turned on, and
+  `newsletter_opt_in` follows that result. Weekly Topic Roundup uses
+  `BREVO_LIST_TOPIC` (no numeric fallback, same name as the subscriptions page). 
 
 ## Related
 

@@ -9,7 +9,7 @@ const ENV = {
   BREVO_API_KEY: 'test-key',
   BREVO_LIST_UPDATES: '3',
   BREVO_LIST_DAILY_NEWS: '15',
-  BREVO_LIST_WEEKLY_TOPIC: '42',
+  BREVO_LIST_TOPIC: '42',
 };
 
 function request(method, body) {
@@ -264,6 +264,37 @@ describe('email preferences API', () => {
     assert.equal(write.body.emailBlacklisted, false);
     assert.deepEqual(write.body.listIds, [15, 99, 42]);
     assert.deepEqual(deps.flags, [{ userId: 'user-1', on: false }]);
+  });
+
+  it('after a footer unsubscribe, turning Updates on keeps the other lists', async () => {
+    const order = [];
+    let reads = 0;
+    const { fetchImpl, calls } = stubFetch((call) => {
+      if (call.method === 'POST' && call.url.endsWith('/contacts')) order.push('brevo');
+      if (call.method === 'GET') {
+        reads += 1;
+        if (reads === 1) {
+          return jsonResponse(200, { listIds: [3, 15], emailBlacklisted: true });
+        }
+        return jsonResponse(200, { listIds: [15, 3], emailBlacklisted: false });
+      }
+      return jsonResponse(204, {});
+    });
+    const deps = { ...memberDeps(), fetchImpl };
+    const recordFlag = deps.updateNewsletterOptIn;
+    deps.updateNewsletterOptIn = async (userId, on) => {
+      order.push('flag');
+      return recordFlag(userId, on);
+    };
+    const res = await handleEmailPreferences(request('POST', { key: 'updates', on: true }), deps);
+    assert.equal(res.status, 200);
+    const removed = calls.filter((call) => call.url.includes('/contacts/remove'));
+    assert.equal(removed.length, 0);
+    const write = calls.find((call) => call.method === 'POST' && call.url.endsWith('/contacts'));
+    assert.equal(write.body.emailBlacklisted, false);
+    assert.deepEqual(write.body.listIds, [15, 3]);
+    assert.deepEqual(deps.flags, [{ userId: 'user-1', on: true }]);
+    assert.deepEqual(order, ['brevo', 'flag']);
   });
 
   it('refuses the topic list when its env var is unset and does not call Brevo', async () => {

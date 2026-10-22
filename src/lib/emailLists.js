@@ -18,7 +18,7 @@ export const EMAIL_LIST_DEFS = [
     key: 'weekly_topic',
     name: 'Weekly Topic Roundup',
     description: 'One topic a week, in its own email.',
-    env: 'BREVO_LIST_WEEKLY_TOPIC',
+    env: 'BREVO_LIST_TOPIC',
     fallback: null,
   },
 ];

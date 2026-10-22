@@ -80,18 +80,40 @@ async function upsertContact(fetchImpl, apiKey, email, extra) {
 
 // A footer unsubscribe sets emailBlacklisted and leaves listIds in place.
 // Clearing that flag without unlinking would resume every list they were on.
-export async function applyListChange({ fetchImpl, apiKey, email, listId, on, contact }) {
+function listsKeptAfterReoptIn(priorIds, requestedId, updatesListId) {
+  const prior = (Array.isArray(priorIds) ? priorIds : [])
+    .map(Number)
+    .filter((id) => Number.isFinite(id));
+  const keep = prior.filter((id) => updatesListId == null || id !== updatesListId);
+  if (!keep.includes(requestedId)) keep.push(requestedId);
+  if (updatesListId != null && requestedId === updatesListId && !keep.includes(updatesListId)) {
+    keep.push(updatesListId);
+  }
+  return keep;
+}
+
+export async function applyListChange({
+  fetchImpl,
+  apiKey,
+  email,
+  listId,
+  on,
+  contact,
+  updatesListId = null,
+}) {
   if (!on) {
     await removeFromList(fetchImpl, apiKey, listId, email);
     return;
   }
   if (contact.emailBlacklisted) {
-    for (const id of contact.listIds) {
+    const keep = listsKeptAfterReoptIn(contact.listIds, listId, updatesListId);
+    const prior = (Array.isArray(contact.listIds) ? contact.listIds : []).map(Number);
+    for (const id of prior.filter((item) => !keep.includes(item))) {
       await removeFromList(fetchImpl, apiKey, id, email);
     }
     await upsertContact(fetchImpl, apiKey, email, {
       emailBlacklisted: false,
-      listIds: [listId],
+      listIds: keep,
     });
     return;
   }
@@ -107,7 +129,23 @@ async function mirrorUpdatesAroundListChange({
   contact,
   userId,
   updateNewsletterOptIn,
+  updatesListId,
 }) {
+  if (on && contact.emailBlacklisted) {
+    const updatesOn = updatesListId != null && list.listId === updatesListId;
+    if (!updatesOn) await updateNewsletterOptIn(userId, false);
+    await applyListChange({
+      fetchImpl,
+      apiKey,
+      email,
+      listId: list.listId,
+      on,
+      contact,
+      updatesListId,
+    });
+    if (updatesOn) await updateNewsletterOptIn(userId, true);
+    return;
+  }
   const mirrorsUpdates = list.profileFlag === 'newsletter_opt_in';
   if (mirrorsUpdates && on === false) await updateNewsletterOptIn(userId, false);
   await applyListChange({
@@ -117,6 +155,7 @@ async function mirrorUpdatesAroundListChange({
     listId: list.listId,
     on,
     contact,
+    updatesListId,
   });
   if (mirrorsUpdates && on === true) await updateNewsletterOptIn(userId, true);
 }
@@ -163,6 +202,7 @@ export async function handleEmailPreferences(request, deps = {}) {
     if (typeof body.on !== 'boolean') return prefsJson({ error: 'Choose on or off.' }, 400);
 
     const contact = await readBrevoContact(fetchImpl, apiKey, email);
+    const updatesListId = lists.find((item) => item.profileFlag === 'newsletter_opt_in')?.listId ?? null;
     await mirrorUpdatesAroundListChange({
       fetchImpl,
       apiKey,
@@ -172,6 +212,7 @@ export async function handleEmailPreferences(request, deps = {}) {
       contact,
       userId: user.id,
       updateNewsletterOptIn,
+      updatesListId,
     });
     const next = await readBrevoContact(fetchImpl, apiKey, email);
     return prefsJson(shapeEmailPreferences({ lists, ...next }));

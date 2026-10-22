@@ -11,6 +11,7 @@ export function EmailChoiceList({
   emailBlacklisted,
   pendingKey,
   error,
+  saved,
   onToggle,
 }) {
   return (
@@ -18,7 +19,8 @@ export function EmailChoiceList({
       {emailBlacklisted && (
         <p className="text-sm text-text/70 mb-6 bg-accent/5 border border-accent/20 rounded-2xl p-4">
           You used an unsubscribe link in a SAMPA email, so none of these lists
-          are sending. Turning one list on starts that list only.
+          are sending. Turning a list on brings back the other lists you had
+          chosen. SAMPA Updates stays off until you turn that switch on.
         </p>
       )}
       <ul className="space-y-4">
@@ -58,6 +60,9 @@ export function EmailChoiceList({
         })}
       </ul>
       {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
+      {saved && !error && (
+        <p className="text-sm text-primary-text mt-4" role="status">Saved</p>
+      )}
       {!emailBlacklisted && (
         <p className="text-xs text-text/40 mt-6">
           Each switch changes that list only. The unsubscribe link in a SAMPA email stops all of them.
@@ -71,6 +76,13 @@ export default function EmailChoices() {
   const [state, setState] = useState(null);
   const [error, setError] = useState('');
   const [pendingKey, setPendingKey] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (!saved) return undefined;
+    const timer = setTimeout(() => setSaved(false), 2500);
+    return () => clearTimeout(timer);
+  }, [saved]);
 
   useEffect(() => {
     let active = true;
@@ -88,9 +100,11 @@ export default function EmailChoices() {
     if (!list.configured || pendingKey) return;
     setPendingKey(list.key);
     setError('');
+    setSaved(false);
     try {
       const next = await apiPost(PATH, { key: list.key, on: !list.subscribed });
       setState(next);
+      setSaved(true);
     } catch (err) {
       setError(err.message || 'Could not update that email.');
     } finally {
@@ -122,6 +136,7 @@ export default function EmailChoices() {
             emailBlacklisted={Boolean(state.emailBlacklisted)}
             pendingKey={pendingKey}
             error={error}
+            saved={saved}
             onToggle={onToggle}
           />
         )}

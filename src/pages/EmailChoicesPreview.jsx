@@ -8,7 +8,7 @@ const sample = shapeEmailPreferences({
   lists: resolveEmailLists({
     BREVO_LIST_UPDATES: '3',
     BREVO_LIST_DAILY_NEWS: '15',
-    BREVO_LIST_WEEKLY_TOPIC: '42',
+    BREVO_LIST_TOPIC: '42',
   }),
   listIds: [3],
   emailBlacklisted: false,
@@ -16,6 +16,7 @@ const sample = shapeEmailPreferences({
 
 export default function EmailChoicesPreview() {
   const [state, setState] = useState(sample);
+  const [saved, setSaved] = useState(false);
   return (
     <div className="relative min-h-screen bg-background text-text">
       <div className="noise-overlay pointer-events-none"></div>
@@ -29,6 +30,7 @@ export default function EmailChoicesPreview() {
           emailBlacklisted={state.emailBlacklisted}
           pendingKey=""
           error=""
+          saved={saved}
           onToggle={(list) => {
             setState({
               ...state,
@@ -36,6 +38,7 @@ export default function EmailChoicesPreview() {
                 item.key === list.key ? { ...item, subscribed: !item.subscribed } : item
               )),
             });
+            setSaved(true);
           }}
         />
       </main>
