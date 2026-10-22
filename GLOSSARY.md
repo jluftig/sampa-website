@@ -32,6 +32,8 @@ Words as Josh and the site use them. No implementation details here (see `CLAUDE
 
 **Daily Roundup**: The weekday news digest at `/news/daily`.
 
+**Weekly Topic Roundup**: The page at `/news/topic`. Distinct from the Daily Roundup.
+
 **Join**: Starting a new paid membership (`/join`).
 
 **My SAMPA**: The signed-in menu. It holds My account, Sign out, and Directory, Board, and Editor when that person is allowed in.
