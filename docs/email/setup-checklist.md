@@ -46,7 +46,7 @@ In Brevo: Senders → add/verify `info@` if not already listed under authenticat
 | `BREVO_LIST_UPDATES` | SAMPA Updates | Catch-all marketing |
 | `BREVO_LIST_TEST` | SAMPA Test | Josh only (expand later) |
 
-Topic lists (Weekly News / Policy / Jobs / CME) may exist in Brevo as **reserved** — do not use for v1 signup or sync.
+Topic lists (Weekly News / Policy / Jobs / CME) may exist in Brevo as **reserved**. Do not attach Policy, Jobs, or CME. The Weekly Topic Roundup is the one exception, and only through `BREVO_LIST_WEEKLY_TOPIC` (see §4). Do not assume that list is id 7.
 
 Add Josh email to **SAMPA Test** only.
 
@@ -58,12 +58,22 @@ scripts/run-brevo.sh lists
 
 ## 4. Preference center
 
-- **v1 (single list):** global unsubscribe in campaign footer is enough.  
-- Multi-list preference center only if topic lists ship later.  
-- Paste public preference URL here if you enable one anyway:
+Signed-in members choose lists at `/dashboard/emails`
+(`GET` and `POST /api/newsletter-stats?section=email-preferences`).
+On adds that one list. Off removes that one list. The campaign-footer
+unsubscribe stays a full exit.
+
+| List | Env | Id |
+|------|-----|----|
+| SAMPA Updates | `BREVO_LIST_UPDATES` | 3 |
+| Daily Roundup | `BREVO_LIST_DAILY_NEWS` | 15 |
+| Weekly Topic Roundup | `BREVO_LIST_WEEKLY_TOPIC` | unset until Josh creates it. Docs name Weekly News among reserved ids 4–7 and do not assign a number. Do not assume 7. |
+
+`PREFERENCE_CENTER_URL` stays empty. This is the site page, not a Brevo-hosted center.
 
 ```
 PREFERENCE_CENTER_URL=
+BREVO_LIST_WEEKLY_TOPIC=
 ```
 
 ## 5. Double opt-in (public) — T5

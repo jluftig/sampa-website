@@ -70,8 +70,8 @@ Google Group legacy (~130)
   → first major CTA: new site + membership
 
 Unsubscribe
-  → always one-click full exit
-  → multi-list preference center = later (single list now)
+  → email footer remains a one-click full exit (`emailBlacklisted`)
+  → signed-in `/dashboard/emails` adds or removes one list
   → exit interview = backlog (never block unsub)
 ```
 
@@ -79,7 +79,7 @@ Unsubscribe
 
 | Concern | System |
 |---------|--------|
-| Who receives marketing mail | **Brevo** Updates list + attributes |
+| Who receives marketing mail | **Brevo** list membership. Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_WEEKLY_TOPIC`) |
 | Who has a site account / paid membership | **Supabase** (+ Stripe) |
 | Legacy interest without an account | **Brevo** (optional future `email_prospects` table only if staff need in-app roster) |
 
@@ -139,8 +139,11 @@ Supabase profiles (opt-in members)
   Confirm page: `/newsletter-confirmed?list=daily`. Attribute `SOURCE=daily_roundup_signup`.
   Unset list env returns 503 with "Daily email signup is coming soon." A missing `list`
   field still writes SAMPA Updates only. The client cannot send a numeric list id.
-- Privacy: names **SAMPA Updates** + Brevo; link `/privacy`.
-- Later: member `newsletter_opt_in` sync; multi-topic prefs / preference center. 
+- Privacy: names the three member lists and Brevo. Per-list switches live at `/dashboard/emails`. The email footer remains the full exit. Link `/privacy`.
+- Member choices: `/dashboard/emails` reads Brevo `listIds` and adds or removes
+  one list. `newsletter_opt_in` mirrors SAMPA Updates so a renewal does not
+  re-add someone who turned that list off. Weekly Topic Roundup uses
+  `BREVO_LIST_WEEKLY_TOPIC` (no numeric fallback). 
 
 ## Related
 
