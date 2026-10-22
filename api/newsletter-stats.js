@@ -18,6 +18,7 @@ import {
   topClickedLinks,
 } from '../src/lib/newsletterStats.js';
 import { loadSubscriberSnapshots } from './_lib/subscriberSnapshots.js';
+import { handleEmailPreferences } from './_lib/email-preferences.js';
 
 const CACHE_MS = 5 * 60 * 1000;
 const newsletterCache = createTtlCache();
@@ -137,6 +138,7 @@ export function isBoardMeetingsRequest(request) {
 export async function GET(request, deps) {
   const url = new URL(request.url);
   const section = url.searchParams.get('section');
+  if (section === 'email-preferences') return handleEmailPreferences(request, deps);
   if (section === 'membership') return handleMembershipStats(request, deps);
   if (section === 'finance') return handleFinanceStats(request, deps);
   if (section === 'board-numbers') return handleBoardNumbers(request, deps);
@@ -144,4 +146,11 @@ export async function GET(request, deps) {
   if (section === 'policy-work') return handlePolicyWork(request, deps);
   if (isBoardMeetingsRequest(request)) return handleBoardMeetings(request, deps);
   return handleNewsletterStats(request, deps);
+}
+
+export async function POST(request, deps) {
+  const url = new URL(request.url);
+  const section = url.searchParams.get('section');
+  if (section === 'email-preferences') return handleEmailPreferences(request, deps);
+  return json({ error: 'Not found' }, 404);
 }
