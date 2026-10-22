@@ -200,7 +200,43 @@ describe('email preferences API', () => {
     assert.equal(calls.some((call) => call.url.endsWith('/contacts') && call.method === 'POST'), false);
   });
 
-  it('after a full unsubscribe, turning one list on drops the others', async () => {
+  it('after a footer unsubscribe, a non-Updates list clears the Updates mirror', async () => {
+    const order = [];
+    let reads = 0;
+    const { fetchImpl, calls } = stubFetch((call) => {
+      if (call.url.includes('/contacts/remove')) order.push('brevo');
+      if (call.method === 'GET') {
+        reads += 1;
+        if (reads === 1) {
+          return jsonResponse(200, { listIds: [3, 15], emailBlacklisted: true });
+        }
+        return jsonResponse(200, { listIds: [15], emailBlacklisted: false });
+      }
+      return jsonResponse(204, {});
+    });
+    const deps = { ...memberDeps(), fetchImpl };
+    const recordFlag = deps.updateNewsletterOptIn;
+    deps.updateNewsletterOptIn = async (userId, on) => {
+      order.push('flag');
+      return recordFlag(userId, on);
+    };
+    const res = await handleEmailPreferences(request('POST', { key: 'daily', on: true }), deps);
+    const body = await res.json();
+    assert.equal(res.status, 200);
+    assert.equal(body.emailBlacklisted, false);
+    assert.deepEqual(body.lists.map((list) => list.subscribed), [false, true, false]);
+    const removed = calls
+      .filter((call) => call.url.includes('/contacts/remove'))
+      .map((call) => call.url.match(/lists\/(\d+)/)[1]);
+    assert.deepEqual(removed, ['3']);
+    const write = calls.find((call) => call.method === 'POST' && call.url.endsWith('/contacts'));
+    assert.equal(write.body.emailBlacklisted, false);
+    assert.deepEqual(write.body.listIds, [15]);
+    assert.deepEqual(deps.flags, [{ userId: 'user-1', on: false }]);
+    assert.deepEqual(order, ['flag', 'brevo']);
+  });
+
+  it('after a footer unsubscribe, turning one list on keeps the other non-Updates lists', async () => {
     let reads = 0;
     const { fetchImpl, calls } = stubFetch((call) => {
       if (call.method === 'GET') {
@@ -208,25 +244,26 @@ describe('email preferences API', () => {
         if (reads === 1) {
           return jsonResponse(200, { listIds: [3, 15, 99], emailBlacklisted: true });
         }
-        return jsonResponse(200, { listIds: [42], emailBlacklisted: false });
+        return jsonResponse(200, { listIds: [15, 99, 42], emailBlacklisted: false });
       }
       return jsonResponse(204, {});
     });
+    const deps = { ...memberDeps(), fetchImpl };
     const res = await handleEmailPreferences(
       request('POST', { key: 'weekly_topic', on: true }),
-      { ...memberDeps(), fetchImpl },
+      { ...deps, fetchImpl },
     );
     const body = await res.json();
     assert.equal(res.status, 200);
-    assert.equal(body.emailBlacklisted, false);
-    assert.deepEqual(body.lists.map((list) => list.subscribed), [false, false, true]);
+    assert.deepEqual(body.lists.map((list) => list.subscribed), [false, true, true]);
     const removed = calls
       .filter((call) => call.url.includes('/contacts/remove'))
       .map((call) => call.url.match(/lists\/(\d+)/)[1]);
-    assert.deepEqual(removed, ['3', '15', '99']);
+    assert.deepEqual(removed, ['3']);
     const write = calls.find((call) => call.method === 'POST' && call.url.endsWith('/contacts'));
     assert.equal(write.body.emailBlacklisted, false);
-    assert.deepEqual(write.body.listIds, [42]);
+    assert.deepEqual(write.body.listIds, [15, 99, 42]);
+    assert.deepEqual(deps.flags, [{ userId: 'user-1', on: false }]);
   });
 
   it('refuses the topic list when its env var is unset and does not call Brevo', async () => {
