@@ -137,11 +137,18 @@ describe('email preferences API', () => {
   });
 
   it('adds only the list that was turned on and mirrors Updates onto the profile', async () => {
+    const order = [];
     const { fetchImpl, calls } = stubFetch((call) => {
+      if (call.method === 'POST' && call.url.endsWith('/contacts')) order.push('brevo');
       if (call.method === 'GET') return jsonResponse(200, { listIds: [], emailBlacklisted: false });
       return jsonResponse(204, {});
     });
     const deps = { ...memberDeps(), fetchImpl };
+    const recordFlag = deps.updateNewsletterOptIn;
+    deps.updateNewsletterOptIn = async (userId, on) => {
+      order.push('flag');
+      return recordFlag(userId, on);
+    };
     const res = await POST(request('POST', { key: 'updates', on: true }), deps);
     assert.equal(res.status, 200);
     const write = calls.find((call) => call.method === 'POST' && call.url.endsWith('/contacts'));
@@ -150,8 +157,31 @@ describe('email preferences API', () => {
     assert.equal(write.body.updateEnabled, true);
     assert.equal(Object.hasOwn(write.body, 'emailBlacklisted'), false);
     assert.deepEqual(deps.flags, [{ userId: 'user-1', on: true }]);
+    assert.deepEqual(order, ['brevo', 'flag']);
     assert.equal(calls.some((call) => call.url.includes('/contacts/remove')), false);
     assert.equal(calls.some((call) => call.url.includes('emailCampaigns')), false);
+  });
+
+  it('clears the Updates mirror before the Brevo remove', async () => {
+    const order = [];
+    const { fetchImpl, calls } = stubFetch((call) => {
+      if (call.url.includes('/contacts/remove')) order.push('brevo');
+      if (call.method === 'GET') return jsonResponse(200, { listIds: [3], emailBlacklisted: false });
+      return jsonResponse(201, {});
+    });
+    const deps = { ...memberDeps(), fetchImpl };
+    const recordFlag = deps.updateNewsletterOptIn;
+    deps.updateNewsletterOptIn = async (userId, on) => {
+      order.push('flag');
+      return recordFlag(userId, on);
+    };
+    const res = await handleEmailPreferences(request('POST', { key: 'updates', on: false }), deps);
+    assert.equal(res.status, 200);
+    assert.deepEqual(order, ['flag', 'brevo']);
+    assert.deepEqual(deps.flags, [{ userId: 'user-1', on: false }]);
+    const removes = calls.filter((call) => call.url.includes('/contacts/remove'));
+    assert.equal(removes.length, 1);
+    assert.match(removes[0].url, /\/contacts\/lists\/3\/contacts\/remove$/);
   });
 
   it('removes only the list that was turned off', async () => {

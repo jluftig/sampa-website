@@ -98,6 +98,29 @@ export async function applyListChange({ fetchImpl, apiKey, email, listId, on, co
   await upsertContact(fetchImpl, apiKey, email, { listIds: [listId] });
 }
 
+async function mirrorUpdatesAroundListChange({
+  fetchImpl,
+  apiKey,
+  email,
+  list,
+  on,
+  contact,
+  userId,
+  updateNewsletterOptIn,
+}) {
+  const mirrorsUpdates = list.profileFlag === 'newsletter_opt_in';
+  if (mirrorsUpdates && on === false) await updateNewsletterOptIn(userId, false);
+  await applyListChange({
+    fetchImpl,
+    apiKey,
+    email,
+    listId: list.listId,
+    on,
+    contact,
+  });
+  if (mirrorsUpdates && on === true) await updateNewsletterOptIn(userId, true);
+}
+
 async function defaultUpdateNewsletterOptIn(userId, on) {
   const admin = supabaseAdmin();
   const { error } = await admin
@@ -140,20 +163,16 @@ export async function handleEmailPreferences(request, deps = {}) {
     if (typeof body.on !== 'boolean') return prefsJson({ error: 'Choose on or off.' }, 400);
 
     const contact = await readBrevoContact(fetchImpl, apiKey, email);
-    if (list.profileFlag === 'newsletter_opt_in' && body.on === false) {
-      await updateNewsletterOptIn(user.id, false);
-    }
-    await applyListChange({
+    await mirrorUpdatesAroundListChange({
       fetchImpl,
       apiKey,
       email,
-      listId: list.listId,
+      list,
       on: body.on,
       contact,
+      userId: user.id,
+      updateNewsletterOptIn,
     });
-    if (list.profileFlag === 'newsletter_opt_in' && body.on === true) {
-      await updateNewsletterOptIn(user.id, true);
-    }
     const next = await readBrevoContact(fetchImpl, apiKey, email);
     return prefsJson(shapeEmailPreferences({ lists, ...next }));
   } catch (err) {
