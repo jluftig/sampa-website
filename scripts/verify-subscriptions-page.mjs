@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -21,6 +22,19 @@ function render(node, path) {
     createElement(AuthContext.Provider, { value: auth }, node),
   ));
 }
+
+test('submitting with nothing checked asks for a newsletter and does not post', () => {
+  const page = readFileSync(new URL('../src/pages/Subscriptions.jsx', import.meta.url), 'utf8');
+  const start = page.indexOf('const onSubmit');
+  const submit = page.slice(start, page.indexOf('apiPost', start));
+  assert.match(submit, /Choose at least one newsletter\./);
+  const news = readFileSync(new URL('../src/pages/News.jsx', import.meta.url), 'utf8');
+  const footer = readFileSync(new URL('../src/components/Footer.jsx', import.meta.url), 'utf8');
+  assert.match(news, /to="\/subscriptions"/);
+  assert.match(news, /Manage subscriptions/);
+  assert.match(footer, /to="\/subscriptions"/);
+  assert.match(footer, /Manage subscriptions/);
+});
 
 test('the subscriptions page offers three lists and warns that unchecked lists are removed', () => {
   const markup = render(createElement(Subscriptions), '/subscriptions');

@@ -403,6 +403,14 @@ test('an invalid email is rejected before Brevo', async () => {
   assert.equal(calls.length, 0);
 });
 
+test('no checked list is rejected and does not email a removal', async () => {
+  const calls = captureFetch();
+  const res = await post(manageBody({ daily: false, weekly: false, topic: false }));
+  assert.equal(res.status, 400);
+  assert.deepEqual(await res.json(), { error: 'Choose at least one newsletter.' });
+  assert.equal(calls.length, 0);
+});
+
 test('non-boolean list choices are rejected before Brevo', async () => {
   const calls = captureFetch();
   const cases = [
