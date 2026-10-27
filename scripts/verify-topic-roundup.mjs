@@ -3,10 +3,11 @@ import { describe, it } from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { AuthContext } from '../src/lib/authState.js';
 import { topicPage } from '../src/lib/topicRoundup.js';
 import { TopicRoundupPage } from '../src/pages/TopicRoundupPage.jsx';
+import { GET as shareGet } from '../api/share.js';
 
 const seedPath = '/content/topic-roundup/2026-10-19.json';
 const seed = JSON.parse(readFileSync(new URL(`..${seedPath}`, import.meta.url), 'utf8'));
@@ -185,13 +186,45 @@ describe('topic routes stay out of the daily catalog', () => {
       'src/lib/dailyNews.js',
       'src/lib/newsFeed.js',
       'src/pages/Home.jsx',
-      'api/share.js',
       'scripts/write-daily-sitemap.mjs',
-      'vercel.json',
     ]) {
       const text = source(path);
       assert.equal(text.includes('topic-roundup'), false, path);
       assert.equal(text.includes('topicRoundup'), false, path);
     }
+  });
+
+  it('unfurls /news/topic for crawlers and 404s an unknown topic date', async () => {
+    let fetches = 0;
+    const previous = globalThis.fetch;
+    globalThis.fetch = async () => {
+      fetches += 1;
+      throw new Error('supabase should not be called for the topic slug');
+    };
+    try {
+      const res = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=topic'));
+      assert.equal(res.status, 200);
+      const html = await res.text();
+      assert.equal(html.includes(`<title>${seed.title}</title>`), true);
+      assert.equal(html.includes('A Weekly Topic Roundup from SAMPA.'), true);
+      assert.equal(html.includes('name="robots" content="noindex"'), true);
+      assert.equal(
+        html.includes('rel="canonical" href="https://www.addictionpas.org/news/topic/2026-10-19"'),
+        true,
+      );
+      assert.equal(fetches, 0);
+
+      const missing = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=topic&date=1999-01-01'));
+      assert.equal(missing.status, 404);
+      assert.equal(fetches, 0);
+    } finally {
+      globalThis.fetch = previous;
+    }
+
+    const rules = JSON.parse(source('vercel.json')).rewrites;
+    const dated = rules.find((rule) => rule.source === '/news/topic/:date(\\d{4}-\\d{2}-\\d{2})');
+    assert.equal(dated.destination, '/api/share?slug=topic&date=:date');
+    const functions = readdirSync(new URL('../api', import.meta.url)).filter((name) => name.endsWith('.js'));
+    assert.equal(functions.length, 12);
   });
 });
