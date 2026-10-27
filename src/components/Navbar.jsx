@@ -151,6 +151,8 @@ const desktopLoginClass = 'px-5 py-2.5 rounded-full border-2 border-primary-text
 const mobileLoginClass = 'px-5 py-2.5 rounded-full border-2 border-primary-text text-primary-text text-sm font-semibold text-center hover:bg-primary-text hover:text-white transition-colors';
 const mobileItemClass = 'font-medium text-text hover:text-primary-text px-2 py-1 text-left';
 
+let headerIntroPlayed = false;
+
 export default function Navbar() {
   const navRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -162,10 +164,18 @@ export default function Navbar() {
   const closeMobile = () => setIsMobileMenuOpen(false);
 
   useEffect(() => {
-    gsap.fromTo(navRef.current,
+    const el = navRef.current;
+    if (!el) return undefined;
+    if (headerIntroPlayed) {
+      gsap.set(el, { clearProps: 'transform,opacity' });
+      return undefined;
+    }
+    headerIntroPlayed = true;
+    const tween = gsap.fromTo(el,
       { y: '-100%', opacity: 0 },
       { y: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.2 }
     );
+    return () => tween.kill();
   }, []);
 
   return (
