@@ -91,6 +91,10 @@ export default function Subscriptions() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    if (!Object.values(selected).some(Boolean)) {
+      setError('Choose at least one newsletter.');
+      return;
+    }
     setError(null);
     setBusy(true);
     try {

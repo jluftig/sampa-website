@@ -445,7 +445,7 @@ test('a missing list id returns 503 without the email or env name', async () => 
   console.error = (...args) => errors.push(args.map(String).join(' '));
   try {
     const calls = captureFetch();
-    const res = await post(manageBody({ daily: false, weekly: false, topic: false }));
+    const res = await post(manageBody({ daily: true, weekly: false, topic: false }));
     assert.equal(res.status, 503);
     const payload = await res.json();
     assert.deepEqual(payload, { error: UNAVAILABLE });
@@ -483,7 +483,7 @@ test('the ninth manage request from one IP is limited and signup is not', async 
   assert.deepEqual(await signup.json(), { ok: true, pending: true });
   assert.equal(calls[0].body.attributes.SOURCE, 'daily_roundup_signup');
 
-  const body = manageBody({ daily: false, weekly: false, topic: false }, 'reader@example.com');
+  const body = manageBody({ daily: true, weekly: false, topic: false }, 'reader@example.com');
   for (let i = 0; i < 8; i += 1) {
     const res = await post(body, ip);
     assert.equal(res.status, 200);

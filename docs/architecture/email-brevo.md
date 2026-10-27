@@ -141,7 +141,8 @@ Supabase profiles (opt-in members)
   field still writes SAMPA Updates only. The client cannot send a numeric list id.
 - **Manage subscriptions:** `/subscriptions` posts `{ email, lists: { daily, weekly, topic } }`
   to the same `POST /api/newsletter-signup` handler. Checked lists are double opt-in.
-  Unchecked lists are never removed on that request. If the address is on any unchecked
+  A body with every list false returns 400 `Choose at least one newsletter.` and does not call Brevo.
+  Unchecked lists on a request that also checks at least one list are never removed on that request. If the address is on any unchecked
   list (private Brevo lookup), the handler emails it a signed link that expires in 24 hours
   (`/subscriptions?confirm=<token>`, HMAC with `SUBSCRIPTION_TOKEN_SECRET`, or a key derived
   from `BREVO_API_KEY` when that is unset). The page then needs a button click, which posts

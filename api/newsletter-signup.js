@@ -28,6 +28,7 @@ const DAILY_MISSING = 'Daily email signup is coming soon. Please check back.';
 const UNAVAILABLE = 'Newsletter signup is temporarily unavailable. Please try again later.';
 const EMAIL_ERROR = 'Please enter a valid email address.';
 const MANAGE_LISTS = 'Choose the lists to update.';
+const CHOOSE_ONE = 'Choose at least one newsletter.';
 const MANAGE_RATE = 'Please try again in a moment.';
 const MANAGE_UNAVAILABLE = 'Subscription updates are temporarily unavailable. Please try again later.';
 const MANAGE_FAILED = 'We could not update subscriptions right now. Please try again in a moment.';
@@ -325,6 +326,7 @@ async function manageSubscriptions(request, body) {
 
   const choices = listChoices(body.lists);
   if (!choices) return json({ error: MANAGE_LISTS }, 400);
+  if (!Object.values(choices).some(Boolean)) return json({ error: CHOOSE_ONE }, 400);
 
   if (manageRateLimited(clientIp(request))) {
     return json({ error: MANAGE_RATE }, 429);
