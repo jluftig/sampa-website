@@ -188,6 +188,7 @@ export default function Subscriptions() {
                       checked={selected[choice.key]}
                       onChange={(event) => {
                         const checked = event.target.checked;
+                        if (checked) setError(null);
                         setSelected((current) => ({ ...current, [choice.key]: checked }));
                       }}
                       disabled={busy}

@@ -28,6 +28,9 @@ test('submitting with nothing checked asks for a newsletter and does not post', 
   const start = page.indexOf('const onSubmit');
   const submit = page.slice(start, page.indexOf('apiPost', start));
   assert.match(submit, /Choose at least one newsletter\./);
+  const boxAt = page.indexOf('type="checkbox"');
+  const boxes = page.slice(boxAt, page.indexOf('setSelected', boxAt));
+  assert.match(boxes, /if \(checked\) setError\(null\)/);
   const news = readFileSync(new URL('../src/pages/News.jsx', import.meta.url), 'utf8');
   const footer = readFileSync(new URL('../src/components/Footer.jsx', import.meta.url), 'utf8');
   assert.match(news, /to="\/subscriptions"/);
