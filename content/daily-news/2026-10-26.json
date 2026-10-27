@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-26",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Nearly 1 in 4 ED patients with OUD declined buprenorphine, mostly over specific, addressable concerns",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 6",
+      "summary": "A mixed-methods study of 82 adults with opioid use disorder who were offered buprenorphine at 4 emergency departments in South Carolina, Michigan and Ohio found that 19 (23%) declined it. Among 22 participants who explained declining, the main barriers were concern about precipitated withdrawal or adverse effects (50%), not wanting to be physically dependent on buprenorphine (32%), and housing and logistical barriers (23%), while treatment readiness scores were similar in those who accepted and declined. ED teams may raise uptake by addressing these concerns directly when they offer treatment.",
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/10.1001/jamanetworkopen.2026.37671"
+    },
+    {
+      "headline": "Camden launches mobile addiction teams staffed by former paramedics to reach patients after overdoses",
+      "outlet": "KYW Newsradio",
+      "date": "Oct 25",
+      "summary": "Cooper Norcross Health is launching Mobile Integrated Health teams in Camden, New Jersey, in which former paramedics work as mobile addiction response specialists, supported by a $500,000 state grant. Patients can be referred to telehealth or inpatient care and get prescriptions for addiction medication, with teams focusing on high-need areas of the city. Cooper's assistant EMS medical director said about 1 in 10 patients who need naloxone from EMS and do not go to the emergency department die within a year, the high-risk group the program aims to reach.",
+      "url": "https://www.audacy.com/kywnewsradio/news/local/cooper-health-mobile-integrated-health"
+    },
+    {
+      "headline": "Lexington, Kentucky, proposes $3 million in first-round opioid settlement grants to 24 programs",
+      "outlet": "WKYT",
+      "date": "Oct 23",
+      "summary": "Lexington's Department of Social Services announced 24 Opioid Abatement Community-Based Initiative grants totaling $3,029,681 for substance use prevention, treatment and recovery programs, funded by national opioid settlement money. Recipients include mobile opioid response and navigation, street outreach linking unhoused people who use opioids to care, recovery housing, and services for pregnant and parenting women, and the awards go to the city council for a vote at its Oct 27 work session. If approved, the grants would add outreach, housing and navigation options that local clinicians can refer patients to.",
+      "url": "https://www.wkyt.com/2026/10/23/lexington-announces-recipients-opioid-abatement-grants/"
+    },
+    {
+      "headline": "A third of young adults surveyed use AI chatbots for substance-use information, Rutgers study finds",
+      "outlet": "Rutgers University",
+      "date": "Oct 23",
+      "summary": "In a Rutgers Health survey of nearly 1,000 participants, published in JMIR Formative Research, 1 in 3 people ages 18 to 29 reported using generative AI tools such as ChatGPT for substance-use information, mainly about risks and consequences. About half of those users did so at least monthly, Black and male participants were more likely to use AI this way, and respondents reported high trust in the tools. Because chatbots can reproduce misinformation, clinicians may want to ask young patients where they get information about drugs and alcohol.",
+      "url": "https://www.rutgers.edu/news/third-young-adults-turn-artificial-intelligence-substance-use-information"
+    },
+    {
+      "headline": "Opioid overdose ED visits more than doubled in Windsor-Essex, Ontario, as medetomidine reports grow",
+      "outlet": "Windsor News",
+      "date": "Oct 23",
+      "summary": "The Windsor-Essex County Health Unit's dashboard shows 199 opioid overdose emergency department visits in the third quarter of 2026, still being finalized, up from 96 a year earlier, and 526 visits from January to September compared with 341 in all of 2025. The health unit told Windsor News it has multiple credible reports that medetomidine, a veterinary sedative, is in the local unregulated opioid supply, though available data do not show a matching rise in overdose deaths. Naloxone does not reverse medetomidine sedation, so patients exposed to it may need emergency care beyond opioid reversal.",
+      "url": "https://windsornewsdesk.ca/stories/2026-10-23-overdose-accountability/"
+    }
+  ]
+}

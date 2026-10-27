@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-22",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Gabapentinoids for new low back pain roughly doubled later OUD or overdose diagnoses",
+      "outlet": "Pain News Network",
+      "date": "Oct 20",
+      "summary": "In a JAMA Network Open cohort of 399,500 opioid-naive Medicaid adults treated for acute low back pain, starting a gabapentinoid was tied to a 101.6% higher risk of a new opioid use disorder or overdose diagnosis within a year, close to lower-dose opioids taken more than 7 days (105.2%). Opioids above 50 morphine milligram equivalents a day carried the highest risk (146.6%), while chiropractic care and physical therapy were tied to lower risk. Gabapentinoids are often seen as safer stand-ins for opioids, but the data favor nonpharmacologic care first.",
+      "url": "https://www.painnewsnetwork.org/stories/2026/10/20/gabapentinoids-nearly-as-risky-as-opioids-in-back-pain-study"
+    },
+    {
+      "headline": "Naloxone use did not rise relative to overdoses as U.S. overdose deaths fell, JAMA study finds",
+      "outlet": "JAMA",
+      "date": "Oct 21",
+      "summary": "A research letter analyzing 2.5 million nonfatal overdoses recorded by 5,324 EMS agencies from May 2020 through December 2025 found that after May 2023, nonfatal overdoses ran 20.9% and opioid-related overdoses 32.7% below projected trends, while naloxone administrations fell 21.3%. Naloxone was given at about the same rate per overdose as before, and bystander use was 28.6% lower than expected. The authors say fewer overdoses, possibly from changes in the drug supply or use patterns, rather than more reversals, may explain falling deaths, though the study did not test those causes.",
+      "url": "https://jamanetwork.com/journals/jama/fullarticle/10.1001/jama.2026.20406"
+    },
+    {
+      "headline": "San Francisco reports its first fatal overdose tied to MGM-15, a kratom-derived opioid",
+      "outlet": "San Francisco Department of Public Health",
+      "date": "Oct 21",
+      "summary": "The city's health department issued an alert after the medical examiner found MGM-15 (dihydro-7-hydroxymitragynine) in an adult who died in late September and in the packaging of \"Script botanicals x Maui labs\" tablets the person had taken. MGM-15, now in Schedule I, has turned up in products sold as cat's claw in smoke shops and gas stations and in overdoses in Utah and Washington. Officials advise naloxone for suspected overdoses, and clinicians should ask about gas-station botanical products when opioid toxicity is unexplained.",
+      "url": "https://www.sf.gov/news-fatal-overdose-involving-kratom-derived-opioid"
+    },
+    {
+      "headline": "Nursing facilities still refuse patients on buprenorphine years after the X-waiver ended",
+      "outlet": "Journal of General Internal Medicine",
+      "date": "Oct 21",
+      "summary": "A new perspective describes a 50-year-old man with opioid use disorder and cirrhosis who stayed hospitalized an extra month after his skilled nursing facility refused to take him back on sublingual buprenorphine, saying its physician was not qualified to prescribe it. The X-waiver ended in January 2023, and facilities never needed one to administer the drug; the authors say such refusals are not uncommon and can violate the Americans with Disabilities Act. He returned only after clinician-to-clinician discussion and hospital advocacy, a reminder that discharge teams may need to educate receiving facilities.",
+      "url": "https://link.springer.com/article/10.1007/s11606-026-10945-y"
+    },
+    {
+      "headline": "Outer Cape Health Services gets SAMHSA grant to embed OUD treatment in Cape Cod primary care",
+      "outlet": "The Cape Cod Chronicle",
+      "date": "Oct 21",
+      "summary": "Outer Cape Health Services received $677,045 for the first year of a five-year SAMHSA grant, with about $3.5 million anticipated in total, to integrate addiction medicine into primary care for adults from Yarmouth to Provincetown. The organization expects to serve about 400 patients in year one and 2,750 by year five in a 65-mile corridor where patients may travel about 45 miles to reach an opioid treatment program. The model shows how rural health centers are using federal funds to bring OUD care into primary care where specialty programs are far away.",
+      "url": "https://www.capecodchronicle.com/articles/5270/view/a-new-approach-to-opioid-treatment-comes-to-cape-cod"
+    }
+  ]
+}

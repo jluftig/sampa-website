@@ -11,10 +11,15 @@ import { subscriptionLists } from './_lib/subscriptionLists.js';
 //
 // Vercel env (server): BREVO_API_KEY, BREVO_LIST_UPDATES, BREVO_DOI_TEMPLATE_ID
 // Daily form: BREVO_LIST_DAILY_NEWS, optional BREVO_DOI_TEMPLATE_ID_DAILY
-// Manage: BREVO_LIST_TOPIC, optional BREVO_DOI_TEMPLATE_TOPIC. Removals need a
-// confirmed email link; token key is SUBSCRIPTION_TOKEN_SECRET (falls back to a
-// key derived from BREVO_API_KEY). Optional BREVO_SENDER_NAME / BREVO_SENDER_EMAIL.
-// Optional: BREVO_DOI_REDIRECT_URL (defaults to /newsletter-confirmed on this origin)
+// Manage lists: BREVO_LIST_DAILY_NEWS, BREVO_LIST_UPDATES, BREVO_LIST_TOPIC.
+// Manage templates: BREVO_DOI_TEMPLATE_ID_DAILY, BREVO_DOI_TEMPLATE_ID,
+// BREVO_DOI_TEMPLATE_TOPIC. Topic writes nothing when its template id is unset.
+// Manage redirects come from site code, not BREVO_DOI_REDIRECT_URL:
+// daily /newsletter-confirmed?list=daily, weekly /newsletter-confirmed,
+// topic /newsletter-confirmed?list=topic.
+// Removals need a confirmed email link. Token key is SUBSCRIPTION_TOKEN_SECRET
+// (or a key derived from BREVO_API_KEY). Optional BREVO_SENDER_NAME / BREVO_SENDER_EMAIL.
+// The single-list footer form still honors BREVO_DOI_REDIRECT_URL for weekly.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BREVO_BASE = 'https://api.brevo.com/v3';
@@ -356,8 +361,8 @@ async function manageSubscriptions(request, body) {
   // 1) Checked lists: Brevo double opt-in. Each list is attempted on its own.
   for (const entry of resolved.filter((item) => choices[item.key])) {
     if (!entry.templateId) {
-      console.warn(
-        `TODO: set ${entry.templateEnv}. The ${entry.label} double opt-in email cannot be sent until that template id is set in Vercel.`,
+      console.error(
+        `newsletter-signup: ${entry.templateEnv} is unset; no contact was written and no double opt-in email was sent`,
       );
       results.push({ key: entry.key, status: 'not_open' });
       continue;

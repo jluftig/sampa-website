@@ -70,8 +70,8 @@ Google Group legacy (~130)
   → first major CTA: new site + membership
 
 Unsubscribe
-  → always one-click full exit
-  → multi-list preference center = later (single list now)
+  → email footer remains a one-click full exit (`emailBlacklisted`)
+  → signed-in `/dashboard/emails` adds or removes one list
   → exit interview = backlog (never block unsub)
 ```
 
@@ -79,7 +79,7 @@ Unsubscribe
 
 | Concern | System |
 |---------|--------|
-| Who receives marketing mail | **Brevo** Updates list + attributes |
+| Who receives marketing mail | **Brevo** list membership. Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_TOPIC`) |
 | Who has a site account / paid membership | **Supabase** (+ Stripe) |
 | Legacy interest without an account | **Brevo** (optional future `email_prospects` table only if staff need in-app roster) |
 
@@ -147,14 +147,23 @@ Supabase profiles (opt-in members)
   from `BREVO_API_KEY` when that is unset). The page then needs a button click, which posts
   `{ confirm }` and removes only the signed lists. Responses are the same whether or not the
   address is on a list. Removal emails are limited to 3 per address per hour (per instance).
-  Each list is tried on its own; a partial failure returns 502 with `failed` list keys.
-  List env vars and production ids: `BREVO_LIST_DAILY_NEWS` 15, `BREVO_LIST_UPDATES` 3, `BREVO_LIST_TOPIC` 18.
-  Manage templates: daily `BREVO_DOI_TEMPLATE_ID_DAILY` 35 with no fallback to `BREVO_DOI_TEMPLATE_ID`, weekly `BREVO_DOI_TEMPLATE_ID` 13.
-  `BREVO_DOI_TEMPLATE_TOPIC` unset means a server-log TODO, no topic DOI send, and the page says Weekly Topic Roundup signup is not open yet (`notOpen: ["topic"]`).
-  Confirm redirects: `/newsletter-confirmed?list=daily`, `/newsletter-confirmed`, and `/newsletter-confirmed?list=topic`.
+  Each list is tried on its own. A partial failure returns 502 with `failed` list keys.
+  List env vars and the Vercel values: `BREVO_LIST_DAILY_NEWS` 15, `BREVO_LIST_UPDATES` 3, `BREVO_LIST_TOPIC` 18.
+  Template env vars and the Vercel values: daily `BREVO_DOI_TEMPLATE_ID_DAILY` 35 (no fallback to the weekly template), weekly `BREVO_DOI_TEMPLATE_ID` 13, topic `BREVO_DOI_TEMPLATE_TOPIC` (59 in Vercel, template currently inactive in Brevo).
+  When `BREVO_DOI_TEMPLATE_TOPIC` is unset, the handler logs `newsletter-signup: BREVO_DOI_TEMPLATE_TOPIC is unset` and does not call Brevo for that list, so no topic contact is written. The page still returns success and says Weekly Topic Roundup signup is not open yet (`notOpen: ["topic"]`).
+  When the topic template id is set, the handler sends double opt-in with that template. A Brevo error, including an inactive template, is a failure for that list and does not count as a written subscription.
+  Manage confirm redirects are set in site code and ignore `BREVO_DOI_REDIRECT_URL`: daily `${origin}/newsletter-confirmed?list=daily`, weekly `${origin}/newsletter-confirmed`, topic `${origin}/newsletter-confirmed?list=topic`.
+  The topic confirm page button goes to `/news`. `/news/topic` is the Weekly Topic Roundup route in PR #146, and this PR does not register it.
   `BREVO_API_KEY` must be set in Vercel server env and must never be a `VITE_` var.
-- Privacy: names **SAMPA Updates** + Brevo; link `/privacy`.
-- Later: member `newsletter_opt_in` sync. Public list choices are `/subscriptions`. 
+- Privacy: names the three member lists and Brevo. Per-list switches live at `/dashboard/emails`. The email footer remains the full exit. Link `/privacy`.
+- Member choices: `/dashboard/emails` reads Brevo `listIds` and adds or removes
+  one list. `newsletter_opt_in` mirrors SAMPA Updates so a renewal does not
+  re-add someone who turned that list off. After a footer unsubscribe, turning
+  one list on clears the blacklist and keeps the other non-Updates lists.
+  SAMPA Updates stays off unless that switch is the one turned on, and
+  `newsletter_opt_in` follows that result. Weekly Topic Roundup uses
+  `BREVO_LIST_TOPIC` (no numeric fallback, same name as the subscriptions page).
+  Public list choices for people without an account are `/subscriptions`.
 
 ## Related
 

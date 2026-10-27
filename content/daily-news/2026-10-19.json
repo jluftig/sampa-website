@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-19",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "About 33,600 Massachusetts Medicaid adults with OUD could face new work requirements",
+      "outlet": "Boston Indicators",
+      "date": "Oct 15",
+      "summary": "A Boston Indicators brief estimates that 33,647 Massachusetts adults with opioid use disorder are enrolled in MassHealth through Medicaid expansion and could face federal work requirements starting January 1, 2027. The law exempts people with a substance use disorder or in active treatment, but the brief warns that documenting the exemption may cost many people coverage, especially once stricter verification begins in 2028. State opioid overdose deaths fell to 995 in 2025 from a 2022 peak of 2,327, and gaps in MOUD coverage could put that progress at risk.",
+      "url": "https://www.bostonindicators.org/article-pages/2026/october/declining-opioid-overdose-deaths"
+    },
+    {
+      "headline": "Texas prison overdose deaths rose from 4 to 131, but the agency seeks no new treatment funds",
+      "outlet": "Texas Observer",
+      "date": "Oct 15",
+      "summary": "Confirmed overdose deaths in Texas prisons rose from four in 2020 to at least 131 in 2025, the Texas Observer reports. The Texas Department of Criminal Justice's 2028-29 budget request asks lawmakers only to maintain current funding for substance use treatment while seeking about $40 million for drone detection and other contraband equipment. The request leaves treatment capacity flat as deaths climb, a concern for clinicians and policy leaders focused on care behind bars and at reentry.",
+      "url": "https://www.texasobserver.org/surge-prison-overdoses-tdcj-treatment-budget/"
+    },
+    {
+      "headline": "Youths with depression had 4 times the odds of a prescription drug use disorder",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 16",
+      "summary": "An analysis of the 2023 and 2024 National Survey on Drug Use and Health found that adolescents and young adults with a past-year major depressive episode had about twice the odds of prescription drug misuse (OR 2.09) and four times the odds of prescription drug use disorder (OR 4.02). Youths with depression more often said they misused opioid pain relievers (10.2% vs 3.7%) and tranquilizers (29.8% vs 13.2%) to help with feelings and emotions. The authors call for integrated mental health and substance use care for young people.",
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/10.1001/jamanetworkopen.2026.39343"
+    },
+    {
+      "headline": "83% of stable outpatients on buprenorphine split their daily dose, study finds",
+      "outlet": "Substance Use & Addiction Journal",
+      "date": "Oct 15",
+      "summary": "In a secondary analysis of 165 stable, non-pregnant outpatients who had taken sublingual buprenorphine for a median of 16 months, 38.2% reported twice-daily and 44.8% three-times-daily dosing. Patient reports agreed substantially with clinic documentation, and people who split their dose reported higher total daily doses and more chronic pain. Because the labeling calls for once-daily dosing, the authors call for evidence-based, patient-centered dosing guidance that reflects real-world practice.",
+      "url": "https://journals.sagepub.com/doi/10.1177/29767342261492538"
+    },
+    {
+      "headline": "Mobile County, Alabama, warns about gas-station tianeptine, kratom, and cychlorphine",
+      "outlet": "Mobile County Health Department",
+      "date": "Oct 16",
+      "summary": "The Mobile County Health Department warned residents about tianeptine, kratom, cychlorphine, and other unregulated substances sold as supplements or wellness products in convenience stores, smoke shops, gas stations, and online. Tianeptine is not FDA-approved for any use, kratom and its main alkaloids are Schedule I in Alabama, and listed harms include seizures, liver injury, dependence, and stopped breathing. The release advises naloxone for any suspected opioid overdose, repeated after two to three minutes if needed, and is a reminder to ask patients about store-bought products.",
+      "url": "https://mchd.org/mchd-warns-residents-about-dangerous-gas-station-drugs-emerging-synthetic-opioids-10-16-26/"
+    }
+  ]
+}

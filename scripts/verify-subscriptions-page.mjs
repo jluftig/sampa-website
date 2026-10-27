@@ -51,7 +51,9 @@ test('a confirm link shows a confirm button and removes nothing on load', () => 
   assert.equal(markup.includes('type="email"'), false);
 });
 
-test('topic confirmation links to the Weekly Topic Roundup page', () => {
+test('topic confirmation links to the news page, not a missing roundup route', () => {
   const markup = render(createElement(NewsletterConfirmed), '/newsletter-confirmed?list=topic');
-  assert.match(markup, /href="\/news\/topic"/);
+  assert.match(markup, /href="\/news"/);
+  assert.equal(markup.includes('href="/news/topic"'), false);
+  assert.match(markup, /Read the news/);
 });

@@ -13,6 +13,9 @@ const ENV_KEYS = [
   'BREVO_DOI_TEMPLATE_ID_DAILY',
   'BREVO_DOI_TEMPLATE_ID',
   'BREVO_DOI_TEMPLATE_TOPIC',
+  'BREVO_DOI_TEMPLATE_DAILY',
+  'BREVO_LIST_DAILY',
+  'BREVO_LIST_WEEKLY',
   'BREVO_DOI_REDIRECT_URL',
   'SUBSCRIPTION_TOKEN_SECRET',
 ];
@@ -35,6 +38,9 @@ beforeEach(() => {
   process.env.BREVO_DOI_TEMPLATE_ID_DAILY = '35';
   process.env.BREVO_DOI_TEMPLATE_ID = '13';
   delete process.env.BREVO_DOI_TEMPLATE_TOPIC;
+  delete process.env.BREVO_DOI_TEMPLATE_DAILY;
+  delete process.env.BREVO_LIST_DAILY;
+  delete process.env.BREVO_LIST_WEEKLY;
   delete process.env.SENDINBLUE_API_KEY;
   delete process.env.BREVO_DOI_REDIRECT_URL;
   delete process.env.SUBSCRIPTION_TOKEN_SECRET;
@@ -242,26 +248,51 @@ test('a token signed with the explicit secret is rejected after the secret chang
 });
 
 test('a checked topic list without a template is reported as not open and not sent', async () => {
-  const warnings = [];
-  const original = console.warn;
-  console.warn = (...args) => warnings.push(args.join(' '));
+  const logs = [];
+  const original = console.error;
+  console.error = (...args) => logs.push(args.join(' '));
   try {
     const calls = brevo();
     const res = await post(manageBody({ daily: false, weekly: true, topic: true }));
     assert.equal(res.status, 200);
     assert.deepEqual(await res.json(), { ok: true, notOpen: ['topic'], sentDoi: true });
     assert.equal(calls.some((call) => call.body?.includeListIds?.[0] === 18), false);
-    assert.match(warnings.join('\n'), /TODO: set BREVO_DOI_TEMPLATE_TOPIC/);
+    assert.equal(calls.some((call) => call.url === DOI && call.body?.includeListIds?.includes(18)), false);
+    assert.match(logs.join('\n'), /newsletter-signup: BREVO_DOI_TEMPLATE_TOPIC is unset; no contact was written/);
   } finally {
-    console.warn = original;
+    console.error = original;
   }
 });
 
-test('only an unopened topic checked means no inbox claim', async () => {
+test('only an unopened topic checked writes no contact and sends no mail', async () => {
   const calls = brevo({}, []);
   const res = await post(manageBody({ daily: false, weekly: false, topic: true }));
   assert.deepEqual(await res.json(), { ok: true, notOpen: ['topic'], sentDoi: false });
-  assert.equal(calls.some((call) => call.url === DOI), false);
+  assert.equal(calls.some((call) => call.url === DOI || call.url === SMTP || call.url.includes('/remove')), false);
+  assert.equal(calls.some((call) => call.body?.includeListIds?.includes(18)), false);
+});
+
+test('three checked lists send the site confirm URLs and ignore other env names', async () => {
+  process.env.BREVO_DOI_TEMPLATE_TOPIC = '59';
+  process.env.BREVO_DOI_REDIRECT_URL = 'https://evil.example/override';
+  process.env.BREVO_DOI_TEMPLATE_DAILY = '99';
+  process.env.BREVO_LIST_DAILY = '99';
+  process.env.BREVO_LIST_WEEKLY = '99';
+  const calls = brevo({}, []);
+  const res = await post(manageBody({ daily: true, weekly: true, topic: true }));
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { ok: true, notOpen: [], sentDoi: true });
+  const dois = calls.filter((call) => call.url === DOI);
+  const byList = Object.fromEntries(dois.map((call) => [call.body.includeListIds[0], call.body]));
+  assert.equal(dois.length, 3);
+  assert.equal(byList[15].templateId, 35);
+  assert.equal(byList[15].redirectionUrl, 'https://preview.example.test/newsletter-confirmed?list=daily');
+  assert.equal(byList[3].templateId, 13);
+  assert.equal(byList[3].redirectionUrl, 'https://preview.example.test/newsletter-confirmed');
+  assert.equal(byList[18].templateId, 59);
+  assert.equal(byList[18].redirectionUrl, 'https://preview.example.test/newsletter-confirmed?list=topic');
+  assert.equal(calls.some((call) => JSON.stringify(call.body).includes('evil.example')), false);
+  assert.equal(calls.some((call) => call.body?.includeListIds?.includes(99)), false);
 });
 
 test('a checked topic list sends DOI with the topic template and redirect', async () => {

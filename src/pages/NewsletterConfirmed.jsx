@@ -16,8 +16,10 @@ export default function NewsletterConfirmed() {
     },
     topic: {
       message: 'You’re subscribed to the Weekly Topic Roundup. You’ll get each new issue by email. No membership required.',
-      to: '/news/topic',
-      label: 'Read the Weekly Topic Roundup',
+      // /news/topic is the roundup route in PR #146. This page does not register
+      // it, and /news/:slug would show Post not found.
+      to: '/news',
+      label: 'Read the news',
     },
   };
   const view = confirmed[list] || {

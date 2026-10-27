@@ -25,6 +25,8 @@ const Join = lazy(() => import('./pages/Join'));
 const JoinInvoice = lazy(() => import('./pages/JoinInvoice'));
 const Donate = lazy(() => import('./pages/Donate'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const EmailChoices = lazy(() => import('./pages/EmailChoices'));
+const EmailChoicesPreview = lazy(() => import('./pages/EmailChoicesPreview'));
 const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
 const MemberProfile = lazy(() => import('./pages/MemberProfile'));
 const BoardMeetings = lazy(() => import('./pages/BoardMeetings'));
@@ -63,6 +65,9 @@ function App() {
           {import.meta.env.DEV && (
             <Route path="/__preview/suggested-tags" element={<SuggestedDailyTags />} />
           )}
+          {import.meta.env.DEV && (
+            <Route path="/__preview/email-choices" element={<EmailChoicesPreview />} />
+          )}
           <Route path="/news/:slug" element={<PostView />} />
           <Route path="/policy" element={<Policy />} />
           <Route path="/policy/:slug" element={<PolicyView />} />
@@ -86,6 +91,14 @@ function App() {
             element={
               <RequireAuth>
                 <Dashboard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/dashboard/emails"
+            element={
+              <RequireAuth>
+                <EmailChoices />
               </RequireAuth>
             }
           />
