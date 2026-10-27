@@ -7,7 +7,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { AuthContext } from '../src/lib/authState.js';
 import { topicPage } from '../src/lib/topicRoundup.js';
 import { TopicRoundupPage } from '../src/pages/TopicRoundupPage.jsx';
-import { GET as shareGet } from '../api/share.js';
+import { GET as shareGet, topicSharePreview } from '../api/share.js';
 
 const seedPath = '/content/topic-roundup/2026-10-19.json';
 const seed = JSON.parse(readFileSync(new URL(`..${seedPath}`, import.meta.url), 'utf8'));
@@ -226,5 +226,17 @@ describe('topic routes stay out of the daily catalog', () => {
     assert.equal(dated.destination, '/api/share?slug=topic&date=:date');
     const functions = readdirSync(new URL('../api', import.meta.url)).filter((name) => name.endsWith('.js'));
     assert.equal(functions.length, 12);
+  });
+
+  it('keeps noindex off a published topic issue and on a draft', () => {
+    const published = topicSharePreview(
+      { [seedPath]: { ...seed, draft: false } },
+      '',
+    );
+    assert.equal(published.robots, null);
+    assert.equal(published.title, seed.title);
+    assert.equal(published.path, '/news/topic/2026-10-19');
+    const draft = topicSharePreview({ [seedPath]: { ...seed, draft: true } }, '2026-10-19');
+    assert.equal(draft.robots, 'noindex');
   });
 });

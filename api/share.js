@@ -9,9 +9,11 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { dailyNewsTitle } from '../src/lib/dailyNewsArchive.js';
 import { collectRoundups, roundupFromEntry } from '../src/lib/dailyNewsLoad.js';
+import { topicPage } from '../src/lib/topicRoundup.js';
 
 const DAILY_DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
 const ARCHIVE_DESCRIPTION = 'Past SAMPA daily addiction-medicine roundups, newest first.';
+const TOPIC_DESCRIPTION = 'A Weekly Topic Roundup from SAMPA.';
 
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({
@@ -60,12 +62,60 @@ function latestRoundup() {
   return collectRoundups(modules, () => {})[0] || null;
 }
 
+function loadTopicModules() {
+  const dir = join(process.cwd(), 'content', 'topic-roundup');
+  let names = [];
+  try {
+    names = readdirSync(dir);
+  } catch {
+    return {};
+  }
+  const modules = {};
+  for (const name of names) {
+    if (!name.endsWith('.json')) continue;
+    try {
+      modules[`/content/topic-roundup/${name}`] = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+    } catch {
+      /* skip a file that is not JSON */
+    }
+  }
+  return modules;
+}
+
+export function topicSharePreview(modules, date) {
+  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  const page = topicPage(date || '', modules, () => {});
+  if (page.status === 'not-found') return null;
+  if (page.status === 'empty') {
+    return {
+      title: 'Weekly Topic Roundup',
+      description: TOPIC_DESCRIPTION,
+      path: '/news/topic',
+      robots: 'noindex',
+    };
+  }
+  return {
+    title: page.issue.title,
+    description: TOPIC_DESCRIPTION,
+    path: page.issue.path,
+    robots: page.issue.banner ? 'noindex' : null,
+  };
+}
+
 export async function GET(request) {
   const reqUrl = new URL(request.url);
   const slug = reqUrl.searchParams.get('slug') || '';
   const date = reqUrl.searchParams.get('date') || '';
   const view = reqUrl.searchParams.get('view') || '';
   const isDaily = slug === 'daily';
+  const isTopic = slug === 'topic';
+  const topic = isTopic ? topicSharePreview(loadTopicModules(), date) : null;
+  if (isTopic && !topic) {
+    return new Response('Not found', {
+      status: 404,
+      headers: { 'content-type': 'text/plain; charset=utf-8' },
+    });
+  }
   const isArchive = isDaily && view === 'archive';
   const dated = isDaily && date && !isArchive ? publishedRoundup(date) : null;
   if (isDaily && date && !isArchive && !dated) {
@@ -82,13 +132,15 @@ export async function GET(request) {
       ? `${reqUrl.origin}/news/daily/${issue.date}`
       : isDaily
         ? `${reqUrl.origin}/news/daily`
-        : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
+        : topic
+          ? `${reqUrl.origin}${topic.path}`
+          : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
 
   const supaUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
   let post = null;
-  if (slug && !isDaily && supaUrl && anonKey) {
+  if (slug && !isDaily && !isTopic && supaUrl && anonKey) {
     try {
       const res = await fetch(
         `${supaUrl}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}&status=eq.published` +
@@ -107,15 +159,19 @@ export async function GET(request) {
       ? dailyNewsTitle(issue.date)
       : isDaily
         ? 'SAMPA Daily Roundup'
-        : post
-          ? post.title
-          : 'SAMPA News';
+        : topic
+          ? topic.title
+          : post
+            ? post.title
+            : 'SAMPA News';
   const description = isArchive
     ? ARCHIVE_DESCRIPTION
     : isDaily
       ? DAILY_DESCRIPTION
-    : post?.excerpt ||
-      'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
+      : topic
+        ? topic.description
+        : post?.excerpt ||
+          'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
   const image = post?.cover_image_url || '';
 
   const html = `<!doctype html>
@@ -125,6 +181,7 @@ export async function GET(request) {
 <title>${esc(title)}</title>
 <link rel="canonical" href="${esc(canonical)}">
 <meta name="description" content="${esc(description)}">
+${topic?.robots ? `<meta name="robots" content="${esc(topic.robots)}">` : ''}
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="SAMPA — Society of Addiction Medicine Physician Associates">
 <meta property="og:title" content="${esc(title)}">
@@ -143,7 +200,7 @@ ${image ? `<meta name="twitter:image" content="${esc(image)}">` : ''}
 </html>`;
 
   return new Response(html, {
-    status: post || issue || isArchive || (isDaily && !date) ? 200 : 404,
+    status: post || issue || isArchive || (isDaily && !date) || topic ? 200 : 404,
     headers: {
       'content-type': 'text/html; charset=utf-8',
       // Cache at the edge; a re-published post refreshes within 5 minutes.

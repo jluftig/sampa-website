@@ -74,7 +74,7 @@ system `VERCEL_PROJECT_ID` / `VERCEL_ORG_ID`)
 | `.claude/skills/sampa-email/` | Repo agent skill for Brevo campaigns |
 | `.claude/skills/human-review/` | Visual HTML/Markdown/localhost review loop ([petergyang/human-review](https://github.com/petergyang/human-review)) |
 | `.claude/skills/grilling/` etc. | Pocock workflow skills (grill → spec → tickets → implement → PR → retro); see `## Agent skills` in `AGENTS.md` and `docs/agents/sampa-pipeline.md` |
-| `vercel.json` | SPA rewrite; crawler UAs on `/news/:slug` and `/news/daily/:date` → `/api/share` |
+| `vercel.json` | SPA rewrite; crawler UAs on `/news/:slug`, `/news/daily/:date`, and `/news/topic/:date` → `/api/share` |
 Full tree + routes: **`docs/architecture/repo-map.md`**.
 
 ## Security (do not weaken)
@@ -107,7 +107,7 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 11. **Tier keys** sync three ways: `src/lib/membership.js`, `api/_lib/tiers.js`, `STRIPE_PRICE_*` env.
 12. **AuthContext** uses `select('*')` on profiles — tolerate additive migrations.
 13. **New RPCs** degrade gracefully if missing; still prefer migrate-before-code.
-14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers. Dated roundups use `slug=daily&date=` and the path must be `YYYY-MM-DD` only, so `/news/daily/archive` and `/news/daily/tag/:slug` are not dates. `/news/daily` canonical (browser and bots) is the latest dated issue. Unknown dates return 404 to those crawlers; the SPA 404 sends `noindex`. Do not add a 13th `api/*.js` file.
+14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers. Dated roundups use `slug=daily&date=` and the path must be `YYYY-MM-DD` only, so `/news/daily/archive` and `/news/daily/tag/:slug` are not dates. `/news/daily` canonical (browser and bots) is the latest dated issue. `/news/topic` is `slug=topic` (latest issue) and `/news/topic/:date` is `slug=topic&date=`. A draft topic issue is `noindex` and still returns 200 with its title. Unknown dates return 404 to those crawlers; the SPA 404 sends `noindex`. Do not add a 13th `api/*.js` file.
 15. **Mobile shared lib:** `sampa-shared` → `src/lib`; no DOM/Vite-only code there.
 16. **No IAP** for memberships on iOS — website checkout only.
 17. **Web session continuity:** `createClient` uses `createAuthStorage()` (localStorage + first-party cookie backup, `Domain=.addictionpas.org` on prod). Auth/Stripe return URLs go through `clientSiteOrigin` / `requestSiteOrigin` (apex → `https://www.addictionpas.org`). `AuthContext` retries `refreshSession` on a transient null before treating the user as signed out. Do not revert to a bare `createClient` or `window.location.origin` for those redirects.
