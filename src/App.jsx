@@ -8,9 +8,12 @@ import RequireMemberViewer from './components/RequireMemberViewer';
 import RequirePolicyWork from './components/RequirePolicyWork';
 import RequireBoardDashboard from './components/RequireBoardDashboard';
 import Home from './pages/Home';
+import Subscriptions from './pages/Subscriptions';
 
-// Route-level code splitting: the homepage loads eagerly; every other page
-// (and its heavier dependencies — TipTap, DOMPurify) loads on demand.
+// Route-level code splitting: the homepage and /subscriptions load eagerly.
+// Every other page (and TipTap / DOMPurify) loads on demand. Subscriptions
+// stays in the first bundle because a lazy route keeps the previous page
+// on screen until its chunk arrives.
 const News = lazy(() => import('./pages/News'));
 const DailyRoundup = lazy(() => import('./pages/DailyRoundup'));
 const DailyTagView = lazy(() => import('./pages/DailyTagView'));
@@ -38,7 +41,6 @@ const Resources = lazy(() => import('./pages/Resources'));
 const Caq = lazy(() => import('./pages/Caq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const NewsletterConfirmed = lazy(() => import('./pages/NewsletterConfirmed'));
-const Subscriptions = lazy(() => import('./pages/Subscriptions'));
 const Terms = lazy(() => import('./pages/Terms'));
 const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
 const PostEditor = lazy(() => import('./pages/PostEditor'));
