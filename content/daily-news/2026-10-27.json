@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-27",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "New measure: about 5% of opioid treatment program starts lead to SUD-related ED or hospital care",
+      "outlet": "RTI International",
+      "date": "Oct 26",
+      "summary": "RTI researchers, publishing in Addiction, built a Medicaid claims-based measure of substance use-related emergency department visits or hospitalizations within 90 days of starting care at an opioid treatment program. Across 1,226 programs and 412,411 treatment episodes in 2024, the median program rate was 5%, with the middle half of programs ranging from 2.8% to 8.0%, and 80.2% of events were ED visits. Because the measure uses existing claims data, states and payers could compare programs on early adverse events without adding reporting work for clinics.",
+      "url": "https://www.rti.org/news/new-measure-tracks-adverse-events-opioid-treatment"
+    },
+    {
+      "headline": "People hospitalized after accidental overdose had 3.5 times the death rate of the general population",
+      "outlet": "The University of Sydney",
+      "date": "Oct 27",
+      "summary": "A study in Addiction followed 14,000 people admitted to hospitals in New South Wales, Australia, after an accidental drug overdose between 2011 and 2020. During follow-up, 2,588 died, a mortality rate 3.5 times that of the general population, with risk highest in the first month after discharge and heroin, methadone, and stimulant overdoses signaling the highest risk. The findings support treating an overdose admission as a prompt for timely follow-up and addiction care before discharge.",
+      "url": "https://www.sydney.edu.au/news-opinion/news/2026/10/27/accidental-drug-overdose-a-major-warning-sign-for-premature-death-new-research.html"
+    },
+    {
+      "headline": "Iowa launches I-BEACON, a free 24/7 buprenorphine consult line for clinicians in all 99 counties",
+      "outlet": "University of Iowa Injury Prevention Research Center",
+      "date": "Oct 26",
+      "summary": "The Iowa Poison Control Center, funded by the Iowa HHS Opioid Settlement Fund, launched I-BEACON to give health care providers statewide real-time, no-cost expert guidance on withdrawal assessment and buprenorphine dosing. Each call also includes a recommendation to prescribe naloxone and help locating an outpatient buprenorphine prescriber before discharge, in a state where only 49 of 99 counties have at least one known prescriber. Consult lines like this can help ED and rural clinicians start buprenorphine without an on-site addiction specialist.",
+      "url": "https://iprc.public-health.uiowa.edu/2026/10/26/new-i-beacon-program-brings-24-7-opioid-treatment-expertise-to-providers-across-iowa/"
+    },
+    {
+      "headline": "Mississippi expands telehealth addiction screening and treatment program to all 82 counties",
+      "outlet": "TechTarget",
+      "date": "Oct 26",
+      "summary": "The Mississippi State Department of Health has scaled a six-county pilot into a statewide program that screens residents at county health departments and connects high-risk patients to video visits with addiction specialists through its Epic EHR, with navigators coordinating follow-up. As of October 2026 the program had 1,403 cumulative enrollments and 863 active patients, in a state where 449 residents died of overdoses in 2025. The model shows how public health departments can use existing clinics and a shared EHR to extend a small addiction workforce into rural areas.",
+      "url": "https://www.techtarget.com/searchhealthit/feature/How-Mississippi-is-using-data-sharing-telehealth-to-close-addiction-care-gaps"
+    },
+    {
+      "headline": "Missouri officials warn of cychlorphine, a synthetic opioid that test strips may not detect",
+      "outlet": "KQ2",
+      "date": "Oct 26",
+      "summary": "The Missouri Department of Public Safety and the Columbia Fire Department warned residents about cychlorphine, which officials describe as 10 times more potent than fentanyl and which can be mixed into other drugs or counterfeit pills. Citing White House drug policy office figures, the report says it was found in 10 states in 2025 and was involved in 55 U.S. overdose deaths in 2025 and 2026; fentanyl test strips cannot reliably detect it. Responders and clinicians should expect that reversing these overdoses may take multiple naloxone doses.",
+      "url": "https://www.kq2.com/news/health/2026/10/26/missouri-safety-officials-warn-of-synthetic-opioid-cychlorphine/"
+    }
+  ]
+}

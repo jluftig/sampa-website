@@ -130,7 +130,6 @@ export default function Dashboard() {
       setForm({
         // Account contact (SAMPA) — email is sign-in identity, not editable here.
         phone: profile.phone || '',
-        newsletter_opt_in: profile.newsletter_opt_in ?? true,
         sms_opt_in: profile.sms_opt_in ?? false,
         // Directory professional identity
         full_name: profile.full_name || '',
@@ -196,7 +195,7 @@ export default function Dashboard() {
     }
     setSaveState('saving');
     const organizations = sanitizeOrganizations(form.organizations);
-    const { organizations: _drop, ...rest } = form;
+    const { organizations: _drop, newsletter_opt_in: _emailPageOwnsThis, ...rest } = form;
     const payload = {
       ...rest,
       state: form.state || null,
@@ -225,7 +224,6 @@ export default function Dashboard() {
           npi: form.npi,
           state: form.state || null,
           phone: form.phone || null,
-          newsletter_opt_in: form.newsletter_opt_in,
           sms_opt_in: form.sms_opt_in,
           directory_visible: form.directory_visible,
           share_email: form.share_email,
@@ -549,15 +547,14 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <label className="flex items-center gap-3 mt-5 text-sm text-text/70 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={form.newsletter_opt_in}
-                    onChange={(e) => setForm({ ...form, newsletter_opt_in: e.target.checked })}
-                    className="w-4 h-4 accent-primary"
-                  />
-                  Send me the SAMPA newsletter and member updates
-                </label>
+                <p className="mt-5 text-sm text-text/70">
+                  <Link to="/dashboard/emails" className="font-semibold text-primary-text hover:underline">
+                    Choose which SAMPA emails you get
+                  </Link>
+                  <span className="block text-xs text-text/40 mt-0.5">
+                    SAMPA Updates, the Daily Roundup, and the Weekly Topic Roundup.
+                  </span>
+                </p>
 
                 <label className="flex items-start gap-3 mt-4 text-sm text-text/70 cursor-pointer">
                   <input

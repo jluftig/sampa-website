@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-20",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Higher-dose opioids for acute low back pain more than doubled later OUD or overdose risk",
+      "outlet": "JAMA Network Open",
+      "date": "Oct 19",
+      "summary": "In a cohort of 399,500 opioid-naive adults with Medicaid who started treatment for acute low back pain, 2.3% had a new opioid use disorder or overdose diagnosis within 13 months. Starting opioids above 50 morphine milligram equivalents was tied to a 146.6% higher risk, and lower-dose opioids for more than 7 days or gabapentinoids each roughly doubled it, while chiropractic care and physical therapy were tied to about 31% to 33% lower risk. The findings back guidelines that put nonpharmacologic care first for acute back pain.",
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/10.1001/jamanetworkopen.2026.39420"
+    },
+    {
+      "headline": "Fewer than 1 in 3 pregnant Wisconsin Medicaid enrollees with OUD stayed on MOUD all pregnancy",
+      "outlet": "Journal of Substance Use and Addiction Treatment",
+      "date": "Oct 19",
+      "summary": "An analysis of 3,420 Wisconsin Medicaid-covered live births from 2013 to 2019 with an opioid use disorder diagnosis found that 31.5% had stable MOUD treatment for the full pregnancy. Living in a county with facilities offering MOUD plus pregnancy services, and living outside large metro areas, were tied to higher odds of stable treatment, while each added community vulnerability factor, such as a primary care shortage or high housing costs, cut the odds by 10%. The results point to perinatal addiction services and social conditions as levers for keeping pregnant patients on MOUD.",
+      "url": "https://doi.org/10.1016/j.josat.2026.210142"
+    },
+    {
+      "headline": "Kentucky opens 2027 opioid settlement grants for prevention, treatment, and recovery",
+      "outlet": "WSON",
+      "date": "Oct 19",
+      "summary": "The Kentucky Opioid Abatement Advisory Commission is accepting 2027 grant applications in prevention and in treatment and recovery, Attorney General Russell Coleman announced. The commission awarded nearly $34 million to more than 100 organizations in 2026 and has invested more than $100 million since its creation in 2021; applications close December 17 at 6 p.m. Eastern. Kentucky clinics and recovery programs seeking settlement dollars for treatment capacity have about eight weeks to apply.",
+      "url": "https://wsonradio.com/2026/10/19/opioid-abatement-grant-applications-now-open/"
+    },
+    {
+      "headline": "Yukon coroner reports 8 drug deaths in Whitehorse since July, all involving cocaine",
+      "outlet": "CBC News",
+      "date": "Oct 19",
+      "summary": "Yukon's chief coroner said eight people in Whitehorse have died from substance use since July, with two more deaths suspected, after the territory had gone without a substance-related death since last October. Preliminary findings show cocaine in all eight confirmed deaths and fluorofentanyl in five. The cluster is a reminder that stimulant use carries opioid overdose risk in a contaminated supply, so naloxone and overdose counseling matter for patients who use cocaine.",
+      "url": "https://www.cbc.ca/news/canada/north/yukon-coroner-warns-of-alarming-spike-in-fatal-overdoses-since-summer-9.7387574"
+    },
+    {
+      "headline": "Shifts in risk-taking predicted next-month drinking in alcohol use disorder, smartphone study finds",
+      "outlet": "News-Medical",
+      "date": "Oct 19",
+      "summary": "A one-year study of people with mostly mild to moderate alcohol use disorder, published in Biological Psychiatry: Cognitive Neuroscience and Neuroimaging, used gamified smartphone tasks to track decision making and drinking each month. Participants drank more in the month after their risk-taking rose in a mixed gambling context and fell in a loss context, the reverse pattern was not seen, and self-control measures did not track drinking. The authors say such tasks could one day flag high-risk periods for timely, targeted support, though there are no immediate treatment implications.",
+      "url": "https://www.news-medical.net/news/20261019/Increased-risk-taking-behavior-precedes-higher-alcohol-consumption-study-finds.aspx"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-23",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Colorado adds $3.5 million in opioid settlement funds to keep free naloxone flowing through mid-2028",
+      "outlet": "Colorado Attorney General",
+      "date": "Oct 22",
+      "summary": "Colorado Attorney General Phil Weiser committed another $3.5 million from the state's opioid settlement share to the health department's Naloxone Bulk Purchase Fund, bringing his office's total commitment to $6.5 million through June 2028. In fiscal year 2025-26 the fund made 364,072 free doses available through 231 agencies in all 64 counties, and eight agencies that voluntarily reported data logged 5,100 reversals. The state recorded 1,175 opioid overdose deaths in 2025, 980 involving fentanyl, showing why steady naloxone supply remains a core settlement priority.",
+      "url": "https://coag.gov/press-releases/weiser-expands-investment-in-lifesaving-naloxone/"
+    },
+    {
+      "headline": "New Jersey harm reduction workers press lawmakers for oversight of $1.1 billion in opioid settlement funds",
+      "outlet": "New Jersey Monitor",
+      "date": "Oct 23",
+      "summary": "At a three-hour Assembly oversight hearing in Trenton, advocates criticized local spending of opioid settlement money on concerts, police surveillance equipment and other items, as the state and local governments are set to receive $1.1 billion through 2038. A pending bill would require recipients to spend funds within 18 months or have them redistributed, and a survey of 25 local health departments found more than half were not consulted on spending decisions. Clinicians and public health leaders may want a voice in how these dollars are allocated to treatment, harm reduction and recovery.",
+      "url": "https://newjerseymonitor.com/2026/10/23/opioid-settlement-fund-spending-oversight/"
+    },
+    {
+      "headline": "NEA review finds most studies of arts-based approaches to the opioid crisis report positive results",
+      "outlet": "National Endowment for the Arts",
+      "date": "Oct 22",
+      "summary": "A new National Endowment for the Arts report examined 69 studies of arts-based interventions related to opioids and found that nearly 80% reported positive findings, with none uniformly negative. Music made up 56 of the 69 studies, with the strongest and most consistent results for pain management, while evidence for treatment engagement and reduced craving was less developed. The report suggests music-based approaches may complement pain care and addiction treatment, though more rigorous evaluation is needed.",
+      "url": "https://www.arts.gov/news/press-releases/2026/national-endowment-arts-releases-new-report-how-arts-can-help-address-opioid-crisis"
+    },
+    {
+      "headline": "New Vancouver, Washington, opioid treatment program offers walk-in, same-day medication starts",
+      "outlet": "The Columbian",
+      "date": "Oct 22",
+      "summary": "Community Medical Services opened an opioid treatment program in central Vancouver that offers methadone, buprenorphine, counseling and naloxone, with walk-in admissions that take about 2 1/2 hours and medication generally provided the same day. Clark County recorded 155 fatal drug overdoses in 2025, up from 58 in 2016, according to county public health data. Low-barrier, same-day access to opioid treatment programs can help clinicians connect patients to methadone when they are ready to start.",
+      "url": "https://www.columbian.com/news/2026/oct/22/vancouver-clinic-offers-same-day-admissions-to-treat-drug-addiction/"
+    },
+    {
+      "headline": "Connecticut launches a monthly dashboard of town-level overdose death data",
+      "outlet": "Connecticut Department of Public Health",
+      "date": "Oct 21",
+      "summary": "The Connecticut Department of Public Health launched a public online dashboard of unintentional overdose deaths that is updated monthly and shows data for the state, individual towns and planning regions over time. The department says the tool is meant to help local health departments, harm reduction programs, first responders and health care workers spot new patterns and plan prevention work. Timely local data can help clinical and community teams target naloxone, outreach and treatment access where deaths are rising.",
+      "url": "https://portal.ct.gov/dph/newsroom/press-releases---2026/new-dph-dashbord-overdose-data"
+    }
+  ]
+}
