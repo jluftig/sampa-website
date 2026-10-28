@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-28",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Minnesota opioid deaths fell for a third year, but stimulant deaths pushed total overdoses up 3%",
+      "outlet": "Minnesota Department of Health",
+      "date": "Oct 27",
+      "summary": "A new Minnesota Department of Health report shows opioid-involved overdose deaths fell for a third straight year, from a high of 1,039 in 2022 to 671 in 2025, with fentanyl-involved deaths down 6% to 564. All drug overdose deaths still rose 3%, from 994 to 1,025, driven by stimulant-involved deaths, and the state launched an EMS-based overdose spike alert system on October 1. The split suggests overdose prevention now has to address methamphetamine and cocaine alongside opioids.",
+      "url": "https://www.health.state.mn.us/news/pressrel/2026/overdose102726.html"
+    },
+    {
+      "headline": "Two-thirds of U.S. adults are unaware of medications for alcohol use disorder, survey finds",
+      "outlet": "Psychiatric News Alert",
+      "date": "Oct 27",
+      "summary": "In a RAND survey of 2,009 U.S. adults published in JAMA Internal Medicine, 34% had heard of medications to help people reduce or stop drinking, compared with 49% for opioid use. Just over half (54%) agreed that people with unhealthy alcohol use should consider medication, and the most common concern was adverse events or safety (57%). With fewer than 3% of adults with alcohol use disorder receiving an FDA-approved medication each year, the authors call for awareness messaging in primary care and pharmacies.",
+      "url": "https://alert.psychnews.org/most-adults-arent-aware-of-medications-available-to-treat-unhealthy-alcohol-use"
+    },
+    {
+      "headline": "Oregon opens a settlement-funded methadone and buprenorphine clinic in Gresham",
+      "outlet": "Oregon Health Authority",
+      "date": "Oct 27",
+      "summary": "Governor Tina Kotek marked the opening of a New Season Treatment Center in Gresham offering outpatient methadone, buprenorphine, and counseling to East Multnomah County and nearby rural communities. The clinic was made possible by $1.8 million in state opioid settlement funds, and the state's settlement board has now funded 11 opioid treatment programs in high-need regions. Placing opioid treatment programs closer to where patients live can cut the travel and wait times that keep people from starting and staying on methadone.",
+      "url": "https://www.oregon.gov/oha/erd/pages/governor-kotek-celebrates-opening-of-new-opioid-treatment-program-in-gresham-10.27.2026.aspx"
+    },
+    {
+      "headline": "Delaware approves more than $12 million in opioid settlement grants for 42 projects",
+      "outlet": "Spotlight Delaware",
+      "date": "Oct 28",
+      "summary": "The Delaware Opioid Settlement Commission approved more than $12 million in grants on October 19 for 42 projects, its second major award since revamping its grant process after mismanagement concerns. The largest include $1.35 million to atTAcK addiction for recovery housing scholarships and $1.3 million to CORAS Wellness and Behavioral Health for a 24/7 rapid-response program offering transportation and care coordination, including links to MOUD appointments. Round-the-clock navigation targets the gap when someone is ready for treatment after hours but cannot get in.",
+      "url": "https://spotlightdelaware.org/2026/10/28/delaware-approves-more-than-12m-in-opioid-settlement-grants/"
+    },
+    {
+      "headline": "Dane County, Wisconsin, warns of overdose spike with opioid-like symptoms after reported cocaine use",
+      "outlet": "Public Health Madison & Dane County",
+      "date": "Oct 27",
+      "summary": "Public Health Madison & Dane County issued an alert after EMS data showed at least five overdose incidents in less than 24 hours on October 26, more than the community usually sees. Several calls reported cocaine use, but symptoms were consistent with opioid overdose, and officials said the local drug supply may have changed or may include fentanyl or other synthetic drugs. Clinicians should consider opioid involvement and naloxone even when patients report using only stimulants.",
+      "url": "https://publichealthmdc.com/news/2026-10-27/10-27-26-overdose-spike-alert-risk-of-drug-overdose-increased-in-dane-county"
+    }
+  ]
+}
