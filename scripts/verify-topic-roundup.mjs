@@ -171,7 +171,13 @@ describe('topic routes stay out of the daily catalog', () => {
     assert.ok(dated < slug);
     assert.match(news, /to="\/news\/topic"/);
     assert.match(news, /Weekly Topic Roundup →/);
-    assert.equal(news.includes('/subscriptions'), false);
+    assert.match(news, /to="\/subscriptions"/);
+    assert.match(news, /Manage subscriptions/);
+    const footer = source('src/components/Footer.jsx');
+    assert.match(footer, /to="\/news\/topic"/);
+    assert.match(footer, /Weekly Topic Roundup/);
+    assert.match(footer, /to="\/subscriptions"/);
+    assert.match(footer, /Manage subscriptions/);
     const page = source('src/pages/TopicRoundupPage.jsx');
     assert.match(page, /path = `\/news\/topic\/\$\{issue\.date\}`;/);
     assert.equal(/dated \?[^\n]*\/news\/topic/.test(page), false);

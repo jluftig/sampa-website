@@ -7,7 +7,24 @@ import Footer from '../components/Footer';
 // Landing page after Brevo DOI confirmation click (redirectionUrl).
 export default function NewsletterConfirmed() {
   const [params] = useSearchParams();
-  const daily = params.get('list') === 'daily';
+  const list = params.get('list');
+  const confirmed = {
+    daily: {
+      message: 'You’re subscribed to the SAMPA Daily Roundup. You’ll get the day’s five items by email. No membership required.',
+      to: '/news/daily',
+      label: 'Read today’s roundup',
+    },
+    topic: {
+      message: 'You’re subscribed to the Weekly Topic Roundup. You’ll get each new issue by email. No membership required.',
+      to: '/news',
+      label: 'Read the news',
+    },
+  };
+  const view = confirmed[list] || {
+    message: 'Thanks for confirming. You’ll receive SAMPA Updates — a weekly email with practice news, society notes, and the policy changes that affect your patients’ access to care. No membership required.',
+    to: '/news',
+    label: 'Read the news',
+  };
 
   return (
     <div className="relative min-h-screen bg-background text-text">
@@ -22,16 +39,14 @@ export default function NewsletterConfirmed() {
           You’re subscribed
         </h1>
         <p className="text-text/70 mb-8 leading-relaxed">
-          {daily
-            ? 'You’re subscribed to the SAMPA Daily Roundup. You’ll get the day’s five items by email. No membership required.'
-            : 'Thanks for confirming. You’ll receive SAMPA Updates — a weekly email with practice news, society notes, and the policy changes that affect your patients’ access to care. No membership required.'}
+          {view.message}
         </p>
         <div className="flex flex-wrap justify-center gap-4 text-sm font-semibold">
           <Link
-            to={daily ? '/news/daily' : '/news'}
+            to={view.to}
             className="px-5 py-2.5 rounded-full bg-primary text-white hover:opacity-90 transition-opacity"
           >
-            {daily ? 'Read today’s roundup' : 'Read the news'}
+            {view.label}
           </Link>
           <Link
             to="/join"
