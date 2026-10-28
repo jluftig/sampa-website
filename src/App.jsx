@@ -16,6 +16,7 @@ import Subscriptions from './pages/Subscriptions';
 // on screen until its chunk arrives.
 const News = lazy(() => import('./pages/News'));
 const DailyRoundup = lazy(() => import('./pages/DailyRoundup'));
+const TopicRoundup = lazy(() => import('./pages/TopicRoundup'));
 const DailyTagView = lazy(() => import('./pages/DailyTagView'));
 const PostView = lazy(() => import('./pages/PostView'));
 const Policy = lazy(() => import('./pages/Policy'));
@@ -64,6 +65,8 @@ function App() {
           <Route path="/news/daily/archive" element={<Navigate to="/news" replace />} />
           <Route path="/news/daily/tag/:slug" element={<DailyTagView />} />
           <Route path="/news/daily/:date" element={<DailyRoundup />} />
+          <Route path="/news/topic" element={<TopicRoundup />} />
+          <Route path="/news/topic/:date" element={<TopicRoundup />} />
           {import.meta.env.DEV && (
             <Route path="/__preview/suggested-tags" element={<SuggestedDailyTags />} />
           )}

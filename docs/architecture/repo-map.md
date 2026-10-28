@@ -114,7 +114,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/archive`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; archive and tag routes before `:date`; static segments before `/news/:slug`), `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/subscriptions`, `/newsletter-confirmed` (`?list=daily` for the roundup list, `?list=topic` for the topic list) |
+| Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/archive`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; archive and tag routes before `:date`; static segments before `/news/:slug`), `/news/topic`, `/news/topic/:date`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/subscriptions`, `/newsletter-confirmed` (`?list=daily` for the roundup list, `?list=topic` for the topic list) |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule, plus aggregate member numbers), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
 | Admin, board, or committee chair | `/board/dashboard` (org dashboard, finances included — `canViewBoardDashboard`) |
@@ -125,6 +125,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/daily-tags`, `/editor/policy` **before** `/editor/:id`.
 Declare `/news/daily/archive` and `/news/daily/tag/:slug` **before** `/news/daily/:date`.
+`content/topic-roundup` is not part of the daily catalog.
 `/login?next=` must be an in-app path starting with `/` (not `//`).
 
 **Member Login** (footer, and the header while signed out or still loading): signed-out → `/login` (no next). After a profile loads, the header is the **My SAMPA** menu. My account goes to `/dashboard`. Editor is a separate item for staff (`/editor`). Directory and Board sit in that menu, not the top bar. Join stays for signed-out visitors and accounts with no membership. Active members and staff do not see it. A past-due member sees **Renew** to `/dashboard`. A canceled member sees **Renew** to `/join`. After auth with no next, editors/admins/`can_edit_news` → `/editor`; everyone else → `/dashboard`. An explicit `next` is honored. A held/expired session that still has `user.email` but no `profiles` row is treated as signed-out (do not show the join upsell). Membership and editor flags are read from **this** auth user’s `profiles` row (id = Supabase user id), never by email. A second Google login is a second profile.

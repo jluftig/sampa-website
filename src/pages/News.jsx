@@ -64,6 +64,9 @@ export default function News() {
             <Link to="/keywords" className="text-primary-text font-semibold hover:underline">
               Browse by keyword →
             </Link>
+            <Link to="/news/topic" className="text-primary-text font-semibold hover:underline">
+              Weekly Topic Roundup →
+            </Link>
             <Link to="/subscriptions" className="text-primary-text font-semibold hover:underline">
               Manage subscriptions
             </Link>

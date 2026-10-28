@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-19",
+  "title": "Weekly Topic Roundup: Long-Acting Injectable Buprenorphine for Methadone-to-Buprenorphine Transitions",
+  "items": [
+    {
+      "headline": "Outpatient direct initiation of injectable buprenorphine from methadone: 15-patient case series reports 93% completed one monthly injection",
+      "outlet": "Journal of Addiction Medicine",
+      "date": "2026-09-03",
+      "summary": "In a retrospective study at one academic health system, 15 people in methadone treatment with opioid use disorder in remission requested a direct-to-inject transition in 2025, using weekly injectable buprenorphine; 93% received one monthly extended-release injection and 67% remained on buprenorphine at 90 days. Mean methadone dose was 71.5 mg (range 24 to 120), and 33% reported moderate or severe discomfort, all at methadone doses of 95 mg or more, with symptoms responsive to anxiolytics. The sample is small and uncontrolled, but it suggests clinicians may want to plan for more withdrawal-related discomfort when transitioning people from higher methadone doses.",
+      "url": "https://doi.org/10.1097/ADM.0000000000001770"
+    },
+    {
+      "headline": "Case report: rapid transition from methadone 140 mg to extended-release buprenorphine ended with withdrawal, return to opioid use, and a switch back to methadone",
+      "outlet": "The Mental Health Clinician",
+      "date": "2026-04-01",
+      "summary": "A 43-year-old man stable on methadone 140 mg daily was moved to buprenorphine using transdermal patches and a methadone cut of about half on day 3, then received a 300 mg extended-release injection on day 5; he developed significant withdrawal, was hospitalized, reported repeated returns to opioid use and suicidal ideation, and was restarted on methadone. The authors attribute the failure to high pre-transition methadone dose, rapid transition, and patient reluctance, and note that tapering methadone to 30 to 40 mg before transition is commonly recommended. A single case cannot show how often this occurs, but it flags caution about rapid cross-titration from high-dose methadone as package inserts add faster initiation options.",
+      "url": "https://doi.org/10.9740/mhc.2026.04.059"
+    },
+    {
+      "headline": "Hospital case: high-dose buprenorphine initiation transitions a patient from methadone 180 mg, later moved to monthly long-acting buprenorphine",
+      "outlet": "Substance Use & Addiction Journal",
+      "date": "2026-03-13",
+      "summary": "The authors reviewed the literature on high-dose buprenorphine initiation and found no prior reports of successful transition from methadone doses as high as 180 mg, then described one hospitalized patient transitioned from 180 mg with support from adjunctive medications. The patient stabilized within one week on 32 mg of daily buprenorphine and later on monthly long-acting buprenorphine. This single case suggests inpatient high-dose initiation may be feasible for people on high-dose methadone where close monitoring is available, but it does not establish safety or generalizability.",
+      "url": "https://doi.org/10.1177/29767342261418955"
+    },
+    {
+      "headline": "FDA Brixadi label (revised December 2025): injection may precipitate withdrawal in people dependent on full agonists such as methadone",
+      "outlet": "U.S. Food and Drug Administration (Drugs@FDA)",
+      "date": "2025-12-22",
+      "summary": "The prescribing information warns that Brixadi may precipitate opioid withdrawal in people physically dependent on full agonists such as methadone before the full agonist's effects have subsided, and directs a 4 mg transmucosal buprenorphine test dose before weekly Brixadi for people new to treatment; starting with monthly Brixadi in new entrants has not been studied. The December 2025 revision also advises strongly considering naloxone or nalmefene when Brixadi is started or renewed. The label gives no methadone-specific transition schedule, so clinicians moving people from methadone rely on published case series and local protocols.",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2026/210136s012lbl.pdf"
+    },
+    {
+      "headline": "Scottish prison service evaluation of 134 adults reports 93.8% retention on long-acting injectable buprenorphine, including people tapered from methadone above 30 mg",
+      "outlet": "Substance Abuse and Rehabilitation",
+      "date": "2025-04-15",
+      "summary": "An NHS Forth Valley service evaluation of 134 adults in custody found 93.8% were retained on monthly long-acting injectable buprenorphine for 12 months or until release or transfer. People who tapered from methadone above 30 mg per day to 30 mg or less before switching had median global TSQM satisfaction scores above 80 at all timepoints, though lower than those starting from 30 mg or less. The study was observational, relied on self-reported drug use, and was run jointly with the manufacturer, so it supports feasibility of a taper-then-switch approach in custody rather than comparative effectiveness.",
+      "url": "https://doi.org/10.2147/SAR.S510467"
+    }
+  ],
+  "furtherReading": [
+    {
+      "author": "O’Conor et al.",
+      "title": "Outpatient Direct Initiation of Injectable Buprenorphine in a Harm Reduction Agency and Primary Care Clinic: A Retrospective Case Series",
+      "year": 2026,
+      "doi": "10.1097/adm.0000000000001696",
+      "url": "https://doi.org/10.1097/adm.0000000000001696"
+    },
+    {
+      "author": "Tremonti et al.",
+      "title": "Patient Experience of Withdrawal During Methadone–Buprenorphine Transfer: A Prospective Cohort Study",
+      "year": 2026,
+      "doi": "10.1111/dar.70211",
+      "url": "https://doi.org/10.1111/dar.70211"
+    },
+    {
+      "author": "Aboud and Albert",
+      "title": "Buprenorphine initiation in fentanyl use",
+      "year": 2026,
+      "doi": "10.46747/cfp.7209529",
+      "url": "https://doi.org/10.46747/cfp.7209529"
+    },
+    {
+      "author": "Jobling et al.",
+      "title": "Medication transitions and predictors of illicit substance use during opioid agonist treatment: a three-year follow-up study",
+      "year": 2026,
+      "doi": "10.1186/s13722-026-00711-0",
+      "url": "https://doi.org/10.1186/s13722-026-00711-0"
+    },
+    {
+      "author": "Shiwach et al.",
+      "title": "Rapid vs Standard Induction to Injectable Extended-Release Buprenorphine",
+      "year": 2025,
+      "doi": "10.1001/jamanetworkopen.2025.37319",
+      "url": "https://doi.org/10.1001/jamanetworkopen.2025.37319"
+    },
+    {
+      "author": "Thakrar",
+      "title": "Rapid Initiation of Extended-Release Buprenorphine—Evidence and Barriers",
+      "year": 2025,
+      "doi": "10.1001/jamanetworkopen.2025.37331",
+      "url": "https://doi.org/10.1001/jamanetworkopen.2025.37331"
+    },
+    {
+      "author": "Siu et al.",
+      "title": "Transition to Extended-release Buprenorphine Injectable Within Seven Days for Opioid Use Disorder Treatment: A Scoping Narrative",
+      "year": 2025,
+      "doi": "10.1097/adm.0000000000001520",
+      "url": "https://doi.org/10.1097/adm.0000000000001520"
+    },
+    {
+      "author": "Naren et al.",
+      "title": "Feasibility of direct induction onto long-acting injectable buprenorphine",
+      "year": 2025,
+      "doi": "10.1016/j.josat.2025.209808",
+      "url": "https://doi.org/10.1016/j.josat.2025.209808"
+    },
+    {
+      "author": "Nairn et al.",
+      "title": "A study of micro-dosing—transferring from methadone to buprenorphine in NHS Dumfries & Galloway",
+      "year": 2025,
+      "doi": "10.1093/ijpp/riaf070",
+      "url": "https://doi.org/10.1093/ijpp/riaf070"
+    },
+    {
+      "author": "Praeger et al.",
+      "title": "Rotation from methadone to buprenorphine using a micro‐dosing regime in patients with opioid use disorder and serious mental illness: A case series",
+      "year": 2024,
+      "doi": "10.1111/dar.13885",
+      "url": "https://doi.org/10.1111/dar.13885"
+    },
+    {
+      "author": "O’Conor et al.",
+      "title": "Inpatient initiation of long-acting injectable buprenorphine at a community hospital: A retrospective case series",
+      "year": 2024,
+      "doi": "10.1080/10550887.2024.2391145",
+      "url": "https://doi.org/10.1080/10550887.2024.2391145"
+    },
+    {
+      "author": "Seval et al.",
+      "title": "Inpatient Low-dose Transitions From Full Agonist Opioids Including Methadone Onto Long-acting Depot Buprenorphine: Case Series From a Multicenter Clinical Trial",
+      "year": 2023,
+      "doi": "10.1097/adm.0000000000001136",
+      "url": "https://doi.org/10.1097/adm.0000000000001136"
+    },
+    {
+      "author": "Soyka and Groß",
+      "title": "Transition from methadone to subcutaneous buprenorphine depot in patients with opioid use disorder in custodial setting – a case series",
+      "year": 2021,
+      "doi": "10.1080/00952990.2021.1963757",
+      "url": "https://doi.org/10.1080/00952990.2021.1963757"
+    },
+    {
+      "author": "Lintzeris et al.",
+      "title": "Strategies for Transfer From Methadone to Buprenorphine for Treatment of Opioid Use Disorders and Associated Outcomes: A Systematic Review",
+      "year": 2021,
+      "doi": "10.1097/adm.0000000000000855",
+      "url": "https://doi.org/10.1097/adm.0000000000000855"
+    }
+  ],
+  "consideredSkipped": [
+    "Several recent studies were left in Further reading rather than featured because they are not about moving people from methadone to long-acting injectable bup: a 2026 prospective study of 117 people moving from methadone to bup with low-dose or stop-and-start approaches (Tremonti et al.); a 2026 case series of 24 people starting direct-to-inject bup at harm reduction and primary care sites (O’Conor et al.); a 2025 randomized trial of rapid versus standard extended-release bup induction in people who inject opioids, use high doses, or use fentanyl, with its accompanying editorial (Shiwach et al.; Thakrar); and a 2026 Norwegian cohort of 424 people in opioid agonist treatment (Jobling et al.).",
+    "A 2025 scoping review (Siu et al.), a 2025 feasibility study (Naren et al.), a 2026 Canadian Family Physician article (Aboud and Albert), and a 2025 study of 177 people using micro-dosing (Nairn et al.) were judged adjacent to the topic and are listed under Further reading.",
+    "Older papers from 2021 to 2024 (Lintzeris et al., Soyka and Groß, Seval et al., Praeger et al., and O’Conor et al. 2024) remain useful background and are listed under Further reading only.",
+    "A conference poster from Lisbon Addictions 2024 reported a 20-person inpatient program moving people from high-dose methadone to injectable bup (19 of 20 completed). It was not featured because it is a conference abstract that has not been peer reviewed, and the conference web page that hosted it is no longer available at a stable address.",
+    "Clinical guidance pages from NICE, SIGN (2022), and the Regional Medicines Optimisation Committees were not used because they are undated or older than this roundup’s window."
+  ],
+  "notes": [
+    "The evidence base is thin. Most of what is featured is case reports and case series, and items 1, 2, and 3 are all 2026 reports on moving people from methadone to buprenorphine (one 15-patient case series and two single-patient case reports). These reports cannot show how often problems or successes occur.",
+    "Item 5 is deliberate background. It was published in April 2025, older than the 2026 items, and it was designed and funded together with Camurus, the manufacturer of Buvidal (sold as Brixadi in the U.S.). Its 93.8% retention figure is the one reported in the abstract; the full text gives 93.9% when three people transferred between prisons are excluded.",
+    "Date notes: item 2 uses its April 1, 2026 online date. Item 4 uses the FDA approval date of December 22, 2025 for the label revised in December 2025; the label does not give a methadone-specific transition schedule. Item 3 uses its March 13, 2026 online-first date; the journal issue is dated July 2026.",
+    "Item 2's details (four transdermal patches, a planned methadone cut of half on day 3, a 300 mg extended-release injection on day 5, methadone 140 mg) were checked against the open-access full text. Item 3 was summarized from the published abstract because the full text could not be accessed.",
+    "In Further reading, one author is listed by last name, two authors as “Last and Last”, and three or more as the first author’s last name plus “et al.”"
+  ],
+  "draft": true
+}

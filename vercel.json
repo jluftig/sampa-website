@@ -49,6 +49,17 @@
       "destination": "/api/share?slug=daily&date=:date"
     },
     {
+      "source": "/news/topic/:date(\\d{4}-\\d{2}-\\d{2})",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Slack-ImgProxy|TelegramBot|WhatsApp|Discordbot|Pinterestbot|redditbot|SkypeUriPreview|vkShare).*"
+        }
+      ],
+      "destination": "/api/share?slug=topic&date=:date"
+    },
+    {
       "source": "/news/:slug",
       "has": [
         {

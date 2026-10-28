@@ -70,7 +70,8 @@ test('a confirm link shows a confirm button and removes nothing on load', () => 
 
 test('topic confirmation links to the news page, not a missing roundup route', () => {
   const markup = render(createElement(NewsletterConfirmed), '/newsletter-confirmed?list=topic');
-  assert.match(markup, /href="\/news"/);
-  assert.equal(markup.includes('href="/news/topic"'), false);
-  assert.match(markup, /Read the news/);
+  const main = markup.slice(markup.indexOf('<main'), markup.indexOf('</main>'));
+  assert.match(main, /href="\/news"/);
+  assert.equal(main.includes('/news/topic'), false);
+  assert.match(main, /Read the news/);
 });
