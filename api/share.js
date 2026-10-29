@@ -13,7 +13,7 @@ import { topicPage } from '../src/lib/topicRoundup.js';
 
 const DAILY_DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
 const ARCHIVE_DESCRIPTION = 'Past SAMPA daily addiction-medicine roundups, newest first.';
-const TOPIC_DESCRIPTION = 'A monthly look at an emerging addiction practice.';
+const TOPIC_DESCRIPTION = 'This issue of SAMPA Emerging Practice Monthly: a new outpatient case series, a systematic review, inpatient approaches and a cautionary case on moving people from methadone to long-acting injectable bup.';
 
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Instagram, Facebook } from 'lucide-react';
 import DonateLink from './DonateLink';
 import NewsletterSignup from './NewsletterSignup';
+import { signupPreset } from '../lib/subscriptionChoices';
 import MemberLoginLink from './MemberLoginLink';
 
 export default function Footer() {
@@ -11,7 +12,7 @@ export default function Footer() {
 
   return (
     <>
-      {showSignup && <NewsletterSignup variant="banner" />}
+      {showSignup && <NewsletterSignup variant="banner" preset={signupPreset(pathname)} />}
 
       <footer className="bg-text text-white py-16 px-4 border-t border-text/10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">

@@ -78,7 +78,7 @@ test('/news renders the combined feed with the daily signup form', () => {
   assert.match(src, /useDailyRoundups\(\)/);
   assert.match(src, /<PostCard /);
   assert.match(src, /<RoundupCard /);
-  assert.match(src, /<NewsletterSignup variant="card" list="daily" \/>/);
+  assert.match(src, /<NewsletterSignup variant="card" preset="daily" \/>/);
   // Earlier posts still link to their existing /news/:slug pages.
   assert.match(read('src/components/PostCard.jsx'), /to=\{`\/news\/\$\{post\.slug\}`\}/);
   assert.match(read('src/components/RoundupCard.jsx'), /to=\{`\/news\/daily\/\$\{roundup\.date\}`\}/);

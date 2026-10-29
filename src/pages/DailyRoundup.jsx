@@ -77,7 +77,7 @@ export default function DailyRoundup() {
         )}
 
         <div className="mt-14">
-          <NewsletterSignup variant="card" list="daily" />
+          <NewsletterSignup variant="card" preset="daily" />
         </div>
       </main>
 

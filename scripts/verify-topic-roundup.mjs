@@ -46,15 +46,22 @@ describe('topic roundup seed', () => {
 
     assert.deepEqual(warnings, []);
     assert.equal(page.status, 'issue');
-    assert.equal(seed.title.startsWith('SAMPA Emerging Practice Monthly: '), true);
+    assert.equal(seed.title, 'SAMPA Emerging Practice Monthly No. 1 (Oct 2026)');
     assert.equal(seed.title.includes('Weekly Topic Roundup'), false);
     assert.equal(page.issue.date, '2026-10-19');
     assert.equal(page.issue.weekday, 'Monday, October 19, 2026');
-    assert.equal(page.issue.banner, 'Draft - pending clinical review');
+    assert.equal(page.issue.banner, null);
     assert.equal(page.issue.isLatest, true);
     assert.equal(page.issue.path, '/news/topic/2026-10-19');
     assert.equal(page.issue.items.length, 5);
-    assert.equal(page.issue.furtherReading.length, 14);
+    assert.equal(page.issue.furtherReading.length, 7);
+    assert.deepEqual(page.issue.items.map((item) => item.url), [
+      'https://doi.org/10.1097/ADM.0000000000001770',
+      'https://doi.org/10.1097/ADM.0000000000000855',
+      'https://doi.org/10.1177/29767342261418955',
+      'https://doi.org/10.1097/ADM.0000000000001136',
+      'https://doi.org/10.9740/mhc.2026.04.059',
+    ]);
     assert.deepEqual(page.issue.items, seed.items.map((item) => ({
       headline: item.headline.trim(),
       outlet: item.outlet.trim(),
@@ -64,24 +71,23 @@ describe('topic roundup seed', () => {
     })));
 
     const tremonti = page.issue.furtherReading.find((row) => row.doi === '10.1111/dar.70211');
-    const aboud = page.issue.furtherReading.find((row) => row.doi === '10.46747/cfp.7209529');
     assert.equal(tremonti.lead, tremontiLead);
     assert.equal(tremonti.href, 'https://doi.org/10.1111/dar.70211');
     assert.equal(tremonti.doi, '10.1111/dar.70211');
-    assert.equal(aboud.lead, aboudLead);
+    assert.equal(page.issue.furtherReading.some((row) => row.doi === '10.46747/cfp.7209529'), false);
     for (const row of page.issue.furtherReading) {
       assert.equal(row.lead.includes('et al..'), false);
     }
-    assert.equal(wrapped.issue.furtherReading[1].lead, tremontiLead);
+    assert.equal(wrapped.issue.furtherReading[0].lead, tremontiLead);
 
     const stringYear = {
       ...seed,
       furtherReading: seed.furtherReading.map((entry, index) => (
-        index === 1 ? { ...entry, year: '2026' } : entry
+        index === 0 ? { ...entry, year: '2026' } : entry
       )),
     };
     const yearPage = topicPage(undefined, { [seedPath]: stringYear }, (message) => warnings.push(message));
-    assert.equal(yearPage.issue.furtherReading[1].lead, tremontiLead);
+    assert.equal(yearPage.issue.furtherReading[0].lead, tremontiLead);
 
     const published = { ...seed };
     delete published.draft;
@@ -99,16 +105,18 @@ describe('topic roundup seed', () => {
       assert.ok(markup.includes(item.headline));
     }
     for (const entry of seed.furtherReading) {
-      assert.match(markup, new RegExp(`>${entry.doi.replaceAll('.', '\\.')}<`));
+      assert.ok(markup.includes(entry.title));
+      assert.ok(markup.includes(entry.url));
     }
-    assert.match(markup, /Considered and skipped/);
-    assert.match(markup, /Notes and caveats/);
-    assert.match(markup, /role="status"/);
-    assert.match(markup, /Draft - pending clinical review/);
+    assert.match(markup, /This month’s centerpiece/);
+    assert.match(markup, /Long-acting injectable bup for people transferring from methadone/);
+    assert.match(markup, /Direct-to-inject background \(not methadone switches\)/);
+    assert.match(markup, /Read the source/);
+    assert.equal(markup.includes('Considered and skipped'), false);
+    assert.equal(markup.includes('Draft - pending clinical review'), false);
+    assert.equal(markup.includes('Aboud'), false);
+    assert.equal(markup.includes('Brixadi'), false);
     assert.equal(markup.includes('et al..'), false);
-    assert.doesNotMatch(markup, /<a\b[^>]*>Buprenorphine initiation in fentanyl use<\/a>/);
-    assert.match(markup, /Aboud and Albert\. Buprenorphine initiation in fentanyl use \(2026\)\. /);
-    assert.match(markup, />Source<\/a>/);
   });
 });
 
@@ -156,7 +164,7 @@ describe('skipped and missing issues', () => {
     assert.equal(page.issue.banner, null);
     const markup = renderTopic('2026-10-19', modules);
     assert.equal(markup.includes('Draft - pending clinical review'), false);
-    assert.match(markup, /Tremonti et al\. Patient Experience of Withdrawal During Methadone\u2013Buprenorphine Transfer/);
+    assert.match(markup, /Patient Experience of Withdrawal During Methadone\u2013Buprenorphine Transfer/);
     assert.equal(markup.includes('et al..'), false);
   });
 });
@@ -214,8 +222,10 @@ describe('topic routes stay out of the daily catalog', () => {
       assert.equal(res.status, 200);
       const html = await res.text();
       assert.equal(html.includes(`<title>${seed.title}</title>`), true);
-      assert.equal(html.includes('A monthly look at an emerging addiction practice.'), true);
-      assert.equal(html.includes('name="robots" content="noindex"'), true);
+      assert.equal(html.includes('This issue of SAMPA Emerging Practice Monthly:'), true);
+      assert.equal(html.includes('name="robots" content="noindex"'), false);
+      assert.match(html, /property="og:title" content="SAMPA Emerging Practice Monthly No\. 1 \(Oct 2026\)"/);
+      assert.match(html, /name="twitter:title" content="SAMPA Emerging Practice Monthly No\. 1 \(Oct 2026\)"/);
       assert.equal(
         html.includes('rel="canonical" href="https://www.addictionpas.org/news/topic/2026-10-19"'),
         true,

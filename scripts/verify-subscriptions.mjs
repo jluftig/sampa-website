@@ -147,6 +147,18 @@ test('checked lists start DOI and unchecked lists are never removed on the first
   assert.equal(calls.filter((call) => call.url === SMTP).length, 1);
 });
 
+test('a signup that names only checked lists does not email a removal', async () => {
+  const calls = brevo();
+  const res = await post(manageBody({ weekly: true }));
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { ok: true, notOpen: [], sentDoi: true });
+  const dois = calls.filter((call) => call.url === DOI);
+  assert.equal(dois.length, 1);
+  assert.deepEqual(dois[0].body.includeListIds, [3]);
+  assert.equal(calls.some((call) => call.url === SMTP), false);
+  assert.equal(calls.some((call) => call.url.includes('/remove')), false);
+});
+
 test('unchecked lists email a signed link to the address and remove nothing', async () => {
   const calls = brevo();
   const res = await post(manageBody({ daily: false, weekly: true, topic: false }));
@@ -415,8 +427,8 @@ test('non-boolean list choices are rejected before Brevo', async () => {
   const calls = captureFetch();
   const cases = [
     { daily: 'true', weekly: false, topic: false },
-    { daily: true, weekly: false },
     { daily: 1, weekly: false, topic: false },
+    { daily: true, weekly: null, topic: false },
   ];
   for (const lists of cases) {
     const res = await post(manageBody(lists));
@@ -517,9 +529,11 @@ test('a body without lists still starts updates double opt-in', async () => {
 
 test('the subscriptions page names the three lists and the removal warning', () => {
   const page = readFileSync(new URL('../src/pages/Subscriptions.jsx', import.meta.url), 'utf8');
-  assert.match(page, /Daily News Roundup/);
-  assert.match(page, /Weekly Newsletter/);
-  assert.match(page, /SAMPA Emerging Practice Monthly/);
+  const choices = readFileSync(new URL('../src/lib/subscriptionChoices.js', import.meta.url), 'utf8');
+  assert.match(page, /SUBSCRIPTION_CHOICES/);
+  assert.match(choices, /SAMPA Daily News Roundup/);
+  assert.match(choices, /SAMPA Weekly Newsletter/);
+  assert.match(choices, /SAMPA Emerging Practice Monthly/);
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const route = app.indexOf('path="/subscriptions"');
   const catchAll = app.indexOf('path="*"');
