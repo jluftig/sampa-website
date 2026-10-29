@@ -26,7 +26,7 @@ export default function NewsletterConfirmed() {
       label: 'Read the news',
     },
   };
-  const view = confirmed[list] || weekly;
+  const view = list && Object.hasOwn(confirmed, list) ? confirmed[list] : weekly;
 
   return (
     <div className="relative min-h-screen bg-background text-text">

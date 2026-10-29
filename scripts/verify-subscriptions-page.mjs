@@ -54,6 +54,20 @@ test('the subscriptions page offers three lists and warns that unchecked lists a
   assert.equal(markup.includes('SAMPA Updates'), false);
 });
 
+test('inherited list names fall back to the weekly confirmation', () => {
+  for (const list of ['toString', 'constructor', '__proto__']) {
+    const markup = render(
+      createElement(NewsletterConfirmed),
+      `/newsletter-confirmed?list=${encodeURIComponent(list)}`,
+    );
+    assert.match(markup, /the SAMPA Weekly Newsletter/);
+    assert.match(markup, /Read the news/);
+    const main = markup.slice(markup.indexOf('<main'), markup.indexOf('</main>'));
+    assert.equal(main.includes('href=""'), false);
+    assert.equal(main.includes('>undefined<'), false);
+  }
+});
+
 test('weekly confirmation names the SAMPA Weekly Newsletter', () => {
   const withQuery = render(createElement(NewsletterConfirmed), '/newsletter-confirmed?list=weekly');
   assert.match(withQuery, /the SAMPA Weekly Newsletter/);
