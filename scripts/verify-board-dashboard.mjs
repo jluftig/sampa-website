@@ -98,7 +98,7 @@ describe('GET finance and board-numbers', () => {
       },
       brevoGet: async (_key, path) => (
         path.endsWith('/15')
-          ? { name: 'SAMPA Daily Roundup', totalSubscribers: 3 }
+          ? { name: 'SAMPA Daily News Roundup', totalSubscribers: 3 }
           : { name: 'SAMPA Weekly Newsletter', totalSubscribers: 120 }
       ),
     }));

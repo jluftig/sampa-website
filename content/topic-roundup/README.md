@@ -1,6 +1,6 @@
 # Topic roundup files
 
-The page title is Weekly Topic Roundup. The issue is not tied to a weekday.
+The page title is SAMPA Monthly Topic Roundup. One topic a month. The issue is not tied to a weekday.
 
 Filename: `YYYY-MM-DD.json`.
 

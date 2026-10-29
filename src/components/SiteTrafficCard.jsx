@@ -202,7 +202,7 @@ export function NewsletterPanel({ loading, error, stats }) {
         Newsletter
       </h3>
       <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
-        SAMPA Weekly is Brevo list {stats?.listId || 3}. SAMPA Daily Roundup
+        SAMPA Weekly is Brevo list {stats?.listId || 3}. SAMPA Daily News Roundup
         is list {stats?.daily?.listId || 15}. Opens and clicks stay on the
         weekly issues. The test list and makeup catch-ups are left out.
       </p>
@@ -399,7 +399,7 @@ export function DailyListPanel({ stats, loading, error }) {
   const count = stats?.subscribers;
   return (
     <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-5 mb-4">
-      <h3 className="text-base font-bold">Daily Roundup</h3>
+      <h3 className="text-base font-bold">SAMPA Daily News Roundup</h3>
       <p className="text-text/50 text-xs mt-0.5 mb-3 max-w-xl">
         Brevo list {stats?.listId || 15}. Current subscriber count, plus growth
         from the daily snapshot. Earlier points, when shown, are campaign

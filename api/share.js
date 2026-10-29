@@ -13,7 +13,7 @@ import { topicPage } from '../src/lib/topicRoundup.js';
 
 const DAILY_DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
 const ARCHIVE_DESCRIPTION = 'Past SAMPA daily addiction-medicine roundups, newest first.';
-const TOPIC_DESCRIPTION = 'A Weekly Topic Roundup from SAMPA.';
+const TOPIC_DESCRIPTION = 'A SAMPA Monthly Topic Roundup. One topic a month.';
 
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({
@@ -88,7 +88,7 @@ export function topicSharePreview(modules, date) {
   if (page.status === 'not-found') return null;
   if (page.status === 'empty') {
     return {
-      title: 'Weekly Topic Roundup',
+      title: 'SAMPA Monthly Topic Roundup',
       description: TOPIC_DESCRIPTION,
       path: '/news/topic',
       robots: 'noindex',
@@ -158,7 +158,7 @@ export async function GET(request) {
     : issue
       ? dailyNewsTitle(issue.date)
       : isDaily
-        ? 'SAMPA Daily Roundup'
+        ? 'SAMPA Daily News Roundup'
         : topic
           ? topic.title
           : post

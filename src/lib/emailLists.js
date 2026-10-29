@@ -9,15 +9,15 @@ export const EMAIL_LIST_DEFS = [
   },
   {
     key: 'daily',
-    name: 'Daily Roundup',
+    name: 'SAMPA Daily News Roundup',
     description: 'Five short items, each weekday.',
     env: 'BREVO_LIST_DAILY_NEWS',
     fallback: 15,
   },
   {
     key: 'weekly_topic',
-    name: 'Weekly Topic Roundup',
-    description: 'One topic a week, in its own email.',
+    name: 'SAMPA Monthly Topic Roundup',
+    description: 'One topic a month, in its own email.',
     env: 'BREVO_LIST_TOPIC',
     fallback: null,
   },

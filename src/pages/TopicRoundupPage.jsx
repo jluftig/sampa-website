@@ -6,7 +6,7 @@ import { usePageMeta } from '../components/useDailyMeta';
 import { topicPage } from '../lib/topicRoundup';
 import NotFound from './NotFound';
 
-const DESCRIPTION = 'A Weekly Topic Roundup from SAMPA.';
+const DESCRIPTION = 'A SAMPA Monthly Topic Roundup. One topic a month.';
 const FOOTNOTE_HEADING = 'mt-10 text-sm font-data font-semibold uppercase tracking-widest text-text/50';
 const SOURCE_LINK = 'text-primary-text font-semibold underline underline-offset-2';
 
@@ -21,7 +21,7 @@ export function TopicRoundupPage({ date, modules }) {
   if (page.status === 'not-found') {
     robots = 'noindex';
   } else if (page.status === 'empty') {
-    title = 'Weekly Topic Roundup';
+    title = 'SAMPA Monthly Topic Roundup';
     path = '/news/topic';
   } else if (issue) {
     title = issue.title;
@@ -138,9 +138,9 @@ export function TopicRoundupPage({ date, modules }) {
         ) : (
           <>
             <h1 className="text-4xl md:text-5xl font-drama font-bold mb-4">
-              Weekly Topic Roundup
+              SAMPA Monthly Topic Roundup
             </h1>
-            <p className="text-lg text-text/70">The first Weekly Topic Roundup is on the way.</p>
+            <p className="text-lg text-text/70">The first SAMPA Monthly Topic Roundup is on the way.</p>
           </>
         )}
       </main>

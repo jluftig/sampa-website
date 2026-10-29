@@ -334,7 +334,7 @@ Push/device_tokens SQL was applied for mobile push (2026-07-15).
   triggered from Stripe webhook on new active membership and renewal. Same brand
   system as Weekly #01. Content: mission, live programs, member how-to, building
   next, CTAs. Draft+test; Josh approves before live triggers.
-- [ ] **Member ↔ Brevo sync** — in progress as **T71** (`/dashboard/emails`). Updates, Daily Roundup, and Weekly Topic Roundup. `newsletter_opt_in` still mirrors Updates so a renewal does not re-add someone who turned that list off.
+- [ ] **Member ↔ Brevo sync** — in progress as **T71** (`/dashboard/emails`). SAMPA Weekly Newsletter, SAMPA Daily News Roundup, and SAMPA Monthly Topic Roundup. `newsletter_opt_in` still mirrors the weekly list so a renewal does not re-add someone who turned that list off.
 - [ ] **Weekly News email automation** — draft from published posts; human approves;
   schedule after approve (not autopilot until policy changes).
 
