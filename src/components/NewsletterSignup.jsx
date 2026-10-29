@@ -47,7 +47,7 @@ export default function NewsletterSignup({ variant = 'banner', list }) {
                 id="newsletter-heading"
                 className="text-3xl md:text-4xl font-drama font-bold tracking-tight mb-4"
               >
-                SAMPA Updates
+                SAMPA Weekly Newsletter
               </h2>
               <p className="text-white/85 text-base md:text-lg leading-relaxed mb-3">
                 A weekly email with what’s new in addiction-medicine practice,
@@ -114,7 +114,7 @@ export default function NewsletterSignup({ variant = 'banner', list }) {
                   )}
                   <p className="text-xs text-white/55 leading-relaxed">
                     We’ll email a confirmation link (double opt-in). You’re joining
-                    the SAMPA Updates list via Brevo. See our{' '}
+                    the SAMPA Weekly Newsletter list via Brevo. See our{' '}
                     <Link
                       to="/privacy"
                       className="underline underline-offset-2 hover:text-white"
@@ -141,7 +141,7 @@ export default function NewsletterSignup({ variant = 'banner', list }) {
         className="bg-white rounded-3xl border border-primary/10 px-6 py-8 shadow-sm"
       >
         <h2 id={headingId} className="text-2xl font-drama font-bold mb-2">
-          {daily ? 'Get the daily roundup by email' : 'SAMPA Updates'}
+          {daily ? 'Get the daily roundup by email' : 'SAMPA Weekly Newsletter'}
         </h2>
         <p className="text-text/70 mb-6 leading-relaxed">
           {daily

@@ -323,7 +323,7 @@ export function shapeNewsletterStats({
   const links = Array.isArray(topLinks) ? topLinks : [];
   const body = {
     listId,
-    listName: listName || 'SAMPA Updates',
+    listName: listName || 'SAMPA Weekly Newsletter',
     subscribers: Number(subscribers) || 0,
     latest: list[0] || null,
     issues: list,

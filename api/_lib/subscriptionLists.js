@@ -13,11 +13,11 @@ export const subscriptionLists = [
   },
   {
     key: 'weekly',
-    label: 'Weekly Newsletter',
+    label: 'SAMPA Weekly Newsletter',
     listEnv: 'BREVO_LIST_UPDATES',
     templateEnv: 'BREVO_DOI_TEMPLATE_ID',
     templateOptional: false,
-    redirectQuery: null,
+    redirectQuery: 'list=weekly',
     source: 'manage_weekly',
   },
   {

@@ -117,7 +117,7 @@ describe('test sends', () => {
     const shaped = shapeNewsletterStats({
       subscribers: 145,
       listId: 3,
-      listName: 'SAMPA Updates',
+      listName: 'SAMPA Weekly Newsletter',
       issues,
     });
     assert.equal(shaped.latest.id, 25);
@@ -186,7 +186,7 @@ describe('weekly issue filter', () => {
     const shaped = shapeNewsletterStats({
       subscribers: 145,
       listId: 3,
-      listName: 'SAMPA Updates',
+      listName: 'SAMPA Weekly Newsletter',
       issues,
     });
     assert.equal(shaped.subscribers, 145);
@@ -197,7 +197,7 @@ describe('weekly issue filter', () => {
   it('accepts list objects and ignores a missing key', () => {
     const withObjects = {
       ...weekly01,
-      recipients: { lists: [{ id: 3, name: 'SAMPA Updates' }] },
+      recipients: { lists: [{ id: 3, name: 'SAMPA Weekly Newsletter' }] },
     };
     assert.equal(isWeeklyIssue(withObjects), true);
     assert.equal(brevoConfigFromEnv({}).configured, false);
@@ -240,7 +240,7 @@ describe('GET /api/newsletter-stats', () => {
 
   function brevoGet(_key, path) {
     if (path.startsWith('/contacts/lists/')) {
-      return { id: 3, name: 'SAMPA Updates', totalSubscribers: 145 };
+      return { id: 3, name: 'SAMPA Weekly Newsletter', totalSubscribers: 145 };
     }
     if (path.includes('linksStats')) {
       if (path.includes('/emailCampaigns/25')) {
@@ -329,7 +329,7 @@ describe('GET /api/newsletter-stats', () => {
     assert.equal(res.status, 200);
     assert.equal(res.cache, 'private, max-age=300');
     assert.equal(res.body.subscribers, 145);
-    assert.equal(res.body.listName, 'SAMPA Updates');
+    assert.equal(res.body.listName, 'SAMPA Weekly Newsletter');
     assert.equal(res.body.latest.id, 25);
     assert.deepEqual(res.body.issues.map((issue) => issue.id), [25, 23]);
     assert.equal(res.body.latest.recipients, 140);

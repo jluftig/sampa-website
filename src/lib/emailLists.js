@@ -1,7 +1,7 @@
 export const EMAIL_LIST_DEFS = [
   {
     key: 'updates',
-    name: 'SAMPA Updates',
+    name: 'SAMPA Weekly Newsletter',
     description: 'Society announcements and a weekly roundup of SAMPA news.',
     env: 'BREVO_LIST_UPDATES',
     fallback: 3,

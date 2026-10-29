@@ -54,6 +54,14 @@ test('the subscriptions page offers three lists and warns that unchecked lists a
   assert.equal(markup.includes('SAMPA Updates'), false);
 });
 
+test('weekly confirmation names the SAMPA Weekly Newsletter', () => {
+  const withQuery = render(createElement(NewsletterConfirmed), '/newsletter-confirmed?list=weekly');
+  assert.match(withQuery, /the SAMPA Weekly Newsletter/);
+  const bare = render(createElement(NewsletterConfirmed), '/newsletter-confirmed');
+  assert.match(bare, /the SAMPA Weekly Newsletter/);
+  assert.equal(bare.includes('SAMPA Updates'), false);
+});
+
 test('topic confirmation names the Weekly Topic Roundup', () => {
   const markup = render(createElement(NewsletterConfirmed), '/newsletter-confirmed?list=topic');
   assert.match(markup, /subscribed to the Weekly Topic Roundup/);

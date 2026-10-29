@@ -20,7 +20,7 @@ export function EmailChoiceList({
         <p className="text-sm text-text/70 mb-6 bg-accent/5 border border-accent/20 rounded-2xl p-4">
           You used an unsubscribe link in a SAMPA email, so none of these lists
           are sending. Turning a list on brings back the other lists you had
-          chosen. SAMPA Updates stays off until you turn that switch on.
+          chosen. The SAMPA Weekly Newsletter stays off until you turn that switch on.
         </p>
       )}
       <ul className="space-y-4">

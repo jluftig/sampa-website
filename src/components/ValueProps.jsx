@@ -29,7 +29,7 @@ const live = [
     title: 'Member email updates',
     desc: 'Society announcements and a weekly roundup of SAMPA’s PA-focused news, delivered by email.',
     href: '/#updates-signup',
-    cta: 'Get SAMPA Updates',
+    cta: 'Get the SAMPA Weekly Newsletter',
   },
   {
     icon: BookOpen,

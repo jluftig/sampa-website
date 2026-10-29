@@ -8,23 +8,25 @@ import Footer from '../components/Footer';
 export default function NewsletterConfirmed() {
   const [params] = useSearchParams();
   const list = params.get('list');
+  const weekly = {
+    message: 'Thanks for confirming. You’ll receive the SAMPA Weekly Newsletter — a weekly email with practice news, society notes, and the policy changes that affect your patients’ access to care. No membership required.',
+    to: '/news',
+    label: 'Read the news',
+  };
   const confirmed = {
     daily: {
       message: 'You’re subscribed to the SAMPA Daily Roundup. You’ll get the day’s five items by email. No membership required.',
       to: '/news/daily',
       label: 'Read today’s roundup',
     },
+    weekly,
     topic: {
       message: 'You’re subscribed to the Weekly Topic Roundup. You’ll get each new issue by email. No membership required.',
       to: '/news',
       label: 'Read the news',
     },
   };
-  const view = confirmed[list] || {
-    message: 'Thanks for confirming. You’ll receive SAMPA Updates — a weekly email with practice news, society notes, and the policy changes that affect your patients’ access to care. No membership required.',
-    to: '/news',
-    label: 'Read the news',
-  };
+  const view = confirmed[list] || weekly;
 
   return (
     <div className="relative min-h-screen bg-background text-text">

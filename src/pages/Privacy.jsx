@@ -19,7 +19,7 @@ export default function Privacy() {
       <h2>The short version</h2>
       <ul>
         <li>You can read everything public on this site without an account, and we don't track who you are when you do.</li>
-        <li>You can subscribe to <strong>SAMPA Updates</strong> by email without becoming a member (double opt-in via Brevo).</li>
+        <li>You can subscribe to the <strong>SAMPA Weekly Newsletter</strong> by email without becoming a member (double opt-in via Brevo).</li>
         <li>If you create an account, we collect your name and email, plus any professional details you choose to add.</li>
         <li>If you request an employer invoice, we collect member, employer, and accounts-payable details so we can prepare that invoice. Requesting an invoice does not charge a card or start membership.</li>
         <li>Active members can use a <strong>member networking directory</strong> to find each other. That directory is not public. You control whether you appear and whether peers see your email or phone.</li>
@@ -41,7 +41,7 @@ export default function Privacy() {
       <p>
         If you use the public newsletter form, we collect the email address you
         submit so we can send a confirmation message and — only after you
-        confirm — add you to our <strong>SAMPA Updates</strong> list. That list
+        confirm — add you to our <strong>SAMPA Weekly Newsletter</strong> list. That list
         is for organizational and news updates. Membership is not required.
         Email delivery and list management are handled by{' '}
         <strong>Brevo</strong> (see Service providers).
@@ -61,7 +61,7 @@ export default function Privacy() {
       <p>
         On your dashboard you may add a mobile phone number and choose
         text-message preferences. Email lists are separate. From your account
-        you can turn SAMPA Updates, the Daily Roundup, and the Weekly Topic
+        you can turn the SAMPA Weekly Newsletter, the Daily Roundup, and the Weekly Topic
         Roundup on or off, one list at a time. We use this so SAMPA can reach
         you about membership, the organization, and the emails you turn on. It
         is not shown to other members unless you also choose to share that same
@@ -166,7 +166,7 @@ export default function Privacy() {
         <li>To prepare an employer invoice and pay link when you request one, and to notify SAMPA staff that the request landed.</li>
         <li>To run the member networking directory under the listing and contact choices you set.</li>
         <li>To operate membership (staff roster) for people authorized to manage memberships.</li>
-        <li>To send <strong>SAMPA Updates</strong> and related organizational email — only if you've opted in (public double opt-in or member preference), and you can unsubscribe anytime.</li>
+        <li>To send the <strong>SAMPA Weekly Newsletter</strong> and related organizational email — only if you've opted in (public double opt-in or member preference), and you can unsubscribe anytime.</li>
         <li>To respond when you contact us.</li>
         <li>To keep the site secure and understand aggregate (not individual) usage.</li>
       </ul>
@@ -181,7 +181,7 @@ export default function Privacy() {
         <li><strong>Supabase</strong> — our database and sign-in infrastructure (stores accounts and profiles).</li>
         <li><strong>Stripe</strong> — payment processing and billing management.</li>
         <li><strong>Vercel</strong> — website hosting.</li>
-        <li><strong>Brevo</strong> — email delivery for magic-link / auth messages and for SAMPA email lists (SAMPA Updates, the Daily Roundup, and the Weekly Topic Roundup). Brevo's handling of subscriber data is described in{' '}
+        <li><strong>Brevo</strong> — email delivery for magic-link / auth messages and for SAMPA email lists (the SAMPA Weekly Newsletter, the Daily Roundup, and the Weekly Topic Roundup). Brevo's handling of subscriber data is described in{' '}
           <a href="https://www.brevo.com/legal/privacypolicy/" target="_blank" rel="noopener noreferrer">Brevo's privacy policy</a>.</li>
         <li><strong>Google</strong> — the optional "Sign in with Google" service.</li>
       </ul>
@@ -214,7 +214,7 @@ export default function Privacy() {
         <li>Hide yourself from the member directory, or share/unshare email and phone, with the checkboxes on that page.</li>
         <li>Use a directory email or phone that differs from your sign-in / account contact.</li>
         <li>
-          Choose SAMPA Updates, the Daily Roundup, and the Weekly Topic Roundup
+          Choose the SAMPA Weekly Newsletter, the Daily Roundup, and the Weekly Topic Roundup
           on your <Link to="/dashboard/emails">email choices</Link> page. Each
           switch adds or removes that one list.
         </li>
