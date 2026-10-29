@@ -1,11 +1,11 @@
 # Topic roundup files
 
-The page title is SAMPA Monthly Topic Roundup. One topic a month. The issue is not tied to a weekday.
+The page title is SAMPA Emerging Practice Monthly. A monthly look at an emerging addiction practice. The issue is not tied to a weekday.
 
 Filename: `YYYY-MM-DD.json`.
 
 - `date`: the same ISO date as the filename
-- `title`: non-empty heading. Start it with `Monthly Topic Roundup:`
+- `title`: non-empty heading. Start it with `SAMPA Emerging Practice Monthly:`
 - `items`: five objects, in authored order, each with trimmed `headline`, `outlet`, `date`, `summary`, and an https `url`
 - `furtherReading`: array of objects with trimmed `author`, `title`, `doi`, an https `url`, and `year` (a number or a 4-digit string)
 - `consideredSkipped`: array of non-empty strings (an empty array is valid)

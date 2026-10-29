@@ -21,7 +21,7 @@ export default function NewsletterConfirmed() {
     },
     weekly,
     topic: {
-      message: 'You’re subscribed to the SAMPA Monthly Topic Roundup. You’ll get one topic a month by email. No membership required.',
+      message: 'You’re subscribed to the SAMPA Emerging Practice Monthly, a monthly look at an emerging addiction practice. No membership required.',
       to: '/news',
       label: 'Read the news',
     },

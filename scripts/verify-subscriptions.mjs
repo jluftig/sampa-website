@@ -157,7 +157,7 @@ test('unchecked lists email a signed link to the address and remove nothing', as
   assert.equal(url.origin + url.pathname, 'https://www.addictionpas.org/subscriptions');
   assert.ok(token.includes('.'));
   assert.match(mail.body.textContent, /Daily News Roundup/);
-  assert.match(mail.body.textContent, /SAMPA Monthly Topic Roundup/);
+  assert.match(mail.body.textContent, /SAMPA Emerging Practice Monthly/);
   assert.equal(mail.body.textContent.includes('Weekly Newsletter'), false);
   assert.equal(calls.some((call) => call.url.includes('/contacts/remove')), false);
 });
@@ -519,7 +519,7 @@ test('the subscriptions page names the three lists and the removal warning', () 
   const page = readFileSync(new URL('../src/pages/Subscriptions.jsx', import.meta.url), 'utf8');
   assert.match(page, /Daily News Roundup/);
   assert.match(page, /Weekly Newsletter/);
-  assert.match(page, /SAMPA Monthly Topic Roundup/);
+  assert.match(page, /SAMPA Emerging Practice Monthly/);
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const route = app.indexOf('path="/subscriptions"');
   const catchAll = app.indexOf('path="*"');

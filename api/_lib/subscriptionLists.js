@@ -22,7 +22,7 @@ export const subscriptionLists = [
   },
   {
     key: 'topic',
-    label: 'SAMPA Monthly Topic Roundup',
+    label: 'SAMPA Emerging Practice Monthly',
     listEnv: 'BREVO_LIST_TOPIC',
     templateEnv: 'BREVO_DOI_TEMPLATE_TOPIC',
     templateOptional: true,

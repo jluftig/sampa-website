@@ -32,7 +32,7 @@ Words as Josh and the site use them. No implementation details here (see `CLAUDE
 
 **SAMPA Daily News Roundup**: The weekday email and the digest at `/news/daily`.
 
-**SAMPA Monthly Topic Roundup**: The page at `/news/topic` and its email. One topic a month. Distinct from the SAMPA Daily News Roundup and the SAMPA Weekly Newsletter.
+**SAMPA Emerging Practice Monthly**: The page at `/news/topic` and its email. A monthly look at an emerging addiction practice. Distinct from the SAMPA Daily News Roundup and the SAMPA Weekly Newsletter.
 
 **Join**: Starting a new paid membership (`/join`).
 

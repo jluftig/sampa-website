@@ -552,7 +552,7 @@ export default function Dashboard() {
                     Choose which SAMPA emails you get
                   </Link>
                   <span className="block text-xs text-text/40 mt-0.5">
-                    The SAMPA Weekly Newsletter, the SAMPA Daily News Roundup, and the SAMPA Monthly Topic Roundup.
+                    The SAMPA Weekly Newsletter, the SAMPA Daily News Roundup, and the SAMPA Emerging Practice Monthly.
                   </span>
                 </p>
 

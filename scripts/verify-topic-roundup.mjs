@@ -46,7 +46,7 @@ describe('topic roundup seed', () => {
 
     assert.deepEqual(warnings, []);
     assert.equal(page.status, 'issue');
-    assert.equal(seed.title.startsWith('Monthly Topic Roundup: '), true);
+    assert.equal(seed.title.startsWith('SAMPA Emerging Practice Monthly: '), true);
     assert.equal(seed.title.includes('Weekly Topic Roundup'), false);
     assert.equal(page.issue.date, '2026-10-19');
     assert.equal(page.issue.weekday, 'Monday, October 19, 2026');
@@ -145,8 +145,8 @@ describe('skipped and missing issues', () => {
     assert.deepEqual(topicPage(undefined, {}, (message) => warnings.push(message)), { status: 'empty' });
     assert.deepEqual(warnings, []);
     const markup = renderTopic(undefined, {});
-    assert.match(markup, /<h1[^>]*>\s*SAMPA Monthly Topic Roundup\s*<\/h1>/);
-    assert.match(markup, /The first SAMPA Monthly Topic Roundup is on the way\./);
+    assert.match(markup, /<h1[^>]*>\s*SAMPA Emerging Practice Monthly\s*<\/h1>/);
+    assert.match(markup, /The first SAMPA Emerging Practice Monthly is on the way\./);
     assert.equal(markup.includes('Draft - pending clinical review'), false);
   });
 
@@ -172,12 +172,12 @@ describe('topic routes stay out of the daily catalog', () => {
     assert.ok(topic < slug);
     assert.ok(dated < slug);
     assert.match(news, /to="\/news\/topic"/);
-    assert.match(news, /SAMPA Monthly Topic Roundup →/);
+    assert.match(news, /SAMPA Emerging Practice Monthly →/);
     assert.match(news, /to="\/subscriptions"/);
     assert.match(news, /Manage subscriptions/);
     const footer = source('src/components/Footer.jsx');
     assert.match(footer, /to="\/news\/topic"/);
-    assert.match(footer, /SAMPA Monthly Topic Roundup/);
+    assert.match(footer, /SAMPA Emerging Practice Monthly/);
     assert.match(footer, /to="\/subscriptions"/);
     assert.match(footer, /Manage subscriptions/);
     const page = source('src/pages/TopicRoundupPage.jsx');
@@ -214,7 +214,7 @@ describe('topic routes stay out of the daily catalog', () => {
       assert.equal(res.status, 200);
       const html = await res.text();
       assert.equal(html.includes(`<title>${seed.title}</title>`), true);
-      assert.equal(html.includes('A SAMPA Monthly Topic Roundup. One topic a month.'), true);
+      assert.equal(html.includes('A monthly look at an emerging addiction practice.'), true);
       assert.equal(html.includes('name="robots" content="noindex"'), true);
       assert.equal(
         html.includes('rel="canonical" href="https://www.addictionpas.org/news/topic/2026-10-19"'),

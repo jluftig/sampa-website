@@ -79,7 +79,7 @@ Unsubscribe
 
 | Concern | System |
 |---------|--------|
-| Who receives marketing mail | **Brevo** list membership. SAMPA Weekly Newsletter (list 3), SAMPA Daily News Roundup (list 15), SAMPA Monthly Topic Roundup (`BREVO_LIST_TOPIC`) |
+| Who receives marketing mail | **Brevo** list membership. SAMPA Weekly Newsletter (list 3), SAMPA Daily News Roundup (list 15), SAMPA Emerging Practice Monthly (`BREVO_LIST_TOPIC`) |
 | Who has a site account / paid membership | **Supabase** (+ Stripe) |
 | Legacy interest without an account | **Brevo** (optional future `email_prospects` table only if staff need in-app roster) |
 
@@ -151,10 +151,10 @@ Supabase profiles (opt-in members)
   Each list is tried on its own. A partial failure returns 502 with `failed` list keys.
   List env vars and the Vercel values: `BREVO_LIST_DAILY_NEWS` 15, `BREVO_LIST_UPDATES` 3, `BREVO_LIST_TOPIC` 18.
   Template env vars and the Vercel values: daily `BREVO_DOI_TEMPLATE_ID_DAILY` 35 (no fallback to the weekly template), weekly `BREVO_DOI_TEMPLATE_ID` 13, topic `BREVO_DOI_TEMPLATE_TOPIC` (59 in Vercel, template currently inactive in Brevo).
-  When `BREVO_DOI_TEMPLATE_TOPIC` is unset, the handler logs `newsletter-signup: BREVO_DOI_TEMPLATE_TOPIC is unset` and does not call Brevo for that list, so no topic contact is written. The page still returns success and says SAMPA Monthly Topic Roundup signup is not open yet (`notOpen: ["topic"]`).
+  When `BREVO_DOI_TEMPLATE_TOPIC` is unset, the handler logs `newsletter-signup: BREVO_DOI_TEMPLATE_TOPIC is unset` and does not call Brevo for that list, so no topic contact is written. The page still returns success and says SAMPA Emerging Practice Monthly signup is not open yet (`notOpen: ["topic"]`).
   When the topic template id is set, the handler sends double opt-in with that template. A Brevo error, including an inactive template, is a failure for that list and does not count as a written subscription.
   Manage confirm redirects are set in site code and ignore `BREVO_DOI_REDIRECT_URL`: daily `${origin}/newsletter-confirmed?list=daily`, weekly `${origin}/newsletter-confirmed?list=weekly`, topic `${origin}/newsletter-confirmed?list=topic`.
-  The topic confirm page button goes to `/news`. `/news/topic` is the SAMPA Monthly Topic Roundup route in PR #146, and this PR does not register it.
+  The topic confirm page button goes to `/news`. `/news/topic` is the SAMPA Emerging Practice Monthly route in PR #146, and this PR does not register it.
   `BREVO_API_KEY` must be set in Vercel server env and must never be a `VITE_` var.
 - Privacy: names the three member lists and Brevo. Per-list switches live at `/dashboard/emails`. The email footer remains the full exit. Link `/privacy`.
 - Member choices: `/dashboard/emails` reads Brevo `listIds` and adds or removes
@@ -162,7 +162,7 @@ Supabase profiles (opt-in members)
   re-add someone who turned that list off. After a footer unsubscribe, turning
   one list on clears the blacklist and keeps the other non-Updates lists.
   The SAMPA Weekly Newsletter stays off unless that switch is the one turned on, and
-  `newsletter_opt_in` follows that result. The SAMPA Monthly Topic Roundup uses
+  `newsletter_opt_in` follows that result. The SAMPA Emerging Practice Monthly uses
   `BREVO_LIST_TOPIC` (no numeric fallback, same name as the subscriptions page).
   Public list choices for people without an account are `/subscriptions`.
 

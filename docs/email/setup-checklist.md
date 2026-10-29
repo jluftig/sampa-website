@@ -46,7 +46,7 @@ In Brevo: Senders → add/verify `info@` if not already listed under authenticat
 | `BREVO_LIST_UPDATES` | SAMPA Weekly Newsletter | Catch-all marketing |
 | `BREVO_LIST_TEST` | SAMPA Test | Josh only (expand later) |
 
-Topic lists (Weekly News / Policy / Jobs / CME) may exist in Brevo as **reserved**. Do not attach Policy, Jobs, or CME. The SAMPA Monthly Topic Roundup is the one exception, and only through `BREVO_LIST_TOPIC` (see §4). Do not assume that list is id 7.
+Topic lists (Weekly News / Policy / Jobs / CME) may exist in Brevo as **reserved**. Do not attach Policy, Jobs, or CME. The SAMPA Emerging Practice Monthly is the one exception, and only through `BREVO_LIST_TOPIC` (see §4). Do not assume that list is id 7.
 
 Add Josh email to **SAMPA Test** only.
 
@@ -69,7 +69,7 @@ that switch is the one turned on.
 |------|-----|----|
 | SAMPA Weekly Newsletter | `BREVO_LIST_UPDATES` | 3 |
 | SAMPA Daily News Roundup | `BREVO_LIST_DAILY_NEWS` | 15 |
-| SAMPA Monthly Topic Roundup | `BREVO_LIST_TOPIC` | unset until Josh creates it. Docs name Weekly News among reserved ids 4–7 and do not assign a number. Do not assume 7. |
+| SAMPA Emerging Practice Monthly | `BREVO_LIST_TOPIC` | unset until Josh creates it. Docs name Weekly News among reserved ids 4–7 and do not assign a number. Do not assume 7. |
 
 `PREFERENCE_CENTER_URL` stays empty. This is the site page, not a Brevo-hosted center.
 

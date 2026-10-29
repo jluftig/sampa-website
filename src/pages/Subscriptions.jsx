@@ -7,7 +7,7 @@ import { apiPost } from '../lib/api';
 const CHOICES = [
   { key: 'daily', label: 'SAMPA Daily News Roundup' },
   { key: 'weekly', label: 'SAMPA Weekly Newsletter' },
-  { key: 'topic', label: 'SAMPA Monthly Topic Roundup' },
+  { key: 'topic', label: 'SAMPA Emerging Practice Monthly' },
 ];
 
 const LABELS = Object.fromEntries(CHOICES.map((choice) => [choice.key, choice.label]));

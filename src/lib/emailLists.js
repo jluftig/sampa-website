@@ -16,8 +16,8 @@ export const EMAIL_LIST_DEFS = [
   },
   {
     key: 'weekly_topic',
-    name: 'SAMPA Monthly Topic Roundup',
-    description: 'One topic a month, in its own email.',
+    name: 'SAMPA Emerging Practice Monthly',
+    description: 'A monthly look at an emerging addiction practice.',
     env: 'BREVO_LIST_TOPIC',
     fallback: null,
   },
