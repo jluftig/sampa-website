@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-29",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "HHS credits steep drop in opioid prescribing for lowest opioid deaths in nearly a decade",
+      "outlet": "Pain News Network",
+      "date": "Oct 28",
+      "summary": "A new HHS analysis in Health Affairs Forefront found that from March 2015 to March 2026, population-adjusted opioid prescriptions dispensed fell to 45.3% of their baseline, while patients filling buprenorphine or naltrexone prescriptions rose to 218%. HHS Secretary Kennedy credited administration policies on prescribing, fentanyl supply, and treatment for driving opioid deaths to their lowest level in nearly a decade. A pain management expert quoted by Pain News Network countered that the recent decline is tied mainly to fewer illicit fentanyl deaths and that tapering has harmed some patients with chronic pain.",
+      "url": "https://www.painnewsnetwork.org/stories/2026/10/28/trump-administration-takes-credit-for-reducing-unnecessary-opioid-prescribing"
+    },
+    {
+      "headline": "New York to pilot contingency management for stimulant use disorder at eight outpatient clinics",
+      "outlet": "Fierce Healthcare",
+      "date": "Oct 28",
+      "summary": "New York's Office of Addiction Services and Supports said an 18-month contingency management pilot will launch next month at eight outpatient programs, paying patients about $15 per stimulant-negative urine test with incentives building up to $750. State officials also reported that 41 prisons and 58 jails now offer all forms of MOUD and that the number of people receiving MOUD in state prisons rose sevenfold from 2022 to 2025. With no FDA-approved medication for stimulant use disorder, the pilot is a test of whether the best-supported behavioral treatment can work at scale in routine care.",
+      "url": "https://www.fiercehealthcare.com/providers/new-york-leaders-present-opioid-treatment-progress-2027-medicaid-plans"
+    },
+    {
+      "headline": "Mindfulness therapy alongside MOUD changed brain responses to drug cues and lengthened abstinence",
+      "outlet": "Newswise (Mount Sinai)",
+      "date": "Oct 28",
+      "summary": "In a JAMA Psychiatry randomized trial of 86 people with opioid use disorder receiving methadone or buprenorphine, eight weeks of Mindfulness-Oriented Recovery Enhancement reduced prefrontal brain responses to drug cues compared with supportive therapy, and those changes tracked with lower craving. At follow-up about four months after treatment, participants who received the mindfulness program also had greater increases in the duration of abstinence. The findings support pairing a structured behavioral therapy with medication for patients who continue to struggle with craving.",
+      "url": "https://www.newswise.com/articles/mindfulness-based-therapy-may-change-brain-responses-to-drug-cues-in-people-with-opioid-use-disorder-mount-sinai-study-finds"
+    },
+    {
+      "headline": "Washington Poison Center calls involving kratom and 7-OH rose 433% over three years",
+      "outlet": "KIRO 7 News",
+      "date": "Oct 27",
+      "summary": "Washington Poison Center data show kratom and 7-OH calls increased 433% over three years, with 176 calls through the end of September 2026 ranging from overdoses to withdrawal. The center's chief clinical officer called 7-OH essentially an unregulated opioid and said some children exposed to candy-like tablets have needed naloxone, while Washington remains one of 16 states with no statewide kratom rules. Clinicians should ask about kratom and 7-OH use, since withdrawal from concentrated products can be severe and may need opioid use disorder treatment.",
+      "url": "https://www.kiro7.com/news/local/kratom-related-calls-surge-washington-amid-push-regulations/SCPDMJAMKNC6RNLJQ6KN5CAYRE/"
+    },
+    {
+      "headline": "MUSC launches $16.4 million study to bring trauma and substance use family therapy to 60 sites",
+      "outlet": "MUSC",
+      "date": "Oct 28",
+      "summary": "MUSC researchers received a five-year, $16.4 million PCORI award to test strategies for implementing Risk Reduction through Family Therapy, which treats PTSD symptoms and substance use together in adolescents ages 13 to 18 who have experienced physical or sexual assault. The project will compare implementation approaches across 60 child advocacy centers nationwide, with Ohio State, the University of Washington, and the National Children's Alliance as partners. Integrated, family-based care addresses the common problem of teens being shuffled between separate trauma and substance use providers.",
+      "url": "https://www.musc.edu/content-hub/News/2026/10/28/addressing-challenges-to-engage-teens-in-treatment-for-trauma-and-substance-use"
+    }
+  ]
+}
