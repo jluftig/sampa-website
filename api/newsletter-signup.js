@@ -8,18 +8,6 @@ import { subscriptionLists } from './_lib/subscriptionLists.js';
 // list "daily" maps server-side to BREVO_LIST_DAILY_NEWS. Any other list
 // value, including a numeric id, stays on SAMPA Updates. The client never
 // chooses a Brevo list id.
-//
-// Vercel env (server): BREVO_API_KEY, BREVO_LIST_UPDATES, BREVO_DOI_TEMPLATE_ID
-// Daily form: BREVO_LIST_DAILY_NEWS, optional BREVO_DOI_TEMPLATE_ID_DAILY
-// Manage lists: BREVO_LIST_DAILY_NEWS, BREVO_LIST_UPDATES, BREVO_LIST_TOPIC.
-// Manage templates: BREVO_DOI_TEMPLATE_ID_DAILY, BREVO_DOI_TEMPLATE_ID,
-// BREVO_DOI_TEMPLATE_TOPIC. Topic writes nothing when its template id is unset.
-// Manage redirects come from site code, not BREVO_DOI_REDIRECT_URL:
-// daily /newsletter-confirmed?list=daily, weekly /newsletter-confirmed?list=weekly,
-// topic /newsletter-confirmed?list=topic.
-// Removals need a confirmed email link. Token key is SUBSCRIPTION_TOKEN_SECRET
-// (or a key derived from BREVO_API_KEY). Optional BREVO_SENDER_NAME / BREVO_SENDER_EMAIL.
-// The single-list footer form still honors BREVO_DOI_REDIRECT_URL for weekly.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BREVO_BASE = 'https://api.brevo.com/v3';
