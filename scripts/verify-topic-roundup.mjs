@@ -46,7 +46,7 @@ describe('topic roundup seed', () => {
 
     assert.deepEqual(warnings, []);
     assert.equal(page.status, 'issue');
-    assert.equal(seed.title, 'SAMPA Emerging Practice Monthly No. 1 (October 2026)');
+    assert.equal(seed.title, 'SAMPA Emerging Practice Monthly No. 1 (Oct 2026)');
     assert.equal(seed.title.includes('Weekly Topic Roundup'), false);
     assert.equal(page.issue.date, '2026-10-19');
     assert.equal(page.issue.weekday, 'Monday, October 19, 2026');
@@ -108,7 +108,7 @@ describe('topic roundup seed', () => {
       assert.ok(markup.includes(entry.title));
       assert.ok(markup.includes(entry.url));
     }
-    assert.match(markup, /This month&#x27;s centerpiece|This month's centerpiece/);
+    assert.match(markup, /This month’s centerpiece/);
     assert.match(markup, /Long-acting injectable bup for people transferring from methadone/);
     assert.match(markup, /Direct-to-inject background \(not methadone switches\)/);
     assert.match(markup, /Read the source/);
@@ -224,8 +224,8 @@ describe('topic routes stay out of the daily catalog', () => {
       assert.equal(html.includes(`<title>${seed.title}</title>`), true);
       assert.equal(html.includes('This issue of SAMPA Emerging Practice Monthly:'), true);
       assert.equal(html.includes('name="robots" content="noindex"'), false);
-      assert.match(html, /property="og:title" content="SAMPA Emerging Practice Monthly No\. 1 \(October 2026\)"/);
-      assert.match(html, /name="twitter:title" content="SAMPA Emerging Practice Monthly No\. 1 \(October 2026\)"/);
+      assert.match(html, /property="og:title" content="SAMPA Emerging Practice Monthly No\. 1 \(Oct 2026\)"/);
+      assert.match(html, /name="twitter:title" content="SAMPA Emerging Practice Monthly No\. 1 \(Oct 2026\)"/);
       assert.equal(
         html.includes('rel="canonical" href="https://www.addictionpas.org/news/topic/2026-10-19"'),
         true,

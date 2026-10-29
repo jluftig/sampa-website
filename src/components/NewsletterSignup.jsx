@@ -2,7 +2,7 @@ import React, { useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { apiPost } from '../lib/api';
-import { SUBSCRIPTION_CHOICES, selectedLists } from '../lib/subscriptionChoices';
+import { SUBSCRIPTION_CHOICES, checkedOnly, selectedLists } from '../lib/subscriptionChoices';
 
 const NAMES = Object.fromEntries(SUBSCRIPTION_CHOICES.map((choice) => [choice.key, choice.label]));
 
@@ -73,11 +73,7 @@ export default function NewsletterSignup({ variant = 'banner', preset = 'weekly'
       const data = await apiPost('/api/newsletter-signup', {
         email,
         company: honeypot,
-        lists: {
-          daily: selected.daily,
-          weekly: selected.weekly,
-          topic: selected.topic,
-        },
+        lists: checkedOnly(selected),
       });
       setDone({
         sentDoi: Boolean(data.sentDoi),

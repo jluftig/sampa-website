@@ -99,13 +99,17 @@ function manageRateLimited(ip, now = Date.now()) {
 }
 
 function listChoices(lists) {
+  if (!isPlainObject(lists)) return null;
   const choices = {};
+  let seen = false;
   for (const entry of subscriptionLists) {
+    if (!Object.hasOwn(lists, entry.key)) continue;
     const value = lists[entry.key];
     if (typeof value !== 'boolean') return null;
     choices[entry.key] = value;
+    seen = true;
   }
-  return choices;
+  return seen ? choices : null;
 }
 
 async function postBrevo(apiKey, url, payload) {
@@ -390,7 +394,7 @@ async function manageSubscriptions(request, body) {
 
   // 2) Unchecked lists: never removed here. One confirmation email to the
   // address; removal happens only when its link is confirmed.
-  const unchecked = resolved.filter((item) => !choices[item.key]);
+  const unchecked = resolved.filter((item) => choices[item.key] === false);
   if (unchecked.length) {
     try {
       if (emailThrottled(email)) {

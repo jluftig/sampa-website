@@ -1,7 +1,7 @@
 {
   "date": "2026-10-19",
-  "title": "SAMPA Emerging Practice Monthly No. 1 (October 2026)",
-  "kicker": "SAMPA Emerging Practice Monthly · No. 1 · October 2026",
+  "title": "SAMPA Emerging Practice Monthly No. 1 (Oct 2026)",
+  "kicker": "SAMPA Emerging Practice Monthly · No. 1 · Oct 2026",
   "headline": "Long-acting injectable bup for people transferring from methadone",
   "summary": "Welcome to the first SAMPA Emerging Practice Monthly: recent research on an emerging addiction practice, with plain-language summaries and links to the original sources. In this issue: a new outpatient case series, a systematic review of transfer strategies, two inpatient approaches and a cautionary case on moving people from methadone to long-acting injectable bup.",
   "draft": false,
@@ -97,7 +97,6 @@
   ],
   "consideredSkipped": [],
   "notes": [
-    "Rosenwohl-Mack 2026 and Naren 2025 are direct-to-inject background, not methadone switches.",
     "Summaries are for clinician education and are not a substitute for clinical judgment or the full prescribing information."
   ]
 }

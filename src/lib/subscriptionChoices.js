@@ -17,3 +17,11 @@ export function selectedLists(preset) {
     topic: preset === 'topic',
   };
 }
+
+export function checkedOnly(selected) {
+  const lists = {};
+  for (const choice of SUBSCRIPTION_CHOICES) {
+    if (selected?.[choice.key] === true) lists[choice.key] = true;
+  }
+  return lists;
+}

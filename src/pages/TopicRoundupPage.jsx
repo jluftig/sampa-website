@@ -29,7 +29,7 @@ function SourceCard({ item, index }) {
       : 'border-b border-primary/10 pb-6 mb-6'}
     >
       {centerpiece ? (
-        <p className="text-xs font-bold tracking-widest uppercase text-accent mb-2">This month's centerpiece</p>
+        <p className="text-xs font-bold tracking-widest uppercase text-accent mb-2">This month’s centerpiece</p>
       ) : null}
       <p className="text-xs font-bold tracking-wide uppercase text-text/40 mb-2">
         {`${index + 1} · ${item.outlet} · ${item.date}`}
@@ -41,7 +41,7 @@ function SourceCard({ item, index }) {
       </h2>
       <p className="text-text/80 leading-relaxed mb-3">{item.summary}</p>
       <a href={item.url} target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>
-        Read the source
+        Read the source →
       </a>
     </article>
   );
@@ -130,8 +130,8 @@ export function TopicRoundupPage({ date, modules }) {
                     <ul className="space-y-2 text-base leading-relaxed text-text/80 list-disc pl-5">
                       {group.entries.map((entry) => (
                         <li key={entry.href}>
-                          {`${entry.author} (${entry.year}). `}
-                          <a href={entry.href} target="_blank" rel="noopener noreferrer" className={SOURCE_LINK}>
+                          {`${entry.author.endsWith('.') ? entry.author : `${entry.author}.`} (${entry.year}). `}
+                          <a href={entry.href} target="_blank" rel="noopener noreferrer" className="text-primary-text underline underline-offset-2">
                             {entry.title}
                           </a>
                         </li>
