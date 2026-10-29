@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-29 (T74, member-visible names for the daily and topic lists. Draft PR. Preview only until Josh.)
+**Last updated:** 2026-10-29 (T74, member-visible names for the daily and topic lists. Draft PR #159. Preview only until Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T74 | Name the daily and topic lists for members | cursor | 2026-10-29 | **Claimed cursor.** List 15 is SAMPA Daily News Roundup. List 18 is SAMPA Monthly Topic Roundup, and its cadence is monthly. Internal keys and `BREVO_LIST_*` / `BREVO_DOI_TEMPLATE_*` names stay. Do not merge until Josh says. |
+| T74 | Name the daily and topic lists for members | cursor | 2026-10-29 | **Claimed cursor.** Draft PR **#159** (preview only). List 15 is SAMPA Daily News Roundup. List 18 is SAMPA Monthly Topic Roundup, and its cadence is monthly. Internal keys and `BREVO_LIST_*` / `BREVO_DOI_TEMPLATE_*` names stay. Do not merge until Josh says. |
 | T71 | Choose which SAMPA emails you get | cursor | 2026-10-22 | **Claimed cursor.** Draft PR **#152** (preview only). Signed-in `/dashboard/emails`. Three instant toggles: SAMPA Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_TOPIC`, no numeric fallback). On adds that list. Off removes that list only. Footer unsubscribe stays a full exit. State is the contact's Brevo `listIds`. Section on `newsletter-stats`. Homepage copy unchanged. Do not merge until Josh says merge. |
 | T70 | Weekly Topic Roundup page at /news/topic | cursor | 2026-10-18 | **Claimed cursor.** Draft PR **#146** (preview only). Merged origin/main on 2026-10-28, including #147. Public `/news/topic` (latest) and `/news/topic/YYYY-MM-DD` from `content/topic-roundup/2026-10-19.json`. Draft banner while `draft` is true. Canonical URL is the dated issue. Crawlers on `/news/topic` get that issue from `api/share.js` (`noindex` while draft). News header and footer link here and to Manage subscriptions. Not in the daily list, daily email, RSS, sitemap, or homepage. Do not merge until Website QA and Josh. |
 | T32 | Practice resources public /resources | cursor | 2026-09-27 | **Claimed cursor.** PR #75 is ready for review, not a draft. Merged current main on 2026-10-12. Bridge is the first external card (`https://bridgetotreatment.org/`). User-facing name is Bridge. CDC naloxone points at `https://www.cdc.gov/stop-overdose/caring/naloxone.html`. `/resources` in nav, footer, and About. Homepage Programs marks practice resources Live. SAMPA list includes the CMS CY 2027 PFS comment plus the HHS, HRSA, and ASAM comments now on `/policy`. No bup dosing tool. CME and job board stay Coming soon. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot. |
