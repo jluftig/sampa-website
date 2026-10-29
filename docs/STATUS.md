@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-29 (T73, member-visible rename of SAMPA Updates to SAMPA Weekly Newsletter. Draft PR #158. Preview only until Josh.)
+**Last updated:** 2026-10-29 (T74, member-visible names for the daily and topic lists. Draft PR. Preview only until Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -66,7 +66,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T73 | Rename member-visible SAMPA Updates to SAMPA Weekly Newsletter | cursor | 2026-10-29 | **Claimed cursor.** Draft PR **#158** (preview only). Member-visible copy only. Internal key `updates`, `BREVO_LIST_UPDATES`, and `#updates-signup` stay. `/subscriptions` label becomes SAMPA Weekly Newsletter. Weekly DOI redirect gains `list=weekly`. Do not merge until Josh says. |
+| T74 | Name the daily and topic lists for members | cursor | 2026-10-29 | **Claimed cursor.** List 15 is SAMPA Daily News Roundup. List 18 is SAMPA Monthly Topic Roundup, and its cadence is monthly. Internal keys and `BREVO_LIST_*` / `BREVO_DOI_TEMPLATE_*` names stay. Do not merge until Josh says. |
 | T71 | Choose which SAMPA emails you get | cursor | 2026-10-22 | **Claimed cursor.** Draft PR **#152** (preview only). Signed-in `/dashboard/emails`. Three instant toggles: SAMPA Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_TOPIC`, no numeric fallback). On adds that list. Off removes that list only. Footer unsubscribe stays a full exit. State is the contact's Brevo `listIds`. Section on `newsletter-stats`. Homepage copy unchanged. Do not merge until Josh says merge. |
 | T70 | Weekly Topic Roundup page at /news/topic | cursor | 2026-10-18 | **Claimed cursor.** Draft PR **#146** (preview only). Merged origin/main on 2026-10-28, including #147. Public `/news/topic` (latest) and `/news/topic/YYYY-MM-DD` from `content/topic-roundup/2026-10-19.json`. Draft banner while `draft` is true. Canonical URL is the dated issue. Crawlers on `/news/topic` get that issue from `api/share.js` (`noindex` while draft). News header and footer link here and to Manage subscriptions. Not in the daily list, daily email, RSS, sitemap, or homepage. Do not merge until Website QA and Josh. |
 | T32 | Practice resources public /resources | cursor | 2026-09-27 | **Claimed cursor.** PR #75 is ready for review, not a draft. Merged current main on 2026-10-12. Bridge is the first external card (`https://bridgetotreatment.org/`). User-facing name is Bridge. CDC naloxone points at `https://www.cdc.gov/stop-overdose/caring/naloxone.html`. `/resources` in nav, footer, and About. Homepage Programs marks practice resources Live. SAMPA list includes the CMS CY 2027 PFS comment plus the HHS, HRSA, and ASAM comments now on `/policy`. No bup dosing tool. CME and job board stay Coming soon. Preview only. Do not merge until independent Website QA GREEN and Josh's screenshot. |
@@ -91,11 +91,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T73 | Rename member-visible SAMPA Updates to SAMPA Weekly Newsletter | cursor | 2026-10-29 | **Merged PR #158** (`9bb3cfe`). Member-visible copy says SAMPA Weekly Newsletter. Internal key `updates`, `BREVO_LIST_UPDATES`, and `#updates-signup` stay. Weekly manage confirm uses `list=weekly`. |
 | T72 | Manage subscriptions page at /subscriptions | cursor | 2026-10-27 | **Merged PR #147** (`e266f7f`). `/subscriptions` chooses daily, weekly, and topic. An empty submit returns 400 and sends nothing. An unchecked list is removed only after the emailed confirm link. |
 | T64 | Daily addiction roundup on `/news/daily` + daily-email opt-in | cursor | 2026-09-29 | **Merged PR #119** (`41d82f4`) and content **#120** (`dcc59d8`). Weekday JSON roundup and daily-list opt-in. T65 is the archive prototype and is not merged. |
 | T58 | Org dashboard on `/editor/members` (membership, reach, finance) | cursor | 2026-09-24 | **Merged PR #112 → Production** (`4a63917`). Four pillars on `/editor/members`. Finance is admin only. T59 tightens the layout and adds the manual Relay balance. |
 | T53 | In-site site-traffic dashboard for roster viewers | cursor | 2026-09-18 | **Merged PR #106 → Production** (`a9d7808`). Site traffic card at the top of `/editor/members`. Gate is `canViewMemberRoster` (`admin` or `can_view_members`). Tracking-start note 2026-09-16. T58 extends this card. |
-| T54 | News bylines include credentials (PA-C) | egg | 2026-09-18 | **Merged PR #107 → Production** (`8241122`). Bylines append `profiles.credentials` (`Josh Luftig, PA-C`). Live `author_name` backfilled. SQL Editor still needs `supabase/migrations/2026-09-18-list-news-editors-credentials.sql` so the picker does not strip titles on save. |
 
 ### Task workflow (agents + humans)
 
