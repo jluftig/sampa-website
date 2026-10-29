@@ -517,9 +517,11 @@ test('a body without lists still starts updates double opt-in', async () => {
 
 test('the subscriptions page names the three lists and the removal warning', () => {
   const page = readFileSync(new URL('../src/pages/Subscriptions.jsx', import.meta.url), 'utf8');
-  assert.match(page, /Daily News Roundup/);
-  assert.match(page, /Weekly Newsletter/);
-  assert.match(page, /SAMPA Emerging Practice Monthly/);
+  const choices = readFileSync(new URL('../src/lib/subscriptionChoices.js', import.meta.url), 'utf8');
+  assert.match(page, /SUBSCRIPTION_CHOICES/);
+  assert.match(choices, /SAMPA Daily News Roundup/);
+  assert.match(choices, /SAMPA Weekly Newsletter/);
+  assert.match(choices, /SAMPA Emerging Practice Monthly/);
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const route = app.indexOf('path="/subscriptions"');
   const catchAll = app.indexOf('path="*"');

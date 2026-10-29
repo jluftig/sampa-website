@@ -7,6 +7,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { AuthContext } from '../src/lib/authState.js';
 import Subscriptions from '../src/pages/Subscriptions.jsx';
 import NewsletterConfirmed from '../src/pages/NewsletterConfirmed.jsx';
+import NewsletterSignup from '../src/components/NewsletterSignup.jsx';
 
 const auth = {
   loading: false,
@@ -90,6 +91,26 @@ test('a confirm link shows a confirm button and removes nothing on load', () => 
   assert.match(markup, /Confirm and stop these emails/);
   assert.match(markup, /SAMPA Daily News Roundup, SAMPA Emerging Practice Monthly/);
   assert.equal(markup.includes('type="email"'), false);
+});
+
+test('signup cards stay on the page and pre-check that page’s list', () => {
+  const cases = [
+    ['/news/daily', 'daily'],
+    ['/', 'weekly'],
+    ['/news/topic', 'topic'],
+  ];
+  for (const [path, preset] of cases) {
+    const markup = render(createElement(NewsletterSignup, { variant: 'card', preset }), path);
+    assert.match(markup, /SAMPA Weekly Newsletter/);
+    assert.match(markup, /SAMPA Daily News Roundup/);
+    assert.match(markup, /SAMPA Emerging Practice Monthly/);
+    assert.match(markup, /Manage all email choices/);
+    assert.match(markup, /href="\/subscriptions"/);
+    assert.equal(markup.includes('href="/login"'), false);
+    const checked = markup.match(/<input[^>]*checked[^>]*>/g) || [];
+    assert.equal(checked.length, 1);
+    assert.match(checked[0], new RegExp(`name="${preset}"`));
+  }
 });
 
 test('topic confirmation links to the news page, not a missing roundup route', () => {

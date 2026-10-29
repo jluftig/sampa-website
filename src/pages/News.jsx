@@ -74,7 +74,7 @@ export default function News() {
         </header>
 
         <div className="max-w-3xl mx-auto mb-14">
-          <NewsletterSignup variant="card" list="daily" />
+          <NewsletterSignup variant="card" preset="daily" />
         </div>
 
         {error && (

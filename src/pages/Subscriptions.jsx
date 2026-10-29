@@ -3,12 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { apiPost } from '../lib/api';
-
-const CHOICES = [
-  { key: 'daily', label: 'SAMPA Daily News Roundup' },
-  { key: 'weekly', label: 'SAMPA Weekly Newsletter' },
-  { key: 'topic', label: 'SAMPA Emerging Practice Monthly' },
-];
+import { SUBSCRIPTION_CHOICES as CHOICES } from '../lib/subscriptionChoices';
 
 const LABELS = Object.fromEntries(CHOICES.map((choice) => [choice.key, choice.label]));
 

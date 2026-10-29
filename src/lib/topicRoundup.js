@@ -60,6 +60,9 @@ function parseFile(path, mod) {
 
   const title = trimmed(data.title);
   if (!title) return skip('title is empty');
+  const headline = trimmed(data.headline) || title;
+  const summary = trimmed(data.summary);
+  const kicker = trimmed(data.kicker);
 
   if (!Array.isArray(data.items) || data.items.length !== 5) {
     return skip('items is not an array of length 5');
@@ -87,11 +90,16 @@ function parseFile(path, mod) {
     const doi = trimmed(entry?.doi);
     const href = httpsUrl(entry?.url);
     const year = yearText(entry?.year);
+    const section = trimmed(entry?.section);
     if (!author || !entryTitle || !doi || !href || !year || /\s/.test(doi) || doi.startsWith('http')) {
       return skip('a furtherReading entry lacks trimmed author, title, doi, or an https URL, or year is not a number or a 4-digit string');
     }
     furtherReading.push({
       lead: readingLead(author, entryTitle, year),
+      author,
+      title: entryTitle,
+      year,
+      section,
       doi,
       href,
     });
@@ -112,6 +120,9 @@ function parseFile(path, mod) {
     issue: {
       date: stem,
       title,
+      headline,
+      summary,
+      kicker,
       weekday: formatRoundupDate(stem),
       banner: data.draft === true ? 'Draft - pending clinical review' : null,
       path: `/news/topic/${stem}`,
