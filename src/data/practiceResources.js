@@ -90,7 +90,7 @@ export const SAMPA_RESOURCES = [
   {
     id: 'updates',
     origin: 'sampa',
-    title: 'SAMPA Updates',
+    title: 'SAMPA Weekly Newsletter',
     blurb:
       'A weekly email — practice news, society notes, and policy changes that affect your patients. No membership required.',
     href: '/#updates-signup',

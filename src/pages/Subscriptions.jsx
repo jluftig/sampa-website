@@ -6,7 +6,7 @@ import { apiPost } from '../lib/api';
 
 const CHOICES = [
   { key: 'daily', label: 'Daily News Roundup' },
-  { key: 'weekly', label: 'Weekly Newsletter' },
+  { key: 'weekly', label: 'SAMPA Weekly Newsletter' },
   { key: 'topic', label: 'Weekly Topic Roundup' },
 ];
 

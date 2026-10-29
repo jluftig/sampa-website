@@ -143,7 +143,7 @@ test('checked lists start DOI and unchecked lists are never removed on the first
     attributes: { SOURCE: 'manage_daily' },
   });
   assert.deepEqual(dois[1].body.includeListIds, [3]);
-  assert.equal(dois[1].body.redirectionUrl, 'https://preview.example.test/newsletter-confirmed');
+  assert.equal(dois[1].body.redirectionUrl, 'https://preview.example.test/newsletter-confirmed?list=weekly');
   assert.equal(calls.filter((call) => call.url === SMTP).length, 1);
 });
 
@@ -288,7 +288,7 @@ test('three checked lists send the site confirm URLs and ignore other env names'
   assert.equal(byList[15].templateId, 35);
   assert.equal(byList[15].redirectionUrl, 'https://preview.example.test/newsletter-confirmed?list=daily');
   assert.equal(byList[3].templateId, 13);
-  assert.equal(byList[3].redirectionUrl, 'https://preview.example.test/newsletter-confirmed');
+  assert.equal(byList[3].redirectionUrl, 'https://preview.example.test/newsletter-confirmed?list=weekly');
   assert.equal(byList[18].templateId, 59);
   assert.equal(byList[18].redirectionUrl, 'https://preview.example.test/newsletter-confirmed?list=topic');
   assert.equal(calls.some((call) => JSON.stringify(call.body).includes('evil.example')), false);

@@ -131,7 +131,7 @@ Supabase profiles (opt-in members)
 ## Site surfaces
 
 - **Public signup (T5):** footer form → `api/newsletter-signup.js` → Brevo DOI →
-  **SAMPA Updates** only. Confirm page: `/newsletter-confirmed`.
+  **SAMPA Weekly Newsletter** only. Confirm page: `/newsletter-confirmed`.
   Env: `BREVO_API_KEY`, `BREVO_LIST_UPDATES` (production list id 3), `BREVO_DOI_TEMPLATE_ID` (production template id 13).
 - **Daily roundup signup (T64):** form on `/news/daily` still posts `list: "daily"`.
   The handler maps that string to `BREVO_LIST_DAILY_NEWS` (production list id 15).
@@ -153,7 +153,7 @@ Supabase profiles (opt-in members)
   Template env vars and the Vercel values: daily `BREVO_DOI_TEMPLATE_ID_DAILY` 35 (no fallback to the weekly template), weekly `BREVO_DOI_TEMPLATE_ID` 13, topic `BREVO_DOI_TEMPLATE_TOPIC` (59 in Vercel, template currently inactive in Brevo).
   When `BREVO_DOI_TEMPLATE_TOPIC` is unset, the handler logs `newsletter-signup: BREVO_DOI_TEMPLATE_TOPIC is unset` and does not call Brevo for that list, so no topic contact is written. The page still returns success and says Weekly Topic Roundup signup is not open yet (`notOpen: ["topic"]`).
   When the topic template id is set, the handler sends double opt-in with that template. A Brevo error, including an inactive template, is a failure for that list and does not count as a written subscription.
-  Manage confirm redirects are set in site code and ignore `BREVO_DOI_REDIRECT_URL`: daily `${origin}/newsletter-confirmed?list=daily`, weekly `${origin}/newsletter-confirmed`, topic `${origin}/newsletter-confirmed?list=topic`.
+  Manage confirm redirects are set in site code and ignore `BREVO_DOI_REDIRECT_URL`: daily `${origin}/newsletter-confirmed?list=daily`, weekly `${origin}/newsletter-confirmed?list=weekly`, topic `${origin}/newsletter-confirmed?list=topic`.
   The topic confirm page button goes to `/news`. `/news/topic` is the Weekly Topic Roundup route in PR #146, and this PR does not register it.
   `BREVO_API_KEY` must be set in Vercel server env and must never be a `VITE_` var.
 - Privacy: names the three member lists and Brevo. Per-list switches live at `/dashboard/emails`. The email footer remains the full exit. Link `/privacy`.

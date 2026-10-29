@@ -66,7 +66,7 @@ payment systems, workforce rules, everyday practice), not "levers" (Josh 2026-08
 - **Policy card:** "Policy for patient access" — When rules and payment systems
   limit access to evidence-based treatment, patients lose. (Best line in the
   system; it lives on this card only.)
-- **SAMPA Updates** is described the same way at every funnel step (chip, DOI
+- **SAMPA Weekly Newsletter** is described the same way at every funnel step (chip, DOI
   email, confirmed page): **a weekly email** — practice news, society notes,
   policy changes that affect your patients. "Weekly," not "low-volume" or
   "occasional" (Josh 2026-08-10).

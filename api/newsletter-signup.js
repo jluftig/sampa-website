@@ -15,7 +15,7 @@ import { subscriptionLists } from './_lib/subscriptionLists.js';
 // Manage templates: BREVO_DOI_TEMPLATE_ID_DAILY, BREVO_DOI_TEMPLATE_ID,
 // BREVO_DOI_TEMPLATE_TOPIC. Topic writes nothing when its template id is unset.
 // Manage redirects come from site code, not BREVO_DOI_REDIRECT_URL:
-// daily /newsletter-confirmed?list=daily, weekly /newsletter-confirmed,
+// daily /newsletter-confirmed?list=daily, weekly /newsletter-confirmed?list=weekly,
 // topic /newsletter-confirmed?list=topic.
 // Removals need a confirmed email link. Token key is SUBSCRIPTION_TOKEN_SECRET
 // (or a key derived from BREVO_API_KEY). Optional BREVO_SENDER_NAME / BREVO_SENDER_EMAIL.
