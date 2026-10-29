@@ -46,6 +46,8 @@ describe('topic roundup seed', () => {
 
     assert.deepEqual(warnings, []);
     assert.equal(page.status, 'issue');
+    assert.equal(seed.title.startsWith('Monthly Topic Roundup: '), true);
+    assert.equal(seed.title.includes('Weekly Topic Roundup'), false);
     assert.equal(page.issue.date, '2026-10-19');
     assert.equal(page.issue.weekday, 'Monday, October 19, 2026');
     assert.equal(page.issue.banner, 'Draft - pending clinical review');
