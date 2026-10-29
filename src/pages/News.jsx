@@ -65,7 +65,7 @@ export default function News() {
               Browse by keyword →
             </Link>
             <Link to="/news/topic" className="text-primary-text font-semibold hover:underline">
-              Weekly Topic Roundup →
+              SAMPA Emerging Practice Monthly →
             </Link>
             <Link to="/subscriptions" className="text-primary-text font-semibold hover:underline">
               Manage subscriptions

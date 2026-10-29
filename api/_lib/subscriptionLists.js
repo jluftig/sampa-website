@@ -4,7 +4,7 @@
 export const subscriptionLists = [
   {
     key: 'daily',
-    label: 'Daily News Roundup',
+    label: 'SAMPA Daily News Roundup',
     listEnv: 'BREVO_LIST_DAILY_NEWS',
     templateEnv: 'BREVO_DOI_TEMPLATE_ID_DAILY',
     templateOptional: false,
@@ -22,7 +22,7 @@ export const subscriptionLists = [
   },
   {
     key: 'topic',
-    label: 'Weekly Topic Roundup',
+    label: 'SAMPA Emerging Practice Monthly',
     listEnv: 'BREVO_LIST_TOPIC',
     templateEnv: 'BREVO_DOI_TEMPLATE_TOPIC',
     templateOptional: true,

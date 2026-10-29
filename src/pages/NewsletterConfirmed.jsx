@@ -15,13 +15,13 @@ export default function NewsletterConfirmed() {
   };
   const confirmed = {
     daily: {
-      message: 'You’re subscribed to the SAMPA Daily Roundup. You’ll get the day’s five items by email. No membership required.',
+      message: 'You’re subscribed to the SAMPA Daily News Roundup. You’ll get the day’s five items by email. No membership required.',
       to: '/news/daily',
       label: 'Read today’s roundup',
     },
     weekly,
     topic: {
-      message: 'You’re subscribed to the Weekly Topic Roundup. You’ll get each new issue by email. No membership required.',
+      message: 'You’re subscribed to the SAMPA Emerging Practice Monthly, a monthly look at an emerging addiction practice. No membership required.',
       to: '/news',
       label: 'Read the news',
     },

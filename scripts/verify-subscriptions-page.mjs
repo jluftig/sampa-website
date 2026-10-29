@@ -47,7 +47,7 @@ test('the subscriptions page offers three lists and warns that unchecked lists a
   assert.equal(/unchecked lists are removed/.test(markup), false);
   assert.match(markup, /<label[^>]*>[\s\S]*Daily News Roundup[\s\S]*<\/label>/);
   assert.match(markup, /<label[^>]*>[\s\S]*Weekly Newsletter[\s\S]*<\/label>/);
-  assert.match(markup, /<label[^>]*>[\s\S]*Weekly Topic Roundup[\s\S]*<\/label>/);
+  assert.match(markup, /<label[^>]*>[\s\S]*SAMPA Emerging Practice Monthly[\s\S]*<\/label>/);
   const boxes = markup.match(/<input[^>]*type="checkbox"[^>]*>/g) || [];
   assert.equal(boxes.length, 3);
   assert.equal(boxes.some((tag) => /\schecked(?:=|\s|>)/.test(tag)), false);
@@ -76,17 +76,19 @@ test('weekly confirmation names the SAMPA Weekly Newsletter', () => {
   assert.equal(bare.includes('SAMPA Updates'), false);
 });
 
-test('topic confirmation names the Weekly Topic Roundup', () => {
+test('topic confirmation names the SAMPA Emerging Practice Monthly', () => {
   const markup = render(createElement(NewsletterConfirmed), '/newsletter-confirmed?list=topic');
-  assert.match(markup, /subscribed to the Weekly Topic Roundup/);
+  assert.match(markup, /subscribed to the SAMPA Emerging Practice Monthly/);
+  assert.match(markup, /a monthly look at an emerging addiction practice/);
   assert.equal(markup.includes('Friday'), false);
+  assert.equal(markup.includes('Weekly Topic'), false);
 });
 
 test('a confirm link shows a confirm button and removes nothing on load', () => {
   const payload = Buffer.from(JSON.stringify({ e: 'a@b.co', l: ['daily', 'topic'], x: 1 })).toString('base64url');
   const markup = render(createElement(Subscriptions), `/subscriptions?confirm=${payload}.sig`);
   assert.match(markup, /Confirm and stop these emails/);
-  assert.match(markup, /Daily News Roundup, Weekly Topic Roundup/);
+  assert.match(markup, /SAMPA Daily News Roundup, SAMPA Emerging Practice Monthly/);
   assert.equal(markup.includes('type="email"'), false);
 });
 

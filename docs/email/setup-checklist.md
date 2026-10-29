@@ -43,10 +43,10 @@ In Brevo: Senders → add/verify `info@` if not already listed under authenticat
 
 | Env | Brevo name | Role |
 |-----|------------|------|
-| `BREVO_LIST_UPDATES` | SAMPA Updates | Catch-all marketing |
+| `BREVO_LIST_UPDATES` | SAMPA Weekly Newsletter | Catch-all marketing |
 | `BREVO_LIST_TEST` | SAMPA Test | Josh only (expand later) |
 
-Topic lists (Weekly News / Policy / Jobs / CME) may exist in Brevo as **reserved**. Do not attach Policy, Jobs, or CME. The Weekly Topic Roundup is the one exception, and only through `BREVO_LIST_TOPIC` (see §4). Do not assume that list is id 7.
+Topic lists (Weekly News / Policy / Jobs / CME) may exist in Brevo as **reserved**. Do not attach Policy, Jobs, or CME. The SAMPA Emerging Practice Monthly is the one exception, and only through `BREVO_LIST_TOPIC` (see §4). Do not assume that list is id 7.
 
 Add Josh email to **SAMPA Test** only.
 
@@ -62,14 +62,14 @@ Signed-in members choose lists at `/dashboard/emails`
 (`GET` and `POST /api/newsletter-stats?section=email-preferences`).
 On adds that one list. Off removes that one list. The campaign-footer
 unsubscribe stays a full exit. Turning one list back on after that exit
-keeps the other non-Updates lists and leaves SAMPA Updates off unless
+keeps the other non-Updates lists and leaves the SAMPA Weekly Newsletter off unless
 that switch is the one turned on.
 
 | List | Env | Id |
 |------|-----|----|
-| SAMPA Updates | `BREVO_LIST_UPDATES` | 3 |
-| Daily Roundup | `BREVO_LIST_DAILY_NEWS` | 15 |
-| Weekly Topic Roundup | `BREVO_LIST_TOPIC` | unset until Josh creates it. Docs name Weekly News among reserved ids 4–7 and do not assign a number. Do not assume 7. |
+| SAMPA Weekly Newsletter | `BREVO_LIST_UPDATES` | 3 |
+| SAMPA Daily News Roundup | `BREVO_LIST_DAILY_NEWS` | 15 |
+| SAMPA Emerging Practice Monthly | `BREVO_LIST_TOPIC` | unset until Josh creates it. Docs name Weekly News among reserved ids 4–7 and do not assign a number. Do not assume 7. |
 
 `PREFERENCE_CENTER_URL` stays empty. This is the site page, not a Brevo-hosted center.
 
@@ -81,7 +81,7 @@ BREVO_LIST_TOPIC=
 ## 5. Double opt-in (public) — T5
 
 Site form: footer → `POST /api/newsletter-signup` → Brevo
-`POST /contacts/doubleOptinConfirmation` → **SAMPA Updates** only.
+`POST /contacts/doubleOptinConfirmation` → **SAMPA Weekly Newsletter** only.
 Confirm redirect: `/newsletter-confirmed`.
 
 1. Brevo → Campaigns → Templates → create a **Double opt-in** template
@@ -91,8 +91,8 @@ Confirm redirect: `/newsletter-confirmed`.
 
 ```bash
 BREVO_API_KEY=xkeysib-...          # same campaign API key as Hermes (not SMTP)
-BREVO_LIST_UPDATES=3               # SAMPA Updates
-BREVO_DOI_TEMPLATE_ID=13            # SAMPA Updates DOI (created 2026-08-07)
+BREVO_LIST_UPDATES=3               # SAMPA Weekly Newsletter
+BREVO_DOI_TEMPLATE_ID=13            # SAMPA Weekly Newsletter DOI (created 2026-08-07)
 # optional:
 # BREVO_DOI_REDIRECT_URL=https://www.addictionpas.org/newsletter-confirmed
 ```
@@ -115,7 +115,7 @@ BREVO_LIST_DAILY_NEWS=             # numeric id, after the list exists
 ```
 
 Confirm redirect is `${origin}/newsletter-confirmed?list=daily`.
-Attribute `SOURCE=daily_roundup_signup`. Do not point the SAMPA Updates DOI
+Attribute `SOURCE=daily_roundup_signup`. Do not point the SAMPA Weekly Newsletter DOI
 redirect at that query string. The footer form omits `list` and stays on Updates.
 
 ## 6. Smoke test

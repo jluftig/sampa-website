@@ -30,9 +30,9 @@ Words as Josh and the site use them. No implementation details here (see `CLAUDE
 
 **Keyword**: A topic label on News, as shown to readers and in URLs. Called a "tag" in code and the database.
 
-**Daily Roundup**: The weekday news digest at `/news/daily`.
+**SAMPA Daily News Roundup**: The weekday email and the digest at `/news/daily`.
 
-**Weekly Topic Roundup**: The page at `/news/topic`. Distinct from the Daily Roundup.
+**SAMPA Emerging Practice Monthly**: The page at `/news/topic` and its email. A monthly look at an emerging addiction practice. Distinct from the SAMPA Daily News Roundup and the SAMPA Weekly Newsletter.
 
 **Join**: Starting a new paid membership (`/join`).
 

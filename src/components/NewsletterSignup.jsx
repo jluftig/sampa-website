@@ -141,7 +141,7 @@ export default function NewsletterSignup({ variant = 'banner', list }) {
         className="bg-white rounded-3xl border border-primary/10 px-6 py-8 shadow-sm"
       >
         <h2 id={headingId} className="text-2xl font-drama font-bold mb-2">
-          {daily ? 'Get the daily roundup by email' : 'SAMPA Weekly Newsletter'}
+          {daily ? 'SAMPA Daily News Roundup' : 'SAMPA Weekly Newsletter'}
         </h2>
         <p className="text-text/70 mb-6 leading-relaxed">
           {daily

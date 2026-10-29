@@ -113,7 +113,7 @@ export async function handleNewsletterStats(request, deps = {}) {
       daily: {
         subscribers: dailyList ? dailyList.totalSubscribers : null,
         listId: cfg.dailyListId,
-        listName: dailyList?.name || 'SAMPA Daily Roundup',
+        listName: dailyList?.name || 'SAMPA Daily News Roundup',
         issues: dailyIssues,
         subscriberSnapshots: snapshotsForList(snapshots, cfg.dailyListId),
       },

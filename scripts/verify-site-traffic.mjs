@@ -314,7 +314,7 @@ describe('wiring', () => {
     assert.match(card, /shouldRequestTraffic/);
     assert.doesNotMatch(card, /location\.reload|location\.assign|window\.location/);
     assert.match(card, /Board\s+dashboard only/);
-    assert.match(card, /Daily Roundup/);
+    assert.match(card, /SAMPA Daily News Roundup/);
     assert.doesNotMatch(card, /Board and\s+Membership Committee only/);
     assert.equal(TRACKING_STARTED_NOTE, 'Tracking started on September 16, 2026.');
     const noteIdx = card.indexOf('{TRACKING_STARTED_NOTE}');

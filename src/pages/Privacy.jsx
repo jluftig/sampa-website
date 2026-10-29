@@ -61,8 +61,8 @@ export default function Privacy() {
       <p>
         On your dashboard you may add a mobile phone number and choose
         text-message preferences. Email lists are separate. From your account
-        you can turn the SAMPA Weekly Newsletter, the Daily Roundup, and the Weekly Topic
-        Roundup on or off, one list at a time. We use this so SAMPA can reach
+        you can turn the SAMPA Weekly Newsletter, the SAMPA Daily News Roundup, and the SAMPA Emerging Practice Monthly
+        on or off, one list at a time. We use this so SAMPA can reach
         you about membership, the organization, and the emails you turn on. It
         is not shown to other members unless you also choose to share that same
         contact information in the member directory (see below).
@@ -181,7 +181,7 @@ export default function Privacy() {
         <li><strong>Supabase</strong> — our database and sign-in infrastructure (stores accounts and profiles).</li>
         <li><strong>Stripe</strong> — payment processing and billing management.</li>
         <li><strong>Vercel</strong> — website hosting.</li>
-        <li><strong>Brevo</strong> — email delivery for magic-link / auth messages and for SAMPA email lists (the SAMPA Weekly Newsletter, the Daily Roundup, and the Weekly Topic Roundup). Brevo's handling of subscriber data is described in{' '}
+        <li><strong>Brevo</strong> — email delivery for magic-link / auth messages and for SAMPA email lists (the SAMPA Weekly Newsletter, the SAMPA Daily News Roundup, and the SAMPA Emerging Practice Monthly). Brevo's handling of subscriber data is described in{' '}
           <a href="https://www.brevo.com/legal/privacypolicy/" target="_blank" rel="noopener noreferrer">Brevo's privacy policy</a>.</li>
         <li><strong>Google</strong> — the optional "Sign in with Google" service.</li>
       </ul>
@@ -214,7 +214,7 @@ export default function Privacy() {
         <li>Hide yourself from the member directory, or share/unshare email and phone, with the checkboxes on that page.</li>
         <li>Use a directory email or phone that differs from your sign-in / account contact.</li>
         <li>
-          Choose the SAMPA Weekly Newsletter, the Daily Roundup, and the Weekly Topic Roundup
+          Choose the SAMPA Weekly Newsletter, the SAMPA Daily News Roundup, and the SAMPA Emerging Practice Monthly
           on your <Link to="/dashboard/emails">email choices</Link> page. Each
           switch adds or removes that one list.
         </li>

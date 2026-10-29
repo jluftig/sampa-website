@@ -336,7 +336,7 @@ export function shapeNewsletterStats({
     body.daily = shapeListReach({
       subscribers: daily.subscribers,
       listId: daily.listId,
-      listName: daily.listName || 'SAMPA Daily Roundup',
+      listName: daily.listName || 'SAMPA Daily News Roundup',
       issues: daily.issues,
       snapshots: daily.subscriberSnapshots,
     });
