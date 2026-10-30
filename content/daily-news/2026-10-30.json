@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-30",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Cord tissue levels of methadone or bup did not predict severe newborn opioid withdrawal",
+      "outlet": "University of Maryland School of Medicine",
+      "date": "Oct 29",
+      "summary": "In a JAMA Network Open research letter on 92 pregnancies with at least 30 days of methadone or buprenorphine before delivery, medication levels measured in umbilical cord tissue were not associated with the severity of neonatal opioid withdrawal syndrome. Severe withdrawal occurred in about 44% of newborns and was more common after methadone than buprenorphine exposure, but maternal dose was not significantly associated with severity. The authors say the results do not support lowering MOUD doses in pregnancy to prevent newborn withdrawal, which can raise maternal relapse and overdose risk.",
+      "url": "https://www.medschool.umaryland.edu/news/2026/study-provides-reassuring-news-for-women-using-medications-to-treat-opioid-use-disorder-during-pregnancy.html"
+    },
+    {
+      "headline": "Private equity owns 35% of methadone clinics but has not expanded access, researcher reports",
+      "outlet": "The Conversation",
+      "date": "Oct 28",
+      "summary": "A Brown University health economist reports that 35% of U.S. opioid treatment programs are affiliated with private equity, more than half are PE-owned in 19 states and D.C., and one PE-backed company owns all four Montana clinics. Her research found PE firms typically controlled 67% of a county's methadone market within two years of entering it, without adding clinics or increasing methadone shipments. The findings feed the debate over the Modernizing Opioid Treatment Access Act 2.0, which would allow methadone prescribing outside clinics and pharmacy dispensing.",
+      "url": "https://theconversation.com/private-equity-is-buying-up-more-methadone-clinics-access-to-the-lifesaving-drug-isnt-getting-easier-286927"
+    },
+    {
+      "headline": "OSU Medicine opens eastern Oklahoma's first combined addiction medicine and OB-GYN program",
+      "outlet": "KGOU",
+      "date": "Oct 29",
+      "summary": "Oklahoma State University Medicine in Tulsa launched its Maternal and Addiction Recovery Care Program, which pairs board-certified addiction medicine and OB-GYN physicians to treat pregnant and postpartum patients with opioid, alcohol, and other substance use disorders, including with MOUD. The program, started with $100,000 from the George Kaiser Family Foundation, has already cared for 25 patients, sees participants up to 12 months postpartum, and plans telehealth partnerships with rural hospitals. Co-located prenatal and addiction care can reach patients who might otherwise go untreated until they arrive in labor.",
+      "url": "https://www.kgou.org/health/2026-10-29/new-osu-medicine-program-integrates-addiction-treatment-maternal-care-in-tulsa"
+    },
+    {
+      "headline": "WSU wins $7.5 million NIH grant to study kratom's effects on chronic pain and sleep",
+      "outlet": "Washington State University",
+      "date": "Oct 29",
+      "summary": "Washington State University will lead a five-year, $7.5 million NIH-funded project to study how kratom works, its risks, and its effects on sleep and quality of life in people with chronic pain, with partners at the University of Arizona and the University of North Carolina Greensboro. The team plans mouse studies followed by a human sleep study in people with chronic low back pain, using an authenticated pure form of kratom. Kratom is not FDA-approved for any medical use, and clinicians answering patient questions about it have little controlled human data to draw on.",
+      "url": "https://pharmacy.wsu.edu/2026/10/29/wsu-awarded-7-5-million-grant-to-study-kratom-chronic-pain-and-sleep/"
+    },
+    {
+      "headline": "Buffalo study will track recovery capital in 300 people recovering from alcohol use disorder",
+      "outlet": "University at Buffalo",
+      "date": "Oct 29",
+      "summary": "A University at Buffalo social work researcher received a four-year, $2.135 million NIAAA grant to study how recovery capital, the social, physical, human, and cultural resources that support recovery, changes over time in people with alcohol use disorder. The study will follow roughly 300 people in early recovery for 24 months, half of them lower income, using the Multidimensional Inventory of Recovery Capital, with a community advisory board of people with lived experience. Longitudinal data could show which recovery supports matter most and when, informing investment beyond acute treatment.",
+      "url": "https://www.buffalo.edu/news/releases/2026/10/Betsy-Bowen-NIAAA-2026.html"
+    }
+  ]
+}
