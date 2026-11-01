@@ -281,7 +281,10 @@ describe('auth event recovery', () => {
 });
 
 describe('source contracts', () => {
-  const checkout = readFileSync('api/create-checkout-session.js', 'utf8');
+  const checkout = [
+    readFileSync('api/create-checkout-session.js', 'utf8'),
+    readFileSync('api/_lib/checkoutSession.js', 'utf8'),
+  ].join('\n');
   const donate = readFileSync('api/create-donation-session.js', 'utf8');
   const authCtx = readFileSync('src/lib/AuthContext.jsx', 'utf8');
   const client = readFileSync('src/lib/supabaseClient.js', 'utf8');
@@ -290,7 +293,9 @@ describe('source contracts', () => {
   it('membership and donation Stripe URLs use requestSiteOrigin', () => {
     assert.match(checkout, /requestSiteOrigin\(request\)/);
     assert.match(donate, /requestSiteOrigin\(request\)/);
-    assert.match(checkout, /success_url: `\$\{origin\}\/dashboard\?checkout=success`/);
+    assert.match(checkout, /step', 'checkout'/);
+    assert.match(checkout, /checkout', 'success'/);
+    assert.doesNotMatch(checkout, /\/dashboard\?checkout=success/);
     assert.match(donate, /success_url: `\$\{origin\}\/donate\?status=success`/);
   });
 

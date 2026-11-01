@@ -407,8 +407,9 @@ tier/term combination (the API rejects it).
 4. `/join` → pick a tier and a term (try a 2-year to confirm the discount
    price and a renewal date two years out; also test Legacy → Lifetime, which
    should show **Active** with "lifetime, no renewal needed") → pay with test
-   card `4242 4242 4242 4242` → land on `/dashboard?checkout=success` → within
-   seconds status shows **Active** with tier + renewal date.
+   card `4242 4242 4242 4242` → land on `/join?step=checkout&checkout=success` → within
+   seconds the confirmation shows the term date. The dashboard still refreshes
+   status when an older session returns to `/dashboard?checkout=success`.
 5. "Manage billing" opens the Stripe portal; cancel the test subscription →
    dashboard shows **Canceled** after the webhook fires.
 6. Sign out; confirm `/dashboard` bounces to `/login` and news pages still load.

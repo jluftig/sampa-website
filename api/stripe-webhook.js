@@ -1,4 +1,10 @@
 import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
+import { profileCancelAtPeriodEnd, stripeShouldForceCancelAtPeriodEnd } from './_lib/autoRenew.js';
+import {
+  cancelAtPeriodEndFromStripe,
+  subscriptionEventApplies,
+  subscriptionUpdateSource,
+} from './_lib/subscriptionEvent.js';
 import { patronLineItem, subscriptionHasPatronItem } from './_lib/tiers.js';
 import {
   memberEmailsEnabled,
@@ -109,7 +115,7 @@ function renewsOn(subscription) {
 // versions signal this via cancel_at_period_end; newer ones may only set the
 // cancel_at timestamp — accept either.
 function willCancel(subscription) {
-  return subscription.cancel_at_period_end === true || Boolean(subscription.cancel_at);
+  return cancelAtPeriodEndFromStripe(subscription);
 }
 
 // Purchased term length in years, read from the price the subscription is
@@ -264,15 +270,28 @@ export async function POST(request) {
         // membership_tier comes only from metadata.tier (fellow / sustaining / …).
         // metadata.patron is an add-on flag and must never be stored as a tier.
         if (session.mode === 'subscription') {
-          const subscription = await stripe.subscriptions.retrieve(session.subscription, {
+          let subscription = await stripe.subscriptions.retrieve(session.subscription, {
             expand: ['items.data.price.product'],
           });
+          if (stripeShouldForceCancelAtPeriodEnd({
+            mode: session.mode,
+            metadata: session.metadata,
+            subscriptionWillCancel: willCancel(subscription),
+          })) {
+            subscription = await stripe.subscriptions.update(session.subscription, {
+              cancel_at_period_end: true,
+            });
+          }
           update = {
             stripe_customer_id: session.customer,
             membership_tier: session.metadata?.tier || subscription.metadata?.tier || null,
             membership_status: membershipStatus(subscription.status),
             renews_on: renewsOn(subscription),
-            cancel_at_period_end: willCancel(subscription),
+            cancel_at_period_end: profileCancelAtPeriodEnd({
+              mode: session.mode,
+              metadata: session.metadata,
+              subscriptionWillCancel: willCancel(subscription),
+            }),
             membership_years: termYears(subscription),
             patron: patronFromMetadata(session.metadata) ?? patronFromMetadata(subscription.metadata) ?? false,
           };
@@ -322,15 +341,43 @@ export async function POST(request) {
           .maybeSingle();
         if (current?.membership_status === 'active' && current.renews_on === null) break;
 
+        let live = subscription;
+        if (event.type === 'customer.subscription.updated') {
+          live = subscriptionUpdateSource({
+            eventSubscription: subscription,
+            freshSubscription: await stripe.subscriptions.retrieve(subscription.id, {
+              expand: ['items.data.price.product'],
+            }),
+          });
+        }
+
+        const customerId = typeof live.customer === 'string' ? live.customer : live.customer?.id;
+        if (!customerId) {
+          throw new Error('stripe-webhook: subscription event has no customer');
+        }
+        const listed = await stripe.subscriptions.list({
+          customer: customerId,
+          status: 'all',
+          limit: 100,
+        });
+        if (listed.has_more) {
+          throw new Error('stripe-webhook: subscription list was truncated');
+        }
+        // A second checkout can overlap a term that is already ending. The
+        // leftover subscription's later cancel must not erase the new row.
+        // A failed or incomplete list throws above so Stripe retries. An empty
+        // successful list still means this event is the only subscription.
+        if (!subscriptionEventApplies(live, listed.data || [], { listOk: true })) break;
+
         const update = {
-          membership_status: membershipStatus(subscription.status),
-          renews_on: renewsOn(subscription),
+          membership_status: membershipStatus(live.status),
+          renews_on: renewsOn(live),
           cancel_at_period_end:
-            event.type !== 'customer.subscription.deleted' && willCancel(subscription),
-          membership_years: termYears(subscription),
+            event.type !== 'customer.subscription.deleted' && willCancel(live),
+          membership_years: termYears(live),
         };
-        if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
-        const patronFlag = patronFromMetadata(subscription.metadata);
+        if (live.metadata?.tier) update.membership_tier = live.metadata.tier;
+        const patronFlag = patronFromMetadata(live.metadata);
         if (patronFlag !== undefined) update.patron = patronFlag;
 
         const updated = await updateProfileMembership(admin, matchCol, matchVal, update);

@@ -61,7 +61,14 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
 - Copy: extra support + badge flex + gratitude (same sentence on Join, `/join/invoice`, dashboard Add Patron, and Stripe Checkout `price_data` description). Directory badge is `profiles.patron`.
 - Amount: **+$25 × term years** (1yr +$25, 2yr +$50, 3yr +$75). Legacy lifetime **+$25 once**.
   Fellow $50 + Patron $25 = $75.
-- Checkout body: `{ tier, duration, patron: true }`. Server adds a matching-term
+- Checkout body: `{ tier, duration, patron: true, auto_renew: true }`. `auto_renew`
+  defaults true. `false` uses the same Stripe Price and stamps
+  `auto_renew=false` on the subscription metadata. Checkout
+  `subscription_data` in this Stripe SDK does not accept
+  `cancel_at_period_end`. The webhook calls `subscriptions.update` with that
+  flag, then copies `willCancel` onto `profiles.cancel_at_period_end`. Active auto-renew and lifetime members get
+  409 instead of a second subscription. Success returns to
+  `/join?step=checkout&checkout=success`. Server adds a matching-term
   Stripe `price_data` line item (recurring with the membership interval; lifetime
   is one-time) — no new `STRIPE_PRICE_*` env required for preview.
 - Session / subscription metadata may include `patron=true`. **Never** set

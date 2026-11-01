@@ -37,7 +37,10 @@ if (!/additional support/i.test(PATRON_ADDON_BLURB)) fail('Patron blurb must say
 if (!/flex/i.test(PATRON_ADDON_BLURB)) fail('Patron blurb must say flex');
 if (!/gratitude/i.test(PATRON_ADDON_BLURB)) fail('Patron blurb must say gratitude');
 
-const joinSrc = readFileSync('src/pages/Join.jsx', 'utf8');
+const joinSrc = [
+  readFileSync('src/pages/Join.jsx', 'utf8'),
+  readFileSync('src/components/join/JoinSupportStep.jsx', 'utf8'),
+].join('\n');
 if (!joinSrc.includes('Patron — {PATRON_ADDON_BLURB}')) {
   fail('Join must keep the Patron label, then Josh’s sentence');
 }

@@ -14,6 +14,7 @@ import {
 import { apiPost } from '../lib/api';
 import { canViewPolicyWork } from '../lib/policyWorkAccess';
 import { formatDate } from '../lib/format';
+import { pacificCalendarYear } from '../lib/annualSurvey';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import DonateLink from '../components/DonateLink';
@@ -107,6 +108,7 @@ export default function Dashboard() {
 
   // ---- donations (own gifts; RLS scopes the query to this user) --------------
   const [donations, setDonations] = useState(null); // null = loading
+  const [surveyOpen, setSurveyOpen] = useState(false);
   useEffect(() => {
     let active = true;
     if (!user) return;
@@ -118,6 +120,23 @@ export default function Dashboard() {
         .order('created_at', { ascending: false });
       if (!active) return;
       setDonations(data || []);
+    })();
+    return () => { active = false; };
+  }, [user?.id]);
+
+  useEffect(() => {
+    let active = true;
+    if (!user) return undefined;
+    const year = pacificCalendarYear(new Date());
+    (async () => {
+      const { data, error } = await supabase
+        .from('member_survey_responses')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('survey_year', year)
+        .maybeSingle();
+      if (!active) return;
+      setSurveyOpen(!error && !data);
     })();
     return () => { active = false; };
   }, [user?.id]);
@@ -366,10 +385,18 @@ export default function Dashboard() {
           </div>
         )}
 
+        {surveyOpen && (
+          <Link to={`/survey/${pacificCalendarYear(new Date())}`} className="block bg-accent/5 border border-accent/20 rounded-2xl p-5 mb-8">
+            <span className="font-bold">2-minute {pacificCalendarYear(new Date())} member survey</span>
+            <span className="block text-sm text-text/70 mt-1">Optional. It does not change your membership.</span>
+          </Link>
+        )}
+
         {/* Membership */}
         <section className="bg-white rounded-4xl shadow-sm border border-primary/10 p-8 mb-8">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
             <h2 className="text-xl font-bold">Membership</h2>
+            <Link to="/renew?step=profile" className="text-sm font-semibold text-primary-text hover:underline">Update profile</Link>
             {badge && (
               <span className={`px-3 py-1 rounded-full border text-xs font-data font-semibold uppercase tracking-wider ${badge.cls}`}>
                 {badge.label}

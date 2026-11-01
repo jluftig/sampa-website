@@ -7,6 +7,7 @@ import { displayOrganizations, formatOrgLocation } from '../lib/organizations';
 import { PRACTICE_SETTINGS } from '../lib/practiceSettings';
 import { PersonPracticeSettings } from '../components/PracticeSettingChips';
 import { DirectoryBadges } from '../components/DirectoryBadges';
+import DirectoryPracticeNotes from '../components/DirectoryPracticeNotes';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -55,6 +56,7 @@ function MemberCard({ person }) {
         )}
       </div>
       <PersonPracticeSettings person={person} className="mt-3" />
+      <DirectoryPracticeNotes person={person} />
       {(person.email || person.phone) && (
         <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t border-primary/5 text-xs text-text/45">
           {person.email && (

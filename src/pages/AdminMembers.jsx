@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import { rosterBackLink } from '../lib/memberHome';
 import { tierByKey } from '../lib/membership';
+import { ROSTER_PROFILE_COLUMNS } from '../lib/joinProfile';
 import { formatDate } from '../lib/format';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -109,6 +110,7 @@ const CSV_COLUMNS = [
   ['Newsletter', (p) => (p.newsletter_opt_in ? 'yes' : 'no')],
   ['SMS updates', (p) => (p.sms_opt_in ? 'yes' : 'no')],
   ['Account created', (p) => (p.created_at ? p.created_at.slice(0, 10) : '')],
+  ...ROSTER_PROFILE_COLUMNS,
 ];
 
 function toCsv(rows) {
@@ -144,8 +146,9 @@ export default function AdminMembers() {
     if (!accepted) return;
     (async () => {
       // Prefer multi-org columns; fall back if the migration hasn't been applied.
-      const profileSelect =
+      const profileSelectBase =
         'id, full_name, email, role, credentials, organization, practice_setting, city, state, organizations, phone, newsletter_opt_in, sms_opt_in, membership_tier, patron, aapa_member, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
+      const profileSelect = `${profileSelectBase}, career_stage, nccpa_id, home_city, licensed_states, primary_practice_setting, years_as_pa, years_addiction, addiction_pct_bucket, practice_model, prescribes_moud, prescribes_other, telehealth_addiction, telehealth_states, focus_areas, mentor_open, mentor_visible, profile_confirmed_at`;
       const profileSelectLegacy =
         'id, full_name, email, role, credentials, organization, practice_setting, state, phone, newsletter_opt_in, sms_opt_in, membership_tier, membership_years, membership_status, renews_on, cancel_at_period_end, created_at';
 
@@ -153,6 +156,12 @@ export default function AdminMembers() {
         .from('profiles')
         .select(profileSelect)
         .order('full_name', { ascending: true, nullsFirst: false });
+      if (profilesRes.error && /career_stage|nccpa_id|home_city|licensed_states|focus_areas|profile_confirmed_at/i.test(profilesRes.error.message || '')) {
+        profilesRes = await supabase
+          .from('profiles')
+          .select(profileSelectBase)
+          .order('full_name', { ascending: true, nullsFirst: false });
+      }
       if (profilesRes.error && /aapa_member|patron/i.test(profilesRes.error.message || '')) {
         profilesRes = await supabase
           .from('profiles')

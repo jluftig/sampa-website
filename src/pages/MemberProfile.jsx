@@ -14,6 +14,7 @@ import {
   PracticeSettingChips,
 } from '../components/PracticeSettingChips';
 import { DirectoryBadges } from '../components/DirectoryBadges';
+import DirectoryPracticeNotes from '../components/DirectoryPracticeNotes';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -106,6 +107,7 @@ export default function MemberProfile() {
             </div>
 
             <PersonPracticeSettings person={person} className="mb-6" />
+            <DirectoryPracticeNotes person={person} />
 
             {(() => {
               const orgs = displayOrganizations(person);
