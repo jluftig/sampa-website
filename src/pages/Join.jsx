@@ -224,7 +224,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
 
   const bar = (() => {
     if (query.step === 'profile') {
-      return { primary: collapsed ? 'Looks right — continue' : 'Continue', onPrimary: continueProfile };
+      return { primary: collapsed ? 'Confirm and continue' : 'Continue', onPrimary: continueProfile };
     }
     if (query.step === 'membership') {
       return { back: () => go({ step: 'profile' }), primary: 'Continue', onPrimary: continueMembership };

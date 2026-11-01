@@ -301,9 +301,12 @@ describe('membership and checkout math', () => {
     });
     assert.deepEqual(noTier, ['confirm-profile', 'continue-membership', 'skip-support']);
     assert.equal(noTier.length, 3);
+    const joinSrc = readFileSync('src/pages/Join.jsx', 'utf8');
+    assert.match(joinSrc, /Confirm and continue/);
+    assert.doesNotMatch(joinSrc, /Looks right/);
   });
 
-  it('keeps Patron when a Fellow+Patron member taps Looks right then Skip', () => {
+  it('keeps Patron when a Fellow+Patron member taps Confirm and continue then Skip', () => {
     const profile = {
       full_name: 'Ada PA',
       state: 'California',
