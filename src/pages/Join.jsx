@@ -14,6 +14,7 @@ import {
   joinCart,
   JOIN_DRAFT_KEY,
   joinSearchParams,
+  nextStepAfterProfile,
   parseJoinQuery,
   preselectedTier,
 } from '../lib/joinFlow';
@@ -132,8 +133,10 @@ export function JoinFlow({ mode = 'join', preview = null }) {
     navigate(`/login?next=${encodeURIComponent(next)}`);
   };
 
+  const renewing = mode === 'renew' || Boolean(profile?.membership_status);
+  const collapsed = !forceOpen && profileCardsStartCollapsed({ mode, profile });
   const continueProfile = async () => {
-    const found = validateProfile(form);
+    const found = validateProfile(form, { renewConfirm: renewing && collapsed });
     setErrors(found);
     setShowErrors(true);
     if (Object.keys(found).length) {
@@ -154,7 +157,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
       }
       auth.refreshProfile?.();
     }
-    go({ step: 'membership' });
+    go(nextStepAfterProfile({ mode, profile, form }));
   };
 
   const continueMembership = () => {
@@ -199,7 +202,6 @@ export function JoinFlow({ mode = 'join', preview = null }) {
     }
   };
 
-  const collapsed = !forceOpen && profileCardsStartCollapsed({ mode, profile });
   const invoiceQuery = new URLSearchParams({
     ...(query.tier ? { tier: query.tier } : {}),
     ...(query.term ? { term: String(query.term) } : {}),
@@ -269,6 +271,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
                   errors={errors}
                   showErrors={showErrors}
                   collapsed={collapsed}
+                  promptCareerStage={renewing && collapsed && !form.career_stage}
                 />
               )}
               {query.step === 'membership' && (

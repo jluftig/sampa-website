@@ -13,7 +13,6 @@ const RENEWER = {
     npi: '1234567893',
     state: 'California',
     home_city: 'Oakland',
-    career_stage: 'practicing',
     aapa_member: true,
     sms_opt_in: true,
     newsletter_opt_in: true,
@@ -35,6 +34,17 @@ const RENEWER = {
     directory_visible: true,
     share_email: true,
     share_phone: false,
+  },
+};
+
+const PLAIN = {
+  user: { id: 'preview-plain', email: 'sam@example.org' },
+  profile: {
+    full_name: 'Sam Rivera',
+    email: 'sam@example.org',
+    state: 'Oregon',
+    membership_status: 'canceled',
+    organizations: [],
   },
 };
 
@@ -64,7 +74,7 @@ export default function JoinPreview() {
       </div>
     );
   }
-  const preview = who === 'renewer' ? RENEWER : who === 'paid' ? JUST_PAID : { user: null, profile: null };
-  const mode = who === 'renewer' ? 'renew' : 'join';
+  const preview = who === 'renewer' ? RENEWER : who === 'paid' ? JUST_PAID : who === 'plain' ? PLAIN : { user: null, profile: null };
+  const mode = who === 'renewer' || who === 'plain' ? 'renew' : 'join';
   return <JoinFlow mode={mode} preview={preview} />;
 }

@@ -1464,6 +1464,20 @@ alter table public.profiles drop constraint if exists profiles_career_stage_chec
 alter table public.profiles add constraint profiles_career_stage_check
   check (career_stage is null or career_stage in ('practicing', 'student', 'pre_pa', 'retired', 'other'));
 
+-- Existing members never had this column. Fill it from the dues tier when we can.
+update public.profiles
+set career_stage = case membership_tier
+  when 'student' then 'student'
+  when 'prepa' then 'pre_pa'
+  when 'legacy' then 'retired'
+  when 'associate' then 'other'
+  when 'fellow' then 'practicing'
+  when 'sustaining' then 'practicing'
+  else career_stage
+end
+where career_stage is null
+  and membership_tier in ('student', 'prepa', 'legacy', 'associate', 'fellow', 'sustaining');
+
 alter table public.profiles drop constraint if exists profiles_nccpa_id_check;
 alter table public.profiles add constraint profiles_nccpa_id_check
   check (nccpa_id is null or char_length(nccpa_id) <= 32);

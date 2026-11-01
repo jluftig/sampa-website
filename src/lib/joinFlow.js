@@ -12,7 +12,7 @@ import {
   tierAmountDollars,
   tierByKey,
 } from './membership.js';
-import { suggestedTierForCareer } from './joinProfile.js';
+import { deriveCareerStage, suggestedTierForCareer } from './joinProfile.js';
 
 export const JOIN_STEPS = [
   { id: 'profile', label: 'Profile' },
@@ -123,6 +123,35 @@ export function membershipBanner(profile) {
     .filter(Boolean)
     .join(' ')
     .replace(' · · ', ' · ');
+}
+
+// Confirming a filled-in renewal skips Membership when the dues tier is already known.
+// Support is still one Skip tap. A new joiner, or a renewal with no tier, stops on Membership.
+export function nextStepAfterProfile({ mode, profile, form }) {
+  const renewing = mode === 'renew' || Boolean(profile?.membership_status);
+  const aapa = typeof form?.aapa_member === 'boolean' ? form.aapa_member : profile?.aapa_member;
+  const tier = preselectedTier(profile, {
+    aapa,
+    careerStage: form?.career_stage || deriveCareerStage(profile),
+  });
+  if (renewing && tier) return { step: 'support', tier, aapa };
+  return { step: 'membership', ...(tier ? { tier } : {}) };
+}
+
+// Taps from the Profile step to Checkout. Support is always one Skip.
+export function tapsToCheckout({ mode, profile }) {
+  const dest = nextStepAfterProfile({
+    mode,
+    profile,
+    form: {
+      career_stage: deriveCareerStage(profile),
+      aapa_member: profile?.aapa_member,
+    },
+  });
+  const taps = ['confirm-profile'];
+  if (dest.step === 'membership') taps.push('continue-membership');
+  taps.push('skip-support');
+  return taps;
 }
 
 export function preselectedTier(profile, { aapa, careerStage } = {}) {

@@ -18,11 +18,15 @@ import {
   joinCart,
   joinSearchParams,
   membershipBanner,
+  nextStepAfterProfile,
   parseJoinQuery,
   preselectedTier,
+  tapsToCheckout,
 } from '../src/lib/joinFlow.js';
 import {
   applyConditionalClears,
+  careerStageFromTier,
+  deriveCareerStage,
   emptyProfileForm,
   isValidNpi,
   profileCardsStartCollapsed,
@@ -115,6 +119,31 @@ describe('profile step', () => {
     assert.equal(isValidNpi('1234567893'), true);
     assert.equal(isValidNpi('1234567890'), false);
     assert.equal(isValidNpi('123456789'), false);
+  });
+
+  it('does not block a renew confirm when career_stage was never collected', () => {
+    const existing = {
+      full_name: 'Ada PA',
+      state: 'California',
+      membership_tier: 'fellow',
+      membership_status: 'active',
+      aapa_member: true,
+    };
+    assert.equal(careerStageFromTier('fellow'), 'practicing');
+    assert.equal(careerStageFromTier('prepa'), 'pre_pa');
+    assert.equal(careerStageFromTier('legacy'), 'retired');
+    assert.equal(careerStageFromTier(null), null);
+    assert.equal(deriveCareerStage(existing), 'practicing');
+    const form = emptyProfileForm(existing, 'ada@example.org');
+    assert.equal(form.career_stage, 'practicing');
+    const unanswered = validateProfile(
+      { ...emptyProfileForm({ full_name: 'Ada PA', state: 'California' }, 'ada@example.org'), career_stage: '' },
+      { renewConfirm: true },
+    );
+    assert.equal(unanswered.career_stage, undefined);
+    assert.ok(validateProfile(
+      { ...emptyProfileForm({ full_name: 'Ada PA', state: 'California' }, 'ada@example.org'), career_stage: '' },
+    ).career_stage);
   });
 
   it('requires name, home state, and role, and AAPA only on the PA path', () => {
@@ -225,6 +254,32 @@ describe('membership and checkout math', () => {
     assert.equal(cart.total, 125);
     assert.equal(cart.autoRenew, false);
     assert.equal(cart.lifetime, true);
+  });
+
+  it('reaches checkout in three taps or fewer when the renewing member already has a tier', () => {
+    const profile = {
+      full_name: 'Ada PA',
+      state: 'California',
+      membership_tier: 'fellow',
+      membership_status: 'active',
+      aapa_member: true,
+    };
+    const taps = tapsToCheckout({ mode: 'renew', profile });
+    assert.deepEqual(taps, ['confirm-profile', 'skip-support']);
+    assert.ok(taps.length <= 3);
+    const dest = nextStepAfterProfile({
+      mode: 'renew',
+      profile,
+      form: emptyProfileForm(profile, 'ada@example.org'),
+    });
+    assert.equal(dest.step, 'support');
+    assert.equal(dest.tier, 'fellow');
+    const noTier = tapsToCheckout({
+      mode: 'renew',
+      profile: { full_name: 'Ada PA', state: 'California', membership_status: 'canceled' },
+    });
+    assert.deepEqual(noTier, ['confirm-profile', 'continue-membership', 'skip-support']);
+    assert.equal(noTier.length, 3);
   });
 
   it('preselects the member’s current tier', () => {
@@ -365,6 +420,14 @@ describe('directory privacy in SQL', () => {
       assert.match(body, /primary_practice_setting/);
       assert.match(body, /focus_areas/);
       assert.match(body, /mentor_visible/);
+    }
+  });
+
+  it('backfills career_stage from the dues tier and leaves unknown rows null', () => {
+    for (const source of [sql, migration]) {
+      assert.match(source, /when 'fellow' then 'practicing'/);
+      assert.match(source, /when 'prepa' then 'pre_pa'/);
+      assert.match(source, /where career_stage is null/);
     }
   });
 

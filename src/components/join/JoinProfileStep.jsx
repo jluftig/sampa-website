@@ -97,6 +97,7 @@ export default function JoinProfileStep({
   collapsed,
   onEditGroup,
   showErrors,
+  promptCareerStage = false,
 }) {
   const [open, setOpen] = useState(() => (
     Object.fromEntries(PROFILE_GROUPS.map((group) => [group.id, !collapsed]))
@@ -372,6 +373,19 @@ export default function JoinProfileStep({
                 {isOpen ? 'Hide' : 'Edit'}
               </button>
             </div>
+            {group.id === 'you' && promptCareerStage && !isOpen && (
+              <fieldset className="border-t border-primary/10 px-4 py-3">
+                <legend className="text-sm font-semibold">I am a…</legend>
+                <p className="mt-1 text-sm text-text/60">Optional for now. Pick a role if you want it on your profile.</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {CAREER_STAGES.map((stage) => (
+                    <Chip key={stage.id} pressed={form.career_stage === stage.id} onClick={() => update('career_stage', stage.id)}>
+                      {stage.label}
+                    </Chip>
+                  ))}
+                </div>
+              </fieldset>
+            )}
             {isOpen && <div className="border-t border-primary/10 px-4 py-4">{body[group.id]}</div>}
           </section>
         );

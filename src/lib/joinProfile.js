@@ -84,6 +84,21 @@ export function careerStageLabel(id) {
   return CAREER_STAGES.find((s) => s.id === id)?.label || '';
 }
 
+// Existing members have a tier and no career_stage until they confirm.
+// The column stays nullable. This only fills a suggestion from dues already on the row.
+export function careerStageFromTier(tier) {
+  if (tier === 'student') return 'student';
+  if (tier === 'prepa') return 'pre_pa';
+  if (tier === 'legacy') return 'retired';
+  if (tier === 'associate') return 'other';
+  if (tier === 'fellow' || tier === 'sustaining') return 'practicing';
+  return null;
+}
+
+export function deriveCareerStage(profile) {
+  return oneOf(profile?.career_stage, CAREER_IDS) || careerStageFromTier(profile?.membership_tier);
+}
+
 export function isLicensedPaStage(stage) {
   return stage === 'practicing' || stage === 'retired';
 }
@@ -152,7 +167,7 @@ export function emptyProfileForm(profile, email) {
     phone: profile?.phone || '',
     sms_opt_in: profile?.sms_opt_in ?? false,
     newsletter_opt_in: profile?.newsletter_opt_in ?? true,
-    career_stage: oneOf(profile?.career_stage, CAREER_IDS) || '',
+    career_stage: deriveCareerStage(profile) || '',
     credentials: profile?.credentials || '',
     npi: profile?.npi || '',
     nccpa_id: profile?.nccpa_id || '',
@@ -243,13 +258,17 @@ export function sanitizeProfileForm(form) {
   };
 }
 
-export function validateProfile(form) {
+export function validateProfile(form, { renewConfirm = false } = {}) {
   const errors = {};
   if (!(form.full_name || '').trim()) errors.full_name = 'Enter your full name.';
   if (!(form.state || '').trim()) errors.state = 'Choose your home state.';
   else if (!STATE_SET.has(form.state)) errors.state = 'Choose a state from the list.';
-  if (!CAREER_IDS.has(form.career_stage)) errors.career_stage = 'Choose the role that fits you.';
-  if (isLicensedPaStage(form.career_stage) && typeof form.aapa_member !== 'boolean') {
+  // Renew confirm does not stop on a missing role. The collapsed card asks inline.
+  // New joiners still have to choose one before they leave Profile.
+  if (!renewConfirm && !CAREER_IDS.has(form.career_stage)) {
+    errors.career_stage = 'Choose the role that fits you.';
+  }
+  if (!renewConfirm && isLicensedPaStage(form.career_stage) && typeof form.aapa_member !== 'boolean') {
     errors.aapa_member = 'Tell us whether you are a current AAPA member. We do not verify this with AAPA.';
   }
   const npi = (form.npi || '').replace(/\D/g, '');
