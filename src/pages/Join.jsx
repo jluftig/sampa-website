@@ -14,6 +14,7 @@ import {
   joinCart,
   JOIN_DRAFT_KEY,
   joinSearchParams,
+  membershipAapaAnswer,
   nextStepAfterProfile,
   parseJoinQuery,
   preselectedTier,
@@ -164,7 +165,12 @@ export function JoinFlow({ mode = 'join', preview = null }) {
   };
 
   const continueMembership = () => {
-    if (cart.needsAapa && query.aapa == null && !checkoutBlock(profile)) {
+    const aapa = membershipAapaAnswer({
+      queryAapa: query.aapa,
+      formAapa: form?.aapa_member,
+      profileAapa: profile?.aapa_member,
+    });
+    if (cart.needsAapa && aapa == null && !checkoutBlock(profile)) {
       setPayError('Please tell us whether you are a current AAPA member. We do not verify this with AAPA.');
       return;
     }
@@ -177,7 +183,10 @@ export function JoinFlow({ mode = 'join', preview = null }) {
       requireSignIn('membership');
       return;
     }
-    go({ step: 'support' });
+    go({
+      step: 'support',
+      ...(aapa === true || aapa === false ? { aapa } : {}),
+    });
   };
 
   const pay = async () => {

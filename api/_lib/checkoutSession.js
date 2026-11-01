@@ -34,7 +34,7 @@ export function buildCheckoutSessionParams({
   cancel.searchParams.set('checkout', 'canceled');
   cancel.searchParams.set('tier', tier);
   if (duration !== 1) cancel.searchParams.set('term', String(duration));
-  if (wantPatron) cancel.searchParams.set('patron', '1');
+  cancel.searchParams.set('patron', wantPatron ? '1' : '0');
   if (!renews && !isLifetime) cancel.searchParams.set('auto', '0');
 
   const success = new URL('/join', origin);

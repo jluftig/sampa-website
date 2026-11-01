@@ -1,5 +1,10 @@
 import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
 import { profileCancelAtPeriodEnd, stripeShouldForceCancelAtPeriodEnd } from './_lib/autoRenew.js';
+import {
+  cancelAtPeriodEndFromStripe,
+  subscriptionEventApplies,
+  subscriptionUpdateSource,
+} from './_lib/subscriptionEvent.js';
 import { patronLineItem, subscriptionHasPatronItem } from './_lib/tiers.js';
 import {
   memberEmailsEnabled,
@@ -110,7 +115,7 @@ function renewsOn(subscription) {
 // versions signal this via cancel_at_period_end; newer ones may only set the
 // cancel_at timestamp — accept either.
 function willCancel(subscription) {
-  return subscription.cancel_at_period_end === true || Boolean(subscription.cancel_at);
+  return cancelAtPeriodEndFromStripe(subscription);
 }
 
 // Purchased term length in years, read from the price the subscription is
@@ -336,15 +341,47 @@ export async function POST(request) {
           .maybeSingle();
         if (current?.membership_status === 'active' && current.renews_on === null) break;
 
+        let live = subscription;
+        if (event.type === 'customer.subscription.updated') {
+          try {
+            live = subscriptionUpdateSource({
+              eventSubscription: subscription,
+              freshSubscription: await stripe.subscriptions.retrieve(subscription.id, {
+                expand: ['items.data.price.product'],
+              }),
+            });
+          } catch (err) {
+            console.error('stripe-webhook: retrieve subscription failed:', err.message || err);
+          }
+        }
+
+        const customerId = typeof live.customer === 'string' ? live.customer : live.customer?.id;
+        let others = [];
+        if (customerId) {
+          try {
+            const listed = await stripe.subscriptions.list({
+              customer: customerId,
+              status: 'active',
+              limit: 20,
+            });
+            others = listed.data || [];
+          } catch (err) {
+            console.error('stripe-webhook: list subscriptions failed:', err.message || err);
+          }
+        }
+        // A second checkout can overlap a term that is already ending. The
+        // leftover subscription's later cancel must not erase the new row.
+        if (!subscriptionEventApplies(live, others)) break;
+
         const update = {
-          membership_status: membershipStatus(subscription.status),
-          renews_on: renewsOn(subscription),
+          membership_status: membershipStatus(live.status),
+          renews_on: renewsOn(live),
           cancel_at_period_end:
-            event.type !== 'customer.subscription.deleted' && willCancel(subscription),
-          membership_years: termYears(subscription),
+            event.type !== 'customer.subscription.deleted' && willCancel(live),
+          membership_years: termYears(live),
         };
-        if (subscription.metadata?.tier) update.membership_tier = subscription.metadata.tier;
-        const patronFlag = patronFromMetadata(subscription.metadata);
+        if (live.metadata?.tier) update.membership_tier = live.metadata.tier;
+        const patronFlag = patronFromMetadata(live.metadata);
         if (patronFlag !== undefined) update.patron = patronFlag;
 
         const updated = await updateProfileMembership(admin, matchCol, matchVal, update);

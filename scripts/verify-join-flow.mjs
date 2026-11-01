@@ -5,6 +5,11 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { profileCancelAtPeriodEnd, stripeShouldForceCancelAtPeriodEnd } from '../api/_lib/autoRenew.js';
+import {
+  cancelAtPeriodEndFromStripe,
+  subscriptionEventApplies,
+  subscriptionUpdateSource,
+} from '../api/_lib/subscriptionEvent.js';
 import { buildCheckoutSessionParams, duplicateMembershipBlock } from '../api/_lib/checkoutSession.js';
 import {
   ANNUAL_SURVEY,
@@ -18,6 +23,7 @@ import {
   joinCart,
   joinSearchParams,
   membershipBanner,
+  membershipAapaAnswer,
   nextStepAfterProfile,
   parseJoinQuery,
   preselectedTier,
@@ -276,6 +282,19 @@ describe('membership and checkout math', () => {
     });
     assert.equal(dest.step, 'support');
     assert.equal(dest.tier, 'fellow');
+    const inferred = nextStepAfterProfile({
+      mode: 'renew',
+      profile: {
+        full_name: 'Ada Student',
+        state: 'California',
+        membership_status: 'canceled',
+        career_stage: 'student',
+      },
+      form: { career_stage: 'student', aapa_member: null },
+      patron: null,
+    });
+    assert.equal(inferred.step, 'membership');
+    assert.equal(inferred.tier, 'student');
     const noTier = tapsToCheckout({
       mode: 'renew',
       profile: { full_name: 'Ada PA', state: 'California', membership_status: 'canceled' },
@@ -318,6 +337,16 @@ describe('membership and checkout math', () => {
     const optedOut = skipSupport({ ...afterConfirm, patron: false });
     assert.equal(optedOut.patron, false);
     assert.match(joinSearchParams(optedOut).toString(), /patron=0/);
+  });
+
+  it('accepts a saved AAPA answer when the URL has a tier and no aapa param', () => {
+    assert.equal(membershipAapaAnswer({
+      queryAapa: null,
+      formAapa: true,
+      profileAapa: true,
+    }), true);
+    assert.equal(membershipAapaAnswer({ queryAapa: null, formAapa: null, profileAapa: null }), null);
+    assert.equal(membershipAapaAnswer({ queryAapa: false, formAapa: true }), false);
   });
 
   it('preselects the member’s current tier', () => {
@@ -377,6 +406,13 @@ describe('Stripe checkout session', () => {
     assert.equal(params.success_url, 'https://www.addictionpas.org/join?step=checkout&checkout=success');
     assert.match(params.cancel_url, /checkout=canceled/);
     assert.match(params.cancel_url, /patron=1/);
+  });
+
+  it('puts an explicit patron=0 on the cancel URL so an opt-out survives the return', () => {
+    const { params } = buildCheckoutSessionParams({ ...base, wantPatron: false });
+    const returned = parseJoinQuery(new URL(params.cancel_url).search);
+    assert.equal(returned.patron, false);
+    assert.equal(selectedPatron({ patron: true, membership_tier: 'fellow' }, returned.patron), false);
   });
 
   it('marks auto-renew off on the same Price and leaves cancel to the webhook', () => {
@@ -441,6 +477,30 @@ describe('annual survey', () => {
     assert.doesNotMatch(blob, /top of license/i);
     assert.doesNotMatch(blob, /funding note/i);
     assert.equal(ANNUAL_SURVEY.year, 2026);
+  });
+});
+
+describe('overlapping subscriptions', () => {
+  it('ignores a leftover subscription once a newer membership exists', () => {
+    const oldSub = { id: 'sub_old', created: 100, metadata: {}, status: 'canceled' };
+    const newSub = { id: 'sub_new', created: 200, metadata: { tier: 'fellow' }, status: 'active' };
+    assert.equal(subscriptionEventApplies(oldSub, [newSub]), false);
+    assert.equal(subscriptionEventApplies(newSub, [oldSub]), true);
+    assert.equal(subscriptionEventApplies({ id: 'sub_only', created: 1, metadata: {} }, []), true);
+    assert.equal(subscriptionEventApplies({ id: 'sub_gift', created: 9, metadata: { type: 'donation' } }, []), false);
+  });
+
+  it('uses the live subscription when a stale snapshot still says auto-renew is on', () => {
+    const source = subscriptionUpdateSource({
+      eventSubscription: { id: 'sub_new', created: 200, cancel_at_period_end: false },
+      freshSubscription: { id: 'sub_new', created: 200, cancel_at_period_end: true },
+    });
+    assert.equal(cancelAtPeriodEndFromStripe(source), true);
+    const resumed = subscriptionUpdateSource({
+      eventSubscription: { id: 'sub_new', created: 200, cancel_at_period_end: true, metadata: { auto_renew: 'false' } },
+      freshSubscription: { id: 'sub_new', created: 200, cancel_at_period_end: false, metadata: { auto_renew: 'false' } },
+    });
+    assert.equal(cancelAtPeriodEndFromStripe(resumed), false);
   });
 });
 

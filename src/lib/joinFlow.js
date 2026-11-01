@@ -144,15 +144,18 @@ export function selectedPatron(profile, patronFromQuery) {
 export function nextStepAfterProfile({ mode, profile, form, patron } = {}) {
   const renewing = mode === 'renew' || Boolean(profile?.membership_status);
   const aapa = typeof form?.aapa_member === 'boolean' ? form.aapa_member : profile?.aapa_member;
-  const tier = preselectedTier(profile, {
+  const storedTier = tierByKey(profile?.membership_tier)?.key || null;
+  const suggested = preselectedTier(profile, {
     aapa,
     careerStage: form?.career_stage || deriveCareerStage(profile),
   });
   const keptPatron = selectedPatron(profile, patron);
-  if (renewing && tier) return { step: 'support', tier, aapa, patron: keptPatron };
+  // Skip Membership only for the dues tier already on the profile. A career-stage
+  // suggestion is not a substitute. That member still has to see the cards.
+  if (renewing && storedTier) return { step: 'support', tier: storedTier, aapa, patron: keptPatron };
   return {
     step: 'membership',
-    ...(tier ? { tier } : {}),
+    ...(suggested ? { tier: suggested } : {}),
     ...(patron === true || patron === false || (renewing && keptPatron) ? { patron: keptPatron } : {}),
   };
 }
@@ -177,6 +180,13 @@ export function tapsToCheckout({ mode, profile }) {
   if (dest.step === 'membership') taps.push('continue-membership');
   taps.push('skip-support');
   return taps;
+}
+
+export function membershipAapaAnswer({ queryAapa, formAapa, profileAapa } = {}) {
+  if (queryAapa === true || queryAapa === false) return queryAapa;
+  if (formAapa === true || formAapa === false) return formAapa;
+  if (profileAapa === true || profileAapa === false) return profileAapa;
+  return null;
 }
 
 export function preselectedTier(profile, { aapa, careerStage } = {}) {
