@@ -7,6 +7,13 @@ import {
 } from './_lib/subscriptionEvent.js';
 import { patronLineItem, subscriptionHasPatronItem } from './_lib/tiers.js';
 import {
+  chooseDonorProfile,
+  donationIsSuccessful,
+  isoFromStripeUnix,
+  nextDonatedAt,
+  normalizeEmail,
+} from './_lib/donorBadge.js';
+import {
   memberEmailsEnabled,
   profileForEmail,
   sendMemberLifecycleEmail,
@@ -186,6 +193,45 @@ async function attachPatronRecurringItem(stripe, customerId, duration) {
   });
 }
 
+// Load candidate profiles in match order. A user id never falls through.
+// A customer with any rows does not fall through to email. Zero customer rows do.
+async function loadDonorCandidates(admin, { userId, stripeCustomerId, email }) {
+  const columns = 'id, stripe_customer_id, email';
+  if (userId) {
+    const { data, error } = await admin.from('profiles').select(columns).eq('id', userId).maybeSingle();
+    if (error) throw error;
+    return data ? [data] : [];
+  }
+  if (stripeCustomerId) {
+    const { data, error } = await admin.from('profiles').select(columns).eq('stripe_customer_id', stripeCustomerId);
+    if (error) throw error;
+    if (data?.length) return data;
+  }
+  const needle = normalizeEmail(email);
+  if (!needle) return [];
+  const pattern = needle.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
+  const { data, error } = await admin.from('profiles').select(columns).ilike('email', pattern);
+  if (error) throw error;
+  return data || [];
+}
+
+// Move profiles.donated_at forward to this gift. Does not touch membership columns.
+async function stampDonatedAt(admin, fields) {
+  if (!donationIsSuccessful(fields)) return;
+  const profileId = chooseDonorProfile(await loadDonorCandidates(admin, fields), fields);
+  if (!profileId) {
+    console.warn('stripe-webhook: donation matched no single profile');
+    return;
+  }
+  const { data: row, error } = await admin.from('profiles').select('donated_at').eq('id', profileId).maybeSingle();
+  if (error) throw error;
+  const next = nextDonatedAt(row?.donated_at, fields.paidAt);
+  if (!next) return;
+  if (row?.donated_at && new Date(row.donated_at).getTime() === new Date(next).getTime()) return;
+  const { error: updateError } = await admin.from('profiles').update({ donated_at: next }).eq('id', profileId);
+  if (updateError) throw updateError;
+}
+
 // Insert a donation, ignoring duplicates so Stripe's event retries are safe.
 // One-time gifts conflict on stripe_session_id; recurring cycles on
 // stripe_invoice_id (both unique). Donations NEVER touch the membership columns.
@@ -239,6 +285,11 @@ export async function POST(request) {
               stripe_payment_intent_id: idOf(session.payment_intent),
             };
             await recordDonation(admin, donationRow);
+            await stampDonatedAt(admin, {
+              ...donationRow,
+              paymentStatus: session.payment_status,
+              paidAt: isoFromStripeUnix(session.created),
+            });
             await maybeDonationThanks(admin, donationRow);
           }
           break;
@@ -411,6 +462,10 @@ export async function POST(request) {
             stripe_invoice_id: invoice.id,
           };
           await recordDonation(admin, donationRow);
+          await stampDonatedAt(admin, {
+            ...donationRow,
+            paidAt: isoFromStripeUnix(invoice.status_transitions?.paid_at || invoice.created),
+          });
           await maybeDonationThanks(admin, donationRow);
           break;
         }

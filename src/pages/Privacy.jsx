@@ -125,7 +125,10 @@ export default function Privacy() {
         (city/state), optional organization websites, your primary practice
         setting, the substances and populations you say you mainly treat, a
         mentoring note if you turn that on, Board badge if applicable,
-        and email and/or phone only if you turn on those share options.
+        Patron badge if you have that add-on, Donor badge if a gift through
+        Donate in the last 12 months matched this account, and email and/or
+        phone only if you turn on those share options. The Donor badge does
+        not show the amount or the date.
       </p>
       <p>
         <strong>What peers do not see:</strong> your billing or payment data,
