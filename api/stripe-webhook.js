@@ -343,35 +343,31 @@ export async function POST(request) {
 
         let live = subscription;
         if (event.type === 'customer.subscription.updated') {
-          try {
-            live = subscriptionUpdateSource({
-              eventSubscription: subscription,
-              freshSubscription: await stripe.subscriptions.retrieve(subscription.id, {
-                expand: ['items.data.price.product'],
-              }),
-            });
-          } catch (err) {
-            console.error('stripe-webhook: retrieve subscription failed:', err.message || err);
-          }
+          live = subscriptionUpdateSource({
+            eventSubscription: subscription,
+            freshSubscription: await stripe.subscriptions.retrieve(subscription.id, {
+              expand: ['items.data.price.product'],
+            }),
+          });
         }
 
         const customerId = typeof live.customer === 'string' ? live.customer : live.customer?.id;
-        let others = [];
-        if (customerId) {
-          try {
-            const listed = await stripe.subscriptions.list({
-              customer: customerId,
-              status: 'active',
-              limit: 20,
-            });
-            others = listed.data || [];
-          } catch (err) {
-            console.error('stripe-webhook: list subscriptions failed:', err.message || err);
-          }
+        if (!customerId) {
+          throw new Error('stripe-webhook: subscription event has no customer');
+        }
+        const listed = await stripe.subscriptions.list({
+          customer: customerId,
+          status: 'all',
+          limit: 100,
+        });
+        if (listed.has_more) {
+          throw new Error('stripe-webhook: subscription list was truncated');
         }
         // A second checkout can overlap a term that is already ending. The
         // leftover subscription's later cancel must not erase the new row.
-        if (!subscriptionEventApplies(live, others)) break;
+        // A failed or incomplete list throws above so Stripe retries. An empty
+        // successful list still means this event is the only subscription.
+        if (!subscriptionEventApplies(live, listed.data || [], { listOk: true })) break;
 
         const update = {
           membership_status: membershipStatus(live.status),

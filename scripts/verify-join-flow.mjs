@@ -488,6 +488,13 @@ describe('overlapping subscriptions', () => {
     assert.equal(subscriptionEventApplies(newSub, [oldSub]), true);
     assert.equal(subscriptionEventApplies({ id: 'sub_only', created: 1, metadata: {} }, []), true);
     assert.equal(subscriptionEventApplies({ id: 'sub_gift', created: 9, metadata: { type: 'donation' } }, []), false);
+    const pastDue = { id: 'sub_new', created: 200, status: 'past_due', metadata: {} };
+    assert.equal(subscriptionEventApplies(oldSub, [pastDue]), false);
+    assert.equal(subscriptionEventApplies(oldSub, [], { listOk: false }), false);
+    const webhook = readFileSync('api/stripe-webhook.js', 'utf8');
+    assert.match(webhook, /status: 'all'/);
+    assert.doesNotMatch(webhook, /list subscriptions failed/);
+    assert.match(webhook, /subscription list was truncated/);
   });
 
   it('uses the live subscription when a stale snapshot still says auto-renew is on', () => {
