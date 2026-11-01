@@ -40,10 +40,16 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
   only for the Donor badge. Membership checkout still never links by email.
   Patron add-on payments are not donations and do not set `donated_at`.
   Directory RPCs expose `donor` for the last 12 months, not the timestamp.
-  `charge.refunded` (any positive amount refunded) and `charge.dispute.created`
-  mark that gift and set `donated_at` to the latest remaining succeeded gift
-  inside 12 months, or null. A membership charge has no `donations` row, so it
-  does not change the badge. Subscribe the webhook to both events.
+  A full refund (`charge.refunded` with the whole amount refunded) and
+  `charge.dispute.created` mark that gift and set `donated_at` from gifts that
+  still match the profile by account id, Stripe customer, or donor email and
+  are still succeeded inside 12 months. A partial refund leaves the gift
+  counted. `charge.dispute.closed` with status `won` restores it. Monthly rows
+  store the PaymentIntent and charge id. Lookup does not use `charge.invoice`.
+  If the refund arrives before the gift row, recording the gift checks the
+  charge and stores it as refunded. A membership charge has no `donations`
+  row, so it does not change the badge. Subscribe the webhook to
+  `charge.refunded`, `charge.dispute.created`, and `charge.dispute.closed`.
 - **Ops kill-switch:** `DONATIONS_ENABLED` in `src/lib/features.js` **and**
   `api/create-donation-session.js` (keep in sync). Currently **on** (501(c)(3)
   granted 2026-07-21; EIN 42-2288772). See STATUS if flipped off.

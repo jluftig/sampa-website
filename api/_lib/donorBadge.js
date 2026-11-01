@@ -83,14 +83,51 @@ export function chooseDonorProfile(profiles, { userId, stripeCustomerId, email }
   return null;
 }
 
-// A gift counts for this profile only. A user id never falls through to someone else.
+function stripeId(value) {
+  return typeof value === 'string' ? value : value?.id ?? null;
+}
+
+// A gift supports this profile when the account id matches, or the Stripe
+// customer matches, or the donor email matches. A gift already tied to a
+// different account does not count, even if the email is the same.
 export function giftMatchesProfile(gift, profile) {
   if (!gift || !profile) return false;
   const fields = donorMatchFields(gift);
-  if (fields.userId) return fields.userId === profile.id;
-  if (fields.stripeCustomerId) return fields.stripeCustomerId === profile.stripe_customer_id;
+  if (fields.userId && fields.userId !== profile.id) return false;
+  if (fields.userId && fields.userId === profile.id) return true;
+  if (fields.stripeCustomerId && fields.stripeCustomerId === profile.stripe_customer_id) return true;
   const email = normalizeEmail(fields.email);
   return !!email && email === normalizeEmail(profile.email);
+}
+
+// Invoice payments carry the PaymentIntent and Charge. Charge.invoice is not
+// a field we can trust, so callers store these ids on the donation row.
+export function paymentIdsFromInvoice(invoice) {
+  let paymentIntentId = stripeId(invoice?.payment_intent);
+  let chargeId = stripeId(invoice?.charge);
+  for (const payment of invoice?.payments?.data || []) {
+    const pay = payment?.payment;
+    if (!pay) continue;
+    if (!paymentIntentId) paymentIntentId = stripeId(pay.payment_intent);
+    if (!chargeId) chargeId = stripeId(pay.charge);
+    const intent = pay.payment_intent;
+    if (intent && typeof intent === 'object') {
+      paymentIntentId = paymentIntentId || intent.id || null;
+      chargeId = chargeId || stripeId(intent.latest_charge);
+    }
+  }
+  return { paymentIntentId, chargeId };
+}
+
+// A partial refund leaves the gift counted. Only a full refund removes it.
+export function chargeIsFullyRefunded(charge) {
+  if (!charge) return false;
+  const amount = Number(charge.amount);
+  const refunded = Number(charge.amount_refunded);
+  if (Number.isFinite(amount) && amount > 0 && Number.isFinite(refunded)) {
+    return refunded >= amount;
+  }
+  return charge.refunded === true;
 }
 
 // Latest succeeded gift still inside the 12-month window. Refunded and disputed

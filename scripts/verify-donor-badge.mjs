@@ -2,12 +2,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
+  chargeIsFullyRefunded,
   chooseDonorProfile,
   donatedAtFromGifts,
   donationIsSuccessful,
   donorBadgeVisible,
   donorMatchFields,
+  giftMatchesProfile,
   nextDonatedAt,
+  paymentIdsFromInvoice,
 } from '../api/_lib/donorBadge.js';
 import { handleStripeEvent } from '../api/stripe-webhook.js';
 import { directoryBadgeLabels } from '../src/lib/directoryBadges.js';
@@ -154,9 +157,9 @@ function memoryAdmin({ profiles = [], donations = [] } = {}) {
         update(patch) { query.op = 'update'; query.patch = patch; return api; },
         upsert(row) {
           state.donations.push({
+            ...row,
             id: row.id || `don-${state.donations.length + 1}`,
             created_at: row.created_at || new Date().toISOString(),
-            ...row,
           });
           return Promise.resolve({ error: null });
         },
@@ -291,7 +294,7 @@ test('a refund or dispute recomputes donated_at from gifts still succeeded', asy
       created_at: recent.toISOString(),
     }],
   });
-  let retrieved = 0;
+  let listed = 0;
   await handleStripeEvent({
     type: 'charge.dispute.created',
     data: { object: { charge: 'ch_month', payment_intent: null } },
@@ -299,15 +302,22 @@ test('a refund or dispute recomputes donated_at from gifts still succeeded', asy
     stripe: {
       charges: {
         async retrieve(id) {
-          retrieved += 1;
           assert.equal(id, 'ch_month');
-          return { payment_intent: 'pi_month', invoice: 'in_month' };
+          return { id, payment_intent: 'pi_month' };
+        },
+      },
+      invoicePayments: {
+        async list(params) {
+          listed += 1;
+          assert.equal(params.payment.payment_intent, 'pi_month');
+          assert.equal(params.payment.type, 'payment_intent');
+          return { data: [{ invoice: 'in_month' }] };
         },
       },
     },
     admin: monthAdmin,
   });
-  assert.equal(retrieved, 1);
+  assert.equal(listed, 1);
   assert.equal(monthAdmin.state.donations[0].status, 'disputed');
   assert.equal(monthAdmin.state.profiles[0].donated_at, null);
 });
@@ -328,6 +338,275 @@ test('a membership refund does not clear donated_at', async () => {
     data: { object: { payment_intent: 'pi_dues', amount_refunded: 5000, amount: 5000, refunded: true } },
   }, { stripe: null, admin });
   assert.equal(admin.state.profiles[0].donated_at, kept);
+});
+
+test('a refund keeps gifts matched by user id or email', async () => {
+  process.env.BREVO_MEMBER_EMAILS_ENABLED = 'false';
+  const now = new Date();
+  const byUser = new Date(now);
+  byUser.setMonth(byUser.getMonth() - 2);
+  const byEmail = new Date(now);
+  byEmail.setMonth(byEmail.getMonth() - 1);
+  const admin = memoryAdmin({
+    profiles: [{
+      id: 'member-1',
+      stripe_customer_id: 'cus_member',
+      email: 'member@example.org',
+      donated_at: now.toISOString(),
+    }],
+    donations: [
+      {
+        id: 'by-customer',
+        user_id: null,
+        donor_email: null,
+        stripe_customer_id: 'cus_member',
+        stripe_payment_intent_id: 'pi_customer',
+        status: 'succeeded',
+        amount: 3000,
+        created_at: now.toISOString(),
+      },
+      {
+        id: 'by-user',
+        user_id: 'member-1',
+        donor_email: 'someone-else@example.org',
+        stripe_customer_id: 'cus_other',
+        stripe_payment_intent_id: 'pi_user',
+        status: 'succeeded',
+        amount: 2000,
+        created_at: byUser.toISOString(),
+      },
+      {
+        id: 'by-email',
+        user_id: null,
+        donor_email: 'Member@Example.org',
+        stripe_customer_id: 'cus_donate',
+        stripe_payment_intent_id: 'pi_email',
+        status: 'succeeded',
+        amount: 4000,
+        created_at: byEmail.toISOString(),
+      },
+    ],
+  });
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: {
+      object: {
+        id: 'ch_customer',
+        payment_intent: 'pi_customer',
+        amount: 3000,
+        amount_refunded: 3000,
+        refunded: true,
+      },
+    },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.donations.find((row) => row.id === 'by-customer').status, 'refunded');
+  assert.equal(admin.state.profiles[0].donated_at, byEmail.toISOString());
+  assert.equal(giftMatchesProfile(
+    { user_id: 'other', donor_email: 'member@example.org', stripe_customer_id: 'cus_member' },
+    { id: 'member-1', stripe_customer_id: 'cus_member', email: 'member@example.org' },
+  ), false);
+});
+
+test('monthly gift refunds and disputes use payment intent and charge id', async () => {
+  process.env.BREVO_MEMBER_EMAILS_ENABLED = 'false';
+  const paidAt = new Date();
+  paidAt.setMonth(paidAt.getMonth() - 1);
+  paidAt.setMilliseconds(0);
+  const admin = memoryAdmin({
+    profiles: [{
+      id: 'member-1',
+      stripe_customer_id: 'cus_member',
+      email: 'member@example.org',
+      donated_at: null,
+    }],
+  });
+  const stripe = {
+    paymentIntents: {
+      async retrieve() {
+        return {
+          id: 'pi_month',
+          latest_charge: {
+            id: 'ch_month',
+            amount: 1500,
+            amount_refunded: 0,
+            refunded: false,
+            payment_intent: 'pi_month',
+          },
+        };
+      },
+    },
+  };
+  await handleStripeEvent({
+    type: 'invoice.paid',
+    data: {
+      object: {
+        id: 'in_month',
+        amount_paid: 1500,
+        currency: 'usd',
+        customer: 'cus_member',
+        customer_email: 'member@example.org',
+        created: Math.floor(paidAt.getTime() / 1000),
+        status_transitions: { paid_at: Math.floor(paidAt.getTime() / 1000) },
+        parent: {
+          subscription_details: {
+            metadata: { type: 'donation', supabase_user_id: 'member-1' },
+            subscription: 'sub_month',
+          },
+        },
+        payments: {
+          data: [{
+            payment: { type: 'payment_intent', payment_intent: 'pi_month' },
+            invoice: 'in_month',
+          }],
+        },
+      },
+    },
+  }, { stripe, admin });
+  const gift = admin.state.donations[0];
+  assert.equal(gift.stripe_payment_intent_id, 'pi_month');
+  assert.equal(gift.stripe_charge_id, 'ch_month');
+  assert.equal(gift.stripe_invoice_id, 'in_month');
+  assert.equal(gift.status, 'succeeded');
+  assert.equal(admin.state.profiles[0].donated_at, paidAt.toISOString());
+
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: {
+      object: {
+        id: 'ch_month',
+        payment_intent: 'pi_month',
+        amount: 1500,
+        amount_refunded: 500,
+        refunded: false,
+      },
+    },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.donations[0].status, 'succeeded');
+  assert.equal(admin.state.profiles[0].donated_at, paidAt.toISOString());
+
+  await handleStripeEvent({
+    type: 'charge.dispute.created',
+    data: { object: { id: 'dp_month', charge: 'ch_month', payment_intent: 'pi_month', status: 'needs_response' } },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.donations[0].status, 'disputed');
+  assert.equal(admin.state.profiles[0].donated_at, null);
+
+  await handleStripeEvent({
+    type: 'charge.dispute.closed',
+    data: { object: { id: 'dp_month', charge: 'ch_month', payment_intent: 'pi_month', status: 'won' } },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.donations[0].status, 'succeeded');
+  assert.equal(admin.state.profiles[0].donated_at, paidAt.toISOString());
+
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: {
+      object: {
+        id: 'ch_month',
+        payment_intent: 'pi_month',
+        amount: 1500,
+        amount_refunded: 1500,
+        refunded: true,
+      },
+    },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.donations[0].status, 'refunded');
+  assert.equal(admin.state.profiles[0].donated_at, null);
+});
+
+test('a monthly gift recorded after its refund does not earn the badge', async () => {
+  process.env.BREVO_MEMBER_EMAILS_ENABLED = 'false';
+  const admin = memoryAdmin({
+    profiles: [{
+      id: 'member-1',
+      stripe_customer_id: 'cus_member',
+      email: 'member@example.org',
+      donated_at: null,
+    }],
+  });
+  await handleStripeEvent({
+    type: 'invoice.paid',
+    data: {
+      object: {
+        id: 'in_late',
+        amount_paid: 1500,
+        currency: 'usd',
+        customer: 'cus_member',
+        customer_email: 'member@example.org',
+        created: Math.floor(Date.now() / 1000),
+        parent: { subscription_details: { metadata: { type: 'donation', supabase_user_id: 'member-1' } } },
+        payments: { data: [{ payment: { type: 'payment_intent', payment_intent: 'pi_late' } }] },
+      },
+    },
+  }, {
+    stripe: {
+      paymentIntents: {
+        async retrieve() {
+          return {
+            latest_charge: {
+              id: 'ch_late',
+              amount: 1500,
+              amount_refunded: 1500,
+              refunded: true,
+              payment_intent: 'pi_late',
+            },
+          };
+        },
+      },
+    },
+    admin,
+  });
+  assert.equal(admin.state.donations[0].status, 'refunded');
+  assert.equal(admin.state.donations[0].stripe_charge_id, 'ch_late');
+  assert.equal(admin.state.profiles[0].donated_at, null);
+});
+
+test('a legacy monthly row is found from the payment intent, not charge.invoice', async () => {
+  const paidAt = new Date();
+  paidAt.setMonth(paidAt.getMonth() - 1);
+  const admin = memoryAdmin({
+    profiles: [{
+      id: 'member-1',
+      stripe_customer_id: 'cus_member',
+      email: 'member@example.org',
+      donated_at: paidAt.toISOString(),
+    }],
+    donations: [{
+      id: 'legacy-month',
+      user_id: 'member-1',
+      donor_email: 'member@example.org',
+      stripe_customer_id: 'cus_member',
+      stripe_invoice_id: 'in_real',
+      status: 'succeeded',
+      amount: 1500,
+      created_at: paidAt.toISOString(),
+    }],
+  });
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: {
+      object: {
+        id: 'ch_legacy',
+        payment_intent: 'pi_legacy',
+        invoice: 'in_wrong',
+        amount: 1500,
+        amount_refunded: 1500,
+        refunded: true,
+      },
+    },
+  }, {
+    stripe: {
+      invoicePayments: {
+        async list(params) {
+          assert.equal(params.payment.payment_intent, 'pi_legacy');
+          return { data: [{ invoice: 'in_real' }] };
+        },
+      },
+    },
+    admin,
+  });
+  assert.equal(admin.state.donations[0].status, 'refunded');
+  assert.equal(admin.state.profiles[0].donated_at, null);
 });
 
 test('snake_case donation rows map onto the matcher', () => {
@@ -357,4 +636,9 @@ test('snake_case donation rows map onto the matcher', () => {
   assert.equal(donatedAtFromGifts([
     { status: 'refunded', amount: 1000, created_at: '2026-10-01T00:00:00.000Z' },
   ], now), null);
+  assert.deepEqual(paymentIdsFromInvoice({
+    payments: { data: [{ payment: { type: 'payment_intent', payment_intent: 'pi_1', charge: 'ch_1' } }] },
+  }), { paymentIntentId: 'pi_1', chargeId: 'ch_1' });
+  assert.equal(chargeIsFullyRefunded({ amount: 1500, amount_refunded: 500, refunded: false }), false);
+  assert.equal(chargeIsFullyRefunded({ amount: 1500, amount_refunded: 1500, refunded: true }), true);
 });

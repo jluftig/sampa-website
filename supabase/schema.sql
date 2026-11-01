@@ -225,12 +225,14 @@ create table if not exists public.donations (
   stripe_subscription_id   text,                         -- recurring gifts
   stripe_invoice_id        text,                         -- recurring gift cycles
   stripe_payment_intent_id text,
+  stripe_charge_id         text,                         -- charge.refunded / dispute lookup
   created_at               timestamptz not null default now()
 );
 -- NULLs are distinct in a Postgres unique index, so many rows may leave the
 -- unused id column null while non-null Stripe ids stay unique (idempotency).
 create unique index if not exists donations_session_uidx on public.donations (stripe_session_id);
 create unique index if not exists donations_invoice_uidx on public.donations (stripe_invoice_id);
+create unique index if not exists donations_charge_uidx on public.donations (stripe_charge_id);
 create index if not exists donations_user_id_idx    on public.donations (user_id);
 create index if not exists donations_created_at_idx on public.donations (created_at desc);
 

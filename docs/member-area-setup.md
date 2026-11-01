@@ -359,8 +359,10 @@ already has promo codes enabled) rather than more price variants.
    - `invoice.paid` *(needed for recurring **donations** — records each monthly
      gift cycle. One-time gifts arrive via `checkout.session.completed`, which is
      already in the list.)*
-   - `charge.refunded` and `charge.dispute.created` *(Donor badge. A refunded
-     or disputed `/donate` gift drops out of the 12-month window.)*
+   - `charge.refunded`, `charge.dispute.created`, and `charge.dispute.closed`
+     *(Donor badge. A full refund or an open dispute drops that `/donate` gift
+     out of the 12-month window. `charge.dispute.closed` with status `won`
+     puts the gift back.)*
    Copy the **signing secret** (`whsec_...`).
 3. **Customer Portal**: Settings → Billing → Customer portal → enable, and
    allow: update payment method, cancel subscription, switch plans (add the six

@@ -16,6 +16,9 @@
 
 alter table public.profiles add column if not exists donated_at timestamptz;
 
+alter table public.donations add column if not exists stripe_charge_id text;
+create unique index if not exists donations_charge_uidx on public.donations (stripe_charge_id);
+
 create or replace function public.guard_profile_role()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
