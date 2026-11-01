@@ -28,6 +28,17 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
 - `aapa_member` (nullable boolean) — honor-system “current AAPA member?” Self-writable
   (not in `guard_profile_role`). We do not verify with AAPA. `aapa_member_id` is not
   collected. Helps suggest Fellow vs Certified PA (`sustaining`) on `/join`.
+- Tier A join/renew fields (self-writable, not in `guard_profile_role`):
+  `career_stage`, `nccpa_id`, `home_city`, `licensed_states`, `primary_practice_setting`,
+  `years_as_pa`, `years_addiction`, `addiction_pct_bucket`, `practice_model`,
+  `prescribes_moud`, `prescribes_other`, `telehealth_addiction`, `telehealth_states`,
+  `focus_areas`, `mentor_open`, `mentor_visible`, `profile_confirmed_at`.
+  `member_directory*` may return `primary_practice_setting`, `focus_areas`, and
+  `mentor_open` only when `mentor_visible`. Home city, license states, clinical
+  time, practice model, prescribing, and telehealth states are not in those RPCs.
+- `member_survey_responses` — one row per `(user_id, survey_year)`, `answers` jsonb.
+  Owner can insert/update the Pacific calendar year. Admin and member viewers can read.
+  Not stored on `profiles`. `/survey/:year`.
 - `role` enum `user_role` = member|editor|admin (default member; `editor` legacy — UI
   normalizes to member + flags)
 - Capability flags (admin-set, combinable): `can_edit_news`, `can_view_members`,
