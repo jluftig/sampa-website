@@ -33,7 +33,13 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
 ## Donations
 
 - Dynamic Checkout via `create-donation-session` (`price_data`), not a fixed Donation Product.
-- `metadata.type=donation` → `donations` table only.
+- `metadata.type=donation` → `donations` table only, then `profiles.donated_at`
+  when the gift is succeeded and the amount is above zero. Match order is the
+  checkout user id, then a unique `stripe_customer_id`, then a unique email.
+  Two profiles on the same customer or email get no stamp. This email match is
+  only for the Donor badge. Membership checkout still never links by email.
+  Patron add-on payments are not donations and do not set `donated_at`.
+  Directory RPCs expose `donor` for the last 12 months, not the timestamp.
 - **Ops kill-switch:** `DONATIONS_ENABLED` in `src/lib/features.js` **and**
   `api/create-donation-session.js` (keep in sync). Currently **on** (501(c)(3)
   granted 2026-07-21; EIN 42-2288772). See STATUS if flipped off.

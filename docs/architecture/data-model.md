@@ -25,6 +25,10 @@ Exact DDL: `supabase/schema.sql`. Do not weaken RLS — see `security-rls.md`.
   `cancel_at_period_end`, `membership_years` (1/2/3 or null), `patron` (boolean, default
   false — add-on, **never** a tier key; peer `/members` shows a Patron badge when true
   via `member_directory*` RPCs)
+- `donated_at` (timestamptz, nullable) — latest successful `/donate` gift matched to
+  this profile. Webhook-written and in `guard_profile_role`. Peer directory RPCs
+  return `donor` (true when `donated_at` is inside the last 12 months) and do not
+  return the timestamp or the amount. A non-member has no listing, so no badge.
 - `aapa_member` (nullable boolean) — honor-system “current AAPA member?” Self-writable
   (not in `guard_profile_role`). We do not verify with AAPA. `aapa_member_id` is not
   collected. Helps suggest Fellow vs Certified PA (`sustaining`) on `/join`.
