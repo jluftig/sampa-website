@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-01 (T61 join/renew flow. Draft PR #162. Preview only until Josh.)
+**Last updated:** 2026-11-01 (T76 donor directory badge claimed. T61 merged as #162. SQL still for the SQL Editor.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -65,7 +65,8 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T61 | Join / renew flow and 2026 member survey | cursor | 2026-11-01 | **Claimed cursor.** Draft PR **#162** (preview only). QA red on 61b93eb: missing `career_stage` no longer blocks Looks right (nullable, backfilled from the dues tier, inline chips if still unknown). A renewing member with a tier reaches Checkout in two taps (confirm, then Skip on Support). Skip keeps an existing Patron add-on. SQL: `supabase/migrations/2026-11-01-join-flow-profile.sql` for Josh to paste. Do not merge until Josh reviews. |
+| T76 | Donor badge on the member directory | cursor | 2026-11-01 | **Claimed cursor.** A successful `/donate` gift in the last 12 months, matched by Stripe customer or email, shows a Donor badge next to Patron. `profiles.donated_at` plus a backfill from `donations`. Preview only. Do not merge until Josh reviews. |
+| T61 | Join / renew flow and 2026 member survey | cursor | 2026-11-01 | **Merged PR #162** (`6c58cc4`) to production. Deploy `dpl_F18sx2d1nDLvBqvdRYdhDWzMgacc` is READY on www.addictionpas.org. SQL `supabase/migrations/2026-11-01-join-flow-profile.sql` is **not** applied yet. `career_stage` and `member_survey_responses` are still missing in production. Josh pastes that file in the Supabase SQL Editor. |
 | T75 | Emerging Practice Monthly No. 1 and three-list signup | cursor | 2026-10-29 | **Claimed cursor.** Draft PR **#160** (preview only). Replace the Oct 19 topic draft with No. 1 (October 2026) from campaign 62. Every public signup card offers all three lists inline, with the page list pre-checked, and links to `/subscriptions`. Keys and env names stay. Do not merge until Josh says. |
 | T71 | Choose which SAMPA emails you get | cursor | 2026-10-22 | **Claimed cursor.** Draft PR **#152** (preview only). Signed-in `/dashboard/emails`. Three instant toggles: SAMPA Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_TOPIC`, no numeric fallback). On adds that list. Off removes that list only. Footer unsubscribe stays a full exit. State is the contact's Brevo `listIds`. Section on `newsletter-stats`. Homepage copy unchanged. Do not merge until Josh says merge. |
 | T70 | Weekly Topic Roundup page at /news/topic | cursor | 2026-10-18 | **Claimed cursor.** Draft PR **#146** (preview only). Merged origin/main on 2026-10-28, including #147. Public `/news/topic` (latest) and `/news/topic/YYYY-MM-DD` from `content/topic-roundup/2026-10-19.json`. Draft banner while `draft` is true. Canonical URL is the dated issue. Crawlers on `/news/topic` get that issue from `api/share.js` (`noindex` while draft). News header and footer link here and to Manage subscriptions. Not in the daily list, daily email, RSS, sitemap, or homepage. Do not merge until Website QA and Josh. |
