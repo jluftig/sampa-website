@@ -17,6 +17,8 @@ import {
   nextStepAfterProfile,
   parseJoinQuery,
   preselectedTier,
+  selectedPatron,
+  skipSupport,
 } from '../lib/joinFlow';
 import {
   emptyProfileForm,
@@ -112,12 +114,13 @@ export function JoinFlow({ mode = 'join', preview = null }) {
     return () => window.clearInterval(id);
   }, [auth.refreshProfile, preview, query.phase]);
 
+  const patronOn = selectedPatron(profile, query.patron);
   const cart = useMemo(() => joinCart({
     tier: query.tier,
     term: query.term,
-    patron: query.patron,
+    patron: patronOn,
     autoRenew: query.autoRenew,
-  }), [query.tier, query.term, query.patron, query.autoRenew]);
+  }), [query.tier, query.term, patronOn, query.autoRenew]);
 
   const go = (partial, replace = false) => {
     const next = { ...query, canceled: false, ...partial };
@@ -157,7 +160,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
       }
       auth.refreshProfile?.();
     }
-    go(nextStepAfterProfile({ mode, profile, form }));
+    go(nextStepAfterProfile({ mode, profile, form, patron: query.patron }));
   };
 
   const continueMembership = () => {
@@ -192,7 +195,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
         tier: query.tier,
         duration: query.term,
         auto_renew: cart.autoRenew,
-        ...(query.patron ? { patron: true } : {}),
+        ...(patronOn ? { patron: true } : {}),
       });
       window.location.assign(url);
     } catch (err) {
@@ -205,7 +208,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
   const invoiceQuery = new URLSearchParams({
     ...(query.tier ? { tier: query.tier } : {}),
     ...(query.term ? { term: String(query.term) } : {}),
-    ...(query.patron ? { patron: '1' } : {}),
+    ...(patronOn ? { patron: '1' } : {}),
     ...(query.aapa === true ? { aapa: '1' } : {}),
     ...(query.aapa === false ? { aapa: '0' } : {}),
   }).toString();
@@ -222,7 +225,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
         back: () => go({ step: 'membership' }),
         primary: 'Continue',
         onPrimary: () => go({ step: 'checkout', phase: 'review' }),
-        skip: () => go({ step: 'checkout', phase: 'review', patron: false }),
+        skip: () => go(skipSupport({ ...query, patron: patronOn })),
       };
     }
     if (query.phase === 'review') {
@@ -300,7 +303,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
                 />
               )}
               {query.step === 'support' && (
-                <JoinSupportStep patron={query.patron} term={query.term} onPatron={(patron) => go({ patron }, true)} />
+                <JoinSupportStep patron={patronOn} term={query.term} onPatron={(patron) => go({ patron }, true)} />
               )}
               {query.step === 'checkout' && (
                 <JoinCheckoutStep

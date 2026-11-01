@@ -53,7 +53,9 @@ export function parseJoinQuery(search, { pathname = '/join' } = {}) {
   const tier = tierByKey(params.get('tier'))?.key || null;
   const term = parseDurationParam(params.get('term'), tierByKey(tier)) || 1;
   const aapa = parseAapaParam(params.get('aapa'));
-  const patron = params.get('patron') === '1';
+  // null means the URL has not chosen yet. true/false are explicit.
+  const patronParam = params.get('patron');
+  const patron = patronParam == null || patronParam === '' ? null : patronParam === '1';
   const autoRenew = params.get('auto') === '0' ? false : true;
   const mode = pathname === '/renew' ? 'renew' : 'join';
 
@@ -84,7 +86,8 @@ export function joinSearchParams(state, current = '') {
   if (state.term && state.term !== 1) params.set('term', String(state.term));
   if (state.aapa === true) params.set('aapa', '1');
   if (state.aapa === false) params.set('aapa', '0');
-  if (state.patron) params.set('patron', '1');
+  if (state.patron === true) params.set('patron', '1');
+  else if (state.patron === false) params.set('patron', '0');
   if (state.autoRenew === false) params.set('auto', '0');
   if (state.canceled) params.set('checkout', 'canceled');
   else if (state.phase === 'payment') params.set('checkout', 'payment');
@@ -125,17 +128,38 @@ export function membershipBanner(profile) {
     .replace(' · · ', ' · ');
 }
 
+// Patron is the only support add-on today. A renewing member keeps whatever they already have
+// unless the URL explicitly turns it on or off.
+export function supportAddOns(profile) {
+  return { patron: profile?.patron === true };
+}
+
+export function selectedPatron(profile, patronFromQuery) {
+  if (patronFromQuery === true || patronFromQuery === false) return patronFromQuery;
+  return supportAddOns(profile).patron;
+}
+
 // Confirming a filled-in renewal skips Membership when the dues tier is already known.
 // Support is still one Skip tap. A new joiner, or a renewal with no tier, stops on Membership.
-export function nextStepAfterProfile({ mode, profile, form }) {
+export function nextStepAfterProfile({ mode, profile, form, patron } = {}) {
   const renewing = mode === 'renew' || Boolean(profile?.membership_status);
   const aapa = typeof form?.aapa_member === 'boolean' ? form.aapa_member : profile?.aapa_member;
   const tier = preselectedTier(profile, {
     aapa,
     careerStage: form?.career_stage || deriveCareerStage(profile),
   });
-  if (renewing && tier) return { step: 'support', tier, aapa };
-  return { step: 'membership', ...(tier ? { tier } : {}) };
+  const keptPatron = selectedPatron(profile, patron);
+  if (renewing && tier) return { step: 'support', tier, aapa, patron: keptPatron };
+  return {
+    step: 'membership',
+    ...(tier ? { tier } : {}),
+    ...(patron === true || patron === false || (renewing && keptPatron) ? { patron: keptPatron } : {}),
+  };
+}
+
+// Skip leaves Patron and any other support add-on as they are.
+export function skipSupport(state) {
+  return { ...state, step: 'checkout', phase: 'review' };
 }
 
 // Taps from the Profile step to Checkout. Support is always one Skip.
@@ -147,6 +171,7 @@ export function tapsToCheckout({ mode, profile }) {
       career_stage: deriveCareerStage(profile),
       aapa_member: profile?.aapa_member,
     },
+    patron: null,
   });
   const taps = ['confirm-profile'];
   if (dest.step === 'membership') taps.push('continue-membership');

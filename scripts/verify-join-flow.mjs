@@ -21,6 +21,8 @@ import {
   nextStepAfterProfile,
   parseJoinQuery,
   preselectedTier,
+  selectedPatron,
+  skipSupport,
   tapsToCheckout,
 } from '../src/lib/joinFlow.js';
 import {
@@ -280,6 +282,42 @@ describe('membership and checkout math', () => {
     });
     assert.deepEqual(noTier, ['confirm-profile', 'continue-membership', 'skip-support']);
     assert.equal(noTier.length, 3);
+  });
+
+  it('keeps Patron when a Fellow+Patron member taps Looks right then Skip', () => {
+    const profile = {
+      full_name: 'Ada PA',
+      state: 'California',
+      membership_tier: 'fellow',
+      membership_status: 'active',
+      patron: true,
+      aapa_member: true,
+    };
+    assert.equal(parseJoinQuery('?step=profile', { pathname: '/renew' }).patron, null);
+    assert.equal(selectedPatron(profile, null), true);
+    const afterConfirm = nextStepAfterProfile({
+      mode: 'renew',
+      profile,
+      form: emptyProfileForm(profile, 'ada@example.org'),
+      patron: null,
+    });
+    assert.equal(afterConfirm.step, 'support');
+    assert.equal(afterConfirm.tier, 'fellow');
+    assert.equal(afterConfirm.patron, true);
+    const afterSkip = skipSupport(afterConfirm);
+    assert.equal(afterSkip.step, 'checkout');
+    assert.equal(afterSkip.phase, 'review');
+    assert.equal(afterSkip.patron, true);
+    const url = joinSearchParams(afterSkip).toString();
+    assert.match(url, /step=checkout/);
+    assert.match(url, /tier=fellow/);
+    assert.match(url, /patron=1/);
+    const cart = joinCart({ tier: 'fellow', term: 1, patron: afterSkip.patron, autoRenew: true });
+    assert.equal(cart.patronAmount, 25);
+    assert.equal(cart.total, 75);
+    const optedOut = skipSupport({ ...afterConfirm, patron: false });
+    assert.equal(optedOut.patron, false);
+    assert.match(joinSearchParams(optedOut).toString(), /patron=0/);
   });
 
   it('preselects the member’s current tier', () => {

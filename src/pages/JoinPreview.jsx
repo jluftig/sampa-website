@@ -18,6 +18,7 @@ const RENEWER = {
     newsletter_opt_in: true,
     membership_tier: 'fellow',
     membership_status: 'active',
+    patron: true,
     renews_on: '2027-03-03',
     cancel_at_period_end: false,
     membership_years: 1,
@@ -34,6 +35,20 @@ const RENEWER = {
     directory_visible: true,
     share_email: true,
     share_phone: false,
+  },
+};
+
+const LAPSED_PATRON = {
+  user: { id: 'preview-lapsed', email: 'ada@example.org' },
+  profile: {
+    full_name: 'Ada PA',
+    email: 'ada@example.org',
+    state: 'California',
+    membership_tier: 'fellow',
+    membership_status: 'canceled',
+    patron: true,
+    aapa_member: true,
+    organizations: [],
   },
 };
 
@@ -74,7 +89,15 @@ export default function JoinPreview() {
       </div>
     );
   }
-  const preview = who === 'renewer' ? RENEWER : who === 'paid' ? JUST_PAID : who === 'plain' ? PLAIN : { user: null, profile: null };
-  const mode = who === 'renewer' || who === 'plain' ? 'renew' : 'join';
+  const preview = who === 'renewer'
+    ? RENEWER
+    : who === 'paid'
+      ? JUST_PAID
+      : who === 'plain'
+        ? PLAIN
+        : who === 'lapsed'
+          ? LAPSED_PATRON
+          : { user: null, profile: null };
+  const mode = who === 'joiner' || who === 'paid' ? 'join' : 'renew';
   return <JoinFlow mode={mode} preview={preview} />;
 }
