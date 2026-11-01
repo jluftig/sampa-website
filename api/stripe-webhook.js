@@ -669,11 +669,17 @@ export async function handleStripeEvent(event, { stripe, admin }) {
 
       case 'charge.dispute.closed': {
         const dispute = event.data.object;
+        // A lost dispute leaves the gift off. A win restores it only when the
+        // charge itself was not fully refunded.
         if (dispute.status !== 'won') break;
+        const chargeId = idOf(dispute.charge);
+        const paymentIntentId = idOf(dispute.payment_intent);
+        const charge = await loadCharge(stripe, { paymentIntentId, chargeId });
+        if (!charge) break;
         await reverseDonation(admin, stripe, {
-          paymentIntentId: idOf(dispute.payment_intent),
-          chargeId: idOf(dispute.charge),
-          status: 'succeeded',
+          paymentIntentId,
+          chargeId: charge.id || chargeId,
+          status: chargeIsFullyRefunded(charge) ? 'refunded' : 'succeeded',
         });
         break;
       }

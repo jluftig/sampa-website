@@ -491,10 +491,23 @@ test('monthly gift refunds and disputes use payment intent and charge id', async
   assert.equal(admin.state.donations[0].status, 'disputed');
   assert.equal(admin.state.profiles[0].donated_at, null);
 
+  let wonFetches = 0;
   await handleStripeEvent({
     type: 'charge.dispute.closed',
     data: { object: { id: 'dp_month', charge: 'ch_month', payment_intent: 'pi_month', status: 'won' } },
-  }, { stripe: null, admin });
+  }, {
+    stripe: {
+      charges: {
+        async retrieve(id) {
+          wonFetches += 1;
+          assert.equal(id, 'ch_month');
+          return { id, amount: 1500, amount_refunded: 0, refunded: false, payment_intent: 'pi_month' };
+        },
+      },
+    },
+    admin,
+  });
+  assert.equal(wonFetches, 1);
   assert.equal(admin.state.donations[0].status, 'succeeded');
   assert.equal(admin.state.profiles[0].donated_at, paidAt.toISOString());
 
@@ -512,6 +525,74 @@ test('monthly gift refunds and disputes use payment intent and charge id', async
   }, { stripe: null, admin });
   assert.equal(admin.state.donations[0].status, 'refunded');
   assert.equal(admin.state.profiles[0].donated_at, null);
+});
+
+test('a partial refund stays counted, a lost dispute stays off, and a won dispute on a refunded charge stays refunded', async () => {
+  const paidAt = new Date();
+  paidAt.setMonth(paidAt.getMonth() - 1);
+  paidAt.setMilliseconds(0);
+  const profile = {
+    id: 'member-1',
+    stripe_customer_id: 'cus_member',
+    email: 'member@example.org',
+    donated_at: paidAt.toISOString(),
+  };
+  const gift = {
+    id: 'gift-1',
+    user_id: 'member-1',
+    donor_email: 'member@example.org',
+    stripe_customer_id: 'cus_member',
+    stripe_payment_intent_id: 'pi_gift',
+    stripe_charge_id: 'ch_gift',
+    status: 'succeeded',
+    amount: 1500,
+    created_at: paidAt.toISOString(),
+  };
+
+  const partial = memoryAdmin({ profiles: [{ ...profile }], donations: [{ ...gift }] });
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: { object: { id: 'ch_gift', payment_intent: 'pi_gift', amount: 1500, amount_refunded: 400, refunded: false } },
+  }, { stripe: null, admin: partial });
+  assert.equal(partial.state.donations[0].status, 'succeeded');
+  assert.equal(partial.state.profiles[0].donated_at, paidAt.toISOString());
+
+  const lost = memoryAdmin({
+    profiles: [{ ...profile, donated_at: null }],
+    donations: [{ ...gift, status: 'disputed' }],
+  });
+  let lostFetches = 0;
+  await handleStripeEvent({
+    type: 'charge.dispute.closed',
+    data: { object: { id: 'dp_lost', charge: 'ch_gift', payment_intent: 'pi_gift', status: 'lost' } },
+  }, {
+    stripe: { charges: { async retrieve() { lostFetches += 1; return { id: 'ch_gift', amount: 1500, amount_refunded: 0 }; } } },
+    admin: lost,
+  });
+  assert.equal(lostFetches, 0);
+  assert.equal(lost.state.donations[0].status, 'disputed');
+  assert.equal(lost.state.profiles[0].donated_at, null);
+
+  const wonRefunded = memoryAdmin({
+    profiles: [{ ...profile, donated_at: null }],
+    donations: [{ ...gift, status: 'disputed' }],
+  });
+  await handleStripeEvent({
+    type: 'charge.dispute.closed',
+    data: { object: { id: 'dp_won', charge: 'ch_gift', payment_intent: 'pi_gift', status: 'won' } },
+  }, {
+    stripe: {
+      charges: {
+        async retrieve(id) {
+          assert.equal(id, 'ch_gift');
+          return { id, amount: 1500, amount_refunded: 1500, refunded: true, payment_intent: 'pi_gift' };
+        },
+      },
+    },
+    admin: wonRefunded,
+  });
+  assert.equal(wonRefunded.state.donations[0].status, 'refunded');
+  assert.equal(wonRefunded.state.profiles[0].donated_at, null);
 });
 
 test('a monthly gift recorded after its refund does not earn the badge', async () => {

@@ -44,7 +44,9 @@ Live / blocked state: `docs/STATUS.md` (e.g. donations on/off).
   `charge.dispute.created` mark that gift and set `donated_at` from gifts that
   still match the profile by account id, Stripe customer, or donor email and
   are still succeeded inside 12 months. A partial refund leaves the gift
-  counted. `charge.dispute.closed` with status `won` restores it. Monthly rows
+  counted. `charge.dispute.closed` with status `won` restores it only when the
+  fetched charge is not fully refunded (`amount_refunded` is still below
+  `amount`). A lost dispute leaves the gift off. Monthly rows
   store the PaymentIntent and charge id. Lookup does not use `charge.invoice`.
   If the refund arrives before the gift row, recording the gift checks the
   charge and stores it as refunded. A membership charge has no `donations`
