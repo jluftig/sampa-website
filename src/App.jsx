@@ -26,7 +26,9 @@ const TagView = lazy(() => import('./pages/TagView'));
 const Search = lazy(() => import('./pages/Search'));
 const Login = lazy(() => import('./pages/Login'));
 const Join = lazy(() => import('./pages/Join'));
+const JoinPreview = import.meta.env.DEV ? lazy(() => import('./pages/JoinPreview')) : null;
 const JoinInvoice = lazy(() => import('./pages/JoinInvoice'));
+const AnnualSurvey = lazy(() => import('./pages/AnnualSurvey'));
 const Donate = lazy(() => import('./pages/Donate'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const EmailChoices = lazy(() => import('./pages/EmailChoices'));
@@ -73,6 +75,12 @@ function App() {
           {import.meta.env.DEV && (
             <Route path="/__preview/email-choices" element={<EmailChoicesPreview />} />
           )}
+          {import.meta.env.DEV && (
+            <Route path="/__preview/join" element={<JoinPreview />} />
+          )}
+          {import.meta.env.DEV && (
+            <Route path="/__preview/survey" element={<AnnualSurvey />} />
+          )}
           <Route path="/news/:slug" element={<PostView />} />
           <Route path="/policy" element={<Policy />} />
           <Route path="/policy/:slug" element={<PolicyView />} />
@@ -81,7 +89,16 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/renew" element={<Join />} />
           <Route path="/join/invoice" element={<JoinInvoice />} />
+          <Route
+            path="/survey/:year"
+            element={
+              <RequireAuth>
+                <AnnualSurvey />
+              </RequireAuth>
+            }
+          />
           <Route path="/donate" element={<Donate />} />
           <Route path="/giveaway" element={<Giveaway />} />
           <Route path="/about" element={<About />} />

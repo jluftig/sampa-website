@@ -77,8 +77,8 @@ export default function Privacy() {
         and phone with other members, or enter a different directory email
         and/or phone (for example a work inbox if you sign in with a personal
         Gmail). These are professional details about you as a clinician — never
-        information about patients. Everything is optional and editable on your
-        dashboard.
+        information about patients. You can edit them on your account, including
+        the profile step of join and renew.
       </p>
 
       <h3>Membership and payments</h3>
@@ -122,15 +122,19 @@ export default function Privacy() {
       <p>
         <strong>What peers may see when you are listed:</strong> name,
         credentials, organizations and roles, practice settings, locations
-        (city/state), optional organization websites, Board badge if applicable,
+        (city/state), optional organization websites, your primary practice
+        setting, the substances and populations you say you mainly treat, a
+        mentoring note if you turn that on, Board badge if applicable,
         and email and/or phone only if you turn on those share options.
       </p>
       <p>
         <strong>What peers do not see:</strong> your billing or payment data,
-        Stripe identifiers, newsletter/SMS preferences, NPI number, staff-only
-        permission flags, or other internal account fields. NPI, if you provide
-        it, is for SAMPA membership operations (for example the staff roster),
-        not for peer directory cards.
+        Stripe identifiers, newsletter/SMS preferences, NPI number, home city,
+        states of licensure, share of clinical time, practice model, prescribing
+        answers, telehealth states, NCCPA ID, staff-only permission flags, or
+        other internal account fields. NPI, if you provide it, is for SAMPA
+        membership operations (for example the staff roster), not for peer
+        directory cards. Home city is for advocacy and stays off the directory.
       </p>
       <p>
         <strong>Default listing:</strong> when your membership is active, you

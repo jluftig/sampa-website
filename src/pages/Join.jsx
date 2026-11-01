@@ -1,480 +1,346 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Star } from 'lucide-react';
-import { useAuth } from '../lib/AuthContext';
-import { MEMBERSHIP_TIERS, tierByKey, savingsPercent, durationsForTier, durationLabel, patronDollars, PATRON_ADDON_BLURB, isPaPathTier, suggestedTierForAapa, parseAapaParam } from '../lib/membership';
-import { apiPost } from '../lib/api';
-import { supabase } from '../lib/supabaseClient';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import JoinCheckoutStep from '../components/join/JoinCheckoutStep';
+import JoinMembershipStep from '../components/join/JoinMembershipStep';
+import JoinProfileStep from '../components/join/JoinProfileStep';
+import JoinStepper from '../components/join/JoinStepper';
+import JoinSupportStep from '../components/join/JoinSupportStep';
+import { useAuth } from '../lib/AuthContext';
+import { apiPost } from '../lib/api';
+import {
+  checkoutBlock,
+  joinCart,
+  JOIN_DRAFT_KEY,
+  joinSearchParams,
+  parseJoinQuery,
+  preselectedTier,
+} from '../lib/joinFlow';
+import {
+  emptyProfileForm,
+  profileCardsStartCollapsed,
+  profileWritePatch,
+  sanitizeProfileForm,
+  validateProfile,
+} from '../lib/joinProfile';
+import { supabase } from '../lib/supabaseClient';
 
-// Join flow, one page: pick a tier and term, one-click sign-in, then Stripe
-// Checkout. Homepage `#membership` is a scroll tease only — not a required
-// first step. `?tier=` from homepage cards is honored: that card is highlighted
-// and scrolled into view. Checkout is created server-side with the user's id as
-// client_reference_id so the webhook can activate the right profile without
-// email matching. Terms: 1/2/3-year auto-renewing subscriptions (multi-year
-// at a discount), plus a one-time Lifetime option on Legacy.
-// Optional Patron add-on (+$25 × term years) appears after a real tier is
-// selected — default off, not a seventh card, never a membership_tier.
-// Honor-system AAPA yes/no for PA-path tiers (fellow / sustaining / legacy)
-// suggests Fellow vs Certified PA (not AAPA); we do not verify with AAPA.
-export default function Join() {
-  const { user, loading, profile, isActiveMember } = useAuth();
+const NEW_PROFILE_COLUMNS = [
+  'career_stage', 'nccpa_id', 'home_city', 'licensed_states', 'primary_practice_setting',
+  'years_as_pa', 'years_addiction', 'addiction_pct_bucket', 'practice_model',
+  'prescribes_moud', 'prescribes_other', 'telehealth_addiction', 'telehealth_states',
+  'focus_areas', 'mentor_open', 'mentor_visible', 'profile_confirmed_at',
+];
+
+function readDraft() {
+  try {
+    const raw = sessionStorage.getItem(JOIN_DRAFT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveProfilePatch(userId, patch) {
+  let { error } = await supabase.from('profiles').update(patch).eq('id', userId);
+  if (!error) return null;
+  const msg = error.message || '';
+  const missing = error.code === 'PGRST204' || NEW_PROFILE_COLUMNS.some((key) => msg.includes(key));
+  if (!missing) return error;
+  const fallback = { ...patch };
+  for (const key of NEW_PROFILE_COLUMNS) delete fallback[key];
+  if (!Object.keys(fallback).length) return null;
+  ({ error } = await supabase.from('profiles').update(fallback).eq('id', userId));
+  return error;
+}
+
+export function JoinFlow({ mode = 'join', preview = null }) {
+  const auth = useAuth();
+  const user = preview?.user ?? auth.user;
+  const profile = preview?.profile ?? auth.profile;
+  const loading = preview ? false : auth.loading;
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const canceled = searchParams.get('checkout') === 'canceled';
-  const tierFromQuery = tierByKey(searchParams.get('tier'));
+  const query = parseJoinQuery(searchParams.toString(), { pathname: mode === 'renew' ? '/renew' : '/join' });
+  const [form, setForm] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [showErrors, setShowErrors] = useState(false);
+  const [forceOpen, setForceOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [payError, setPayError] = useState(null);
+  const [waited, setWaited] = useState(false);
 
-  // Which tier is the "current choice" for visual focus.
-  const [focusedKey, setFocusedKey] = useState(tierFromQuery?.key ?? null);
-  const focusedTier = tierByKey(focusedKey) || tierFromQuery;
-
-  // Selected term per tier card, defaulting to 1 year.
-  const [terms, setTerms] = useState({});
-  const [busyTier, setBusyTier] = useState(null);
-  const [error, setError] = useState(null);
-  const cardRefs = useRef({});
-  const didScrollFor = useRef(null);
-
-  // Keep focus in sync if the URL changes (e.g. back/forward, login return).
   useEffect(() => {
-    if (tierFromQuery?.key) setFocusedKey(tierFromQuery.key);
-  }, [tierFromQuery?.key]);
-
-  // Scroll the preselected tier into view once per inbound query value.
-  useEffect(() => {
-    if (!tierFromQuery?.key) return;
-    if (didScrollFor.current === tierFromQuery.key) return;
-    const el = cardRefs.current[tierFromQuery.key];
-    if (!el) return;
-    didScrollFor.current = tierFromQuery.key;
-    const t = window.setTimeout(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 150);
-    return () => window.clearTimeout(t);
-  }, [tierFromQuery?.key]);
-
-  const termFor = (tier) => terms[tier.key] ?? 1;
-
-  const wantPatron = searchParams.get('patron') === '1';
-  const aapaFromQuery = parseAapaParam(searchParams.get('aapa'));
-  const [aapaAnswer, setAapaAnswer] = useState(
-    aapaFromQuery ?? (typeof profile?.aapa_member === 'boolean' ? profile.aapa_member : null)
-  );
-  const showAapaQuestion = !isActiveMember && (!focusedKey || isPaPathTier(focusedKey));
-  const aapaRef = useRef(null);
-  const didInitAapa = useRef(false);
-
-  const focusTier = (tierKey) => {
-    setFocusedKey(tierKey);
-    const next = new URLSearchParams(searchParams);
-    next.set('tier', tierKey);
-    setSearchParams(next, { replace: true });
-  };
-
-  const setWantPatron = (on) => {
-    const next = new URLSearchParams(searchParams);
-    if (on) next.set('patron', '1');
-    else next.delete('patron');
-    setSearchParams(next, { replace: true });
-  };
-
-  const persistAapaMember = async (value) => {
-    if (!user || typeof value !== 'boolean') return;
-    const { error: writeError } = await supabase
-      .from('profiles')
-      .update({ aapa_member: value })
-      .eq('id', user.id);
-    if (writeError && !/aapa_member/i.test(writeError.message || '')) {
-      console.warn('Could not save AAPA answer:', writeError.message);
+    if (form || loading) return;
+    const email = user?.email || profile?.email || '';
+    const base = emptyProfileForm(profile, email);
+    const draft = preview ? null : readDraft();
+    if (draft && typeof draft === 'object') {
+      setForm({ ...base, ...draft, email: email || draft.email || '' });
+      if (user) sessionStorage.removeItem(JOIN_DRAFT_KEY);
+    } else {
+      setForm(base);
     }
-  };
+  }, [form, loading, preview, profile, user]);
 
-  const answerAapa = (isAapaMember) => {
-    setAapaAnswer(isAapaMember);
-    const next = new URLSearchParams(searchParams);
-    next.set('aapa', isAapaMember ? '1' : '0');
-    const suggested = suggestedTierForAapa(isAapaMember);
-    next.set('tier', suggested);
-    setFocusedKey(suggested);
-    setSearchParams(next, { replace: true });
-    persistAapaMember(isAapaMember);
-  };
-
-  // URL ?aapa= wins; else hydrate from the signed-in profile once.
   useEffect(() => {
-    if (aapaFromQuery !== null) {
-      setAapaAnswer(aapaFromQuery);
+    if (!form || query.tier) return;
+    if (query.step !== 'membership' && query.step !== 'checkout') return;
+    const suggested = preselectedTier(profile, {
+      aapa: query.aapa ?? form.aapa_member,
+      careerStage: form.career_stage,
+    });
+    if (!suggested) return;
+    const next = joinSearchParams({ ...query, tier: suggested, aapa: query.aapa ?? form.aapa_member }, searchParams);
+    setSearchParams(next, { replace: true });
+  }, [form, profile, query, setSearchParams]);
+
+  useEffect(() => {
+    if (query.phase !== 'confirmation' || preview) return undefined;
+    setWaited(false);
+    let n = 0;
+    const id = window.setInterval(() => {
+      n += 1;
+      auth.refreshProfile?.();
+      if (n >= 15) {
+        window.clearInterval(id);
+        setWaited(true);
+      }
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [auth.refreshProfile, preview, query.phase]);
+
+  const cart = useMemo(() => joinCart({
+    tier: query.tier,
+    term: query.term,
+    patron: query.patron,
+    autoRenew: query.autoRenew,
+  }), [query.tier, query.term, query.patron, query.autoRenew]);
+
+  const go = (partial, replace = false) => {
+    const next = { ...query, canceled: false, ...partial };
+    setSearchParams(joinSearchParams(next, searchParams), { replace });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const basePath = mode === 'renew' ? '/renew' : '/join';
+
+  const requireSignIn = (step) => {
+    sessionStorage.setItem(JOIN_DRAFT_KEY, JSON.stringify(form));
+    const next = `${basePath}?${joinSearchParams({ ...query, step }, searchParams).toString()}`;
+    navigate(`/login?next=${encodeURIComponent(next)}`);
+  };
+
+  const continueProfile = async () => {
+    const found = validateProfile(form);
+    setErrors(found);
+    setShowErrors(true);
+    if (Object.keys(found).length) {
+      setForceOpen(true);
       return;
     }
-    if (didInitAapa.current) return;
-    if (typeof profile?.aapa_member !== 'boolean') return;
-    didInitAapa.current = true;
-    setAapaAnswer(profile.aapa_member);
-    if (!searchParams.get('tier')) {
-      const suggested = suggestedTierForAapa(profile.aapa_member);
-      setFocusedKey(suggested);
-      const next = new URLSearchParams(searchParams);
-      next.set('tier', suggested);
-      next.set('aapa', profile.aapa_member ? '1' : '0');
-      setSearchParams(next, { replace: true });
-    }
-  }, [aapaFromQuery, profile?.aapa_member, searchParams, setSearchParams]);
-
-  useEffect(() => {
-    if (user && typeof aapaAnswer === 'boolean') persistAapaMember(aapaAnswer);
-  }, [user?.id]); // persist when sign-in lands; answer may already be in the URL
-
-  const joinQuery = (tierKey) => {
-    const params = new URLSearchParams();
-    params.set('tier', tierKey);
-    if (wantPatron) params.set('patron', '1');
-    if (typeof aapaAnswer === 'boolean') params.set('aapa', aapaAnswer ? '1' : '0');
-    return `/join?${params.toString()}`;
-  };
-
-  const selectTier = async (tierKey) => {
-    setError(null);
-    focusTier(tierKey);
-    if (isPaPathTier(tierKey) && aapaAnswer === null) {
-      setError('Please tell us whether you are a current AAPA member — it helps us put you on the right dues. We do not verify this with AAPA.');
-      aapaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    const duration = terms[tierKey] ?? 1;
     if (!user) {
-      navigate(`/login?next=${encodeURIComponent(joinQuery(tierKey))}`);
+      requireSignIn('profile');
       return;
     }
-    setBusyTier(tierKey);
+    if (!preview) {
+      const sanitized = sanitizeProfileForm(form);
+      const patch = profileWritePatch(profile, sanitized, new Date().toISOString());
+      const error = await saveProfilePatch(user.id, patch);
+      if (error) {
+        setPayError(error.message || 'Could not save your profile.');
+        return;
+      }
+      auth.refreshProfile?.();
+    }
+    go({ step: 'membership' });
+  };
+
+  const continueMembership = () => {
+    if (cart.needsAapa && query.aapa == null && !checkoutBlock(profile)) {
+      setPayError('Please tell us whether you are a current AAPA member. We do not verify this with AAPA.');
+      return;
+    }
+    if (!query.tier) {
+      setPayError('Choose a membership level.');
+      return;
+    }
+    setPayError(null);
+    if (!user) {
+      requireSignIn('membership');
+      return;
+    }
+    go({ step: 'support' });
+  };
+
+  const pay = async () => {
+    if (checkoutBlock(profile) || !query.tier) return;
+    if (!user) {
+      requireSignIn('checkout');
+      return;
+    }
+    setPayError(null);
+    setBusy(true);
+    go({ step: 'checkout', phase: 'payment' });
+    if (preview) return;
     try {
-      await persistAapaMember(aapaAnswer);
       const { url } = await apiPost('/api/create-checkout-session', {
-        tier: tierKey,
-        duration,
-        ...(wantPatron ? { patron: true } : {}),
+        tier: query.tier,
+        duration: query.term,
+        auto_renew: cart.autoRenew,
+        ...(query.patron ? { patron: true } : {}),
       });
       window.location.assign(url);
     } catch (err) {
-      setError(err.message);
-      setBusyTier(null);
+      setBusy(false);
+      setPayError(err.message);
+      go({ step: 'checkout', phase: 'review' }, true);
     }
   };
 
-  const currentTier = tierByKey(profile?.membership_tier);
+  const collapsed = !forceOpen && profileCardsStartCollapsed({ mode, profile });
+  const invoiceQuery = new URLSearchParams({
+    ...(query.tier ? { tier: query.tier } : {}),
+    ...(query.term ? { term: String(query.term) } : {}),
+    ...(query.patron ? { patron: '1' } : {}),
+    ...(query.aapa === true ? { aapa: '1' } : {}),
+    ...(query.aapa === false ? { aapa: '0' } : {}),
+  }).toString();
 
-  const pageTitle = focusedTier
-    ? `Join as ${focusedTier.name}`
-    : 'Join SAMPA';
-
-  const headerSub = (() => {
-    if (isActiveMember) {
-      return 'You already have an active membership. Manage billing from your dashboard rather than starting a new checkout here.';
+  const bar = (() => {
+    if (query.step === 'profile') {
+      return { primary: collapsed ? 'Looks right — continue' : 'Continue', onPrimary: continueProfile };
     }
-    if (focusedTier) {
-      return user
-        ? `${focusedTier.name} is selected. Pick a term below, then continue to secure payment via Stripe. Need a different level? Select another card.`
-        : `${focusedTier.name} is selected. Sign in (one click, no password), then choose a term and pay. Need a different level? Select another card.`;
+    if (query.step === 'membership') {
+      return { back: () => go({ step: 'profile' }), primary: 'Continue', onPrimary: continueMembership };
     }
-    return user
-      ? 'Choose the level that fits your career stage, pick a term, then continue to secure payment via Stripe.'
-      : 'Choose your level, sign in (one click, no password), pick a term, then pay. Active membership opens the member directory today — and backs SAMPA’s voice for your patients’ access to quality care and MOUD.';
+    if (query.step === 'support') {
+      return {
+        back: () => go({ step: 'membership' }),
+        primary: 'Continue',
+        onPrimary: () => go({ step: 'checkout', phase: 'review' }),
+        skip: () => go({ step: 'checkout', phase: 'review', patron: false }),
+      };
+    }
+    if (query.phase === 'review') {
+      return {
+        back: () => go({ step: 'support' }),
+        primary: checkoutBlock(profile) ? 'Back to profile' : 'Continue to payment',
+        onPrimary: checkoutBlock(profile) ? () => go({ step: 'profile' }) : pay,
+      };
+    }
+    if (query.phase === 'payment') {
+      return { back: () => go({ step: 'checkout', phase: 'review' }, true), primary: busy ? 'Opening checkout…' : 'Continue to payment', onPrimary: pay };
+    }
+    return null;
   })();
 
   return (
-    <div className="relative min-h-screen bg-background text-text">
-      <div className="noise-overlay pointer-events-none"></div>
+    <div className="relative min-h-screen overflow-x-hidden bg-background text-text">
+      <div className="noise-overlay pointer-events-none" />
       <Navbar />
-
-      <main className="max-w-6xl mx-auto px-4 pt-32 pb-24">
-        <header className="text-center mb-12">
-          <div className="inline-block px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-accent text-xs font-semibold mb-4 font-data uppercase tracking-wider">
-            Membership
-          </div>
-          <h1 className="text-4xl md:text-5xl font-drama font-bold mb-6">{pageTitle}</h1>
-          <p className="text-lg text-text/70 max-w-2xl mx-auto">{headerSub}</p>
-          {!isActiveMember && (
-            <p className="text-text/60 text-sm mt-4 max-w-xl mx-auto">
-              Members stay in the loop as the{' '}
-              <Link to="/caq" className="text-primary-text font-semibold hover:underline">
-                Addiction Medicine CAQ
-              </Link>
-              {' '}takes shape.
-            </p>
-          )}
-          {user && !isActiveMember && (
-            <p className="text-text/40 text-xs mt-4 max-w-xl mx-auto">
-              You're signed in as <strong className="text-text/60">{user.email}</strong>.
-              Already a member under a different email? Sign out from your{' '}
-              <Link to="/dashboard" className="underline hover:text-primary-text">dashboard</Link>{' '}
-              and sign back in with that address instead of paying again.
-            </p>
-          )}
-        </header>
-
-        {canceled && (
-          <div className="max-w-2xl mx-auto bg-text/5 border border-text/10 rounded-2xl p-5 mb-10 text-center text-sm text-text/70">
-            Checkout was canceled — no charge was made. Pick a tier and term whenever you're ready.
-          </div>
-        )}
-
-        {error && (
-          <div className="max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-2xl p-5 mb-10 text-center text-sm text-red-600">
-            {error}
-          </div>
-        )}
-
-        {user && profile?.sms_opt_in && !isActiveMember && (
-          <div className="max-w-2xl mx-auto bg-accent/5 border border-accent/20 rounded-2xl p-4 mb-10 text-center text-sm text-text/80">
-            You're signed up for SAMPA text updates — enter code{' '}
-            <strong className="font-data tracking-wider">SAMPATEXT5</strong> at checkout
-            for 5% off your dues.
-          </div>
-        )}
-
-        {isActiveMember && (
-          <div className="max-w-2xl mx-auto bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-10 text-center">
-            <p className="font-semibold text-primary-text mb-1">
-              You're already an active member{currentTier ? ` (${currentTier.name})` : ''}. 🎉
-            </p>
-            <p className="text-sm text-text/70">
-              To change tiers, update your card, or cancel, use the billing portal on your{' '}
-              <Link to="/dashboard" className="text-primary-text font-semibold hover:underline">dashboard</Link>{' '}
-              — starting a second checkout here would create a duplicate subscription.
-            </p>
-          </div>
-        )}
-
-        {/* Multi-year detail lives on Join (homepage only teases it) */}
-        <div className="max-w-3xl mx-auto bg-primary/5 border border-primary/20 rounded-3xl p-6 mb-12 flex items-center gap-4 shadow-sm">
-          <div className="bg-white p-3 rounded-full text-primary shrink-0 shadow-sm">
-            <Star className="w-6 h-6 fill-primary/10" />
-          </div>
-          <p className="text-text/80 text-sm">
-            <strong>Choose your term on the card:</strong> save 10–13% on 2 years and
-            17–20% on 3 years. Memberships auto-renew at the end of the term and are easy to cancel.
-            <span className="block mt-1 text-xs text-text/50">
-              Student and Pre-PA cap at 2 years. Legacy members can choose a one-time lifetime option.
-            </span>
-          </p>
-        </div>
-
-        {showAapaQuestion && (
-          <div
-            ref={aapaRef}
-            className="max-w-3xl mx-auto bg-white border border-primary/15 rounded-3xl p-6 mb-12 text-center"
-          >
-            <p className="font-semibold text-text mb-1">Are you a current AAPA member?</p>
-            <p className="text-sm text-text/60 mb-5 max-w-xl mx-auto">
-              Honor system — we do not verify with AAPA. This helps us put you on the right dues.
-              You can still pick a different card.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => answerAapa(true)}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold border-2 transition-colors ${
-                  aapaAnswer === true
-                    ? 'bg-primary-text border-primary-text text-white'
-                    : 'border-primary-text text-primary-text hover:bg-primary-text/5'
-                }`}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                onClick={() => answerAapa(false)}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold border-2 transition-colors ${
-                  aapaAnswer === false
-                    ? 'bg-primary-text border-primary-text text-white'
-                    : 'border-primary-text text-primary-text hover:bg-primary-text/5'
-                }`}
-              >
-                No
-              </button>
-            </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MEMBERSHIP_TIERS.map((tier) => {
-            const duration = termFor(tier);
-            const isLifetime = duration === 'lifetime';
-            const price = isLifetime ? tier.lifetime : tier.prices[duration];
-            const savings = !isLifetime ? savingsPercent(tier, duration) : 0;
-            const isFocused = focusedKey === tier.key;
-            const isDimmed = focusedKey && !isFocused;
-            const darkCard = isFocused || (!focusedKey && tier.highlight);
-
-            return (
-              <div
-                key={tier.key}
-                ref={(el) => {
-                  if (el) cardRefs.current[tier.key] = el;
-                }}
-                onClick={() => focusTier(tier.key)}
-                className={`${
-                  isFocused
-                    ? 'bg-text text-white border-accent shadow-2xl ring-2 ring-accent ring-offset-2 ring-offset-background'
-                    : tier.highlight
-                      ? 'bg-text text-white border-accent shadow-xl'
-                      : 'bg-white border-primary/10 text-text'
-                } ${isDimmed ? 'opacity-70 hover:opacity-100' : ''} p-8 rounded-4xl border shadow-sm flex flex-col justify-between hover:shadow-lg transition-all duration-300 relative overflow-hidden cursor-pointer`}
-              >
-                {isFocused && (
-                  <div className="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-accent text-white text-[10px] font-bold font-data tracking-wider uppercase">
-                    Your selection
-                  </div>
+      <div className="pt-24">
+        <JoinStepper stepId={query.step} onStep={(step) => go({ step, phase: 'review' })} />
+        <main className="mx-auto max-w-3xl px-4 pb-32 pt-6">
+          <header className="mb-6">
+            <h1 className="text-3xl font-bold md:text-4xl">{mode === 'renew' ? 'Renew SAMPA' : 'Join SAMPA'}</h1>
+            {query.step === 'profile' && (
+              <p className="mt-2 text-sm text-text/70">
+                {user ? `Signed in as ${user.email}.` : 'You can look at dues before you sign in.'}
+                {' '}
+                {!user && (
+                  <button type="button" className="min-h-12 font-semibold text-primary-text underline" onClick={() => go({ step: 'membership' })}>
+                    See dues
+                  </button>
                 )}
-                {!isFocused && tier.highlight && (
-                  <div className="absolute top-6 -right-10 w-40 text-center bg-accent rotate-45 py-1 text-xs font-bold font-data tracking-wider uppercase shadow-md text-white">
-                    Featured
-                  </div>
-                )}
-                <div className={`relative z-10 ${isFocused ? 'mt-4' : ''}`}>
-                  {tier.lede && (
-                    <p className={`text-xs font-semibold mb-1.5 ${darkCard ? 'text-white/85' : 'text-primary-text'}`}>
-                      {tier.lede}
-                    </p>
-                  )}
-                  <h3 className={`text-xl tracking-tight font-bold ${tier.secondaryLabel ? 'mb-1' : 'mb-2'}`}>{tier.name}</h3>
-                  {tier.secondaryLabel && (
-                    <p className={`text-[11px] font-data tracking-wide mb-2 ${darkCard ? 'text-white/45' : 'text-text/40'}`}>
-                      {tier.secondaryLabel}
-                    </p>
-                  )}
-                  <p className={`${darkCard ? 'text-white/70' : 'text-text/60'} text-sm mb-5 min-h-10`}>
-                    {tier.desc}
-                  </p>
-
-                  <div
-                    className="flex flex-wrap gap-1.5 mb-5"
-                    role="radiogroup"
-                    aria-label={`${tier.name} term`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {durationsForTier(tier).map((d) => {
-                      const active = duration === d;
-                      const pct = d !== 'lifetime' ? savingsPercent(tier, d) : 0;
-                      return (
-                        <button
-                          key={d}
-                          type="button"
-                          role="radio"
-                          aria-checked={active}
-                          onClick={() => {
-                            focusTier(tier.key);
-                            setTerms({ ...terms, [tier.key]: d });
-                          }}
-                          className={`px-3 py-1.5 rounded-full text-xs font-data font-semibold border transition-colors ${
-                            active
-                              ? darkCard
-                                ? 'bg-accent border-accent text-white'
-                                : 'bg-primary-text border-primary-text text-white'
-                              : darkCard
-                                ? 'border-white/30 text-white/70 hover:border-white'
-                                : 'border-primary/20 text-text/60 hover:border-primary'
-                          }`}
-                        >
-                          {durationLabel(d)}
-                          {pct > 0 && ` · −${pct}%`}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <div className={`text-4xl font-bold font-sans mb-2 ${darkCard ? 'text-white' : 'text-primary-text'}`}>
-                    ${price}
-                    <span className={`text-lg font-normal ${darkCard ? 'text-white/50' : 'text-text/50'}`}>
-                      {isLifetime ? ' once' : duration === 1 ? '/yr' : ` / ${duration} yrs`}
-                    </span>
-                  </div>
-                  <p className={`text-xs mb-6 h-4 ${darkCard ? 'text-white/50' : 'text-text/40'}`}>
-                    {isLifetime
-                      ? 'One payment, member for life.'
-                      : savings > 0
-                        ? `Saves ${savings}% vs. paying annually.`
-                        : ''}
-                  </p>
-                </div>
-                {isFocused && !isActiveMember && (
-                  <label
-                    className={`flex items-start gap-3 mb-4 relative z-10 text-left cursor-pointer ${
-                      darkCard ? 'text-white/85' : 'text-text/80'
-                    }`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={wantPatron}
-                      onChange={(e) => setWantPatron(e.target.checked)}
-                      className="mt-1 h-4 w-4 shrink-0 rounded border-primary/30 accent-accent"
-                    />
-                    <span className="text-xs leading-relaxed">
-                      Patron — {PATRON_ADDON_BLURB}
-                      <span className={`block mt-1 ${darkCard ? 'text-white/55' : 'text-text/50'}`}>
-                        Adds ${patronDollars(duration)}
-                        {isLifetime ? ' once' : duration === 1 ? ' for this year' : ` for this ${duration}-year term`}.
-                      </span>
-                    </span>
-                  </label>
-                )}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    selectTier(tier.key);
+              </p>
+            )}
+          </header>
+          {loading || !form ? (
+            <p>Loading your profile…</p>
+          ) : (
+            <>
+              {query.step === 'profile' && (
+                <JoinProfileStep
+                  key={collapsed ? 'closed' : 'open'}
+                  form={form}
+                  setForm={setForm}
+                  errors={errors}
+                  showErrors={showErrors}
+                  collapsed={collapsed}
+                />
+              )}
+              {query.step === 'membership' && (
+                <JoinMembershipStep
+                  profile={profile}
+                  tier={query.tier}
+                  term={query.term}
+                  aapa={query.aapa ?? form.aapa_member}
+                  autoRenew={query.autoRenew}
+                  error={payError}
+                  onTier={(tier) => go({ tier, aapa: query.aapa ?? form.aapa_member }, true)}
+                  onTerm={(tier, term) => go({ tier, term }, true)}
+                  onAapa={(aapa) => {
+                    setForm((prev) => ({ ...prev, aapa_member: aapa }));
+                    const keep = profile?.membership_tier;
+                    go({
+                      aapa,
+                      tier: keep || preselectedTier(null, { aapa, careerStage: form.career_stage }) || query.tier,
+                    }, true);
                   }}
-                  disabled={loading || busyTier !== null || isActiveMember}
-                  className={`block text-center w-full py-3.5 rounded-full font-bold transition-colors relative z-10 disabled:opacity-50 ${
-                    darkCard
-                      ? 'bg-gradient-to-r from-primary-text to-accent text-white hover:shadow-lg'
-                      : 'border-2 border-primary-text text-primary-text hover:bg-primary-text/5'
-                  }`}
-                >
-                  {busyTier === tier.key
-                    ? 'Opening checkout…'
-                    : user
-                      ? isFocused
-                        ? 'Continue to payment'
-                        : `Continue with ${tier.name}`
-                      : isFocused
-                        ? 'Sign in to join'
-                        : `Sign in · ${tier.name}`}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-
-        {focusedTier && !isActiveMember && (
-          <p className="text-center text-sm mt-8">
-            <Link
-              to={`/join/invoice?${new URLSearchParams({
-                tier: focusedTier.key,
-                term: String(termFor(focusedTier)),
-                ...(wantPatron ? { patron: '1' } : {}),
-                ...(typeof aapaAnswer === 'boolean' ? { aapa: aapaAnswer ? '1' : '0' } : {}),
-              }).toString()}`}
-              className="text-text/45 hover:text-primary-text underline underline-offset-4 decoration-text/25 hover:decoration-primary-text"
-            >
-              Need an invoice for your employer?
-            </Link>
+                  onAutoRenew={(autoRenew) => go({ autoRenew }, true)}
+                />
+              )}
+              {query.step === 'support' && (
+                <JoinSupportStep patron={query.patron} term={query.term} onPatron={(patron) => go({ patron }, true)} />
+              )}
+              {query.step === 'checkout' && (
+                <JoinCheckoutStep
+                  phase={query.phase}
+                  canceled={query.canceled}
+                  cart={cart}
+                  profile={profile}
+                  smsOptIn={form.sms_opt_in}
+                  busy={busy}
+                  error={payError}
+                  confirmed={preview ? true : waited || profile?.membership_status === 'active'}
+                  waiting={preview ? false : !waited}
+                  greeting={mode === 'renew' ? 'Renewed' : 'Welcome'}
+                  onEditMembership={() => go({ step: 'membership' })}
+                  onEditSupport={() => go({ step: 'support' })}
+                  invoiceQuery={invoiceQuery}
+                />
+              )}
+            </>
+          )}
+          <p className="mt-8 text-center text-xs text-text/45">
+            By continuing you agree to our <Link to="/terms" className="underline">Terms of Service</Link> and <Link to="/privacy" className="underline">Privacy Policy</Link>.
           </p>
-        )}
-
-        <p className="text-center text-text/40 text-xs mt-10 max-w-xl mx-auto">
-          Payments are processed by Stripe — SAMPA never sees or stores your card
-          details. You'll get a receipt by email, and you can manage billing anytime
-          from your dashboard. Multi-year terms renew at the end of the term until
-          canceled. By joining you agree to our{' '}
-          <Link to="/terms" className="underline hover:text-primary-text">Terms of Service</Link> and{' '}
-          <Link to="/privacy" className="underline hover:text-primary-text">Privacy Policy</Link>.
-        </p>
-      </main>
-
-      <Footer />
+        </main>
+        <Footer />
+        <div className="h-24" aria-hidden="true" />
+      </div>
+      {bar && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/10 bg-background/95 px-4 py-3 backdrop-blur">
+          <div className="mx-auto flex max-w-3xl gap-2">
+            {bar.back && (
+              <button type="button" className="min-h-12 flex-1 rounded-full border border-primary/20 font-semibold" onClick={bar.back}>Back</button>
+            )}
+            {bar.skip && (
+              <button type="button" className="min-h-12 flex-1 rounded-full border border-primary/20 font-semibold" onClick={bar.skip}>Skip</button>
+            )}
+            <button type="button" className="min-h-12 flex-[2] rounded-full bg-primary-text font-bold text-white disabled:opacity-50" disabled={busy} onClick={bar.onPrimary}>
+              {bar.primary}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
+}
+
+export default function Join() {
+  const { pathname } = useLocation();
+  return <JoinFlow mode={pathname === '/renew' ? 'renew' : 'join'} />;
 }

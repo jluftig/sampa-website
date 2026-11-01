@@ -1,4 +1,5 @@
 import { stripeClient, supabaseAdmin, json } from './_lib/clients.js';
+import { profileCancelAtPeriodEnd, stripeShouldForceCancelAtPeriodEnd } from './_lib/autoRenew.js';
 import { patronLineItem, subscriptionHasPatronItem } from './_lib/tiers.js';
 import {
   memberEmailsEnabled,
@@ -264,15 +265,28 @@ export async function POST(request) {
         // membership_tier comes only from metadata.tier (fellow / sustaining / …).
         // metadata.patron is an add-on flag and must never be stored as a tier.
         if (session.mode === 'subscription') {
-          const subscription = await stripe.subscriptions.retrieve(session.subscription, {
+          let subscription = await stripe.subscriptions.retrieve(session.subscription, {
             expand: ['items.data.price.product'],
           });
+          if (stripeShouldForceCancelAtPeriodEnd({
+            mode: session.mode,
+            metadata: session.metadata,
+            subscriptionWillCancel: willCancel(subscription),
+          })) {
+            subscription = await stripe.subscriptions.update(session.subscription, {
+              cancel_at_period_end: true,
+            });
+          }
           update = {
             stripe_customer_id: session.customer,
             membership_tier: session.metadata?.tier || subscription.metadata?.tier || null,
             membership_status: membershipStatus(subscription.status),
             renews_on: renewsOn(subscription),
-            cancel_at_period_end: willCancel(subscription),
+            cancel_at_period_end: profileCancelAtPeriodEnd({
+              mode: session.mode,
+              metadata: session.metadata,
+              subscriptionWillCancel: willCancel(subscription),
+            }),
             membership_years: termYears(subscription),
             patron: patronFromMetadata(session.metadata) ?? patronFromMetadata(subscription.metadata) ?? false,
           };
