@@ -3,10 +3,13 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   chooseDonorProfile,
+  donatedAtFromGifts,
   donationIsSuccessful,
   donorBadgeVisible,
+  donorMatchFields,
   nextDonatedAt,
 } from '../api/_lib/donorBadge.js';
+import { handleStripeEvent } from '../api/stripe-webhook.js';
 import { directoryBadgeLabels } from '../src/lib/directoryBadges.js';
 
 const NOW = new Date('2026-11-01T12:00:00.000Z');
@@ -102,4 +105,256 @@ test('the webhook stamps donated_at only on donation events, and SQL hides the t
   const schema = readFileSync('supabase/schema.sql', 'utf8');
   assert.match(schema, /new\.donated_at\s+is distinct from old\.donated_at/);
   assert.equal((schema.match(/interval '12 months'/g) || []).length, 2);
+  assert.match(readFileSync('api/stripe-webhook.js', 'utf8'), /donorMatchFields/);
+  assert.match(webhook, /case 'charge\.refunded'/);
+  assert.match(webhook, /case 'charge\.dispute\.created'/);
+});
+
+test('the donor migration keeps the join-flow directory functions and adds donor', () => {
+  const join = readFileSync('supabase/migrations/2026-11-01-join-flow-profile.sql', 'utf8');
+  const donor = readFileSync('supabase/migrations/2026-11-01-donor-directory-badge.sql', 'utf8');
+  assert.match(donor, /Paste order/);
+  assert.match(donor, /2026-11-01-join-flow-profile\.sql/);
+  for (const name of ['member_directory(', 'member_directory_profile(']) {
+    const marker = `create or replace function public.${name}`;
+    const slice = (text) => {
+      const start = text.indexOf(marker);
+      const end = text.indexOf('$$;', start);
+      return text.slice(start, end + 3);
+    };
+    const withoutDonor = slice(donor)
+      .split('\n')
+      .filter((line) => !line.includes('donor boolean') && !line.includes("interval '12 months'"))
+      .map((line) => line.trimEnd())
+      .join('\n');
+    const base = slice(join).split('\n').map((line) => line.trimEnd()).join('\n');
+    assert.equal(withoutDonor, base, `${name} must stay the PR #162 body plus donor`);
+  }
+});
+
+function memoryAdmin({ profiles = [], donations = [] } = {}) {
+  const state = {
+    profiles: profiles.map((row) => ({ ...row })),
+    donations: donations.map((row) => ({ ...row })),
+  };
+  const match = (row, filters) => filters.every((filter) => {
+    const value = row[filter.col];
+    if (filter.type === 'eq') return value === filter.val;
+    const needle = String(filter.val).replace(/\\/g, '').toLowerCase();
+    return String(value || '').toLowerCase() === needle;
+  });
+  return {
+    state,
+    from(table) {
+      const rows = table === 'profiles' ? state.profiles : state.donations;
+      const query = { op: 'select', filters: [], patch: null };
+      const run = () => rows.filter((row) => match(row, query.filters));
+      const api = {
+        select() { query.op = 'select'; return api; },
+        update(patch) { query.op = 'update'; query.patch = patch; return api; },
+        upsert(row) {
+          state.donations.push({
+            id: row.id || `don-${state.donations.length + 1}`,
+            created_at: row.created_at || new Date().toISOString(),
+            ...row,
+          });
+          return Promise.resolve({ error: null });
+        },
+        eq(col, val) { query.filters.push({ type: 'eq', col, val }); return api; },
+        ilike(col, val) { query.filters.push({ type: 'ilike', col, val }); return api; },
+        maybeSingle() {
+          const found = run();
+          return Promise.resolve({ data: found[0] || null, error: null });
+        },
+        then(resolve, reject) {
+          try {
+            const found = run();
+            if (query.op === 'update') {
+              for (const row of found) Object.assign(row, query.patch);
+            }
+            resolve({ data: found, error: null });
+          } catch (err) {
+            reject(err);
+          }
+        },
+      };
+      return api;
+    },
+  };
+}
+
+test('a donation checkout stamps donated_at using the donation row field names', async () => {
+  process.env.BREVO_MEMBER_EMAILS_ENABLED = 'false';
+  const paidAt = new Date('2026-10-01T00:00:00.000Z');
+  const admin = memoryAdmin({
+    profiles: [{
+      id: 'member-1',
+      stripe_customer_id: 'cus_member',
+      email: 'Member@Example.org',
+      donated_at: null,
+    }],
+  });
+  await handleStripeEvent({
+    type: 'checkout.session.completed',
+    data: {
+      object: {
+        id: 'cs_gift',
+        mode: 'payment',
+        metadata: { type: 'donation' },
+        client_reference_id: 'member-1',
+        customer_details: { email: 'Member@Example.org', name: 'Member' },
+        amount_total: 2500,
+        currency: 'usd',
+        payment_status: 'paid',
+        customer: 'cus_member',
+        payment_intent: 'pi_gift',
+        created: paidAt.getTime() / 1000,
+      },
+    },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.profiles[0].donated_at, paidAt.toISOString());
+});
+
+test('a refund or dispute recomputes donated_at from gifts still succeeded', async () => {
+  process.env.BREVO_MEMBER_EMAILS_ENABLED = 'false';
+  const now = new Date();
+  const recent = new Date(now);
+  recent.setMonth(recent.getMonth() - 1);
+  const earlier = new Date(now);
+  earlier.setMonth(earlier.getMonth() - 3);
+  const stale = new Date(now);
+  stale.setMonth(stale.getMonth() - 14);
+  const profile = {
+    id: 'member-1',
+    stripe_customer_id: 'cus_member',
+    email: 'member@example.org',
+    donated_at: recent.toISOString(),
+  };
+  const admin = memoryAdmin({
+    profiles: [profile],
+    donations: [
+      {
+        id: 'new-gift',
+        user_id: 'member-1',
+        donor_email: 'member@example.org',
+        stripe_customer_id: 'cus_member',
+        stripe_payment_intent_id: 'pi_new',
+        status: 'succeeded',
+        amount: 5000,
+        created_at: recent.toISOString(),
+      },
+      {
+        id: 'old-gift',
+        user_id: 'member-1',
+        donor_email: 'member@example.org',
+        stripe_customer_id: 'cus_member',
+        stripe_payment_intent_id: 'pi_old',
+        status: 'succeeded',
+        amount: 2000,
+        created_at: earlier.toISOString(),
+      },
+      {
+        id: 'stale-gift',
+        user_id: 'member-1',
+        donor_email: 'member@example.org',
+        stripe_customer_id: 'cus_member',
+        stripe_payment_intent_id: 'pi_stale',
+        status: 'succeeded',
+        amount: 1000,
+        created_at: stale.toISOString(),
+      },
+    ],
+  });
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: { object: { payment_intent: 'pi_new', amount_refunded: 5000, amount: 5000, refunded: true } },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.donations.find((row) => row.id === 'new-gift').status, 'refunded');
+  assert.equal(admin.state.profiles[0].donated_at, earlier.toISOString());
+
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: { object: { payment_intent: 'pi_old', amount_refunded: 2000, amount: 2000, refunded: true } },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.profiles[0].donated_at, null);
+
+  const monthAdmin = memoryAdmin({
+    profiles: [{ ...profile, donated_at: recent.toISOString() }],
+    donations: [{
+      id: 'month-gift',
+      user_id: 'member-1',
+      donor_email: 'member@example.org',
+      stripe_customer_id: 'cus_member',
+      stripe_invoice_id: 'in_month',
+      status: 'succeeded',
+      amount: 1000,
+      created_at: recent.toISOString(),
+    }],
+  });
+  let retrieved = 0;
+  await handleStripeEvent({
+    type: 'charge.dispute.created',
+    data: { object: { charge: 'ch_month', payment_intent: null } },
+  }, {
+    stripe: {
+      charges: {
+        async retrieve(id) {
+          retrieved += 1;
+          assert.equal(id, 'ch_month');
+          return { payment_intent: 'pi_month', invoice: 'in_month' };
+        },
+      },
+    },
+    admin: monthAdmin,
+  });
+  assert.equal(retrieved, 1);
+  assert.equal(monthAdmin.state.donations[0].status, 'disputed');
+  assert.equal(monthAdmin.state.profiles[0].donated_at, null);
+});
+
+test('a membership refund does not clear donated_at', async () => {
+  const kept = new Date('2026-09-01T00:00:00.000Z').toISOString();
+  const admin = memoryAdmin({
+    profiles: [{
+      id: 'member-1',
+      stripe_customer_id: 'cus_member',
+      email: 'member@example.org',
+      donated_at: kept,
+    }],
+    donations: [],
+  });
+  await handleStripeEvent({
+    type: 'charge.refunded',
+    data: { object: { payment_intent: 'pi_dues', amount_refunded: 5000, amount: 5000, refunded: true } },
+  }, { stripe: null, admin });
+  assert.equal(admin.state.profiles[0].donated_at, kept);
+});
+
+test('snake_case donation rows map onto the matcher', () => {
+  assert.deepEqual(donorMatchFields({
+    user_id: 'member-1',
+    stripe_customer_id: 'cus_1',
+    donor_email: 'a@example.org',
+    amount: 2500,
+    status: 'succeeded',
+    created_at: '2026-10-01T00:00:00.000Z',
+  }), {
+    userId: 'member-1',
+    stripeCustomerId: 'cus_1',
+    email: 'a@example.org',
+    amount: 2500,
+    status: 'succeeded',
+    paymentStatus: undefined,
+    paidAt: '2026-10-01T00:00:00.000Z',
+  });
+  const now = new Date('2026-11-01T00:00:00.000Z');
+  assert.equal(donatedAtFromGifts([
+    { status: 'refunded', amount: 1000, created_at: '2026-10-01T00:00:00.000Z' },
+    { status: 'disputed', amount: 1000, created_at: '2026-10-02T00:00:00.000Z' },
+    { status: 'succeeded', amount: 1000, created_at: '2026-08-01T00:00:00.000Z' },
+    { status: 'succeeded', amount: 1000, created_at: '2024-01-01T00:00:00.000Z' },
+  ], now), '2026-08-01T00:00:00.000Z');
+  assert.equal(donatedAtFromGifts([
+    { status: 'refunded', amount: 1000, created_at: '2026-10-01T00:00:00.000Z' },
+  ], now), null);
 });

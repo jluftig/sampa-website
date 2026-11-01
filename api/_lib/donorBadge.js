@@ -13,8 +13,23 @@ export function isoFromStripeUnix(seconds) {
   return new Date(n * 1000).toISOString();
 }
 
+// Donation rows use user_id, stripe_customer_id, and donor_email.
+// The matcher uses userId, stripeCustomerId, and email. Accept both.
+export function donorMatchFields(fields = {}) {
+  return {
+    userId: fields.userId ?? fields.user_id ?? null,
+    stripeCustomerId: fields.stripeCustomerId ?? fields.stripe_customer_id ?? null,
+    email: fields.email ?? fields.donor_email ?? null,
+    amount: fields.amount,
+    status: fields.status,
+    paymentStatus: fields.paymentStatus ?? fields.payment_status,
+    paidAt: fields.paidAt ?? fields.paid_at ?? fields.created_at ?? null,
+  };
+}
+
 // amount is cents. paymentStatus is omitted for invoice.paid, which is already paid.
-export function donationIsSuccessful({ amount, status, paymentStatus } = {}) {
+export function donationIsSuccessful(fields = {}) {
+  const { amount, status, paymentStatus } = donorMatchFields(fields);
   const cents = Number(amount);
   if (!Number.isFinite(cents) || cents <= 0) return false;
   if (status && status !== 'succeeded') return false;
@@ -66,4 +81,27 @@ export function chooseDonorProfile(profiles, { userId, stripeCustomerId, email }
   const hits = rows.filter((p) => normalizeEmail(p.email) === needle);
   if (hits.length === 1) return hits[0].id;
   return null;
+}
+
+// A gift counts for this profile only. A user id never falls through to someone else.
+export function giftMatchesProfile(gift, profile) {
+  if (!gift || !profile) return false;
+  const fields = donorMatchFields(gift);
+  if (fields.userId) return fields.userId === profile.id;
+  if (fields.stripeCustomerId) return fields.stripeCustomerId === profile.stripe_customer_id;
+  const email = normalizeEmail(fields.email);
+  return !!email && email === normalizeEmail(profile.email);
+}
+
+// Latest succeeded gift still inside the 12-month window. Refunded and disputed
+// rows are not succeeded, so they drop out. No remaining gift returns null.
+export function donatedAtFromGifts(gifts, now = new Date()) {
+  let latest = null;
+  for (const gift of gifts || []) {
+    const fields = donorMatchFields(gift);
+    if (!donationIsSuccessful(fields)) continue;
+    if (!donorBadgeVisible(fields.paidAt, now)) continue;
+    latest = nextDonatedAt(latest, fields.paidAt);
+  }
+  return latest;
 }

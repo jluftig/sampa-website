@@ -1,4 +1,13 @@
 -- Donor directory badge. Paste into the Supabase SQL editor. Idempotent.
+--
+-- Paste order (project xbzzawjnphpnexwfjtif):
+--   1. supabase/migrations/2026-11-01-join-flow-profile.sql  (PR #162)
+--   2. this file
+-- PR #162 is merged. Its SQL may still be unapplied. This file drops the
+-- directory functions that file creates and recreates them with a donor
+-- column. The rest of those function bodies is unchanged. Do not paste
+-- this file first.
+--
 -- profiles.donated_at is the latest successful /donate gift matched to the
 -- profile. The directory RPCs return donor (true for the last 12 months)
 -- and do not return the timestamp or the amount.
