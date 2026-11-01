@@ -284,6 +284,10 @@ export function JoinFlow({ mode = 'join', preview = null }) {
                   onAapa={(aapa) => {
                     setForm((prev) => ({ ...prev, aapa_member: aapa }));
                     const keep = profile?.membership_tier;
+                    if (!preview && user && typeof aapa === 'boolean') {
+                      supabase.from('profiles').update({ aapa_member: aapa }).eq('id', user.id)
+                        .then(() => auth.refreshProfile?.());
+                    }
                     go({
                       aapa,
                       tier: keep || preselectedTier(null, { aapa, careerStage: form.career_stage }) || query.tier,

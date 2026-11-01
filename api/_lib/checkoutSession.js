@@ -1,7 +1,9 @@
 import { patronLineItem, priceIdFor } from './tiers.js';
 
 // Shape of a Stripe Checkout Session for /join. auto_renew defaults on.
-// Off keeps today's Price and asks Stripe not to renew when the term ends.
+// Off keeps today's Price and stamps auto_renew=false on the subscription.
+// This SDK's Checkout subscription_data does not accept cancel_at_period_end.
+// The webhook sets that flag with subscriptions.update after payment.
 export function buildCheckoutSessionParams({
   userId,
   email,
@@ -48,12 +50,7 @@ export function buildCheckoutSessionParams({
       ...(customerId ? { customer: customerId } : { customer_email: email }),
       ...(isLifetime && !customerId ? { customer_creation: 'always' } : {}),
       metadata,
-      ...(isLifetime ? {} : {
-        subscription_data: {
-          metadata,
-          ...(renews ? {} : { cancel_at_period_end: true }),
-        },
-      }),
+      ...(isLifetime ? {} : { subscription_data: { metadata } }),
       allow_promotion_codes: true,
       success_url: success.toString(),
       cancel_url: cancel.toString(),

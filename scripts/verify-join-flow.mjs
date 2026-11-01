@@ -286,11 +286,12 @@ describe('Stripe checkout session', () => {
     assert.match(params.cancel_url, /patron=1/);
   });
 
-  it('asks Stripe to cancel at period end when auto-renew is off, without a new Price', () => {
+  it('marks auto-renew off on the same Price and leaves cancel to the webhook', () => {
     const { params } = buildCheckoutSessionParams({ ...base, autoRenew: false, duration: 2 });
     assert.equal(params.line_items[0].price, 'price_fellow_2y');
-    assert.equal(params.subscription_data.cancel_at_period_end, true);
+    assert.equal(params.subscription_data.cancel_at_period_end, undefined);
     assert.equal(params.metadata.auto_renew, 'false');
+    assert.equal(params.subscription_data.metadata.auto_renew, 'false');
     assert.equal(params.metadata.patron, undefined);
     assert.equal(profileCancelAtPeriodEnd({
       mode: 'subscription',
