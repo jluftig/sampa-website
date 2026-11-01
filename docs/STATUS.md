@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-10-29 (T75, Emerging Practice Monthly No. 1 and three-list signup cards. Draft PR #160. Preview only until Josh.)
+**Last updated:** 2026-11-01 (T61 join/renew flow claimed by cursor. Preview PR only. Do not merge until Josh.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -43,7 +43,6 @@ Single place to **grab work** so Studio and laptop don’t double-edit.
 
 | ID | Task | Owner | Notes |
 |----|------|-------|-------|
-| T61 | Bake Clarissa's Annual Membership Survey into the site | either | **Backlog.** Unassigned. Plan carried from closed PR #98 (T46 was reused for session persistence in #99). **Tier A** always-on profile fields: years PA, years addiction medicine, primary practice setting (existing chips), % clinical addiction time, practice model, MOUD prescribe Y/N/NA, telehealth + states, practice vs residence city/state for advocacy. **Tier B** signed-in annual survey as a year-keyed table: benefit prefs (up to 3), education topics/formats/priorities, speaking/volunteering, advocacy priorities/willingness, committee interest, networking, student engagement, leadership interest; free text stays survey responses. Job-hire leads defer to the Jobs pipeline. Do not long-term iframe the Google Form; retire it once the in-app survey works. **Phases:** Drive copy of Form, then Tier A, then in-app 2026 survey (Tier B), then retire Form. |
 | T36 | Sustaining accident cleanup (Fellow + Patron) | either | **Parked.** People who picked Sustaining thinking it was extra support. Shift those members to `fellow` + `patron` flag + Stripe item. Josh already applied Jonathan Cohen's Supabase fix (Fellow + Patron, `aapa_member` true). Rest still parked until Josh says. Not in T35 / PR #85 / T37. |
 | T19 | Policy ops tracker + open windows (hub) | either | Grill R1 locked 2026-08-10. [`PARK-policy-ops.md`](PARK-policy-ops.md) · *Resume SAMPA policy ops*. No build until Round 2. |
 | T1 | Confirm 2026-07-15 SQL in prod (post-authors + member-comments) | either | Supabase SQL Editor; idempotent |
@@ -66,6 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T61 | Join / renew flow and 2026 member survey | cursor | 2026-11-01 | **Claimed cursor.** Mobile-first 4-step `/join` and `/renew` (Profile, Membership, Support, Checkout). Tier A profile fields. Tier B `/survey/2026` after checkout, never blocking it. Stripe prices unchanged. `auto_renew` false sets `cancel_at_period_end`. SQL: `supabase/migrations/2026-11-01-join-flow-profile.sql` for Josh to paste. Preview only. Do not merge until Josh reviews. |
 | T75 | Emerging Practice Monthly No. 1 and three-list signup | cursor | 2026-10-29 | **Claimed cursor.** Draft PR **#160** (preview only). Replace the Oct 19 topic draft with No. 1 (October 2026) from campaign 62. Every public signup card offers all three lists inline, with the page list pre-checked, and links to `/subscriptions`. Keys and env names stay. Do not merge until Josh says. |
 | T71 | Choose which SAMPA emails you get | cursor | 2026-10-22 | **Claimed cursor.** Draft PR **#152** (preview only). Signed-in `/dashboard/emails`. Three instant toggles: SAMPA Updates (list 3), Daily Roundup (list 15), Weekly Topic Roundup (`BREVO_LIST_TOPIC`, no numeric fallback). On adds that list. Off removes that list only. Footer unsubscribe stays a full exit. State is the contact's Brevo `listIds`. Section on `newsletter-stats`. Homepage copy unchanged. Do not merge until Josh says merge. |
 | T70 | Weekly Topic Roundup page at /news/topic | cursor | 2026-10-18 | **Claimed cursor.** Draft PR **#146** (preview only). Merged origin/main on 2026-10-28, including #147. Public `/news/topic` (latest) and `/news/topic/YYYY-MM-DD` from `content/topic-roundup/2026-10-19.json`. Draft banner while `draft` is true. Canonical URL is the dated issue. Crawlers on `/news/topic` get that issue from `api/share.js` (`noindex` while draft). News header and footer link here and to Manage subscriptions. Not in the daily list, daily email, RSS, sitemap, or homepage. Do not merge until Website QA and Josh. |
