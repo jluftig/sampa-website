@@ -143,6 +143,10 @@ alter table public.profiles add column if not exists membership_years int;
 -- Optional extra support on top of a real membership_tier (fellow / sustaining / …).
 -- Never a tier key. Webhook-written from checkout metadata.patron. Default off.
 alter table public.profiles add column if not exists patron boolean not null default false;
+-- Latest successful /donate gift matched to this profile. Webhook-written.
+-- The directory shows Donor while this is inside the last 12 months.
+-- Null means no matched gift. Not self-writable.
+alter table public.profiles add column if not exists donated_at timestamptz;
 -- Honor-system AAPA membership (nullable). Self-writable — not in guard_profile_role.
 -- We do not verify with AAPA. aapa_member_id is NOT in this change.
 alter table public.profiles add column if not exists aapa_member boolean;
@@ -221,12 +225,14 @@ create table if not exists public.donations (
   stripe_subscription_id   text,                         -- recurring gifts
   stripe_invoice_id        text,                         -- recurring gift cycles
   stripe_payment_intent_id text,
+  stripe_charge_id         text,                         -- charge.refunded / dispute lookup
   created_at               timestamptz not null default now()
 );
 -- NULLs are distinct in a Postgres unique index, so many rows may leave the
 -- unused id column null while non-null Stripe ids stay unique (idempotency).
 create unique index if not exists donations_session_uidx on public.donations (stripe_session_id);
 create unique index if not exists donations_invoice_uidx on public.donations (stripe_invoice_id);
+create unique index if not exists donations_charge_uidx on public.donations (stripe_charge_id);
 create index if not exists donations_user_id_idx    on public.donations (user_id);
 create index if not exists donations_created_at_idx on public.donations (created_at desc);
 
@@ -463,6 +469,7 @@ begin
     or new.cancel_at_period_end is distinct from old.cancel_at_period_end
     or new.membership_years   is distinct from old.membership_years
     or new.patron             is distinct from old.patron
+    or new.donated_at         is distinct from old.donated_at
     or new.can_edit_news      is distinct from old.can_edit_news
     or new.can_view_members   is distinct from old.can_view_members
     or new.is_board           is distinct from old.is_board
@@ -1023,6 +1030,7 @@ returns table (
   organizations jsonb,
   is_board boolean,
   patron boolean,
+  donor boolean,
   email text,
   phone text,
   primary_practice_setting text,
@@ -1051,6 +1059,7 @@ begin
     p.organizations,
     p.is_board,
     p.patron,
+    (p.donated_at is not null and p.donated_at >= (now() - interval '12 months')),
     case
       when not p.share_email then null
       when coalesce(p.directory_use_account_contact, true) then p.email
@@ -1137,6 +1146,7 @@ returns table (
   organizations jsonb,
   is_board boolean,
   patron boolean,
+  donor boolean,
   email text,
   phone text,
   primary_practice_setting text,
@@ -1161,6 +1171,7 @@ begin
     p.organizations,
     p.is_board,
     p.patron,
+    (p.donated_at is not null and p.donated_at >= (now() - interval '12 months')),
     case
       when not p.share_email then null
       when coalesce(p.directory_use_account_contact, true) then p.email

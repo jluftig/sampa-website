@@ -7,6 +7,18 @@ import {
 } from './_lib/subscriptionEvent.js';
 import { patronLineItem, subscriptionHasPatronItem } from './_lib/tiers.js';
 import {
+  chargeIsFullyRefunded,
+  chooseDonorProfile,
+  donatedAtFromGifts,
+  donationIsSuccessful,
+  donorMatchFields,
+  giftMatchesProfile,
+  isoFromStripeUnix,
+  nextDonatedAt,
+  normalizeEmail,
+  paymentIdsFromInvoice,
+} from './_lib/donorBadge.js';
+import {
   memberEmailsEnabled,
   profileForEmail,
   sendMemberLifecycleEmail,
@@ -186,6 +198,155 @@ async function attachPatronRecurringItem(stripe, customerId, duration) {
   });
 }
 
+// Load candidate profiles in match order. A user id never falls through.
+// A customer with any rows does not fall through to email. Zero customer rows do.
+async function loadDonorCandidates(admin, { userId, stripeCustomerId, email }) {
+  const columns = 'id, stripe_customer_id, email';
+  if (userId) {
+    const { data, error } = await admin.from('profiles').select(columns).eq('id', userId).maybeSingle();
+    if (error) throw error;
+    return data ? [data] : [];
+  }
+  if (stripeCustomerId) {
+    const { data, error } = await admin.from('profiles').select(columns).eq('stripe_customer_id', stripeCustomerId);
+    if (error) throw error;
+    if (data?.length) return data;
+  }
+  const needle = normalizeEmail(email);
+  if (!needle) return [];
+  const pattern = needle.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
+  const { data, error } = await admin.from('profiles').select(columns).ilike('email', pattern);
+  if (error) throw error;
+  return data || [];
+}
+
+const DONATION_COLUMNS = 'id, user_id, donor_email, stripe_customer_id, stripe_payment_intent_id, stripe_charge_id, stripe_invoice_id, status, amount, created_at';
+
+// Move profiles.donated_at forward to this gift. Does not touch membership columns.
+// The donation row uses snake_case. donorMatchFields maps those names.
+async function stampDonatedAt(admin, fields) {
+  const match = donorMatchFields(fields);
+  if (!donationIsSuccessful(match)) return;
+  const profileId = chooseDonorProfile(await loadDonorCandidates(admin, match), match);
+  if (!profileId) {
+    console.warn('stripe-webhook: donation matched no single profile');
+    return;
+  }
+  const { data: row, error } = await admin.from('profiles').select('donated_at').eq('id', profileId).maybeSingle();
+  if (error) throw error;
+  const next = nextDonatedAt(row?.donated_at, match.paidAt);
+  if (!next) return;
+  if (row?.donated_at && new Date(row.donated_at).getTime() === new Date(next).getTime()) return;
+  const { error: updateError } = await admin.from('profiles').update({ donated_at: next }).eq('id', profileId);
+  if (updateError) throw updateError;
+}
+
+async function findDonation(admin, { paymentIntentId, chargeId, invoiceId }) {
+  const lookups = [
+    [paymentIntentId, 'stripe_payment_intent_id'],
+    [chargeId, 'stripe_charge_id'],
+    [invoiceId, 'stripe_invoice_id'],
+  ];
+  for (const [value, column] of lookups) {
+    if (!value) continue;
+    const { data, error } = await admin
+      .from('donations')
+      .select(DONATION_COLUMNS)
+      .eq(column, value)
+      .maybeSingle();
+    if (error) throw error;
+    if (data) return data;
+  }
+  return null;
+}
+
+// Charge.invoice is not on the Charge object. The invoice id comes from the
+// Invoice Payment list for this PaymentIntent, after a charge is reduced to
+// its PaymentIntent.
+async function invoiceIdForPayment(stripe, { paymentIntentId, chargeId }) {
+  if (!stripe?.invoicePayments?.list) return null;
+  let intentId = paymentIntentId || null;
+  if (!intentId && chargeId && stripe.charges?.retrieve) {
+    const charge = await stripe.charges.retrieve(chargeId);
+    intentId = idOf(charge?.payment_intent);
+  }
+  if (!intentId) return null;
+  const listed = await stripe.invoicePayments.list({
+    payment: { type: 'payment_intent', payment_intent: intentId },
+    limit: 1,
+  });
+  return idOf(listed?.data?.[0]?.invoice);
+}
+
+async function loadCharge(stripe, { paymentIntentId, chargeId }) {
+  if (!stripe) return null;
+  if (chargeId && stripe.charges?.retrieve) {
+    return stripe.charges.retrieve(chargeId);
+  }
+  if (paymentIntentId && stripe.paymentIntents?.retrieve) {
+    const intent = await stripe.paymentIntents.retrieve(paymentIntentId, { expand: ['latest_charge'] });
+    if (intent?.latest_charge && typeof intent.latest_charge === 'object') return intent.latest_charge;
+    if (typeof intent?.latest_charge === 'string' && stripe.charges?.retrieve) {
+      return stripe.charges.retrieve(intent.latest_charge);
+    }
+  }
+  return null;
+}
+
+async function donationsTouchingProfile(admin, profile) {
+  const found = new Map();
+  const take = (rows) => {
+    for (const row of rows || []) {
+      if (row?.id) found.set(row.id, row);
+    }
+  };
+  const byUser = await admin.from('donations').select(DONATION_COLUMNS).eq('user_id', profile.id);
+  if (byUser.error) throw byUser.error;
+  take(byUser.data);
+  if (profile.stripe_customer_id) {
+    const byCustomer = await admin.from('donations').select(DONATION_COLUMNS).eq('stripe_customer_id', profile.stripe_customer_id);
+    if (byCustomer.error) throw byCustomer.error;
+    take(byCustomer.data);
+  }
+  const email = normalizeEmail(profile.email);
+  if (email) {
+    const pattern = email.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
+    const byEmail = await admin.from('donations').select(DONATION_COLUMNS).ilike('donor_email', pattern);
+    if (byEmail.error) throw byEmail.error;
+    take(byEmail.data);
+  }
+  return [...found.values()];
+}
+
+// A refund or a dispute drops that gift. donated_at becomes the latest
+// remaining succeeded gift inside 12 months, or null when none remain.
+// A charge that is not in donations is a membership payment and is ignored.
+async function reverseDonation(admin, stripe, { paymentIntentId, chargeId, status, now = new Date() }) {
+  let donation = await findDonation(admin, { paymentIntentId, chargeId });
+  if (!donation) {
+    const invoiceId = await invoiceIdForPayment(stripe, { paymentIntentId, chargeId });
+    donation = await findDonation(admin, { invoiceId });
+  }
+  if (!donation) return null;
+  const { error } = await admin.from('donations').update({ status }).eq('id', donation.id);
+  if (error) throw error;
+  const match = donorMatchFields(donation);
+  const profileId = chooseDonorProfile(await loadDonorCandidates(admin, match), match);
+  if (!profileId) return null;
+  const { data: profile, error: profileError } = await admin
+    .from('profiles')
+    .select('id, stripe_customer_id, email')
+    .eq('id', profileId)
+    .maybeSingle();
+  if (profileError) throw profileError;
+  if (!profile) return null;
+  const gifts = (await donationsTouchingProfile(admin, profile)).filter((gift) => giftMatchesProfile(gift, profile));
+  const next = donatedAtFromGifts(gifts, now);
+  const { error: updateError } = await admin.from('profiles').update({ donated_at: next }).eq('id', profileId);
+  if (updateError) throw updateError;
+  return { profileId, donatedAt: next };
+}
+
 // Insert a donation, ignoring duplicates so Stripe's event retries are safe.
 // One-time gifts conflict on stripe_session_id; recurring cycles on
 // stripe_invoice_id (both unique). Donations NEVER touch the membership columns.
@@ -217,7 +378,17 @@ export async function POST(request) {
   const admin = supabaseAdmin();
 
   try {
-    switch (event.type) {
+    await handleStripeEvent(event, { stripe, admin });
+  } catch (err) {
+    console.error(`stripe-webhook: ${event.type} handler failed:`, err);
+    return new Response('Webhook handler failed', { status: 500 }); // Stripe retries
+  }
+
+  return json({ received: true });
+}
+
+export async function handleStripeEvent(event, { stripe, admin }) {
+  switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
 
@@ -226,6 +397,10 @@ export async function POST(request) {
         // cycle by invoice.paid (including the first), so skip subscription mode.
         if (session.metadata?.type === 'donation') {
           if (session.mode === 'payment') {
+            const paymentIntentId = idOf(session.payment_intent);
+            const paidAt = isoFromStripeUnix(session.created);
+            const charge = await loadCharge(stripe, { paymentIntentId });
+            const fullyRefunded = chargeIsFullyRefunded(charge);
             const donationRow = {
               user_id: session.client_reference_id || session.metadata?.supabase_user_id || null,
               donor_email: session.customer_details?.email || session.customer_email || null,
@@ -233,13 +408,28 @@ export async function POST(request) {
               amount: session.amount_total,
               currency: session.currency || 'usd',
               frequency: 'once',
-              status: 'succeeded',
+              status: fullyRefunded ? 'refunded' : 'succeeded',
               stripe_customer_id: idOf(session.customer),
               stripe_session_id: session.id,
-              stripe_payment_intent_id: idOf(session.payment_intent),
+              stripe_payment_intent_id: paymentIntentId,
+              stripe_charge_id: charge?.id || null,
+              created_at: paidAt,
             };
             await recordDonation(admin, donationRow);
-            await maybeDonationThanks(admin, donationRow);
+            if (fullyRefunded) {
+              await reverseDonation(admin, stripe, {
+                paymentIntentId,
+                chargeId: charge?.id || null,
+                status: 'refunded',
+              });
+            } else {
+              await stampDonatedAt(admin, {
+                ...donationRow,
+                paymentStatus: session.payment_status,
+                paidAt,
+              });
+              await maybeDonationThanks(admin, donationRow);
+            }
           }
           break;
         }
@@ -398,6 +588,10 @@ export async function POST(request) {
         const meta = subDetails?.metadata || invoice.subscription_details?.metadata || {};
 
         if (meta.type === 'donation') {
+          const ids = paymentIdsFromInvoice(invoice);
+          const paidAt = isoFromStripeUnix(invoice.status_transitions?.paid_at || invoice.created);
+          const charge = await loadCharge(stripe, ids);
+          const fullyRefunded = chargeIsFullyRefunded(charge);
           const donationRow = {
             user_id: meta.supabase_user_id || null,
             donor_email: invoice.customer_email || null,
@@ -405,13 +599,28 @@ export async function POST(request) {
             amount: invoice.amount_paid,
             currency: invoice.currency || 'usd',
             frequency: 'monthly',
-            status: 'succeeded',
+            status: fullyRefunded ? 'refunded' : 'succeeded',
             stripe_customer_id: idOf(invoice.customer),
             stripe_subscription_id: idOf(subDetails?.subscription) || idOf(invoice.subscription),
             stripe_invoice_id: invoice.id,
+            stripe_payment_intent_id: ids.paymentIntentId,
+            stripe_charge_id: charge?.id || ids.chargeId,
+            created_at: paidAt,
           };
           await recordDonation(admin, donationRow);
-          await maybeDonationThanks(admin, donationRow);
+          if (fullyRefunded) {
+            await reverseDonation(admin, stripe, {
+              paymentIntentId: donationRow.stripe_payment_intent_id,
+              chargeId: donationRow.stripe_charge_id,
+              status: 'refunded',
+            });
+          } else {
+            await stampDonatedAt(admin, {
+              ...donationRow,
+              paidAt,
+            });
+            await maybeDonationThanks(admin, donationRow);
+          }
           break;
         }
 
@@ -433,13 +642,49 @@ export async function POST(request) {
         break;
       }
 
+      // A fully refunded or disputed gift leaves the Donor window. A partial
+      // refund does not. Membership charges have no donations row, so they
+      // do not change donated_at. The invoice is resolved from the PaymentIntent,
+      // never from charge.invoice.
+      case 'charge.refunded': {
+        const charge = event.data.object;
+        if (!chargeIsFullyRefunded(charge)) break;
+        await reverseDonation(admin, stripe, {
+          paymentIntentId: idOf(charge.payment_intent),
+          chargeId: charge.id,
+          status: 'refunded',
+        });
+        break;
+      }
+
+      case 'charge.dispute.created': {
+        const dispute = event.data.object;
+        await reverseDonation(admin, stripe, {
+          paymentIntentId: idOf(dispute.payment_intent),
+          chargeId: idOf(dispute.charge),
+          status: 'disputed',
+        });
+        break;
+      }
+
+      case 'charge.dispute.closed': {
+        const dispute = event.data.object;
+        // A lost dispute leaves the gift off. A win restores it only when the
+        // charge itself was not fully refunded.
+        if (dispute.status !== 'won') break;
+        const chargeId = idOf(dispute.charge);
+        const paymentIntentId = idOf(dispute.payment_intent);
+        const charge = await loadCharge(stripe, { paymentIntentId, chargeId });
+        if (!charge) break;
+        await reverseDonation(admin, stripe, {
+          paymentIntentId,
+          chargeId: charge.id || chargeId,
+          status: chargeIsFullyRefunded(charge) ? 'refunded' : 'succeeded',
+        });
+        break;
+      }
+
       default:
         break; // Not a subscribed event type — acknowledge and ignore.
-    }
-  } catch (err) {
-    console.error(`stripe-webhook: ${event.type} handler failed:`, err);
-    return new Response('Webhook handler failed', { status: 500 }); // Stripe retries
   }
-
-  return json({ received: true });
 }

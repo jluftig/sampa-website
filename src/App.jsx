@@ -27,6 +27,7 @@ const Search = lazy(() => import('./pages/Search'));
 const Login = lazy(() => import('./pages/Login'));
 const Join = lazy(() => import('./pages/Join'));
 const JoinPreview = import.meta.env.DEV ? lazy(() => import('./pages/JoinPreview')) : null;
+const DirectoryBadgePreview = import.meta.env.DEV ? lazy(() => import('./pages/DirectoryBadgePreview')) : null;
 const JoinInvoice = lazy(() => import('./pages/JoinInvoice'));
 const AnnualSurvey = lazy(() => import('./pages/AnnualSurvey'));
 const Donate = lazy(() => import('./pages/Donate'));
@@ -77,6 +78,9 @@ function App() {
           )}
           {import.meta.env.DEV && (
             <Route path="/__preview/join" element={<JoinPreview />} />
+          )}
+          {import.meta.env.DEV && (
+            <Route path="/__preview/directory-badges" element={<DirectoryBadgePreview />} />
           )}
           {import.meta.env.DEV && (
             <Route path="/__preview/survey" element={<AnnualSurvey />} />

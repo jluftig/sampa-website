@@ -6,7 +6,7 @@ const SIZE = {
   md: 'px-3 py-1',
 };
 
-// Board + Patron chips on the peer directory. Patron is never a membership_tier.
+// Board, Patron, and Donor chips on the peer directory. Patron is never a membership_tier.
 export function DirectoryBadges({ person, size = 'sm', className = '' }) {
   const labels = directoryBadgeLabels(person);
   if (labels.length === 0) return null;

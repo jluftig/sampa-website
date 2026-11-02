@@ -32,7 +32,7 @@ put confidential drafts there until there is an authenticated file route.
 | tags | SELECT public; write admin only |
 | profiles SELECT | Own row, admin, or member-viewer. **Never** open to all members for networking |
 | profiles UPDATE | Own or admin; member-viewers cannot write |
-| Peer directory | `member_directory` / `member_directory_profile` SECURITY DEFINER allowlists only. Tier A private columns (home city, license states, clinical time, practice model, prescribing, telehealth states) are not in the return list. |
+| Peer directory | `member_directory` / `member_directory_profile` SECURITY DEFINER allowlists only. Tier A private columns (home city, license states, clinical time, practice model, prescribing, telehealth states) are not in the return list. `donor` is a 12-month boolean. `donated_at` and gift amounts stay off the RPC. |
 | Annual survey | `member_survey_responses`: own row for the current Pacific year; admin or member-viewer can read |
 | favorites | Own rows; INSERT only for published posts |
 | comments / reactions | Public read on published; write `is_active_member()`; soft-delete rules; denormalized bylines |
@@ -43,7 +43,7 @@ put confidential drafts there until there is an authenticated file route.
 ## Privilege escalation
 
 `guard_profile_role()` BEFORE UPDATE blocks non-admins from changing `role` or any
-membership/billing column (including `patron`, `is_board`, `is_membership_committee`, `is_committee_chair`).
+membership/billing column (including `patron`, `donated_at`, `is_board`, `is_membership_committee`, `is_committee_chair`).
 Bypass only when `auth.uid() IS NULL`
 (SQL editor / service_role / Stripe webhook). `aapa_member` is self-writable (honor
 system; not verified) and is not in that guard.
