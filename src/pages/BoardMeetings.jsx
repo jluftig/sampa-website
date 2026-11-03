@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { apiGet } from '../lib/api';
-import { BOARD_HUB } from '../data/boardHub';
+import { BOARD_HUB, observerCopyParts } from '../data/boardHub';
 import {
   hasListedDoc,
   nextStandingBoardDates,
@@ -24,22 +24,21 @@ function tabFromHash(hash) {
 }
 
 function CopyWithObserverEmail({ text }) {
-  const email = BOARD_HUB.observerEmail;
-  const parts = String(text || '').split(email);
+  const parts = observerCopyParts(text);
   return (
     <>
       {parts.map((part, i) => (
-        <Fragment key={`${email}-${i}`}>
-          {part}
-          {i < parts.length - 1 && (
-            <a
-              href={`mailto:${email}`}
-              className="text-primary-text font-semibold hover:underline"
-            >
-              {email}
-            </a>
-          )}
-        </Fragment>
+        part.type === 'email' ? (
+          <a
+            key={`${part.value}-${i}`}
+            href={`mailto:${part.value}`}
+            className="text-primary-text font-semibold hover:underline"
+          >
+            {part.value}
+          </a>
+        ) : (
+          <Fragment key={`text-${i}`}>{part.value}</Fragment>
+        )
       ))}
     </>
   );

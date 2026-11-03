@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Assert T45 Board meeting pages: real Drive-backed seed, member gate, no Zoom secrets.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { BOARD_HUB } from '../src/data/boardHub.js';
+import { BOARD_HUB, observerCopyParts } from '../src/data/boardHub.js';
 import {
   agendaListTitle,
   hasFullBody,
@@ -40,11 +40,29 @@ if (!/retained online for one year/.test(BOARD_HUB.recordsIntro || '')) {
 if (!/monthly virtual meetings/.test(BOARD_HUB.scheduleIntro || '')) {
   fail('Schedule intro must say monthly virtual meetings');
 }
-if (BOARD_HUB.observerEmail !== 'info@addictionpas.org') {
-  fail('Observer email must be info@addictionpas.org');
+const OBSERVER_EMAILS = [
+  'info@addictionpas.org',
+  'president@addictionpas.org',
+  'secretary@addictionpas.org',
+];
+const OBSERVER_LINE = 'SAMPA members interested in attending as a member observer can contact info@addictionpas.org, the President (president@addictionpas.org), or the Secretary (secretary@addictionpas.org) for more information.';
+if (BOARD_HUB.observerEmail != null) fail('observerEmail is replaced by observerEmails');
+if (!Array.isArray(BOARD_HUB.observerEmails) || BOARD_HUB.observerEmails.join('|') !== OBSERVER_EMAILS.join('|')) {
+  fail('Observer contacts must be info@, the President, and the Secretary');
 }
-if (!BOARD_HUB.scheduleIntro.includes('info@addictionpas.org')) {
-  fail('Schedule intro must tell members to contact info@addictionpas.org');
+if (!BOARD_HUB.scheduleIntro.includes(OBSERVER_LINE)) {
+  fail('Schedule intro must name info@, the President, and the Secretary');
+}
+if (/zoom\.us|passcode|meeting id/i.test(BOARD_HUB.scheduleIntro)) {
+  fail('Schedule intro must not include a Zoom link');
+}
+const observerParts = observerCopyParts(BOARD_HUB.scheduleIntro);
+const linked = observerParts.filter((part) => part.type === 'email').map((part) => part.value);
+if (linked.join('|') !== OBSERVER_EMAILS.join('|')) {
+  fail('Schedule intro must link info@, president@, and secretary@ in that order');
+}
+if (observerParts.some((part) => part.type === 'text' && part.value.includes('@'))) {
+  fail('Every address in the schedule intro must be a mailto link');
 }
 if (/named roster|all-member blast|join links|executive.session|source of truth/i.test(`${BOARD_HUB.recordsIntro} ${BOARD_HUB.scheduleIntro}`)) {
   fail('Hub copy must stay sparse — no extra access-policy essays');
@@ -166,7 +184,9 @@ if (!hubSrc.includes('Annual Membership Meeting: TBD, Q2 2027')) {
 if (!hubSrc.includes('every second Wednesday, 8:00 PM ET, virtual')) {
   fail('Schedule must include the standing 2nd-Wednesday row');
 }
-if (!hubSrc.includes('mailto:')) fail('Schedule intro must mailto info@addictionpas.org');
+if (!hubSrc.includes('observerCopyParts') || !hubSrc.includes('mailto:')) {
+  fail('Schedule intro must mailto info@, president@, and secretary@');
+}
 if (/named roster|all-member blast|join links|executive.session|source of truth|Member area|on file until pasted/i.test(hubSrc)) {
   fail('Hub UI must not render extra policy essays');
 }
