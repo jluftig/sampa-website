@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-03",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Los Angeles County pauses syringe and pipe distribution at its Skid Row services hub",
+      "outlet": "LAist",
+      "date": "Nov 2",
+      "summary": "Los Angeles County stopped handing out syringes and pipes at the Skid Row Care Campus in August, calling the pause temporary, and has ended its contract with Homeless Health Care Los Angeles, which ran the campus's harm reduction programs. The campus still distributes naloxone and wound care supplies, while county health officials track an HIV cluster of 15 people linked to Skid Row. Officials cited concerns from community stakeholders and local businesses, and the pause comes amid mounting federal pressure on programs that hand out drug-use supplies.",
+      "url": "https://laist.com/news/health/la-county-pauses-syringe-pipe-handouts-skid-row"
+    },
+    {
+      "headline": "Rhode Island's overdose prevention center reports 12,000-plus visits and 200 overdose interventions",
+      "outlet": "Ocean State Media",
+      "date": "Nov 2",
+      "summary": "Operators of Project Weber/RENEW's supervised consumption site in Providence, open since January 2025, report about 1,500 people served over more than 12,000 visits and more than 200 overdose interventions; the figures are preliminary, and a Brown University evaluation is pending. The state has committed at least $5.5 million in opioid settlement funds this year, with funding through fiscal year 2028. Rhode Island's 2025 overdose deaths fell more than 33%, but the decline began before the center opened, so its share is not yet known.",
+      "url": "https://www.oceanstatemedia.org/health/2026-11-02/inside-rhode-islands-overdose-prevention-center-is-it-saving-lives"
+    },
+    {
+      "headline": "Lake County, Ohio, posts the largest drop in overdose death rates among 550 U.S. counties analyzed",
+      "outlet": "The News-Herald",
+      "date": "Nov 1",
+      "summary": "An AddictionResource.net analysis of federal mortality data found Lake County's overdose death rate fell 75.2% from 2020 to 2025, from 40 to 9.9 deaths per 100,000 residents, the largest decline among 550 counties included. Ohio's statewide rate fell 53.2% over the same period, the largest drop among the 50 states. Local leaders credit a coordinated response since 2010 that combines prevention, naloxone and fentanyl test strips, treatment, and recovery support, while cautioning that no single program explains the decline.",
+      "url": "https://www.news-herald.com/2026/11/01/report-lake-county-leads-the-nation-in-reducing-overdose-deaths/"
+    },
+    {
+      "headline": "DEA guidance lets pharmacies deliver some controlled substances to practitioners for administration",
+      "outlet": "NCPA",
+      "date": "Nov 2",
+      "summary": "New DEA guidance lets a DEA-registered pharmacy deliver a prescribed controlled substance to a practitioner for direct administration when the patient signs a power of attorney, consistent with state law, naming that practitioner as agent to accept delivery. It covers drugs that must or should go to a practitioner rather than the patient, and recommends best practices for both sides. Existing pathways are unchanged, including pharmacy delivery of Schedule III to V injectable or implanted medications for maintenance or detoxification treatment.",
+      "url": "https://ncpa.org/newsroom/qam/2026/11/02/dea-allows-pharmacies-deliver-controlled-substances-practitioners-under"
+    },
+    {
+      "headline": "Newfoundland and Labrador warns of fentanyl found in cocaine in eastern Newfoundland and Labrador",
+      "outlet": "VOCM",
+      "date": "Nov 2",
+      "summary": "Newfoundland and Labrador Health Services is warning of multiple community reports of fentanyl contamination of cocaine in eastern Newfoundland and the Labrador region. The health authority urged people who use cocaine, and those around them, to watch for unexpected drowsiness or difficulty waking, and noted that naloxone can reverse opioid effects. Unexpected opioid exposure among people who use stimulants is a reason to offer naloxone and overdose education to patients who use cocaine, not only to those who use opioids.",
+      "url": "https://vocm.com/2026/11/02/315304/"
+    }
+  ]
+}
