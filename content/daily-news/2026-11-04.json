@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-04",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Public records confirm MOUD at only 13.6% of U.S. jails and 25.6% of prisons",
+      "outlet": "JAMA Network Open",
+      "date": "Nov 3",
+      "summary": "A Brown University-led study reviewed public records on medications for opioid use disorder (MOUD) at 1,746 state and private prisons and 2,920 jails as of April 1, 2025. Only 447 prisons (25.6%) and 396 jails (13.6%) had public records confirming any MOUD, and among those, 55.5% of prisons but 16.9% of jails reported all three medications. Sparse public reporting makes it hard for patients and community clinicians to know whether treatment will continue during incarceration or to plan reentry care.",
+      "url": "https://media.jamanetwork.com/media-releases/10.1001/jamanetworkopen.2026.41886"
+    },
+    {
+      "headline": "New Mexico Medicaid cites Blue Cross plan over limits on Sublocade injections",
+      "outlet": "New Mexico Health Care Authority",
+      "date": "Nov 3",
+      "summary": "New Mexico's Health Care Authority issued a Notice of Concern to Blue Cross Blue Shield of New Mexico after reported claim rejections limiting Sublocade, an extended-release buprenorphine injection, to one dose every 30 days, despite FDA labeling that allows a second initiation dose as early as seven days after the first. The plan has 20 business days to show the accelerated schedule processes without inappropriate denials and that prohibited utilization-management restrictions are gone, or face sanctions. Claims edits that lag label changes can quietly block injectable bup starts.",
+      "url": "https://www.hca.nm.gov/wp-content/uploads/BCBS_Notice_of_Concern_MOUD_Final11.3.26.pdf"
+    },
+    {
+      "headline": "Henrico County, Virginia, will fund first responders to start Suboxone after overdoses",
+      "outlet": "Henrico County",
+      "date": "Nov 3",
+      "summary": "Henrico County is receiving more than $1.7 million from the Virginia Opioid Abatement Authority for fiscal 2026-27, its largest single-year award, to support 13 programs. The county's Division of Fire will be able to give medication treatment such as Suboxone to people who have overdosed, with follow-up through the county's mental health agency, which will also staff its mobile treatment unit full time. Starting treatment at the point of overdose, not only reversing it with naloxone, gives first responders a direct path into ongoing care.",
+      "url": "https://henrico.gov/news/2026/11/henrico-receives-1-7-million-from-virginia-opioid-abatement-authority-to-combat-addiction-promote-recovery/"
+    },
+    {
+      "headline": "King County jails use Medicaid reentry funding to expand release planning from 15% to 65% of people",
+      "outlet": "The Seattle Times",
+      "date": "Nov 3",
+      "summary": "Since July, King County jails have used Washington's Medicaid reentry program to provide 30 days of medication at release, Medicaid enrollment, and a warm handoff to community providers, including for substance use disorder recovery, expanding these services from about 15% of the jail population to 65%. More than half of people leave within three days, which makes it hard to complete services before release. The waiver expires in 2028, and officials hope to show the approach reduces costly cycles of reincarceration.",
+      "url": "https://www.seattletimes.com/seattle-news/king-county-initiative-seeks-to-keep-people-from-returning-to-jail/"
+    },
+    {
+      "headline": "Manitoba reports 206 substance-related deaths in the first half of 2026",
+      "outlet": "Winnipeg Free Press",
+      "date": "Nov 3",
+      "summary": "Preliminary figures from Manitoba's chief medical examiner show 206 substance-related deaths in the first half of 2026, similar to 203 a year earlier, after annual deaths fell from a peak of 570 in 2024 to 388 in 2025. Stimulants, mainly methamphetamine and cocaine, were the leading contributors, and officials said fentanyl analogues and medetomidine increasingly appear in illicit-opioid deaths. Winnipeg paramedics gave naloxone to 3,330 patients through September, up from 1,904 in the same period of 2025, showing rising overdose response demand even as deaths hold steady.",
+      "url": "https://www.winnipegfreepress.com/breakingnews/2026/11/03/more-than-one-drug-related-death-each-day"
+    }
+  ]
+}
