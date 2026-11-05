@@ -74,7 +74,9 @@ test('every published roundup file shows in the feed', () => {
 
 test('/news renders the combined feed with the daily signup form', () => {
   const src = read('src/pages/News.jsx');
-  assert.match(src, /buildNewsFeed\(posts, roundups\)/);
+  assert.match(src, /buildNewsFeed\(posts, roundups, features\)/);
+  assert.match(src, /visibleFeatures\(/);
+  assert.match(src, /<NewsFeatureCard /);
   assert.match(src, /useDailyRoundups\(\)/);
   assert.match(src, /<PostCard /);
   assert.match(src, /<RoundupCard /);

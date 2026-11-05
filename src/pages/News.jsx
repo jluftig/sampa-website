@@ -1,24 +1,32 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { collectPostTags } from '../lib/tags';
 import { buildNewsFeed, feedWithMonthHeadings } from '../lib/newsFeed';
 import { useDailyRoundups } from '../lib/useDailyRoundups';
+import { FEATURE_LISTINGS, devAsOfDay, visibleFeatures } from '../lib/newsFeatures.js';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PostCard from '../components/PostCard';
 import RoundupCard from '../components/RoundupCard';
+import NewsFeatureCard from '../components/NewsFeatureCard';
 import NewsletterSignup from '../components/NewsletterSignup';
 import SearchBox from '../components/SearchBox';
 
-// /news is the single news feed: the earlier daily news posts and articles
-// (Supabase `posts`) and the weekday roundups (content/daily-news) together,
-// newest first, grouped by month.
+// /news is the single news feed: feature articles (once their publish day
+// arrives), the weekday roundups (content/daily-news), and earlier posts
+// (Supabase `posts`), newest first, grouped by month.
 export default function News() {
+  const { search } = useLocation();
+  const asOfDay = devAsOfDay(search, import.meta.env.DEV);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const roundups = useDailyRoundups();
+  const features = useMemo(
+    () => visibleFeatures(FEATURE_LISTINGS, new Date(), asOfDay),
+    [asOfDay],
+  );
 
   useEffect(() => {
     let active = true;
@@ -37,8 +45,8 @@ export default function News() {
   }, []);
 
   const rows = useMemo(
-    () => feedWithMonthHeadings(buildNewsFeed(posts, roundups)),
-    [posts, roundups],
+    () => feedWithMonthHeadings(buildNewsFeed(posts, roundups, features)),
+    [posts, roundups, features],
   );
 
   return (
@@ -102,9 +110,9 @@ export default function News() {
                 );
               }
               const { entry } = row;
-              return entry.kind === 'roundup'
-                ? <RoundupCard key={row.key} roundup={entry.roundup} />
-                : <PostCard key={row.key} post={entry.post} />;
+              if (entry.kind === 'roundup') return <RoundupCard key={row.key} roundup={entry.roundup} />;
+              if (entry.kind === 'feature') return <NewsFeatureCard key={row.key} feature={entry.feature} />;
+              return <PostCard key={row.key} post={entry.post} />;
             })}
           </div>
         )}

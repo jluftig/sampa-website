@@ -6,7 +6,7 @@ Machine-oriented entry point for agents on the SAMPA website.
 **Deep dives:** [`docs/architecture/`](docs/architecture/).  
 `AGENTS.md` points here for non-Claude agents.
 
-Last updated: 2026-08-04 (Tasks claim board Egg ↔ Cursor).
+Last updated: 2026-11-05 (feature articles at /news/features, publish-day gate).
 
 ## What this project is
 
@@ -108,7 +108,7 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 11. **Tier keys** sync three ways: `src/lib/membership.js`, `api/_lib/tiers.js`, `STRIPE_PRICE_*` env.
 12. **AuthContext** uses `select('*')` on profiles — tolerate additive migrations.
 13. **New RPCs** degrade gracefully if missing; still prefer migrate-before-code.
-14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers. Dated roundups use `slug=daily&date=` and the path must be `YYYY-MM-DD` only, so `/news/daily/archive` and `/news/daily/tag/:slug` are not dates. `/news/daily` canonical (browser and bots) is the latest dated issue. `/news/topic` is `slug=topic` (latest issue) and `/news/topic/:date` is `slug=topic&date=`. A draft topic issue is `noindex` and still returns 200 with its title. Unknown dates return 404 to those crawlers; the SPA 404 sends `noindex`. Do not add a 13th `api/*.js` file.
+14. **Social previews:** crawler UA rewrite to `api/share.js` only — never browsers. Dated roundups use `slug=daily&date=` and the path must be `YYYY-MM-DD` only, so `/news/daily/archive` and `/news/daily/tag/:slug` are not dates. `/news/daily` canonical (browser and bots) is the latest dated issue. `/news/topic` is `slug=topic` (latest issue) and `/news/topic/:date` is `slug=topic&date=`. `/news/features/:slug` rewrites for every user agent to `api/share?slug=feature&feature=` and returns HTTP 404 until that article's `publishedOn` day in America/Los_Angeles. After that day, browsers receive the SPA shell and social crawlers receive the share card. `part=body` on that function returns the essay JSON and is also 404 until that day. Do not bundle the essay with `import.meta.glob`. A draft topic issue is `noindex` and still returns 200 with its title. Unknown dates return 404 to those crawlers; the SPA 404 sends `noindex`. Do not add a 13th `api/*.js` file.
 15. **Mobile shared lib:** `sampa-shared` → `src/lib`; no DOM/Vite-only code there.
 16. **No IAP** for memberships on iOS — website checkout only.
 17. **Web session continuity:** `createClient` uses `createAuthStorage()` (localStorage + first-party cookie backup, `Domain=.addictionpas.org` on prod). Auth/Stripe return URLs go through `clientSiteOrigin` / `requestSiteOrigin` (apex → `https://www.addictionpas.org`). `AuthContext` retries `refreshSession` on a transient null before treating the user as signed out. Do not revert to a bare `createClient` or `window.location.origin` for those redirects.

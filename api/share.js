@@ -9,6 +9,49 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { dailyNewsTitle } from '../src/lib/dailyNewsArchive.js';
 import { collectRoundups, roundupFromEntry } from '../src/lib/dailyNewsLoad.js';
+import { featureSharePreview, publishedFeature } from '../src/lib/newsFeatures.js';
+
+const SOCIAL_BOT = /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Slack-ImgProxy|TelegramBot|WhatsApp|Discordbot|Pinterestbot|redditbot|SkypeUriPreview|vkShare/i;
+
+function notFound() {
+  return new Response('Not found', {
+    status: 404,
+    headers: {
+      'content-type': 'text/plain; charset=utf-8',
+      'cache-control': 'no-store',
+      'x-robots-tag': 'noindex',
+    },
+  });
+}
+
+export async function spaShell(request) {
+  const distPath = join(process.cwd(), 'dist', 'index.html');
+  try {
+    return readFileSync(distPath, 'utf8');
+  } catch {
+    /* The function bundle may not contain the built shell. */
+  }
+  if (process.env.VERCEL) {
+    const origin = new URL(request.url).origin;
+    const res = await fetch(new URL('/index.html', origin), {
+      headers: { 'user-agent': 'SAMPA-spa-shell' },
+    });
+    if (res.ok) return res.text();
+  }
+  return readFileSync(join(process.cwd(), 'index.html'), 'utf8');
+}
+
+function featureBodyPayload(feature) {
+  return {
+    slug: feature.slug,
+    publishedOn: feature.publishedOn,
+    byline: feature.byline,
+    description: feature.description,
+    paragraphs: feature.paragraphs,
+    signature: feature.signature,
+    references: feature.references,
+  };
+}
 import { topicPage } from '../src/lib/topicRoundup.js';
 
 const DAILY_DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
@@ -62,6 +105,26 @@ function latestRoundup() {
   return collectRoundups(modules, () => {})[0] || null;
 }
 
+function loadFeatureModules() {
+  const dir = join(process.cwd(), 'content', 'features');
+  let names = [];
+  try {
+    names = readdirSync(dir);
+  } catch {
+    return {};
+  }
+  const modules = {};
+  for (const name of names) {
+    if (!name.endsWith('.json')) continue;
+    try {
+      modules[`/content/features/${name}`] = JSON.parse(readFileSync(join(dir, name), 'utf8'));
+    } catch {
+      /* skip a file that is not JSON */
+    }
+  }
+  return modules;
+}
+
 function loadTopicModules() {
   const dir = join(process.cwd(), 'content', 'topic-roundup');
   let names = [];
@@ -102,13 +165,53 @@ export function topicSharePreview(modules, date) {
   };
 }
 
-export async function GET(request) {
+export async function GET(request, maybeNow) {
+  // Vercel calls this with a request context as the second argument.
+  // Tests pass a Date to check the publish-day gate. Anything else is "now".
+  const now = maybeNow instanceof Date ? maybeNow : new Date();
   const reqUrl = new URL(request.url);
   const slug = reqUrl.searchParams.get('slug') || '';
   const date = reqUrl.searchParams.get('date') || '';
   const view = reqUrl.searchParams.get('view') || '';
+  const featureSlug = reqUrl.searchParams.get('feature') || '';
   const isDaily = slug === 'daily';
   const isTopic = slug === 'topic';
+  const isFeature = slug === 'feature';
+  const fullFeature = isFeature ? publishedFeature(loadFeatureModules(), featureSlug, now) : null;
+  const userAgent = request.headers.get('user-agent') || '';
+  const wantsBody = isFeature && reqUrl.searchParams.get('part') === 'body';
+  if (isFeature && !fullFeature) {
+    // Browsers get the SPA shell so the styled Not Found page can render.
+    // Social bots and the essay endpoint stay a plain 404.
+    if (wantsBody || SOCIAL_BOT.test(userAgent)) return notFound();
+    return new Response(await spaShell(request), {
+      status: 404,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-store',
+        'x-robots-tag': 'noindex',
+      },
+    });
+  }
+  if (wantsBody) {
+    return new Response(JSON.stringify(featureBodyPayload(fullFeature)), {
+      status: 200,
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'no-store',
+      },
+    });
+  }
+  if (isFeature && !SOCIAL_BOT.test(userAgent)) {
+    return new Response(await spaShell(request), {
+      status: 200,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-store',
+      },
+    });
+  }
+  const feature = isFeature ? featureSharePreview(loadFeatureModules(), featureSlug, now) : null;
   const topic = isTopic ? topicSharePreview(loadTopicModules(), date) : null;
   if (isTopic && !topic) {
     return new Response('Not found', {
@@ -128,19 +231,21 @@ export async function GET(request) {
   const issue = dated || latest;
   const canonical = isArchive
     ? `${reqUrl.origin}/news/daily/archive`
-    : issue
-      ? `${reqUrl.origin}/news/daily/${issue.date}`
-      : isDaily
-        ? `${reqUrl.origin}/news/daily`
-        : topic
-          ? `${reqUrl.origin}${topic.path}`
-          : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
+    : feature
+      ? `${reqUrl.origin}${feature.path}`
+      : issue
+        ? `${reqUrl.origin}/news/daily/${issue.date}`
+        : isDaily
+          ? `${reqUrl.origin}/news/daily`
+          : topic
+            ? `${reqUrl.origin}${topic.path}`
+            : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
 
   const supaUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
   let post = null;
-  if (slug && !isDaily && !isTopic && supaUrl && anonKey) {
+  if (slug && !isDaily && !isTopic && !isFeature && supaUrl && anonKey) {
     try {
       const res = await fetch(
         `${supaUrl}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}&status=eq.published` +
@@ -155,23 +260,27 @@ export async function GET(request) {
 
   const title = isArchive
     ? 'Daily News archive | SAMPA'
-    : issue
-      ? dailyNewsTitle(issue.date)
-      : isDaily
-        ? 'SAMPA Daily News Roundup'
-        : topic
-          ? topic.title
-          : post
-            ? post.title
-            : 'SAMPA News';
+    : feature
+      ? feature.title
+      : issue
+        ? dailyNewsTitle(issue.date)
+        : isDaily
+          ? 'SAMPA Daily News Roundup'
+          : topic
+            ? topic.title
+            : post
+              ? post.title
+              : 'SAMPA News';
   const description = isArchive
     ? ARCHIVE_DESCRIPTION
-    : isDaily
-      ? DAILY_DESCRIPTION
-      : topic
-        ? topic.description
-        : post?.excerpt ||
-          'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
+    : feature
+      ? feature.description
+      : isDaily
+        ? DAILY_DESCRIPTION
+        : topic
+          ? topic.description
+          : post?.excerpt ||
+            'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
   const image = post?.cover_image_url || '';
 
   const html = `<!doctype html>
@@ -200,7 +309,7 @@ ${image ? `<meta name="twitter:image" content="${esc(image)}">` : ''}
 </html>`;
 
   return new Response(html, {
-    status: post || issue || isArchive || (isDaily && !date) || topic ? 200 : 404,
+    status: post || issue || isArchive || (isDaily && !date) || topic || feature ? 200 : 404,
     headers: {
       'content-type': 'text/html; charset=utf-8',
       // Cache at the edge; a re-published post refreshes within 5 minutes.

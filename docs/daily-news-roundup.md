@@ -12,6 +12,6 @@ Publishing a new issue is still a content-only commit that adds the next file. V
 
 The daily email list is separate. `/news/daily` posts `list: "daily"` to the existing `api/newsletter-signup.js` function. That string maps to `BREVO_LIST_DAILY_NEWS`. Sending the email itself is a later ticket.
 
-Feature articles at `/news` and `/news/:slug` are unchanged.
+A daily file may include an optional `feature` object (`title`, `teaser`, `href`, `byline`). `/news/daily` and the dated issue then show that card above the stories. The field shape is in `content/daily-news/README.md`. Feature articles live at `/news/features/<slug>` from `content/features/` and stay off `/news` until their `publishedOn` day in America/Los_Angeles.
 
 Preview only until Website QA is green and Josh approves a screenshot.

@@ -36,6 +36,7 @@
     "test:subscriptions": "node --test scripts/verify-subscriptions.mjs && node --import ./scripts/register-jsx.mjs --test scripts/verify-subscriptions-page.mjs",
     "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",
     "test:news-feed": "node --test scripts/verify-news-feed.mjs",
+    "test:news-features": "node --import ./scripts/register-jsx.mjs --test scripts/verify-news-features.mjs",
     "sitemap:daily": "node scripts/write-daily-sitemap.mjs",
     "prebuild": "node scripts/write-daily-sitemap.mjs"
   },

@@ -66,7 +66,36 @@ export function roundupFromEntry(path, mod) {
     items.push(parsed);
   }
   const title = textField(data.title) || 'Addiction Daily Roundup';
-  return { ok: true, roundup: { date: filenameDate, title, items } };
+  const featureResult = parseFeature(data.feature);
+  if (!featureResult.ok) {
+    return {
+      ok: true,
+      roundup: { date: filenameDate, title, items, feature: null },
+      warning: featureResult.reason,
+    };
+  }
+  return {
+    ok: true,
+    roundup: { date: filenameDate, title, items, feature: featureResult.feature },
+  };
+}
+
+function parseFeature(feature) {
+  if (feature == null) return { ok: true, feature: null };
+  if (!feature || typeof feature !== 'object' || Array.isArray(feature)) {
+    return { ok: false, reason: 'feature must be an object with title, teaser, href, and byline' };
+  }
+  const title = textField(feature.title);
+  const teaser = textField(feature.teaser);
+  const href = textField(feature.href);
+  const byline = textField(feature.byline);
+  if (!title || !teaser || !href || !byline) {
+    return { ok: false, reason: 'feature needs title, teaser, href, and byline' };
+  }
+  if (!href.startsWith('/') || href.startsWith('//') || href.includes('..')) {
+    return { ok: false, reason: 'feature href must be a site path' };
+  }
+  return { ok: true, feature: { title, teaser, href, byline } };
 }
 
 export function collectRoundups(modules, warn = console.warn) {
@@ -77,6 +106,7 @@ export function collectRoundups(modules, warn = console.warn) {
       warn(`daily-news: skipping ${path}: ${result.reason}`);
       continue;
     }
+    if (result.warning) warn(`daily-news: ${path}: ${result.warning}`);
     roundups.push(result.roundup);
   }
   roundups.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));

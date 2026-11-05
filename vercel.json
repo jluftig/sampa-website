@@ -60,6 +60,10 @@
       "destination": "/api/share?slug=topic&date=:date"
     },
     {
+      "source": "/news/features/:slug",
+      "destination": "/api/share?slug=feature&feature=:slug"
+    },
+    {
       "source": "/news/:slug",
       "has": [
         {
