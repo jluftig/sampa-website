@@ -239,6 +239,18 @@ test('a published feature leads the news index on its day', () => {
   );
 });
 
+test('a non-date share context does not crash the feature preview', async () => {
+  const res = await shareGet(
+    new Request('https://www.addictionpas.org/api/share?slug=feature&feature=founders-jim-anderson-shani-wilson'),
+    { waitUntil() {} },
+  );
+  assert.notEqual(res.status, 500);
+  if (pacificCalendarDay(new Date()) < '2026-11-10') {
+    assert.equal(res.status, 404);
+    assert.equal((await res.text()).includes(FOUNDERS_FEATURE_TITLE), false);
+  }
+});
+
 test('crawler preview is 404 before the publish day and has Open Graph after', async () => {
   const hidden = await shareGet(
     new Request('https://www.addictionpas.org/api/share?slug=feature&feature=founders-jim-anderson-shani-wilson'),

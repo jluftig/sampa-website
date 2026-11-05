@@ -123,7 +123,10 @@ export function topicSharePreview(modules, date) {
   };
 }
 
-export async function GET(request, now = new Date()) {
+export async function GET(request, maybeNow) {
+  // Vercel calls this with a request context as the second argument.
+  // Tests pass a Date to check the publish-day gate. Anything else is "now".
+  const now = maybeNow instanceof Date ? maybeNow : new Date();
   const reqUrl = new URL(request.url);
   const slug = reqUrl.searchParams.get('slug') || '';
   const date = reqUrl.searchParams.get('date') || '';
