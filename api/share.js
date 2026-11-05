@@ -178,8 +178,22 @@ export async function GET(request, maybeNow) {
   const isTopic = slug === 'topic';
   const isFeature = slug === 'feature';
   const fullFeature = isFeature ? publishedFeature(loadFeatureModules(), featureSlug, now) : null;
-  if (isFeature && !fullFeature) return notFound();
-  if (isFeature && reqUrl.searchParams.get('part') === 'body') {
+  const userAgent = request.headers.get('user-agent') || '';
+  const wantsBody = isFeature && reqUrl.searchParams.get('part') === 'body';
+  if (isFeature && !fullFeature) {
+    // Browsers get the SPA shell so the styled Not Found page can render.
+    // Social bots and the essay endpoint stay a plain 404.
+    if (wantsBody || SOCIAL_BOT.test(userAgent)) return notFound();
+    return new Response(await spaShell(request), {
+      status: 404,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-store',
+        'x-robots-tag': 'noindex',
+      },
+    });
+  }
+  if (wantsBody) {
     return new Response(JSON.stringify(featureBodyPayload(fullFeature)), {
       status: 200,
       headers: {
@@ -188,7 +202,6 @@ export async function GET(request, maybeNow) {
       },
     });
   }
-  const userAgent = request.headers.get('user-agent') || '';
   if (isFeature && !SOCIAL_BOT.test(userAgent)) {
     return new Response(await spaShell(request), {
       status: 200,

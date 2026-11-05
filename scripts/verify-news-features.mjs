@@ -268,13 +268,21 @@ test('a non-date share context does not crash the feature preview', async () => 
 });
 
 test('every user agent gets 404 before Nov 10 PT and the shell or share card after', async () => {
-  for (const ua of [CURL, GOOGLEBOT, FACEBOOK]) {
+  for (const ua of [CURL, GOOGLEBOT]) {
     const hidden = await featureRequest(ua, beforePublish);
     assert.equal(hidden.status, 404, ua);
+    assert.equal(hidden.headers.get('cache-control'), 'no-store', ua);
+    assert.equal(hidden.headers.get('x-robots-tag'), 'noindex', ua);
     const text = await hidden.text();
+    assert.match(text, /<div id="root"><\/div>/, ua);
     assert.equal(text.includes(ESSAY_SENTENCE), false, ua);
-    assert.equal(text.includes('<div id="root">'), false, ua);
   }
+
+  const botHidden = await featureRequest(FACEBOOK, beforePublish);
+  assert.equal(botHidden.status, 404);
+  const botText = await botHidden.text();
+  assert.equal(botText.includes('<div id="root">'), false);
+  assert.equal(botText.includes(ESSAY_SENTENCE), false);
 
   for (const ua of [CURL, GOOGLEBOT]) {
     const shown = await featureRequest(ua, onPublish);
@@ -299,7 +307,9 @@ test('every user agent gets 404 before Nov 10 PT and the shell or share card aft
 test('the essay body endpoint is 404 before the publish day and 200 after', async () => {
   const hidden = await featureRequest(CURL, beforePublish, 'body');
   assert.equal(hidden.status, 404);
-  assert.equal((await hidden.text()).includes(ESSAY_SENTENCE), false);
+  const hiddenBody = await hidden.text();
+  assert.equal(hiddenBody.includes(ESSAY_SENTENCE), false);
+  assert.equal(hiddenBody.includes('<div id="root">'), false);
 
   const google = await featureRequest(GOOGLEBOT, beforePublish, 'body');
   assert.equal(google.status, 404);
