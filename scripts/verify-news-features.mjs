@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import test from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -13,6 +15,7 @@ import {
   collectFeatures,
   devAsOfDay,
   devPreviewFeature,
+  featureBodyUrl,
   featureSharePreview,
   featureSitemapPaths,
   isFeatureVisible,
@@ -31,6 +34,19 @@ const modules = { [seedPath]: seed };
 const beforePublish = new Date('2026-11-10T07:59:59.000Z');
 const onPublish = new Date('2026-11-10T08:00:00.000Z');
 const BYLINE = 'Kerith Hartmann, PA-C, Advocacy, Success, and Impact Officer, SAMPA';
+const ESSAY_SENTENCE = 'I checked in with both of them to learn what brought them to this work';
+const GOOGLEBOT = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+const CURL = 'curl/8.7.1';
+const FACEBOOK = 'facebookexternalhit/1.1';
+const FEATURE_URL = 'https://www.addictionpas.org/news/features/founders-jim-anderson-shani-wilson';
+
+function featureRequest(ua, when, part) {
+  const url = new URL('https://www.addictionpas.org/api/share');
+  url.searchParams.set('slug', 'feature');
+  url.searchParams.set('feature', 'founders-jim-anderson-shani-wilson');
+  if (part) url.searchParams.set('part', part);
+  return shareGet(new Request(url, { headers: { 'user-agent': ua } }), when);
+}
 
 function render(node) {
   const auth = {
@@ -251,34 +267,78 @@ test('a non-date share context does not crash the feature preview', async () => 
   }
 });
 
-test('crawler preview is 404 before the publish day and has Open Graph after', async () => {
-  const hidden = await shareGet(
-    new Request('https://www.addictionpas.org/api/share?slug=feature&feature=founders-jim-anderson-shani-wilson'),
-    beforePublish,
-  );
-  assert.equal(hidden.status, 404);
-  assert.equal((await hidden.text()).includes(FOUNDERS_FEATURE_TITLE), false);
+test('every user agent gets 404 before Nov 10 PT and the shell or share card after', async () => {
+  for (const ua of [CURL, GOOGLEBOT, FACEBOOK]) {
+    const hidden = await featureRequest(ua, beforePublish);
+    assert.equal(hidden.status, 404, ua);
+    const text = await hidden.text();
+    assert.equal(text.includes(ESSAY_SENTENCE), false, ua);
+    assert.equal(text.includes('<div id="root">'), false, ua);
+  }
 
-  const shown = await shareGet(
-    new Request('https://www.addictionpas.org/api/share?slug=feature&feature=founders-jim-anderson-shani-wilson'),
-    onPublish,
-  );
-  assert.equal(shown.status, 200);
-  const html = await shown.text();
+  for (const ua of [CURL, GOOGLEBOT]) {
+    const shown = await featureRequest(ua, onPublish);
+    assert.equal(shown.status, 200, ua);
+    const html = await shown.text();
+    assert.match(html, /<div id="root"><\/div>/);
+    assert.equal(html.includes(ESSAY_SENTENCE), false);
+  }
+
+  const card = await featureRequest(FACEBOOK, onPublish);
+  assert.equal(card.status, 200);
+  const html = await card.text();
   assert.match(html, /<title>Founders Feature: Jim Anderson and Shani Wilson \| SAMPA<\/title>/);
   assert.match(html, /property="og:title" content="Founders Feature: Jim Anderson and Shani Wilson \| SAMPA"/);
   assert.match(html, /property="og:description" content="When Jim Anderson started in SAMPA, formerly \(and fondly\) called SPAAM, it was little more than a spark of an idea\."/);
   assert.match(html, /rel="canonical" href="https:\/\/www\.addictionpas\.org\/news\/features\/founders-jim-anderson-shani-wilson"/);
+  assert.equal(html.includes(ESSAY_SENTENCE), false);
   assert.equal(featureSharePreview(modules, 'founders-jim-anderson-shani-wilson', beforePublish), null);
+  assert.equal(FEATURE_URL.endsWith('/news/features/founders-jim-anderson-shani-wilson'), true);
 });
 
-test('the feature route is registered ahead of the post slug, and crawlers rewrite to share', () => {
+test('the essay body endpoint is 404 before the publish day and 200 after', async () => {
+  const hidden = await featureRequest(CURL, beforePublish, 'body');
+  assert.equal(hidden.status, 404);
+  assert.equal((await hidden.text()).includes(ESSAY_SENTENCE), false);
+
+  const google = await featureRequest(GOOGLEBOT, beforePublish, 'body');
+  assert.equal(google.status, 404);
+
+  const shown = await featureRequest(CURL, onPublish, 'body');
+  assert.equal(shown.status, 200);
+  assert.match(shown.headers.get('content-type'), /application\/json/);
+  const body = await shown.json();
+  assert.equal(body.paragraphs.some((paragraph) => paragraph.includes(ESSAY_SENTENCE)), true);
+  assert.equal(body.references.length, 4);
+
+  const page = readFileSync(new URL('../src/pages/FeatureArticle.jsx', import.meta.url), 'utf8');
+  assert.match(page, /featureBodyUrl\(slug\)/);
+  assert.equal(page.includes('newsFeatureCatalog'), false);
+  assert.equal(page.includes('import.meta.glob'), false);
+  assert.equal(featureBodyUrl('founders-jim-anderson-shani-wilson'), '/api/share?slug=feature&feature=founders-jim-anderson-shani-wilson&part=body');
+});
+
+test('built client assets do not contain the essay', { timeout: 120000 }, () => {
+  execFileSync('npx', ['vite', 'build'], { stdio: 'pipe' });
+  const dir = join(process.cwd(), 'dist', 'assets');
+  const files = readdirSync(dir).filter((name) => name.endsWith('.js'));
+  assert.ok(files.length > 0);
+  for (const name of files) {
+    const source = readFileSync(join(dir, name), 'utf8');
+    assert.equal(source.includes(ESSAY_SENTENCE), false, name);
+    assert.equal(source.includes('newsFeatureCatalog'), false, name);
+  }
+});
+
+test('the feature route is registered ahead of the post slug, and every user agent rewrites to share', () => {
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const featureAt = app.indexOf('path="/news/features/:slug"');
   const postAt = app.indexOf('path="/news/:slug"');
   assert.ok(featureAt > -1 && featureAt < postAt);
-  const vercel = readFileSync(new URL('../vercel.json', import.meta.url), 'utf8');
-  assert.match(vercel, /\/news\/features\/:slug/);
-  assert.match(vercel, /slug=feature&feature=:slug/);
+  const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  const rule = vercel.rewrites.find((entry) => entry.source === '/news/features/:slug');
+  assert.equal(rule.destination, '/api/share?slug=feature&feature=:slug');
+  assert.equal(rule.has, undefined);
   assert.equal(existsSync(new URL('../content/daily-news/2026-11-10.json', import.meta.url)), false);
+  assert.equal(existsSync(new URL('../src/lib/newsFeatureCatalog.js', import.meta.url)), false);
 });

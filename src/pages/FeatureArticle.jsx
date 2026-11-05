@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import {
   FEATURE_LISTINGS,
   devAsOfDay,
+  featureBodyUrl,
   featureBySlug,
   isFeatureVisible,
 } from '../lib/newsFeatures.js';
@@ -17,17 +18,28 @@ export default function FeatureArticle() {
   const listing = featureBySlug(FEATURE_LISTINGS, slug);
   const visible = isFeatureVisible(listing, new Date(), asOfDay);
   const [modules, setModules] = useState(null);
+  const [missing, setMissing] = useState(false);
 
   useEffect(() => {
     if (!visible) return undefined;
     let active = true;
-    import('../lib/newsFeatureCatalog.js').then((mod) => {
-      if (active) setModules(mod.default);
-    });
+    fetch(featureBodyUrl(slug))
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!active) return;
+        if (!data?.slug) {
+          setMissing(true);
+          return;
+        }
+        setModules({ [`/content/features/${data.slug}.json`]: data });
+      })
+      .catch(() => {
+        if (active) setMissing(true);
+      });
     return () => { active = false; };
-  }, [visible]);
+  }, [visible, slug]);
 
-  if (!visible) {
+  if (!visible || missing) {
     return <FeatureArticlePage slug={slug} modules={{}} asOfDay={asOfDay} />;
   }
 

@@ -21,6 +21,11 @@
       "permanent": true
     }
   ],
+  "functions": {
+    "api/share.js": {
+      "includeFiles": ["dist/index.html", "content/features/**"]
+    }
+  },
   "rewrites": [
     {
       "source": "/api/board-meetings",
@@ -61,13 +66,6 @@
     },
     {
       "source": "/news/features/:slug",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": ".*(facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Slack-ImgProxy|TelegramBot|WhatsApp|Discordbot|Pinterestbot|redditbot|SkypeUriPreview|vkShare).*"
-        }
-      ],
       "destination": "/api/share?slug=feature&feature=:slug"
     },
     {

@@ -2,9 +2,9 @@
 
 One JSON file per article. The filename is the slug: `content/features/<slug>.json`.
 
-The public route is `/news/features/<slug>`. A file is listed on `/news` and the route renders the article only on or after `publishedOn`, using the calendar day in America/Los_Angeles. Before that day the route is the site 404, crawler previews are HTTP 404, and `/news` does not link it.
+The public route is `/news/features/<slug>`. Vercel rewrites that path, for every user agent, to `api/share`. Before `publishedOn` (America/Los_Angeles calendar day) the response is HTTP 404. On that day, browsers receive the SPA shell and social crawlers receive the share card. `/news` lists the article on the same day.
 
-`?asOf=YYYY-MM-DD` moves that clock for local `npm run dev` screenshots only. Production builds ignore it.
+The essay itself is not in the client bundle. The page fetches `/api/share?slug=feature&feature=<slug>&part=body` after the gate opens. That response is HTTP 404 before the publish day and the essay JSON after it. Card fields (title, teaser, byline, href) stay in `FEATURE_LISTINGS`.
 
 The founders title lives in one constant, `FOUNDERS_FEATURE_TITLE` in `src/lib/newsFeatures.js`. The article body is Kerith Hartmann's text, unchanged.
 

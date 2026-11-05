@@ -188,10 +188,20 @@ export function featureSitemapPaths(features, now = new Date()) {
   return visibleFeatures(features, now).map((feature) => feature.path);
 }
 
-export function featureSharePreview(modules, slug, now = new Date()) {
+export function featureBodyUrl(slug) {
+  return `/api/share?slug=feature&feature=${encodeURIComponent(slug)}&part=body`;
+}
+
+export function publishedFeature(modules, slug, now = new Date()) {
   if (!slug || !SLUG.test(slug)) return null;
   const feature = featureBySlug(collectFeatures(modules, () => {}), slug);
   if (!feature || !isFeatureVisible(feature, now)) return null;
+  return feature;
+}
+
+export function featureSharePreview(modules, slug, now = new Date()) {
+  const feature = publishedFeature(modules, slug, now);
+  if (!feature) return null;
   return {
     title: `${feature.title} | SAMPA`,
     description: feature.description,

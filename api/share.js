@@ -9,7 +9,49 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { dailyNewsTitle } from '../src/lib/dailyNewsArchive.js';
 import { collectRoundups, roundupFromEntry } from '../src/lib/dailyNewsLoad.js';
-import { featureSharePreview } from '../src/lib/newsFeatures.js';
+import { featureSharePreview, publishedFeature } from '../src/lib/newsFeatures.js';
+
+const SOCIAL_BOT = /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Slack-ImgProxy|TelegramBot|WhatsApp|Discordbot|Pinterestbot|redditbot|SkypeUriPreview|vkShare/i;
+
+function notFound() {
+  return new Response('Not found', {
+    status: 404,
+    headers: {
+      'content-type': 'text/plain; charset=utf-8',
+      'cache-control': 'no-store',
+      'x-robots-tag': 'noindex',
+    },
+  });
+}
+
+export async function spaShell(request) {
+  const distPath = join(process.cwd(), 'dist', 'index.html');
+  try {
+    return readFileSync(distPath, 'utf8');
+  } catch {
+    /* The function bundle may not contain the built shell. */
+  }
+  if (process.env.VERCEL) {
+    const origin = new URL(request.url).origin;
+    const res = await fetch(new URL('/index.html', origin), {
+      headers: { 'user-agent': 'SAMPA-spa-shell' },
+    });
+    if (res.ok) return res.text();
+  }
+  return readFileSync(join(process.cwd(), 'index.html'), 'utf8');
+}
+
+function featureBodyPayload(feature) {
+  return {
+    slug: feature.slug,
+    publishedOn: feature.publishedOn,
+    byline: feature.byline,
+    description: feature.description,
+    paragraphs: feature.paragraphs,
+    signature: feature.signature,
+    references: feature.references,
+  };
+}
 import { topicPage } from '../src/lib/topicRoundup.js';
 
 const DAILY_DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
@@ -135,13 +177,28 @@ export async function GET(request, maybeNow) {
   const isDaily = slug === 'daily';
   const isTopic = slug === 'topic';
   const isFeature = slug === 'feature';
-  const feature = isFeature ? featureSharePreview(loadFeatureModules(), featureSlug, now) : null;
-  if (isFeature && !feature) {
-    return new Response('Not found', {
-      status: 404,
-      headers: { 'content-type': 'text/plain; charset=utf-8' },
+  const fullFeature = isFeature ? publishedFeature(loadFeatureModules(), featureSlug, now) : null;
+  if (isFeature && !fullFeature) return notFound();
+  if (isFeature && reqUrl.searchParams.get('part') === 'body') {
+    return new Response(JSON.stringify(featureBodyPayload(fullFeature)), {
+      status: 200,
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'no-store',
+      },
     });
   }
+  const userAgent = request.headers.get('user-agent') || '';
+  if (isFeature && !SOCIAL_BOT.test(userAgent)) {
+    return new Response(await spaShell(request), {
+      status: 200,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-store',
+      },
+    });
+  }
+  const feature = isFeature ? featureSharePreview(loadFeatureModules(), featureSlug, now) : null;
   const topic = isTopic ? topicSharePreview(loadTopicModules(), date) : null;
   if (isTopic && !topic) {
     return new Response('Not found', {
