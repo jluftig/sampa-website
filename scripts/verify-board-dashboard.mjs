@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { GET } from '../api/newsletter-stats.js';
+import { route } from '../api/newsletter-stats.js';
 import { handleBoardNumbers } from '../api/_lib/boardNumbers.js';
 import { handleFinanceStats } from '../api/_lib/finance-stats.js';
 import { handleSubscriberSnapshot } from '../api/_lib/subscriberSnapshotJob.js';
@@ -45,7 +45,7 @@ describe('signed-in members stay on /board/dashboard', () => {
 
 describe('GET finance and board-numbers', () => {
   it('returns 403 for an active member and finance for a chair', async () => {
-    const member = await read(await GET(request('/api/newsletter-stats?section=finance'), {
+    const member = await read(await route(request('/api/newsletter-stats?section=finance'), {
       requireUser: async () => ({ id: 'member' }),
       loadViewerProfile: async () => ({ role: 'member', membership_status: 'active' }),
       env: { STRIPE_SECRET_KEY: 'sk_test_secret' },
@@ -57,7 +57,7 @@ describe('GET finance and board-numbers', () => {
     assert.equal(member.body.error, 'Not authorized');
     assert.equal(member.body.relay, undefined);
 
-    const chair = await read(await GET(request('/api/newsletter-stats?section=finance'), {
+    const chair = await read(await route(request('/api/newsletter-stats?section=finance'), {
       requireUser: async () => ({ id: 'chair' }),
       loadViewerProfile: async () => ({ role: 'member', is_committee_chair: true }),
       loadRelay: async () => RELAY,
@@ -84,7 +84,7 @@ describe('GET finance and board-numbers', () => {
     assert.equal(denied.status, 403);
     assert.equal(denied.body.error, 'Not authorized');
 
-    const allowed = await read(await GET(request('/api/newsletter-stats?section=board-numbers'), {
+    const allowed = await read(await route(request('/api/newsletter-stats?section=board-numbers'), {
       requireUser: async () => ({ id: 'member' }),
       loadMemberProfile: async () => ({ role: 'member', membership_status: 'active' }),
       loadMembershipRows: async () => ([
@@ -165,7 +165,7 @@ describe('subscriber snapshot job', () => {
   });
 
   it('refuses a missing or wrong cron secret', async () => {
-    const missing = await read(await GET(request('/api/newsletter-stats?section=subscriber-snapshot'), {
+    const missing = await read(await route(request('/api/newsletter-stats?section=subscriber-snapshot'), {
       env: { BREVO_API_KEY: 'secret-brevo-key' },
       upsertSnapshots: async () => {
         throw new Error('should not write');

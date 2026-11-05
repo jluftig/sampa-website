@@ -1,4 +1,3 @@
-// T78: Vercel calls GET(request, platformContext). That context is not deps.
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { createElement } from 'react';

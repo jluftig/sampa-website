@@ -1,5 +1,5 @@
 import { requireUser, json } from './_lib/clients.js';
-import { createTtlCache } from './_lib/ttl-cache.js';
+import { createTtlCache, plainCached } from './_lib/ttl-cache.js';
 import { brevoGet, loadSentCampaigns } from './_lib/brevo-readonly.js';
 import { handleMembershipStats } from './_lib/membership-stats.js';
 import { handleFinanceStats } from './_lib/finance-stats.js';
@@ -69,7 +69,7 @@ export async function handleNewsletterStats(request, deps = {}) {
     }
 
     const cacheKey = `newsletter:${cfg.listId}:${cfg.dailyListId}`;
-    const cached = cache.get(cacheKey);
+    const cached = plainCached(cache, cacheKey);
     if (cached) return newsletterJson(cached);
 
     const [list, dailyList, campaigns, snapshots] = await Promise.all([
@@ -135,9 +135,13 @@ export function isBoardMeetingsRequest(request) {
   return url.pathname === '/api/board-meetings' || url.pathname.endsWith('/board-meetings');
 }
 
-export async function GET(request, deps) {
+export async function route(request, deps = {}) {
   const url = new URL(request.url);
   const section = url.searchParams.get('section');
+  if ((request.method || 'GET').toUpperCase() === 'POST') {
+    if (section === 'email-preferences') return handleEmailPreferences(request, deps);
+    return json({ error: 'Not found' }, 404);
+  }
   if (section === 'email-preferences') return handleEmailPreferences(request, deps);
   if (section === 'membership') return handleMembershipStats(request, deps);
   if (section === 'finance') return handleFinanceStats(request, deps);
@@ -148,9 +152,10 @@ export async function GET(request, deps) {
   return handleNewsletterStats(request, deps);
 }
 
-export async function POST(request, deps) {
-  const url = new URL(request.url);
-  const section = url.searchParams.get('section');
-  if (section === 'email-preferences') return handleEmailPreferences(request, deps);
-  return json({ error: 'Not found' }, 404);
+export async function GET(request) {
+  return route(request, {});
+}
+
+export async function POST(request) {
+  return route(request, {});
 }

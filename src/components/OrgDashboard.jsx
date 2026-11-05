@@ -94,6 +94,7 @@ function useRosterGet(path) {
 }
 
 export function MembershipPanel({ loading, error, stats, profile }) {
+  const missing = stats != null && stats.activeNow == null;
   const series = stats?.series || [];
   const hasSeries = series.some((point) => point.active);
 
@@ -113,13 +114,13 @@ export function MembershipPanel({ loading, error, stats, profile }) {
 
       {loading && <p className="text-text/50 font-data text-sm">Loading…</p>}
 
-      {!loading && error && (
+      {!loading && (error || missing) && (
         <p className="text-text/60 text-sm">
           Couldn&apos;t load membership stats right now. Try again in a minute.
         </p>
       )}
 
-      {!loading && !error && stats && (
+      {!loading && !error && !missing && stats && (
         <>
           <div className="grid grid-cols-2 gap-3 mb-3">
             <Stat label="Active now" value={formatCount(stats.activeNow)} />
@@ -167,6 +168,7 @@ export function MembershipPanel({ loading, error, stats, profile }) {
 export function FinancePanel({ loading, error, stats }) {
   const notConfigured = error?.code === 'not_configured' || error?.status === 503;
   const restricted = error?.code === 'finance_restricted';
+  const missing = stats != null && stats.revenueCents == null;
   const series = stats?.series || [];
   const relay = restricted ? null : (stats?.relay || error?.relay);
 
@@ -197,13 +199,13 @@ export function FinancePanel({ loading, error, stats }) {
         </p>
       )}
 
-      {!loading && error && !notConfigured && !restricted && (
+      {!loading && (error || missing) && !notConfigured && !restricted && (
         <p className="text-text/60 text-sm">
           Couldn&apos;t load finance stats right now. Try again in a minute.
         </p>
       )}
 
-      {!loading && !error && stats && (
+      {!loading && !error && !missing && stats && (
         <>
           <h3 className="text-sm font-bold mb-1">Membership dues (Stripe)</h3>
           <p className="text-text/50 text-xs mb-3 max-w-xl">

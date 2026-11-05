@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { requireUser, supabaseAdmin, json } from './clients.js';
-import { createTtlCache } from './ttl-cache.js';
+import { createTtlCache, plainCached } from './ttl-cache.js';
 import { canViewBoardDashboard } from '../../src/lib/memberRoster.js';
 import { loadBoardDashboardProfile } from './boardDashboardAccess.js';
 import { financeConfigFromEnv, shapeFinanceStats } from '../../src/lib/financeStats.js';
@@ -95,7 +95,7 @@ export async function handleFinanceStats(request, deps = {}) {
     }
 
     const cacheKey = `finance:${now.toISOString().slice(0, 7)}`;
-    const cached = cache.get(cacheKey);
+    const cached = plainCached(cache, cacheKey);
     if (cached) return financeJson(cached);
 
     const since = new Date(`${monthKeys(now)[0]}-01T00:00:00.000Z`);

@@ -190,6 +190,7 @@ export function SiteTrafficPanel({ range, onRangeChange, loading, error, stats }
 
 export function NewsletterPanel({ loading, error, stats }) {
   const notConfigured = error?.code === 'not_configured' || error?.status === 503;
+  const missing = stats != null && stats.subscribers == null;
   const issues = stats?.issues || [];
   const chronological = [...issues].reverse();
   const latest = stats?.latest;
@@ -213,13 +214,13 @@ export function NewsletterPanel({ loading, error, stats }) {
         <p className="text-text/60 text-sm">Newsletter stats not configured.</p>
       )}
 
-      {!loading && error && !notConfigured && (
+      {!loading && (error || missing) && !notConfigured && (
         <p className="text-text/60 text-sm">
           Couldn&apos;t load newsletter stats right now. Try again in a minute.
         </p>
       )}
 
-      {!loading && !error && stats && (
+      {!loading && !error && !missing && stats && (
         <>
           <div className="grid grid-cols-2 gap-3 mb-3">
             <Stat label="List size" value={formatCount(stats.subscribers)} />
@@ -357,6 +358,9 @@ export default function SiteTrafficCard() {
       try {
         const data = await apiGet('/api/newsletter-stats');
         if (!active) return;
+        if (data == null || typeof data !== 'object' || data.subscribers == null) {
+          throw new Error('Could not load newsletter stats right now.');
+        }
         setNewsletter(data);
         setNewsletterLoading(false);
       } catch (err) {
