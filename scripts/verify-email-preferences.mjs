@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readdirSync } from 'node:fs';
 import { describe, it } from 'node:test';
-import { GET, POST } from '../api/newsletter-stats.js';
+import { route } from '../api/newsletter-stats.js';
 import { handleEmailPreferences } from '../api/_lib/email-preferences.js';
 import { resolveEmailLists, shapeEmailPreferences } from '../src/lib/emailLists.js';
 
@@ -106,7 +106,7 @@ describe('email preferences API', () => {
       listIds: [3, 42],
       emailBlacklisted: false,
     }));
-    const res = await GET(request('GET'), {
+    const res = await route(request('GET'), {
       ...memberDeps(),
       fetchImpl,
     });
@@ -149,7 +149,7 @@ describe('email preferences API', () => {
       order.push('flag');
       return recordFlag(userId, on);
     };
-    const res = await POST(request('POST', { key: 'updates', on: true }), deps);
+    const res = await route(request('POST', { key: 'updates', on: true }), deps);
     assert.equal(res.status, 200);
     const write = calls.find((call) => call.method === 'POST' && call.url.endsWith('/contacts'));
     assert.deepEqual(write.body.listIds, [3]);

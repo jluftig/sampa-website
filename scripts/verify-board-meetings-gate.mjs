@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { isActiveMemberAccess } from '../src/lib/memberHome.js';
 import { boardAccessStatus, handleBoardMeetings } from '../api/_lib/boardMeetingsHandler.js';
-import { GET, isBoardMeetingsRequest } from '../api/newsletter-stats.js';
+import { isBoardMeetingsRequest, route } from '../api/newsletter-stats.js';
 
 const FIXTURE_BODY = 'Fixture agenda line';
 
@@ -122,7 +122,7 @@ describe('GET /api/board-meetings', () => {
   it('routes the board section before the roster gate', async () => {
     assert.equal(isBoardMeetingsRequest(request('https://www.addictionpas.org/api/newsletter-stats?section=board')), true);
     assert.equal(isBoardMeetingsRequest(request('https://www.addictionpas.org/api/board-meetings?slug=2026-04')), true);
-    const res = await read(await GET(
+    const res = await read(await route(
       request('https://www.addictionpas.org/api/newsletter-stats?section=board&slug=2026-09'),
       depsFor(null, null),
     ));

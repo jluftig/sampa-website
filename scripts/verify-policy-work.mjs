@@ -24,7 +24,7 @@ import {
   applyPolicyWorkInternal,
   trimPolicyWorkOwner,
 } from '../src/data/policyWork.js';
-import { GET } from '../api/newsletter-stats.js';
+import { route } from '../api/newsletter-stats.js';
 
 const president = {
   role: 'member',
@@ -407,34 +407,34 @@ describe('policy work internal payload', () => {
     const originalWarn = console.warn;
     console.warn = (...args) => warnings.push(args.join(' '));
     try {
-    const anon = await readJson(await GET(request(), { requireUser: async () => null }));
+    const anon = await readJson(await route(request(), { requireUser: async () => null }));
     assert.equal(anon.status, 401);
     assert.equal(anon.body.error, 'Sign in required');
     assert.equal(anon.cache, 'private, no-store');
 
-    const roster = await readJson(await GET(request(), authed(viewer)));
+    const roster = await readJson(await route(request(), authed(viewer)));
     assert.equal(roster.status, 403);
     assert.equal(roster.body.error, 'Not authorized');
     assert.equal(roster.body.items, undefined);
 
-    const chair = await readJson(await GET(request(), authed({ role: 'member', is_committee_chair: true })));
+    const chair = await readJson(await route(request(), authed({ role: 'member', is_committee_chair: true })));
     assert.equal(chair.status, 403);
     assert.equal(chair.body.items, undefined);
 
-    const missing = await readJson(await GET(request(), authed(president, {})));
+    const missing = await readJson(await route(request(), authed(president, {})));
     assert.equal(missing.status, 200);
     assert.deepEqual(missing.body.items, []);
     assert.equal(missing.body.internalDetailsUnavailable, true);
 
     const leaked = 'do-not-log-this-env-value';
-    const invalid = await readJson(await GET(request(), authed(president, { POLICY_WORK_INTERNAL: leaked })));
+    const invalid = await readJson(await route(request(), authed(president, { POLICY_WORK_INTERNAL: leaked })));
     assert.equal(invalid.status, 200);
     assert.deepEqual(invalid.body.items, []);
     assert.equal(invalid.body.internalDetailsUnavailable, true);
     assert.match(warnings.join('\n'), /POLICY_WORK_INTERNAL is missing or invalid/);
     assert.equal(warnings.some((line) => line.includes(leaked)), false);
 
-    const board = await readJson(await GET(request(), authed(president)));
+    const board = await readJson(await route(request(), authed(president)));
     assert.equal(board.status, 200);
     assert.equal(board.cache, 'private, no-store');
     assert.equal(board.body.items[0].id, 'php-2026-1');
@@ -449,7 +449,7 @@ describe('policy work internal payload', () => {
     assert.equal(board.body.items[1].packetUrl, null);
     assert.equal(board.body.items[1].notes['fill-sheet'], 'Sample note for the third row.');
 
-    const adminRes = await readJson(await GET(request(), authed(admin)));
+    const adminRes = await readJson(await route(request(), authed(admin)));
     assert.equal(adminRes.status, 200);
     assert.equal(adminRes.body.items[0].submittedTo, 'Sample Person');
 

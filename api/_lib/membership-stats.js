@@ -1,5 +1,5 @@
 import { requireUser, supabaseAdmin, json } from './clients.js';
-import { createTtlCache } from './ttl-cache.js';
+import { createTtlCache, plainCached } from './ttl-cache.js';
 import { canViewBoardDashboard } from '../../src/lib/memberRoster.js';
 import { loadBoardDashboardProfile } from './boardDashboardAccess.js';
 import { shapeMembershipStats } from '../../src/lib/membershipStats.js';
@@ -49,7 +49,7 @@ export async function handleMembershipStats(request, deps = {}) {
     }
 
     const cacheKey = `membership:${now.toISOString().slice(0, 7)}`;
-    const cached = cache.get(cacheKey);
+    const cached = plainCached(cache, cacheKey);
     if (cached) return membershipJson(cached);
 
     const rows = await loadRows();

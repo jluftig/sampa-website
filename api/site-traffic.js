@@ -1,5 +1,5 @@
 import { requireUser, json } from './_lib/clients.js';
-import { createTtlCache } from './_lib/ttl-cache.js';
+import { createTtlCache, plainCached } from './_lib/ttl-cache.js';
 import { analyticsConfigFromEnv, queryVisits } from './_lib/vercel-analytics.js';
 import { loadBoardDashboardProfile } from './_lib/boardDashboardAccess.js';
 import {
@@ -56,7 +56,7 @@ export async function handleSiteTraffic(request, deps = {}) {
     const range = parseTrafficRange(url.searchParams.get('range'));
     const window = trafficWindow(range, now);
     const cacheKey = `traffic:${range}:${window.since}:${window.until}`;
-    const cached = cache.get(cacheKey);
+    const cached = plainCached(cache, cacheKey);
     if (cached) return trafficJson(cached);
 
     const daySince = seriesSince(window.since);
