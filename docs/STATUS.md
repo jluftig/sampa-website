@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-03 (T77 board observer contacts claimed.)
+**Last updated:** 2026-11-03 (T77 board observer contacts in PR #165. Do not merge.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -65,7 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T77 | Board member-observer contacts | cursor | 2026-11-03 | **Claimed cursor.** `/board` schedule intro keeps info@addictionpas.org and adds mailto links for the President (president@addictionpas.org) and the Secretary (secretary@addictionpas.org). No Zoom link. Member gate stays. Preview PR only. Do not merge. |
+| T77 | Board member-observer contacts | cursor | 2026-11-03 | **Claimed cursor.** PR **#165** (preview only). `/board` schedule intro keeps info@addictionpas.org and adds mailto links for the President (president@addictionpas.org) and the Secretary (secretary@addictionpas.org). No Zoom link. Member gate stays. Do not merge. |
 | T76 | Donor badge on the member directory | cursor | 2026-11-01 | **Claimed cursor.** Preview PR **#163**. Do not merge. Paste join-flow SQL first, then `2026-11-01-donor-directory-badge.sql`. A full refund or open dispute recomputes `donated_at` from gifts still matched by account, customer, or email. A won dispute restores the gift only when the charge is not fully refunded. |
 | T61 | Join / renew flow and 2026 member survey | cursor | 2026-11-01 | **Merged PR #162** (`6c58cc4`) to production. Deploy `dpl_F18sx2d1nDLvBqvdRYdhDWzMgacc` is READY on www.addictionpas.org. SQL `supabase/migrations/2026-11-01-join-flow-profile.sql` is **not** applied yet. `career_stage` and `member_survey_responses` are still missing in production. Josh pastes that file in the Supabase SQL Editor. |
 | T75 | Emerging Practice Monthly No. 1 and three-list signup | cursor | 2026-10-29 | **Claimed cursor.** Draft PR **#160** (preview only). Replace the Oct 19 topic draft with No. 1 (October 2026) from campaign 62. Every public signup card offers all three lists inline, with the page list pre-checked, and links to `/subscriptions`. Keys and env names stay. Do not merge until Josh says. |
