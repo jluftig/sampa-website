@@ -23,7 +23,9 @@ export function postDayKey(publishedAt) {
   return PT_DAY.format(date);
 }
 
-export function buildNewsFeed(posts = [], roundups = []) {
+const KIND_RANK = { feature: 0, roundup: 1, post: 2 };
+
+export function buildNewsFeed(posts = [], roundups = [], features = []) {
   const entries = [];
   for (const post of posts || []) {
     if (!post || !post.slug) continue;
@@ -45,10 +47,20 @@ export function buildNewsFeed(posts = [], roundups = []) {
       roundup,
     });
   }
+  for (const feature of features || []) {
+    if (!feature || !feature.slug || !feature.publishedOn) continue;
+    entries.push({
+      kind: 'feature',
+      key: `feature-${feature.slug}`,
+      day: feature.publishedOn,
+      at: `${feature.publishedOn}T12:00:00`,
+      feature,
+    });
+  }
   entries.sort((a, b) => {
     if (a.day !== b.day) return a.day < b.day ? 1 : -1;
-    // Same day: the roundup leads, then posts newest first.
-    if (a.kind !== b.kind) return a.kind === 'roundup' ? -1 : 1;
+    // Same day: a feature leads, then the roundup, then posts newest first.
+    if (a.kind !== b.kind) return KIND_RANK[a.kind] - KIND_RANK[b.kind];
     return a.at < b.at ? 1 : a.at > b.at ? -1 : 0;
   });
   return entries;

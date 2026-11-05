@@ -60,6 +60,17 @@
       "destination": "/api/share?slug=topic&date=:date"
     },
     {
+      "source": "/news/features/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Slack-ImgProxy|TelegramBot|WhatsApp|Discordbot|Pinterestbot|redditbot|SkypeUriPreview|vkShare).*"
+        }
+      ],
+      "destination": "/api/share?slug=feature&feature=:slug"
+    },
+    {
       "source": "/news/:slug",
       "has": [
         {

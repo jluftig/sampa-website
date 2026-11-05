@@ -72,6 +72,7 @@ src/
     useFavorites.js         saved-post ids + optimistic toggle
     tags.js                 collectPostTags(post)
     dailyNews.js            build-time catalog of content/daily-news/*.json (newest first)
+    newsFeatures.js         feature articles in content/features/; publish-day gate (America/Los_Angeles)
     dailyNewsArchive.js     dated-route resolver, archive paging, month index, keyword tags
     slug.js format.js cite.js share.js
   components/               guards (Require*), Navbar, Footer, PostComments, AuthorPicker, …

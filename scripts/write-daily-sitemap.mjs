@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { dailySitemapPaths } from '../src/lib/dailyNewsArchive.js';
 import { collectRoundups } from '../src/lib/dailyNewsLoad.js';
+import { collectFeatures, featureSitemapPaths } from '../src/lib/newsFeatures.js';
 
 const dir = join(process.cwd(), 'content', 'daily-news');
 const modules = {};
@@ -11,8 +12,22 @@ for (const name of readdirSync(dir)) {
 }
 
 const roundups = collectRoundups(modules, () => {});
+const featureDir = join(process.cwd(), 'content', 'features');
+const featureModules = {};
+try {
+  for (const name of readdirSync(featureDir)) {
+    if (!name.endsWith('.json')) continue;
+    featureModules[`/content/features/${name}`] = JSON.parse(readFileSync(join(featureDir, name), 'utf8'));
+  }
+} catch {
+  /* no features directory yet */
+}
+const roundupsPaths = [
+  ...dailySitemapPaths(roundups),
+  ...featureSitemapPaths(collectFeatures(featureModules, () => {})),
+];
 const origin = 'https://www.addictionpas.org';
-const body = dailySitemapPaths(roundups)
+const body = roundupsPaths
   .map((path) => `  <url><loc>${origin}${path}</loc></url>`)
   .join('\n');
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
