@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-05",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Mobile MOUD and PrEP units cut deaths 71% but did not raise uptake vs navigation alone",
+      "outlet": "JAMA Psychiatry",
+      "date": "Nov 4",
+      "summary": "In the HPTN 094 randomized trial of 409 people who inject drugs with opioid use disorder in five U.S. cities, mobile co-delivery of PrEP, medications for opioid use disorder (MOUD), and peer navigation did not significantly improve confirmed PrEP or MOUD use at 26 weeks versus peer navigation alone (MOUD 14.8% vs 10.7%). All-cause deaths at 52 weeks were lower in the mobile arm (4 vs 13; hazard ratio 0.29). Authors say the mortality signal bears replication for low-threshold integrated models.",
+      "url": "https://www.hptn.org/news-and-events/press-releases/mobile-hiv-and-addiction-care-for-people-who-inject-drugs-reduces"
+    },
+    {
+      "headline": "Targeted kudzu cut binge-drinking days in adults with alcohol use disorder",
+      "outlet": "American Journal of Psychiatry",
+      "date": "Nov 4",
+      "summary": "A UCSF-led phase 2b trial randomized 120 adults with alcohol use disorder who binge drink to as-needed kudzu extract (2 grams before anticipated heavy drinking) or placebo plus weekly counseling for 12 weeks. Targeted kudzu reduced binge-drinking days versus placebo (incidence rate ratio 0.73), with effects persisting at a 3-month posttreatment visit, and adverse events similar between groups. Researchers cautioned that over-the-counter kudzu products vary and larger trials are needed.",
+      "url": "https://www.psychiatryonline.org/doi/10.1176/appi.ajp.20251354"
+    },
+    {
+      "headline": "Viewpoint: MOTAA could allow office-based methadone prescribing beyond OTPs",
+      "outlet": "JAMA Psychiatry",
+      "date": "Nov 4",
+      "summary": "A JAMA Psychiatry Viewpoint discusses the Modernizing Opioid Treatment Access Act, reintroduced June 24, 2026 by Senators Edward Markey and Rand Paul. The bill would let board-certified addiction medicine physicians prescribe methadone for opioid use disorder in office-based settings filled at community pharmacies, expanding access beyond opioid treatment programs. Authors frame MOTAA as the most comprehensive effort to overhaul U.S. methadone regulations since 1974.",
+      "url": "https://doi.org/10.1001/jamapsychiatry.2026.3451"
+    },
+    {
+      "headline": "NIH trial will test hospital OTP intake to link patients to methadone after discharge",
+      "outlet": "CU Anschutz",
+      "date": "Nov 4",
+      "summary": "Susan Calcaterra of CU Anschutz is leading a NIDA R01 implementation trial testing whether completing opioid treatment program intake during hospitalization improves methadone linkage within seven days of discharge. Participating hospitals include University of New Mexico Health, University of Utah Health, and NewYork-Presbyterian Weill Cornell. The study builds on a CU Anschutz program that started OTP enrollment in hospital and addressed barriers such as identification and transportation before discharge.",
+      "url": "https://news.cuanschutz.edu/accords/cu-anschutz-researcher-leads-nih-funded-study-to-improve-methadone-treatment-access"
+    },
+    {
+      "headline": "Cocaine overtakes heroin as most-mentioned drug in England and Wales deaths",
+      "outlet": "Office for National Statistics",
+      "date": "Nov 4",
+      "summary": "Office for National Statistics data show 5,519 drug-poisoning deaths registered in England and Wales in 2025, the first annual rate drop since 2012 (92.4 per million, down from 93.9). Cocaine was mentioned in 1,233 deaths, overtaking heroin or morphine (1,210) as the most frequently mentioned specific substance, while opiates and opioids as a group remained most common (2,324). Ketamine mentions rose to a record 115 deaths.",
+      "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/bulletins/deathsrelatedtodrugpoisoninginenglandandwales/2025registrations"
+    }
+  ]
+}
