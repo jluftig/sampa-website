@@ -21,11 +21,6 @@
       "permanent": true
     }
   ],
-  "functions": {
-    "api/share.js": {
-      "includeFiles": ["dist/index.html", "content/features/**"]
-    }
-  },
   "rewrites": [
     {
       "source": "/api/board-meetings",
