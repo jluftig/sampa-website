@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-06",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Philadelphia jails drop monthly Brixadi shot over cost; 1 in 3 on Suboxone caught misusing it",
+      "outlet": "The Philadelphia Inquirer",
+      "date": "Nov 5",
+      "summary": "Philadelphia ended jail use of Brixadi, a monthly buprenorphine injection, after it cost the city nearly $1 million over its $4.3 million jail addiction-treatment budget last year and the mayor's administration cut jail addiction-treatment funding by more than half in June. Of 719 people prescribed oral Suboxone in city jails since the June switch, one in three were caught misusing it and were cut off from treatment, according to city officials. Jail-based programs weighing the cost of long-acting buprenorphine against diversion and loss of treatment can use the case as a cautionary example.",
+      "url": "https://www.inquirer.com/health/philadelphia-jails-addiction-treatment-shots-halted-costs-20261105.html"
+    },
+    {
+      "headline": "NIDA's Volkow: GLP-1 drugs may reduce cravings across substances, but human evidence is preliminary",
+      "outlet": "Science",
+      "date": "Nov 5",
+      "summary": "In a Science Perspective, Nora Volkow of NIDA and Eric Wargo write that GLP-1 receptor agonists may reduce craving and use of alcohol, nicotine, opioids and stimulants, and that randomized trials show reduced heavy drinking in alcohol use disorder. Open questions include effects across substances, in people of normal weight, and alongside buprenorphine or methadone. Clinicians will field patient questions about these drugs before the trials that would answer them finish.",
+      "url": "https://www.science.org/doi/10.1126/science.aej9836"
+    },
+    {
+      "headline": "Cannabis drives most substance-related acute care visits in teens, alcohol in ages 55 to 64",
+      "outlet": "American Journal of Psychiatry",
+      "date": "Nov 4",
+      "summary": "A claims analysis of 1,355,161 people ages 16 to 64 with substance-related emergency or inpatient encounters from 2016 to 2023 found cannabis was involved in 83.7% of encounters among adolescents 16 to 18, versus 18.8% among adults 55 to 64, while alcohol was involved in 33% and 70.4%. Alcohol's share rose by about 1.8 percentage points a year among ages 25 to 34, and cannabis-related psychosis encounters rose among ages 16 to 24. The age split suggests screening and acute-care follow-up should be tailored to the substance that is driving harm in each age group.",
+      "url": "https://psychiatryonline.org/doi/full/10.1176/appi.ajp.20260023"
+    },
+    {
+      "headline": "Maine overdose deaths level off after years of decline, with 285 through September",
+      "outlet": "Portland Press Herald",
+      "date": "Nov 5",
+      "summary": "Maine recorded 285 fatal overdoses from January to September 2026, compared with 289 in the same period of 2025, after double-digit annual declines since the 2022 peak of 723 deaths. Nonfatal overdoses rose to 5,609 from 5,478, and the state's opioid response director said Medicaid and food assistance cuts and cost-of-living stress may be contributing. A plateau after steep declines is a reminder to policy leaders that treatment capacity and safety-net coverage have to hold for the gains to last.",
+      "url": "https://www.pressherald.com/2026/11/05/after-years-of-declines-drug-overdose-deaths-in-maine-this-year-on-track-with-2025/"
+    },
+    {
+      "headline": "Men who use cannabis occasionally felt stronger effects than women or frequent users, UCLA finds",
+      "outlet": "UCLA Health",
+      "date": "Nov 5",
+      "summary": "In a NIDA-funded experiment published in Neuropsychopharmacology, healthy adults who used cannabis weekly or daily smoked placebo, lower-THC and higher-THC cannabis in blinded sessions. Men who used occasionally reported feeling more high, sedated, impaired and anxious than other groups despite similar blood THC levels, while women and frequent-use men responded similarly, contrary to earlier research suggesting women are more sensitive. The sample was modest and the THC strengths were lower than many products sold today, so the findings are a prompt for larger studies rather than counseling guidance.",
+      "url": "https://www.uclahealth.org/news/release/study-challenges-belief-women-are-more-sensitive-effects"
+    }
+  ]
+}
