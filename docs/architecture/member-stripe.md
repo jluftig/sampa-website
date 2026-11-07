@@ -96,10 +96,15 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
   payment is stored as `past_due` and has no paid membership invoice, so a
   later checkout is still a new membership. If that invoice list errors or is
   truncated before a paid membership invoice is seen, the session is not
-  stamped and is not reported as a new membership. The click id cookie is
-  written only after the browser allows the report and Global Privacy Control
-  is off. The conversion label env var is required. Preview hosts do not load
-  the tag.
+  stamped and is not reported as a new membership. A `past_due` or `canceled`
+  profile with no `stripe_customer_id` is the same unknown. It is not treated
+  as never paid, and it is not stamped as a new membership. The click id
+  cookie is written only after the browser allows the report and Global
+  Privacy Control is off. If that allow happens only after the return from
+  Stripe, the original click id is already gone from the address and was not
+  stored. That visit cannot be tied to the ad. The click id is not kept
+  earlier to recover it. The conversion label env var is required. Preview
+  hosts do not load the tag.
   Server adds a matching-term
   Stripe `price_data` line item (recurring with the membership interval; lifetime
   is one-time) — no new `STRIPE_PRICE_*` env required for preview.

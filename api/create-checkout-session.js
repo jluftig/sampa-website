@@ -43,7 +43,8 @@ export async function GET(request, deps = {}) {
 
 export async function POST(request, deps = {}) {
   try {
-    const user = await requireUser(request);
+    const require = deps.requireUser || requireUser;
+    const user = await require(request);
     if (!user) return json({ error: 'Sign in required' }, 401);
 
     const body = await request.json().catch(() => ({}));
@@ -52,11 +53,15 @@ export async function POST(request, deps = {}) {
     const wantPatron = body.patron === true;
     const autoRenew = body.auto_renew !== false;
 
-    const { data: profile } = await supabaseAdmin()
-      .from('profiles')
-      .select('stripe_customer_id, membership_status, renews_on, cancel_at_period_end')
-      .eq('id', user.id)
-      .maybeSingle();
+    const loadProfile = deps.loadProfile || (async (userId) => {
+      const { data: profile } = await supabaseAdmin()
+        .from('profiles')
+        .select('stripe_customer_id, membership_status, renews_on, cancel_at_period_end')
+        .eq('id', userId)
+        .maybeSingle();
+      return profile;
+    });
+    const profile = await loadProfile(user.id);
 
     const block = duplicateMembershipBlock(profile);
     if (block) {
@@ -76,7 +81,10 @@ export async function POST(request, deps = {}) {
     let priorPaid;
     const needsPaidProof = profile?.membership_status === 'past_due' || profile?.membership_status === 'canceled';
     if (!needsPaidProof) priorPaid = undefined;
-    else if (!profile?.stripe_customer_id) priorPaid = false;
+    // No customer id means the paid-invoice lookup cannot run. That is unknown
+    // history, not proof the person never paid, so the session gets no
+    // new-membership stamp.
+    else if (!profile?.stripe_customer_id) priorPaid = null;
     else {
       try {
         priorPaid = priorPaidFromInvoiceList(await listInvoices(profile.stripe_customer_id));
@@ -98,7 +106,8 @@ export async function POST(request, deps = {}) {
     });
     if (built.error) return json({ error: built.error }, 400);
 
-    const session = await stripeClient().checkout.sessions.create(built.params);
+    const createSession = deps.createSession || ((params) => stripeClient().checkout.sessions.create(params));
+    const session = await createSession(built.params);
 
     return json({ url: session.url });
   } catch (err) {

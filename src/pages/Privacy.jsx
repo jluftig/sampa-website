@@ -233,7 +233,10 @@ export default function Privacy() {
         first-party cookie so a completed new membership can be tied to the ad.
         The click id is not your name, email, or health information. We do not
         store that click id until you allow a new-membership report, and we do
-        not store it when your browser sends Global Privacy Control. Choosing
+        not store it when your browser sends Global Privacy Control. If you
+        allow the report only after you return from Stripe, the original click
+        id is no longer in the address and was not saved, so that membership
+        cannot be tied to the ad. Choosing
         "Don't allow" removes a stored click id and turns the report off. That
         choice wins, and Global Privacy Control wins over an earlier allow. We
         do not turn on Google ad storage unless you allow the report and Global

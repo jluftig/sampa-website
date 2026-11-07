@@ -6,7 +6,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 
-import { GET } from '../api/create-checkout-session.js';
+import { GET, POST } from '../api/create-checkout-session.js';
 import {
   buildCheckoutSessionParams,
   checkoutSuccessUrl,
@@ -559,6 +559,43 @@ describe('first-payment status', () => {
       conversion: membershipConversionKind(pastDue, { priorPaid: null }),
     });
     assert.equal(unproven.params.metadata.conversion, undefined);
+  });
+});
+
+describe('checkout handler history', () => {
+  it('does not stamp a new membership when past_due or canceled has no Stripe customer', async () => {
+    process.env.STRIPE_PRICE_FELLOW_1Y = 'price_fellow_1y';
+    for (const membership_status of ['past_due', 'canceled']) {
+      let listed = 0;
+      const created = [];
+      const response = await POST(new Request('https://www.addictionpas.org/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-forwarded-host': 'www.addictionpas.org',
+          'x-forwarded-proto': 'https',
+        },
+        body: JSON.stringify({ tier: 'fellow', duration: 1 }),
+      }), {
+        requireUser: async () => ({ id: 'user-a', email: 'ada@example.org' }),
+        loadProfile: async () => ({
+          membership_status,
+          stripe_customer_id: null,
+          renews_on: null,
+          cancel_at_period_end: false,
+        }),
+        listInvoices: async () => { listed += 1; return { data: [], has_more: false }; },
+        createSession: async (params) => {
+          created.push(params);
+          return { url: 'https://checkout.stripe.test/c' };
+        },
+      });
+      assert.equal(response.status, 200);
+      assert.equal(listed, 0);
+      assert.equal(created.length, 1);
+      assert.equal(created[0].metadata.conversion, undefined);
+      assert.notEqual(created[0].metadata.conversion, 'new_membership');
+    }
   });
 });
 
