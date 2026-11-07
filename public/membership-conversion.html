@@ -13,12 +13,16 @@
   var PARENT = 'https://www.addictionpas.org';
   var fired = false;
 
+  function clickOk(value) {
+    return typeof value === 'string' && /^[\w-]{1,200}$/.test(value);
+  }
+
   function stamp(name, value) {
-    if (!value) return;
+    if (!clickOk(value)) return;
     var seconds = Math.floor(Date.now() / 1000);
     try {
       document.cookie = name + '=GCL.' + seconds + '.' + value + '; Path=/; SameSite=Lax; Secure';
-    } catch (error) { /* opaque frame may refuse cookies; the URL still carries the click id */ }
+    } catch (error) { /* cookie write can fail; the hit still carries the click id */ }
   }
 
   window.addEventListener('message', function (event) {
@@ -27,42 +31,54 @@
     var body = event.data;
     if (!body || body.source !== 'sampa-membership-conversion') return;
     var payload = body.payload || {};
+    if (payload.optOut === true || payload.consent !== 'granted') return;
     if (payload.tagId !== TAG_ID) return;
     if (!/^[A-Za-z0-9_-]{1,40}$/.test(payload.label || '')) return;
     if (!/^cs_(test|live)_[A-Za-z0-9]{8,}$/.test(payload.transactionId || '')) return;
     if (payload.currency !== 'USD') return;
     if (typeof payload.value !== 'number' || !isFinite(payload.value) || payload.value < 0) return;
-    if (JSON.stringify(payload).indexOf('@') !== -1) return;
+    var packed = JSON.stringify(payload);
+    if (packed.indexOf('@') !== -1) return;
+    if (payload.user_data || payload.email || payload.phone || payload.address) return;
 
     fired = true;
     var url = new URL(window.location.href);
     ['gclid', 'gbraid', 'wbraid'].forEach(function (key) {
-      var value = payload[key];
-      if (typeof value === 'string' && /^[\w-]{1,200}$/.test(value)) url.searchParams.set(key, value);
+      if (clickOk(payload[key])) url.searchParams.set(key, payload[key]);
     });
-    try { history.replaceState(null, '', url); } catch (error) { /* the click id is still in the message */ }
+    try { history.replaceState(null, '', url); } catch (error) { /* the hit still carries the click id */ }
     stamp('_gcl_aw', payload.gclid);
     stamp('_gcl_gb', payload.wbraid);
     stamp('_gcl_ag', payload.gbraid);
 
     window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag('consent', 'default', {
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+    gtag('consent', 'update', {
       ad_storage: 'granted',
       analytics_storage: 'denied',
       ad_user_data: 'denied',
       ad_personalization: 'denied'
     });
-    window.gtag('js', new Date());
-    window.gtag('config', TAG_ID, {
+    gtag('js', new Date());
+    gtag('config', TAG_ID, {
       allow_enhanced_conversions: false,
       send_page_view: false
     });
-    window.gtag('event', 'conversion', {
+    gtag('event', 'conversion', {
       send_to: TAG_ID + '/' + payload.label,
       transaction_id: payload.transactionId,
       value: payload.value,
-      currency: 'USD'
+      currency: 'USD',
+      gclid: clickOk(payload.gclid) ? payload.gclid : undefined,
+      gbraid: clickOk(payload.gbraid) ? payload.gbraid : undefined,
+      wbraid: clickOk(payload.wbraid) ? payload.wbraid : undefined
     });
     var script = document.createElement('script');
     script.async = true;

@@ -10,8 +10,10 @@ import JoinSupportStep from '../components/join/JoinSupportStep';
 import { useAuth } from '../lib/AuthContext';
 import { apiGet, apiPost } from '../lib/api';
 import { readAdsClick } from '../lib/adsClick';
+import { adsConsentCookieLines, readAdsConsent } from '../lib/adsConsent';
 import { checkoutConfirmation, previewConfirmation } from '../lib/checkoutConfirmation';
 import { adsConfigFromEnv, reportVerifiedMembershipConversion } from '../lib/membershipConversion';
+import AdsMeasurementChoice from '../components/AdsMeasurementChoice';
 import {
   checkoutBlock,
   joinCart,
@@ -79,6 +81,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
   const [receipt, setReceipt] = useState(null);
   const [receiptStatus, setReceiptStatus] = useState('idle');
   const [arrivalStatus, setArrivalStatus] = useState(undefined);
+  const [adsConsent, setAdsConsent] = useState(() => readAdsConsent(''));
 
   useEffect(() => {
     if (form || loading) return;
@@ -106,6 +109,19 @@ export function JoinFlow({ mode = 'join', preview = null }) {
   }, [form, profile, query, setSearchParams]);
 
   const sessionId = searchParams.get('session_id');
+
+  useEffect(() => {
+    setAdsConsent(readAdsConsent(document.cookie));
+  }, []);
+
+  const chooseAds = (choice) => {
+    const lines = adsConsentCookieLines(choice, {
+      hostname: window.location.hostname,
+      secure: window.location.protocol === 'https:',
+    });
+    for (const line of lines) document.cookie = line;
+    setAdsConsent(readAdsConsent(document.cookie));
+  };
 
   useEffect(() => {
     if (preview || query.phase !== 'confirmation') {
@@ -189,8 +205,9 @@ export function JoinFlow({ mode = 'join', preview = null }) {
       config: adsConfigFromEnv(import.meta.env),
       hostname: window.location.hostname,
       click: readAdsClick(document.cookie),
+      consent: adsConsent,
     });
-  }, [confirmation.sendConversion, preview, receipt]);
+  }, [adsConsent, confirmation.sendConversion, preview, receipt]);
 
   const patronOn = selectedPatron(profile, query.patron);
   const cart = useMemo(() => joinCart({
@@ -407,6 +424,9 @@ export function JoinFlow({ mode = 'join', preview = null }) {
                   onEditSupport={() => go({ step: 'support' })}
                   invoiceQuery={invoiceQuery}
                 />
+              )}
+              {confirmation.sendConversion && (
+                <AdsMeasurementChoice consent={adsConsent} onChoose={chooseAds} />
               )}
             </>
           )}

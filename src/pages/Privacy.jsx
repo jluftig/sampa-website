@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import AdsMeasurementChoice from '../components/AdsMeasurementChoice';
 import LegalPage from '../components/LegalPage';
+import { adsConsentCookieLines, readAdsConsent } from '../lib/adsConsent';
 
 const CONTACT_FORM_URL = 'https://forms.gle/YqYYRVE9z2nCYdNz5';
 
 export default function Privacy() {
+  const [adsConsent, setAdsConsent] = useState(() => readAdsConsent(''));
+  useEffect(() => {
+    setAdsConsent(readAdsConsent(document.cookie));
+  }, []);
+  const chooseAds = (choice) => {
+    const lines = adsConsentCookieLines(choice, {
+      hostname: window.location.hostname,
+      secure: window.location.protocol === 'https:',
+    });
+    for (const line of lines) document.cookie = line;
+    setAdsConsent(readAdsConsent(document.cookie));
+  };
   return (
     <LegalPage label="Legal" title="Privacy Policy" effectiveDate="November 7, 2026">
       <p>
@@ -208,12 +222,15 @@ export default function Privacy() {
         We use your browser's local storage, and a first-party cookie, to keep you
         signed in. If you arrive from an ad, we store that click id in a separate
         first-party cookie so a completed new membership can be tied to the ad.
-        The click id is not your name, email, or health information. Google's
-        existing tag is able to read email, phone, and address off a page. We do
-        not run that tag on the join page. When a conversion is allowed, it runs
-        in a blank frame that has none of those fields, and we deny Google
-        permission to receive contact data. Renewals, donations, and Patron-only
-        payments are not reported.
+        The click id is not your name, email, or health information. A new-membership
+        report to Google Ads stays off until you allow it on this page or after
+        checkout. Choosing "Don't allow" turns it off on this browser, and that
+        choice wins. We do not turn on Google ad storage unless you allow the
+        report. We do not send your name, email, phone, or address. The amount
+        is the membership dues, not a Patron add-on and not a donation.
+        Renewals are not reported. Google's account setting for automatic
+        contact collection is not something this site can switch. We do not
+        treat a tag id and a container id as the same install.
       </p>
 
       <h2>Retention and deletion</h2>
@@ -237,8 +254,10 @@ export default function Privacy() {
         </li>
         <li>Unsubscribe from every SAMPA email list via the link in any email we send through Brevo. That link is a full exit. It is separate from the per-list switches.</li>
         <li>Manage or cancel your membership through the billing portal on your dashboard.</li>
+        <li>Allow or refuse a new-membership report to Google Ads. Refusal is the default.</li>
         <li>Request a copy or deletion of your information via the <a href={CONTACT_FORM_URL} target="_blank" rel="noopener noreferrer">contact form</a>.</li>
       </ul>
+      <AdsMeasurementChoice consent={adsConsent} onChoose={chooseAds} />
 
       <h2>Security</h2>
       <p>

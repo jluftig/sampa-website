@@ -1,11 +1,10 @@
 import { isCheckoutSessionId } from '../../api/_lib/membershipReceipt.js';
+import { consentAllowsAds } from './adsConsent.js';
 
-// The Ads account already has one Google tag. Fetching gtag/js?id=AW-18372431189
-// returns the linked container GTM-K8FNBLFL, so a second GTM snippet would
-// initialize that same tag twice. The container's first-party data tag is set
-// to auto-collect email, phone, and address, so this module never loads it
-// in the join page. The blank frame does, once, and only for a verified
-// new membership.
+// AW-18372431189 is the Google Ads tag id reported by the Ads UI.
+// GTM-K8FNBLFL is a container id reported beside it. Seeing one id inside
+// the other's script response is not proof those snippets are the same tag.
+// This module does not install a container snippet.
 export const EXISTING_GOOGLE_ADS_TAG_ID = 'AW-18372431189';
 export const EXISTING_GTM_CONTAINER_ID = 'GTM-K8FNBLFL';
 export const PRODUCTION_ADS_HOST = 'www.addictionpas.org';
@@ -42,13 +41,16 @@ export function normalizeReceipt(body) {
   return { outcome, transactionId, value, currency };
 }
 
-export function planMembershipConversion({ receipt, config, hostname, sentIds }) {
+export function planMembershipConversion({ receipt, config, hostname, sentIds, consent }) {
   const clean = normalizeReceipt(receipt);
   if (!config?.configured || !config.label || config.tagId !== EXISTING_GOOGLE_ADS_TAG_ID) {
     return { send: false, reason: 'unconfigured' };
   }
   if (hostname !== PRODUCTION_ADS_HOST) {
     return { send: false, reason: 'off_host' };
+  }
+  if (!consentAllowsAds(consent)) {
+    return { send: false, reason: consent?.optOut ? 'opt_out' : 'consent' };
   }
   if (clean.outcome !== 'new_membership' || !clean.transactionId || clean.currency !== 'USD' || clean.value == null) {
     return { send: false, reason: 'ineligible' };
@@ -68,6 +70,8 @@ export function planMembershipConversion({ receipt, config, hostname, sentIds })
       gclid: null,
       gbraid: null,
       wbraid: null,
+      consent: 'granted',
+      optOut: false,
     },
   };
 }
@@ -86,8 +90,11 @@ export function payloadHasContactData(payload) {
   return JSON.stringify(payload).includes('@');
 }
 
-export function mountConversionFrame({ document, payload, hostname }) {
+export function mountConversionFrame({ document, payload, hostname, consent }) {
   if (hostname !== PRODUCTION_ADS_HOST) return { mounted: false, reason: 'off_host' };
+  if (!consentAllowsAds(consent) || payload?.optOut === true || payload?.consent !== 'granted') {
+    return { mounted: false, reason: consent?.optOut || payload?.optOut ? 'opt_out' : 'consent' };
+  }
   if (!payload?.label || payload.tagId !== EXISTING_GOOGLE_ADS_TAG_ID || !payload.transactionId) {
     return { mounted: false, reason: 'unconfigured' };
   }
@@ -95,8 +102,6 @@ export function mountConversionFrame({ document, payload, hostname }) {
   if (!document?.createElement || !document.body) return { mounted: false, reason: 'no_document' };
 
   const iframe = document.createElement('iframe');
-  // allow-scripts without allow-same-origin keeps the tag off the join page,
-  // where the newsletter form and profile fields live.
   iframe.setAttribute('sandbox', 'allow-scripts');
   iframe.setAttribute('referrerpolicy', 'no-referrer');
   iframe.setAttribute('title', 'Membership conversion');
@@ -136,13 +141,14 @@ export function reportVerifiedMembershipConversion({
   config,
   hostname,
   click,
+  consent,
   storage,
   document,
   emit,
 } = {}) {
   if (!confirmation?.sendConversion) return { send: false, reason: 'ineligible' };
   const sentIds = storage?.read?.() ?? browserSentIds();
-  const plan = planMembershipConversion({ receipt, config, hostname, sentIds });
+  const plan = planMembershipConversion({ receipt, config, hostname, sentIds, consent });
   if (!plan.send) return plan;
   const id = plan.payload.transactionId;
   if (inflight.has(id) || sentIds.has(id)) return { send: false, reason: 'duplicate' };
@@ -157,6 +163,7 @@ export function reportVerifiedMembershipConversion({
     document: document ?? globalThis.document,
     payload,
     hostname,
+    consent,
   });
   if (!result?.mounted) {
     inflight.delete(id);

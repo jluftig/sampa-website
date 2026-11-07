@@ -26,7 +26,9 @@ export async function GET(request, deps = {}) {
   if (!isCheckoutSessionId(sessionId)) return json(emptyReceipt('unknown'));
 
   try {
-    const retrieve = deps.retrieve || ((id) => stripeClient().checkout.sessions.retrieve(id));
+    const retrieve = deps.retrieve || ((id) => stripeClient().checkout.sessions.retrieve(id, {
+      expand: ['line_items.data.price.product'],
+    }));
     const session = await retrieve(sessionId);
     return json(publicReceipt(classifyCheckoutSession(session, user.id)));
   } catch {

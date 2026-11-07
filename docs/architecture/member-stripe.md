@@ -88,10 +88,15 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
   409 instead of a second subscription. Success returns to
   `/join?step=checkout&checkout=success&session_id={CHECKOUT_SESSION_ID}`.
   The page confirms payment only after `GET /api/create-checkout-session`
-  shows that session is paid and belongs to the signed-in user. A new
-  membership (no `membership_status` yet) is the only Ads conversion.
-  Renewals, Patron upgrades, and donations are not. The conversion label
-  env var is required. Preview hosts do not load the tag. Server adds a matching-term
+  shows that session is paid and belongs to the signed-in user. The Ads
+  value is the membership line's `amount_total` after discounts. Patron and
+  donation lines are excluded. A Patron bundle with no line items is not
+  priced from the session total. A new membership is stamped only when the
+  profile status is not `active`, `past_due`, or `canceled`. Those three are
+  renewals. Stripe `incomplete` is not a profile status. The stamp is fixed
+  when the session is created. The conversion label env var is required, and
+  the browser must allow the report. Preview hosts do not load the tag.
+  Server adds a matching-term
   Stripe `price_data` line item (recurring with the membership interval; lifetime
   is one-time) — no new `STRIPE_PRICE_*` env required for preview.
 - Session / subscription metadata may include `patron=true`. **Never** set
@@ -125,6 +130,9 @@ front of `/join`. Card payers never see a form unless they click the quiet
 4. When the link is paid, `checkout.session.completed` fires with
    `metadata.supabase_user_id` / `tier` / `duration` / `patron` — the existing
    webhook activates the profile. No second membership path.
+5. That payment is not an Ads conversion. The return URL is
+   `/dashboard?checkout=success` and does not carry a Checkout Session id.
+   This code does not invent a receipt for it.
 
 ## Session continuity (web)
 

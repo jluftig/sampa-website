@@ -4,8 +4,16 @@ import { patronLineItem, priceIdFor } from './tiers.js';
 // Off keeps today's Price and stamps auto_renew=false on the subscription.
 // This SDK's Checkout subscription_data does not accept cancel_at_period_end.
 // The webhook sets that flag with subscriptions.update after payment.
+// Profile rows store active, past_due, or canceled. The webhook maps Stripe
+// incomplete, unpaid, and past_due onto past_due before the row is saved, so
+// a raw Stripe status never lands here. The checkout session is stamped once,
+// at creation. Null at that moment stays new_membership on that session.
+// A later checkout sees the stored status. Any other string, including
+// incomplete, is not a renewal.
+const RENEWAL_PROFILE_STATUSES = new Set(['active', 'past_due', 'canceled']);
+
 export function membershipConversionKind(profile) {
-  return profile?.membership_status ? 'renewal' : 'new_membership';
+  return RENEWAL_PROFILE_STATUSES.has(profile?.membership_status) ? 'renewal' : 'new_membership';
 }
 
 export function checkoutSuccessUrl(origin) {

@@ -8,6 +8,46 @@ export function isCheckoutSessionId(value) {
   return SESSION_ID.test(value || '');
 }
 
+function productOf(line) {
+  const product = line?.price?.product;
+  return product && typeof product === 'object' ? product : null;
+}
+
+function isPatronLine(line) {
+  const product = productOf(line);
+  const name = product?.name || line?.description || '';
+  const meta = { ...(line?.price?.metadata || {}), ...(product?.metadata || {}) };
+  return meta.sampa_addon === 'patron' || /patron add-on/i.test(name);
+}
+
+function isDonationLine(line) {
+  const product = productOf(line);
+  const meta = { ...(line?.price?.metadata || {}), ...(product?.metadata || {}), ...(line?.metadata || {}) };
+  const name = product?.name || line?.description || '';
+  return meta.type === 'donation' || /donation/i.test(name);
+}
+
+// Membership dues actually charged on this session. Patron and donation
+// lines are left out. A bundled Patron checkout with no line items does not
+// fall back to amount_total, because that total includes the add-on.
+export function membershipAmountCents(session) {
+  const lines = session?.line_items?.data;
+  if (Array.isArray(lines) && lines.length) {
+    let sum = 0;
+    let sawMembership = false;
+    for (const line of lines) {
+      if (isPatronLine(line) || isDonationLine(line)) continue;
+      if (!Number.isInteger(line?.amount_total) || line.amount_total < 0) return null;
+      sum += line.amount_total;
+      sawMembership = true;
+    }
+    return sawMembership ? sum : null;
+  }
+  const meta = session?.metadata || {};
+  if (meta.patron === 'true' || meta.addon === 'patron_upgrade' || meta.type === 'donation') return null;
+  return Number.isInteger(session?.amount_total) && session.amount_total >= 0 ? session.amount_total : null;
+}
+
 // Classify a Stripe Checkout Session for the signed-in user.
 // Donation and Patron are matched before the membership stamp so a confused
 // metadata mix cannot be reported as a new membership.
@@ -35,7 +75,7 @@ export function classifyCheckoutSession(session, userId) {
 
   if (kind === 'new_membership') {
     const usd = String(session.currency || '').toLowerCase() === 'usd';
-    const cents = session.amount_total;
+    const cents = membershipAmountCents(session);
     const value = usd && Number.isInteger(cents) && cents >= 0 ? cents / 100 : null;
     return {
       outcome: 'new_membership',
