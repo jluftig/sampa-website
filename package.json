@@ -11,6 +11,7 @@
     "test:patron-copy": "node scripts/verify-patron-copy.mjs",
     "test:donor-badge": "node --test scripts/verify-donor-badge.mjs",
     "test:join-flow": "node --import ./scripts/register-jsx.mjs --test scripts/verify-join-flow.mjs",
+    "test:membership-conversion": "node --import ./scripts/register-jsx.mjs --test scripts/verify-membership-conversion.mjs",
     "test:board-meetings": "node scripts/verify-board-meetings.mjs",
     "test:board-gate": "node --test scripts/verify-board-meetings-gate.mjs",
     "test:session": "node --test scripts/verify-session-persistence.mjs",

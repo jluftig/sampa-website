@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Membership conversion</title>
+</head>
+<body>
+<script>
+(function () {
+  var TAG_ID = 'AW-18372431189';
+  var PARENT = 'https://www.addictionpas.org';
+  var fired = false;
+
+  function stamp(name, value) {
+    if (!value) return;
+    var seconds = Math.floor(Date.now() / 1000);
+    try {
+      document.cookie = name + '=GCL.' + seconds + '.' + value + '; Path=/; SameSite=Lax; Secure';
+    } catch (error) { /* opaque frame may refuse cookies; the URL still carries the click id */ }
+  }
+
+  window.addEventListener('message', function (event) {
+    if (fired) return;
+    if (event.origin !== PARENT) return;
+    var body = event.data;
+    if (!body || body.source !== 'sampa-membership-conversion') return;
+    var payload = body.payload || {};
+    if (payload.tagId !== TAG_ID) return;
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(payload.label || '')) return;
+    if (!/^cs_(test|live)_[A-Za-z0-9]{8,}$/.test(payload.transactionId || '')) return;
+    if (payload.currency !== 'USD') return;
+    if (typeof payload.value !== 'number' || !isFinite(payload.value) || payload.value < 0) return;
+    if (JSON.stringify(payload).indexOf('@') !== -1) return;
+
+    fired = true;
+    var url = new URL(window.location.href);
+    ['gclid', 'gbraid', 'wbraid'].forEach(function (key) {
+      var value = payload[key];
+      if (typeof value === 'string' && /^[\w-]{1,200}$/.test(value)) url.searchParams.set(key, value);
+    });
+    try { history.replaceState(null, '', url); } catch (error) { /* the click id is still in the message */ }
+    stamp('_gcl_aw', payload.gclid);
+    stamp('_gcl_gb', payload.wbraid);
+    stamp('_gcl_ag', payload.gbraid);
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('consent', 'default', {
+      ad_storage: 'granted',
+      analytics_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+    window.gtag('js', new Date());
+    window.gtag('config', TAG_ID, {
+      allow_enhanced_conversions: false,
+      send_page_view: false
+    });
+    window.gtag('event', 'conversion', {
+      send_to: TAG_ID + '/' + payload.label,
+      transaction_id: payload.transactionId,
+      value: payload.value,
+      currency: 'USD'
+    });
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(TAG_ID);
+    document.head.appendChild(script);
+  });
+})();
+</script>
+</body>
+</html>

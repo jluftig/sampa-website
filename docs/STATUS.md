@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-05 (T79 Founders Feature article, gated until Nov 10. Draft PR. Do not merge.)
+**Last updated:** 2026-11-07 (T80 new-membership Ads conversion. Draft PR. Do not merge.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -65,6 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T80 | New-membership Google Ads conversion | cursor | 2026-11-07 | **Claimed cursor.** Draft PR only. Receipt from Stripe, not `checkout=success`. Existing tag `AW-18372431189` is container `GTM-K8FNBLFL` (do not install both). No conversion label yet, so the tag does not load. Preview must not send. Do not merge. |
 | T79 | Founders Feature article (Jim Anderson and Shani Wilson) | cursor | 2026-11-05 | **Claimed cursor.** Draft PR **#170**. Public article `/news/features/founders-jim-anderson-shani-wilson` by Kerith Hartmann, PA-C. HTTP 404 for every user agent until 2026-11-10 America/Los_Angeles. Essay JSON is served by `api/share` after that day, not bundled in the client. Optional `feature` lead on a daily issue. Do not merge. |
 | T78 | Board dashboard membership, finance, and newsletter show zeros | cursor | 2026-11-05 | **Claimed cursor.** PR **#169** (preview only). Signed-in admins on `/board` Dashboard saw Membership "Active now 0", Finances $0.00, and an empty newsletter chart because `GET` / `POST` on `newsletter-stats` treated Vercel's request context as deps. An async `cache.get` serialized to `{}`. `route` takes deps. `GET` and `POST` pass `{}`. An empty section shows "Couldn't load". A real zero still renders. Do not merge. |
 | T77 | Board member-observer contacts | cursor | 2026-11-03 | **Claimed cursor.** PR **#165** (preview only). `/board` schedule intro keeps info@addictionpas.org and adds mailto links for the President (president@addictionpas.org) and the Secretary (secretary@addictionpas.org). No Zoom link. Member gate stays. Do not merge. |

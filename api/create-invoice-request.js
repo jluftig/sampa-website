@@ -1,6 +1,7 @@
 import { stripeClient, supabaseAdmin, requireUser, json } from './_lib/clients.js';
 import { requestSiteOrigin } from './_lib/siteUrl.js';
 import { priceIdFor, patronDollars, TIER_DURATIONS } from './_lib/tiers.js';
+import { membershipConversionKind } from './_lib/checkoutSession.js';
 import {
   assertOpenablePdf,
   buildInvoiceModel,
@@ -107,6 +108,7 @@ export async function POST(request) {
       tier,
       duration: String(duration),
       invoice_number: number,
+      conversion: membershipConversionKind(profile),
       ...(wantPatron ? { patron: 'true' } : {}),
     };
 

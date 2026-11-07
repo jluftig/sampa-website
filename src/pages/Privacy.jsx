@@ -6,7 +6,7 @@ const CONTACT_FORM_URL = 'https://forms.gle/YqYYRVE9z2nCYdNz5';
 
 export default function Privacy() {
   return (
-    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="October 22, 2026">
+    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="November 7, 2026">
       <p>
         The Society of Addiction Medicine Physician Associates ("SAMPA," "we,"
         "us") operates <strong>www.addictionpas.org</strong>, a professional
@@ -25,7 +25,8 @@ export default function Privacy() {
         <li>Active members can use a <strong>member networking directory</strong> to find each other. That directory is not public. You control whether you appear and whether peers see your email or phone.</li>
         <li>Payments are handled by Stripe — <strong>we never see or store your card number</strong>.</li>
         <li>This is a site for clinicians. <strong>We do not collect patient information of any kind.</strong></li>
-        <li>We don't sell your information, and we don't show ads.</li>
+        <li>We don't sell your information, and we don't show ads on this site.</li>
+        <li>After the server confirms a paid new membership, we can tell Google Ads that one conversion happened. The report is a transaction id and the amount. It does not include your name, email, profile, or health information. Nothing is sent until a conversion action label is configured, and preview sites never send it.</li>
       </ul>
 
       <h2>Information we collect</h2>
@@ -33,8 +34,8 @@ export default function Privacy() {
       <h3>Visitors (no account)</h3>
       <p>
         Reading our news, key points, and other public pages requires no account
-        and no personal information. We do not use advertising trackers or
-        third-party analytics. Like nearly every website, our hosting providers
+        and no personal information. Ordinary page views do not load an advertising tag.
+        Like nearly every website, our hosting providers
         keep standard, short-lived server logs (such as IP address and browser
         type) for security and operations.
       </p>
@@ -178,8 +179,10 @@ export default function Privacy() {
         <li>To keep the site secure and understand aggregate (not individual) usage.</li>
       </ul>
       <p>
-        We do not sell personal information, and we do not share it with
-        advertisers. Ever. We also do not sell or rent the member directory.
+        We do not sell personal information, and we do not sell or rent the member
+        directory. We do not give advertisers your name, email, profile, or health
+        information. The only advertising report is the new-membership conversion
+        described below.
       </p>
 
       <h2>Service providers</h2>
@@ -190,7 +193,7 @@ export default function Privacy() {
         <li><strong>Vercel</strong> — website hosting.</li>
         <li><strong>Brevo</strong> — email delivery for magic-link / auth messages and for SAMPA email lists (the SAMPA Weekly Newsletter, the SAMPA Daily News Roundup, and the SAMPA Emerging Practice Monthly). Brevo's handling of subscriber data is described in{' '}
           <a href="https://www.brevo.com/legal/privacypolicy/" target="_blank" rel="noopener noreferrer">Brevo's privacy policy</a>.</li>
-        <li><strong>Google</strong> — the optional "Sign in with Google" service.</li>
+        <li><strong>Google</strong> — the optional "Sign in with Google" service. Google Ads also receives the new-membership conversion described below, and only that.</li>
       </ul>
       <p>
         Beyond these providers, we disclose personal information only if
@@ -202,8 +205,15 @@ export default function Privacy() {
 
       <h2>Cookies and local storage</h2>
       <p>
-        We use your browser's local storage for one purpose: keeping you signed
-        in. There are no advertising cookies and no cross-site tracking.
+        We use your browser's local storage, and a first-party cookie, to keep you
+        signed in. If you arrive from an ad, we store that click id in a separate
+        first-party cookie so a completed new membership can be tied to the ad.
+        The click id is not your name, email, or health information. Google's
+        existing tag is able to read email, phone, and address off a page. We do
+        not run that tag on the join page. When a conversion is allowed, it runs
+        in a blank frame that has none of those fields, and we deny Google
+        permission to receive contact data. Renewals, donations, and Patron-only
+        payments are not reported.
       </p>
 
       <h2>Retention and deletion</h2>

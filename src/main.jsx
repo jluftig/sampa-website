@@ -4,9 +4,11 @@ import { BrowserRouter } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import App from './App.jsx'
 import { AuthProvider } from './lib/AuthContext'
+import { rememberAdsClickFromLocation } from './lib/adsClick'
 import { apexRedirectUrl } from './lib/siteUrl'
 import './index.css'
 
+rememberAdsClickFromLocation(window.location)
 const apexToWww = apexRedirectUrl()
 if (apexToWww) {
   window.location.replace(apexToWww)

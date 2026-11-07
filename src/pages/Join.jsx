@@ -8,7 +8,10 @@ import JoinProfileStep from '../components/join/JoinProfileStep';
 import JoinStepper from '../components/join/JoinStepper';
 import JoinSupportStep from '../components/join/JoinSupportStep';
 import { useAuth } from '../lib/AuthContext';
-import { apiPost } from '../lib/api';
+import { apiGet, apiPost } from '../lib/api';
+import { readAdsClick } from '../lib/adsClick';
+import { checkoutConfirmation, previewConfirmation } from '../lib/checkoutConfirmation';
+import { adsConfigFromEnv, reportVerifiedMembershipConversion } from '../lib/membershipConversion';
 import {
   checkoutBlock,
   joinCart,
@@ -73,7 +76,9 @@ export function JoinFlow({ mode = 'join', preview = null }) {
   const [forceOpen, setForceOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [payError, setPayError] = useState(null);
-  const [waited, setWaited] = useState(false);
+  const [receipt, setReceipt] = useState(null);
+  const [receiptStatus, setReceiptStatus] = useState('idle');
+  const [arrivalStatus, setArrivalStatus] = useState(undefined);
 
   useEffect(() => {
     if (form || loading) return;
@@ -100,20 +105,92 @@ export function JoinFlow({ mode = 'join', preview = null }) {
     setSearchParams(next, { replace: true });
   }, [form, profile, query, setSearchParams]);
 
+  const sessionId = searchParams.get('session_id');
+
   useEffect(() => {
-    if (query.phase !== 'confirmation' || preview) return undefined;
-    setWaited(false);
-    let n = 0;
-    const id = window.setInterval(() => {
-      n += 1;
-      auth.refreshProfile?.();
-      if (n >= 15) {
-        window.clearInterval(id);
-        setWaited(true);
-      }
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [auth.refreshProfile, preview, query.phase]);
+    if (preview || query.phase !== 'confirmation') {
+      setArrivalStatus(undefined);
+      return;
+    }
+    if (loading || arrivalStatus !== undefined) return;
+    setArrivalStatus(profile?.membership_status ?? null);
+  }, [arrivalStatus, loading, preview, profile, query.phase]);
+
+  useEffect(() => {
+    if (preview || query.phase !== 'confirmation') {
+      setReceipt(null);
+      setReceiptStatus('idle');
+      return undefined;
+    }
+    if (!user) {
+      setReceipt(null);
+      setReceiptStatus('signed_out');
+      return undefined;
+    }
+    if (!sessionId) {
+      setReceipt({ outcome: 'unknown', transactionId: null, value: null, currency: null });
+      setReceiptStatus('ready');
+      return undefined;
+    }
+    let cancel = false;
+    setReceiptStatus('loading');
+    apiGet(`/api/create-checkout-session?session_id=${encodeURIComponent(sessionId)}`)
+      .then((body) => {
+        if (cancel) return;
+        setReceipt(body);
+        setReceiptStatus('ready');
+      })
+      .catch(() => {
+        if (cancel) return;
+        setReceipt({ outcome: 'unknown', transactionId: null, value: null, currency: null });
+        setReceiptStatus('ready');
+      });
+    return () => { cancel = true; };
+  }, [preview, query.phase, sessionId, user]);
+
+  const confirmation = preview
+    ? previewConfirmation(query.phase, profile)
+    : checkoutConfirmation({
+      phase: query.phase,
+      receiptStatus,
+      receipt,
+      profileStatus: profile?.membership_status ?? null,
+      arrivalStatus,
+    });
+
+  useEffect(() => {
+    if (preview || query.phase !== 'confirmation') return undefined;
+    if (profile?.membership_status === 'active') return undefined;
+    const pending = confirmation.screen === 'paid_waiting'
+      || (receiptStatus === 'ready' && receipt?.outcome === 'unknown' && !receipt?.transactionId);
+    if (!pending) return undefined;
+    const id = window.setInterval(() => auth.refreshProfile?.(), 1000);
+    const stop = window.setTimeout(() => window.clearInterval(id), 20000);
+    return () => {
+      window.clearInterval(id);
+      window.clearTimeout(stop);
+    };
+  }, [
+    auth.refreshProfile,
+    confirmation.screen,
+    preview,
+    profile?.membership_status,
+    query.phase,
+    receipt?.outcome,
+    receipt?.transactionId,
+    receiptStatus,
+  ]);
+
+  useEffect(() => {
+    if (preview) return;
+    reportVerifiedMembershipConversion({
+      confirmation,
+      receipt,
+      config: adsConfigFromEnv(import.meta.env),
+      hostname: window.location.hostname,
+      click: readAdsClick(document.cookie),
+    });
+  }, [confirmation.sendConversion, preview, receipt]);
 
   const patronOn = selectedPatron(profile, query.patron);
   const cart = useMemo(() => joinCart({
@@ -323,8 +400,8 @@ export function JoinFlow({ mode = 'join', preview = null }) {
                   smsOptIn={form.sms_opt_in}
                   busy={busy}
                   error={payError}
-                  confirmed={preview ? true : waited || profile?.membership_status === 'active'}
-                  waiting={preview ? false : !waited}
+                  screen={confirmation.screen}
+                  signInHref={`/login?next=${encodeURIComponent(`${basePath}?${searchParams.toString()}`)}`}
                   greeting={mode === 'renew' ? 'Renewed' : 'Welcome'}
                   onEditMembership={() => go({ step: 'membership' })}
                   onEditSupport={() => go({ step: 'support' })}

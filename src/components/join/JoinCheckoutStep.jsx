@@ -12,8 +12,8 @@ export default function JoinCheckoutStep({
   smsOptIn,
   busy,
   error,
-  confirmed,
-  waiting,
+  screen,
+  signInHref,
   greeting = 'Welcome',
   onEditMembership,
   onEditSupport,
@@ -33,18 +33,36 @@ export default function JoinCheckoutStep({
 
       {phase === 'confirmation' ? (
         <section className="rounded-3xl border border-primary/10 bg-white p-5">
-          <h2 className="text-2xl font-bold">
-            {waiting && !confirmed ? 'Confirming your payment…' : renewed ? greeting : 'Payment received'}
-          </h2>
-          {through && renewed && <p className="mt-2 text-text/70">Through {through}.</p>}
-          {!through && renewed && <p className="mt-2 text-text/70">Your membership is active.</p>}
-          {waiting && !confirmed && <p className="mt-2 text-sm text-text/60">This usually takes a few seconds. You can leave this page.</p>}
-          <p className="mt-3 text-sm text-text/60">Stripe emails your receipt. SAMPA never sees your card.</p>
-          <Link to="/survey/2026" className="mt-5 block rounded-3xl border border-accent/30 bg-accent/5 p-4">
-            <span className="block font-bold">2-minute 2026 member survey</span>
-            <span className="mt-1 block text-sm text-text/70">Optional. It does not affect your membership.</span>
-          </Link>
-          <Link to="/dashboard" className="mt-4 inline-flex min-h-12 items-center font-semibold text-primary-text">Go to my account</Link>
+          {screen === 'sign_in' ? (
+            <>
+              <h2 className="text-2xl font-bold">Sign in to confirm your payment</h2>
+              <p className="mt-2 text-sm text-text/70">This page does not treat the link itself as proof of payment.</p>
+              <Link to={signInHref || '/login'} className="mt-4 inline-flex min-h-12 items-center font-semibold text-primary-text">Sign in</Link>
+            </>
+          ) : screen === 'unconfirmed' ? (
+            <>
+              <h2 className="text-2xl font-bold">We could not confirm this payment</h2>
+              <p className="mt-2 text-sm text-text/70">Nothing was recorded from this page. If Stripe charged you, the receipt is in your email. You can also check your account after you sign in.</p>
+              <Link to="/dashboard" className="mt-4 inline-flex min-h-12 items-center font-semibold text-primary-text">Go to my account</Link>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold">
+                {screen === 'waiting' ? 'Confirming your payment…' : renewed ? greeting : 'Payment received'}
+              </h2>
+              {through && renewed && <p className="mt-2 text-text/70">Through {through}.</p>}
+              {!through && renewed && screen === 'active' && <p className="mt-2 text-text/70">Your membership is active.</p>}
+              {screen === 'waiting' || screen === 'paid_waiting' ? (
+                <p className="mt-2 text-sm text-text/60">This usually takes a few seconds. You can leave this page.</p>
+              ) : null}
+              <p className="mt-3 text-sm text-text/60">Stripe emails your receipt. SAMPA never sees your card.</p>
+              <Link to="/survey/2026" className="mt-5 block rounded-3xl border border-accent/30 bg-accent/5 p-4">
+                <span className="block font-bold">2-minute 2026 member survey</span>
+                <span className="mt-1 block text-sm text-text/70">Optional. It does not affect your membership.</span>
+              </Link>
+              <Link to="/dashboard" className="mt-4 inline-flex min-h-12 items-center font-semibold text-primary-text">Go to my account</Link>
+            </>
+          )}
         </section>
       ) : phase === 'payment' ? (
         <section className="rounded-3xl border border-primary/10 bg-white p-5">

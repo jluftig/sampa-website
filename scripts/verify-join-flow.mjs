@@ -406,7 +406,7 @@ describe('Stripe checkout session', () => {
     assert.equal(params.line_items[0].price, 'price_fellow_1y');
     assert.equal(params.line_items[1].price_data.unit_amount, 2500);
     assert.equal(params.line_items[1].price_data.product_data.name, 'Patron add-on');
-    assert.equal(params.success_url, 'https://www.addictionpas.org/join?step=checkout&checkout=success');
+    assert.equal(params.success_url, 'https://www.addictionpas.org/join?step=checkout&checkout=success&session_id={CHECKOUT_SESSION_ID}');
     assert.match(params.cancel_url, /checkout=canceled/);
     assert.match(params.cancel_url, /patron=1/);
   });

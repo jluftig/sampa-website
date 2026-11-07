@@ -86,7 +86,12 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
   `cancel_at_period_end`. The webhook calls `subscriptions.update` with that
   flag, then copies `willCancel` onto `profiles.cancel_at_period_end`. Active auto-renew and lifetime members get
   409 instead of a second subscription. Success returns to
-  `/join?step=checkout&checkout=success`. Server adds a matching-term
+  `/join?step=checkout&checkout=success&session_id={CHECKOUT_SESSION_ID}`.
+  The page confirms payment only after `GET /api/create-checkout-session`
+  shows that session is paid and belongs to the signed-in user. A new
+  membership (no `membership_status` yet) is the only Ads conversion.
+  Renewals, Patron upgrades, and donations are not. The conversion label
+  env var is required. Preview hosts do not load the tag. Server adds a matching-term
   Stripe `price_data` line item (recurring with the membership interval; lifetime
   is one-time) — no new `STRIPE_PRICE_*` env required for preview.
 - Session / subscription metadata may include `patron=true`. **Never** set
