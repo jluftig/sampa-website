@@ -15,6 +15,17 @@ export function adsConsentCookieLines(choice, { hostname, secure } = {}) {
   return cookieWritePlan(ADS_CONSENT_COOKIE, value, { hostname, secure, maxAge: MAX_AGE_SEC });
 }
 
+export function globalPrivacyControlEnabled(signal) {
+  return signal === true || signal === 1 || signal === '1';
+}
+
+export function effectiveAdsConsent(consent, gpc) {
+  if (globalPrivacyControlEnabled(gpc)) {
+    return { choice: 'denied', adStorage: 'denied', optOut: true, gpc: true };
+  }
+  return { ...(consent || readAdsConsent('')), gpc: false };
+}
+
 export function consentAllowsAds(consent) {
-  return consent?.optOut !== true && consent?.adStorage === 'granted' && consent?.choice === 'granted';
+  return consent?.gpc !== true && consent?.optOut !== true && consent?.adStorage === 'granted' && consent?.choice === 'granted';
 }

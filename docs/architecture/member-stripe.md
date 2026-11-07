@@ -91,11 +91,15 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
   shows that session is paid and belongs to the signed-in user. The Ads
   value is the membership line's `amount_total` after discounts. Patron and
   donation lines are excluded. A Patron bundle with no line items is not
-  priced from the session total. A new membership is stamped only when the
-  profile status is not `active`, `past_due`, or `canceled`. Those three are
-  renewals. Stripe `incomplete` is not a profile status. The stamp is fixed
-  when the session is created. The conversion label env var is required, and
-  the browser must allow the report. Preview hosts do not load the tag.
+  priced from the session total.   `active` is a renewal. `past_due` and `canceled` are renewals only when a
+  paid membership invoice exists for that Stripe customer. An incomplete first
+  payment is stored as `past_due` and has no paid membership invoice, so a
+  later checkout is still a new membership. If that invoice list errors or is
+  truncated before a paid membership invoice is seen, the session is not
+  stamped and is not reported as a new membership. The click id cookie is
+  written only after the browser allows the report and Global Privacy Control
+  is off. The conversion label env var is required. Preview hosts do not load
+  the tag.
   Server adds a matching-term
   Stripe `price_data` line item (recurring with the membership interval; lifetime
   is one-time) — no new `STRIPE_PRICE_*` env required for preview.

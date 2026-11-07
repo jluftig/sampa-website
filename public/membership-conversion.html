@@ -31,7 +31,7 @@
     var body = event.data;
     if (!body || body.source !== 'sampa-membership-conversion') return;
     var payload = body.payload || {};
-    if (payload.optOut === true || payload.consent !== 'granted') return;
+    if (payload.gpc === true || payload.optOut === true || payload.consent !== 'granted') return;
     if (payload.tagId !== TAG_ID) return;
     if (!/^[A-Za-z0-9_-]{1,40}$/.test(payload.label || '')) return;
     if (!/^cs_(test|live)_[A-Za-z0-9]{8,}$/.test(payload.transactionId || '')) return;

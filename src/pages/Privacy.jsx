@@ -2,22 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AdsMeasurementChoice from '../components/AdsMeasurementChoice';
 import LegalPage from '../components/LegalPage';
-import { adsConsentCookieLines, readAdsConsent } from '../lib/adsConsent';
+import { rememberAdsClickFromLocation } from '../lib/adsClick';
+import { adsConsentCookieLines, effectiveAdsConsent, readAdsConsent } from '../lib/adsConsent';
 
 const CONTACT_FORM_URL = 'https://forms.gle/YqYYRVE9z2nCYdNz5';
 
 export default function Privacy() {
   const [adsConsent, setAdsConsent] = useState(() => readAdsConsent(''));
   useEffect(() => {
-    setAdsConsent(readAdsConsent(document.cookie));
+    const gpc = navigator.globalPrivacyControl === true;
+    setAdsConsent(effectiveAdsConsent(readAdsConsent(document.cookie), gpc));
   }, []);
   const chooseAds = (choice) => {
-    const lines = adsConsentCookieLines(choice, {
+    const gpc = navigator.globalPrivacyControl === true;
+    const lines = adsConsentCookieLines(gpc ? 'denied' : choice, {
       hostname: window.location.hostname,
       secure: window.location.protocol === 'https:',
     });
     for (const line of lines) document.cookie = line;
-    setAdsConsent(readAdsConsent(document.cookie));
+    const next = effectiveAdsConsent(readAdsConsent(document.cookie), gpc);
+    rememberAdsClickFromLocation(window.location, {
+      cookieHeader: document.cookie,
+      consent: next,
+      gpc,
+    });
+    setAdsConsent(next);
   };
   return (
     <LegalPage label="Legal" title="Privacy Policy" effectiveDate="November 7, 2026">
@@ -222,11 +231,13 @@ export default function Privacy() {
         We use your browser's local storage, and a first-party cookie, to keep you
         signed in. If you arrive from an ad, we store that click id in a separate
         first-party cookie so a completed new membership can be tied to the ad.
-        The click id is not your name, email, or health information. A new-membership
-        report to Google Ads stays off until you allow it on this page or after
-        checkout. Choosing "Don't allow" turns it off on this browser, and that
-        choice wins. We do not turn on Google ad storage unless you allow the
-        report. We do not send your name, email, phone, or address. The amount
+        The click id is not your name, email, or health information. We do not
+        store that click id until you allow a new-membership report, and we do
+        not store it when your browser sends Global Privacy Control. Choosing
+        "Don't allow" removes a stored click id and turns the report off. That
+        choice wins, and Global Privacy Control wins over an earlier allow. We
+        do not turn on Google ad storage unless you allow the report and Global
+        Privacy Control is off. We do not send your name, email, phone, or address. The amount
         is the membership dues, not a Patron add-on and not a donation.
         Renewals are not reported. Google's account setting for automatic
         contact collection is not something this site can switch. We do not

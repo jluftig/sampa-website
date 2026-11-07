@@ -4,16 +4,44 @@ import { patronLineItem, priceIdFor } from './tiers.js';
 // Off keeps today's Price and stamps auto_renew=false on the subscription.
 // This SDK's Checkout subscription_data does not accept cancel_at_period_end.
 // The webhook sets that flag with subscriptions.update after payment.
-// Profile rows store active, past_due, or canceled. The webhook maps Stripe
-// incomplete, unpaid, and past_due onto past_due before the row is saved, so
-// a raw Stripe status never lands here. The checkout session is stamped once,
-// at creation. Null at that moment stays new_membership on that session.
-// A later checkout sees the stored status. Any other string, including
-// incomplete, is not a renewal.
-const RENEWAL_PROFILE_STATUSES = new Set(['active', 'past_due', 'canceled']);
+// active means Stripe reported the subscription active or trialing. This
+// product does not sell trials, so active is a completed membership.
+// past_due also stores Stripe incomplete and unpaid. canceled also stores
+// incomplete_expired. Those two profile values are not proof that a
+// membership charge ever succeeded. priorPaid is the paid-invoice lookup:
+// true, false, or null when the lookup did not answer.
+export function isPaidMembershipInvoice(invoice) {
+  if (!invoice || invoice.status !== 'paid') return false;
+  const meta = {
+    ...(invoice.parent?.subscription_details?.metadata || {}),
+    ...(invoice.subscription_details?.metadata || {}),
+    ...(invoice.metadata || {}),
+  };
+  if (meta.type === 'donation' || meta.addon === 'patron_upgrade') return false;
+  return Boolean(
+    meta.tier
+    || meta.conversion === 'new_membership'
+    || meta.conversion === 'renewal'
+    || invoice.billing_reason === 'subscription_create'
+    || invoice.billing_reason === 'subscription_cycle',
+  );
+}
 
-export function membershipConversionKind(profile) {
-  return RENEWAL_PROFILE_STATUSES.has(profile?.membership_status) ? 'renewal' : 'new_membership';
+export function priorPaidFromInvoiceList(list) {
+  if (!list || !Array.isArray(list.data)) return null;
+  if (list.data.some(isPaidMembershipInvoice)) return true;
+  if (list.has_more) return null;
+  return false;
+}
+
+export function membershipConversionKind(profile, { priorPaid } = {}) {
+  const status = profile?.membership_status;
+  if (!status) return 'new_membership';
+  if (status === 'active') return 'renewal';
+  if (status !== 'past_due' && status !== 'canceled') return 'new_membership';
+  if (priorPaid === true) return 'renewal';
+  if (priorPaid === false) return 'new_membership';
+  return null;
 }
 
 export function checkoutSuccessUrl(origin) {

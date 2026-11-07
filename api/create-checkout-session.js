@@ -1,6 +1,11 @@
 import { stripeClient, supabaseAdmin, requireUser, json } from './_lib/clients.js';
 import { requestSiteOrigin } from './_lib/siteUrl.js';
-import { buildCheckoutSessionParams, duplicateMembershipBlock, membershipConversionKind } from './_lib/checkoutSession.js';
+import {
+  buildCheckoutSessionParams,
+  duplicateMembershipBlock,
+  membershipConversionKind,
+  priorPaidFromInvoiceList,
+} from './_lib/checkoutSession.js';
 import { classifyCheckoutSession, emptyReceipt, isCheckoutSessionId, publicReceipt } from './_lib/membershipReceipt.js';
 
 // POST { tier, duration, patron?, auto_renew? } → { url } of a Stripe Checkout session.
@@ -36,7 +41,7 @@ export async function GET(request, deps = {}) {
   }
 }
 
-export async function POST(request) {
+export async function POST(request, deps = {}) {
   try {
     const user = await requireUser(request);
     if (!user) return json({ error: 'Sign in required' }, 401);
@@ -60,6 +65,26 @@ export async function POST(request) {
       }, 409);
     }
 
+    const listInvoices = deps.listInvoices || (async (customerId) => {
+      const list = await stripeClient().invoices.list({
+        customer: customerId,
+        status: 'paid',
+        limit: 100,
+      });
+      return list;
+    });
+    let priorPaid;
+    const needsPaidProof = profile?.membership_status === 'past_due' || profile?.membership_status === 'canceled';
+    if (!needsPaidProof) priorPaid = undefined;
+    else if (!profile?.stripe_customer_id) priorPaid = false;
+    else {
+      try {
+        priorPaid = priorPaidFromInvoiceList(await listInvoices(profile.stripe_customer_id));
+      } catch {
+        priorPaid = null;
+      }
+    }
+
     const built = buildCheckoutSessionParams({
       userId: user.id,
       email: user.email,
@@ -69,7 +94,7 @@ export async function POST(request) {
       wantPatron,
       autoRenew,
       origin: requestSiteOrigin(request),
-      conversion: membershipConversionKind(profile),
+      conversion: membershipConversionKind(profile, { priorPaid }),
     });
     if (built.error) return json({ error: built.error }, 400);
 

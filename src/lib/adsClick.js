@@ -1,4 +1,5 @@
 import { cookieWritePlan, readChunkedCookie } from './authStorage.js';
+import { consentAllowsAds, effectiveAdsConsent, globalPrivacyControlEnabled } from './adsConsent.js';
 
 export const ADS_CLICK_COOKIE = 'sampa_ads_click';
 export const ADS_CLICK_MAX_AGE_SEC = 60 * 60 * 24 * 90;
@@ -51,22 +52,43 @@ export function readAdsClick(cookieHeader) {
   return parseClickCookie(readChunkedCookie(ADS_CLICK_COOKIE, cookieHeader || ''));
 }
 
-export function rememberAdsClickFromLocation(locationLike, deps = {}) {
-  const incoming = clickIdsFromSearch(locationLike?.search || '');
-  if (!Object.keys(incoming).length) return { wrote: false, ids: readAdsClick(deps.cookieHeader || '') };
-  const existing = readAdsClick(deps.cookieHeader || '');
-  const ids = mergeClickIds(existing, incoming);
-  const writes = clickCookieWrites(ids, {
-    hostname: locationLike?.hostname,
-    secure: locationLike?.protocol === 'https:',
-  });
+function writeLines(lines, deps) {
   const write = deps.writeCookie;
   if (write) {
-    for (const line of writes) write(line);
-  } else if (typeof document !== 'undefined') {
-    for (const line of writes) {
+    for (const line of lines) write(line);
+    return;
+  }
+  if (typeof document !== 'undefined') {
+    for (const line of lines) {
       try { document.cookie = line; } catch { /* a blocked cookie must not break the page */ }
     }
   }
-  return { wrote: writes.length > 0, ids };
+}
+
+export function adsClickStorageAllowed({ consent, gpc } = {}) {
+  const effective = consent?.gpc === true || consent?.optOut === true
+    ? consent
+    : effectiveAdsConsent(consent, gpc);
+  if (globalPrivacyControlEnabled(gpc) || effective?.gpc === true) return false;
+  return consentAllowsAds(effective);
+}
+
+export function rememberAdsClickFromLocation(locationLike, deps = {}) {
+  const header = deps.cookieHeader || '';
+  const allowed = adsClickStorageAllowed({ consent: deps.consent, gpc: deps.gpc });
+  const hostname = locationLike?.hostname;
+  const secure = locationLike?.protocol === 'https:';
+  if (!allowed) {
+    const stored = readChunkedCookie(ADS_CLICK_COOKIE, header);
+    if (stored == null) return { wrote: false, cleared: false, ids: {} };
+    const clears = cookieWritePlan(ADS_CLICK_COOKIE, null, { hostname, secure });
+    writeLines(clears, deps);
+    return { wrote: false, cleared: true, ids: {} };
+  }
+  const incoming = clickIdsFromSearch(locationLike?.search || '');
+  if (!Object.keys(incoming).length) return { wrote: false, cleared: false, ids: readAdsClick(header) };
+  const ids = mergeClickIds(readAdsClick(header), incoming);
+  const writes = clickCookieWrites(ids, { hostname, secure });
+  writeLines(writes, deps);
+  return { wrote: writes.length > 0, cleared: false, ids };
 }

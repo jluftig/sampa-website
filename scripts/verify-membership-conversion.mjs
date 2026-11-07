@@ -11,13 +11,14 @@ import {
   buildCheckoutSessionParams,
   checkoutSuccessUrl,
   membershipConversionKind,
+  priorPaidFromInvoiceList,
 } from '../api/_lib/checkoutSession.js';
 import {
   classifyCheckoutSession,
   membershipAmountCents,
   publicReceipt,
 } from '../api/_lib/membershipReceipt.js';
-import { adsConsentCookieLines, readAdsConsent } from '../src/lib/adsConsent.js';
+import { adsConsentCookieLines, effectiveAdsConsent, readAdsConsent } from '../src/lib/adsConsent.js';
 import {
   ADS_CLICK_COOKIE,
   clickCookieWrites,
@@ -139,7 +140,8 @@ describe('checkout receipt', () => {
     assert.doesNotMatch(params.success_url, /gclid|gbraid|wbraid|@/);
     assert.equal(params.metadata.conversion, 'new_membership');
     assert.equal(membershipConversionKind(null), 'new_membership');
-    assert.equal(membershipConversionKind({ membership_status: 'canceled' }), 'renewal');
+    assert.equal(membershipConversionKind({ membership_status: 'canceled' }, { priorPaid: true }), 'renewal');
+    assert.equal(membershipConversionKind({ membership_status: 'canceled' }, { priorPaid: false }), 'new_membership');
   });
 
   it('accepts a paid new membership for the signed-in user', () => {
@@ -310,11 +312,19 @@ describe('ads conversion', () => {
       const doc = fakeDocument();
       assert.equal(mountConversionFrame({
         document: doc,
-        payload: { tagId: EXISTING_GOOGLE_ADS_TAG_ID, label: 'FutureLabel1', transactionId: 'cs_test_preview001', value: 50, currency: 'USD' },
+        payload: { tagId: EXISTING_GOOGLE_ADS_TAG_ID, label: 'FutureLabel1', transactionId: 'cs_test_preview001', value: 50, currency: 'USD', consent: 'granted', optOut: false },
         hostname,
+        consent: { choice: 'granted', adStorage: 'granted', optOut: false },
       }).mounted, false);
       assert.equal(doc.elements.length, 0);
     }
+    assert.equal(planMembershipConversion({
+      receipt,
+      config,
+      hostname: 'www.addictionpas.org',
+      sentIds: new Set(),
+      consent: effectiveAdsConsent({ choice: 'granted', adStorage: 'granted', optOut: false }, true),
+    }).reason, 'opt_out');
   });
 
   it('sends one conversion for a paid new membership and ignores a repeat', () => {
@@ -395,17 +405,40 @@ describe('click attribution', () => {
       `https://www.addictionpas.org/join?gclid=${gclid}`,
     );
     const captured = [];
-    rememberAdsClickFromLocation(
+    const blocked = rememberAdsClickFromLocation(
       { hostname: 'www.addictionpas.org', protocol: 'https:', search: `?gclid=${gclid}` },
-      { cookieHeader: '', writeCookie: (line) => captured.push(line) },
+      { cookieHeader: '', consent: { choice: 'unset', adStorage: 'denied', optOut: false }, writeCookie: (line) => captured.push(line) },
     );
-    assert.match(captured[0], new RegExp(ADS_CLICK_COOKIE));
+    assert.equal(blocked.wrote, false);
+    assert.equal(captured.length, 0);
     const loginNext = '/login?next=%2Fjoin%3Fstep%3Dcheckout';
     assert.doesNotMatch(loginNext, /gclid/);
-    assert.equal(readAdsClick(captured[0].split(';')[0]).gclid, gclid);
     const success = checkoutSuccessUrl('https://www.addictionpas.org');
     assert.doesNotMatch(success, /gclid/);
-    assert.equal(readAdsClick(captured[0].split(';')[0]).gclid, gclid);
+    const allowed = [];
+    rememberAdsClickFromLocation(
+      { hostname: 'www.addictionpas.org', protocol: 'https:', search: `?gclid=${gclid}` },
+      {
+        cookieHeader: '',
+        consent: { choice: 'granted', adStorage: 'granted', optOut: false, gpc: false },
+        gpc: false,
+        writeCookie: (line) => allowed.push(line),
+      },
+    );
+    assert.equal(readAdsClick(allowed[0].split(';')[0]).gclid, gclid);
+    const cleared = [];
+    const removed = rememberAdsClickFromLocation(
+      { hostname: 'www.addictionpas.org', protocol: 'https:', search: `?gclid=${gclid}` },
+      {
+        cookieHeader: allowed[0].split(';')[0],
+        consent: effectiveAdsConsent({ choice: 'granted', adStorage: 'granted', optOut: false }, '1'),
+        gpc: '1',
+        writeCookie: (line) => cleared.push(line),
+      },
+    );
+    assert.equal(removed.cleared, true);
+    assert.equal(cleared.some((line) => line.includes(gclid)), false);
+    assert.equal(cleared.some((line) => line.includes('Max-Age=0')), true);
   });
 });
 
@@ -467,7 +500,7 @@ describe('membership amount', () => {
 });
 
 describe('first-payment status', () => {
-  it('renews only the three stored profile statuses', () => {
+  it('does not treat a past_due profile as a completed membership without a paid invoice', () => {
     assert.equal(membershipConversionKind(null), 'new_membership');
     assert.equal(membershipConversionKind({}), 'new_membership');
     assert.equal(membershipConversionKind({ membership_status: '' }), 'new_membership');
@@ -476,22 +509,56 @@ describe('first-payment status', () => {
     assert.equal(membershipConversionKind({ membership_status: 'unpaid' }), 'new_membership');
     assert.equal(membershipConversionKind({ membership_status: 'trialing' }), 'new_membership');
     assert.equal(membershipConversionKind({ membership_status: 'active' }), 'renewal');
-    assert.equal(membershipConversionKind({ membership_status: 'past_due' }), 'renewal');
-    assert.equal(membershipConversionKind({ membership_status: 'canceled' }), 'renewal');
+    assert.equal(membershipConversionKind({ membership_status: 'past_due' }), null);
+    assert.equal(membershipConversionKind({ membership_status: 'canceled' }), null);
+
+    const paidMembership = {
+      status: 'paid',
+      amount_paid: 5000,
+      billing_reason: 'subscription_create',
+      metadata: { tier: 'fellow', conversion: 'new_membership' },
+    };
+    const donation = {
+      status: 'paid',
+      amount_paid: 2500,
+      billing_reason: 'subscription_cycle',
+      metadata: { type: 'donation' },
+    };
+    const pastDue = { membership_status: 'past_due', stripe_customer_id: 'cus_test' };
+    assert.equal(membershipConversionKind(pastDue, {
+      priorPaid: priorPaidFromInvoiceList({ data: [], has_more: false }),
+    }), 'new_membership');
+    assert.equal(membershipConversionKind(pastDue, {
+      priorPaid: priorPaidFromInvoiceList({ data: [donation], has_more: false }),
+    }), 'new_membership');
+    assert.equal(membershipConversionKind(pastDue, {
+      priorPaid: priorPaidFromInvoiceList({ data: [paidMembership], has_more: false }),
+    }), 'renewal');
+    assert.equal(membershipConversionKind(pastDue, {
+      priorPaid: priorPaidFromInvoiceList({ data: [donation], has_more: true }),
+    }), null);
 
     process.env.STRIPE_PRICE_FELLOW_1Y = 'price_fellow_1y';
-    const first = buildCheckoutSessionParams({
+    const retry = buildCheckoutSessionParams({
       userId: 'user-a',
       email: 'ada@example.org',
-      customerId: null,
+      customerId: 'cus_test',
       tier: 'fellow',
       duration: 1,
       origin: 'https://www.addictionpas.org',
-      conversion: membershipConversionKind(null),
+      conversion: membershipConversionKind(pastDue, { priorPaid: false }),
     });
-    assert.equal(first.params.metadata.conversion, 'new_membership');
-    assert.equal(membershipConversionKind({ membership_status: 'past_due' }), 'renewal');
-    assert.equal(first.params.metadata.conversion, 'new_membership');
+    assert.equal(retry.params.metadata.conversion, 'new_membership');
+    const unproven = buildCheckoutSessionParams({
+      userId: 'user-a',
+      email: 'ada@example.org',
+      customerId: 'cus_test',
+      tier: 'fellow',
+      duration: 1,
+      origin: 'https://www.addictionpas.org',
+      conversion: membershipConversionKind(pastDue, { priorPaid: null }),
+    });
+    assert.equal(unproven.params.metadata.conversion, undefined);
   });
 });
 
@@ -649,6 +716,7 @@ describe('opaque frame network', () => {
       { ...hit, consent: undefined, optOut: false },
       { ...hit, consent: 'granted', optOut: true },
       { ...hit, consent: 'denied', optOut: true },
+      { ...hit, consent: 'granted', optOut: false, gpc: true },
       { ...hit, email: 'ada@example.org' },
     ]) {
       const { box, sandbox } = loadFrame();

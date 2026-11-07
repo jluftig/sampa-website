@@ -9,8 +9,8 @@ import JoinStepper from '../components/join/JoinStepper';
 import JoinSupportStep from '../components/join/JoinSupportStep';
 import { useAuth } from '../lib/AuthContext';
 import { apiGet, apiPost } from '../lib/api';
-import { readAdsClick } from '../lib/adsClick';
-import { adsConsentCookieLines, readAdsConsent } from '../lib/adsConsent';
+import { readAdsClick, rememberAdsClickFromLocation } from '../lib/adsClick';
+import { adsConsentCookieLines, effectiveAdsConsent, readAdsConsent } from '../lib/adsConsent';
 import { checkoutConfirmation, previewConfirmation } from '../lib/checkoutConfirmation';
 import { adsConfigFromEnv, reportVerifiedMembershipConversion } from '../lib/membershipConversion';
 import AdsMeasurementChoice from '../components/AdsMeasurementChoice';
@@ -111,16 +111,24 @@ export function JoinFlow({ mode = 'join', preview = null }) {
   const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
-    setAdsConsent(readAdsConsent(document.cookie));
+    const gpc = navigator.globalPrivacyControl === true;
+    setAdsConsent(effectiveAdsConsent(readAdsConsent(document.cookie), gpc));
   }, []);
 
   const chooseAds = (choice) => {
-    const lines = adsConsentCookieLines(choice, {
+    const gpc = navigator.globalPrivacyControl === true;
+    const lines = adsConsentCookieLines(gpc ? 'denied' : choice, {
       hostname: window.location.hostname,
       secure: window.location.protocol === 'https:',
     });
     for (const line of lines) document.cookie = line;
-    setAdsConsent(readAdsConsent(document.cookie));
+    const next = effectiveAdsConsent(readAdsConsent(document.cookie), gpc);
+    rememberAdsClickFromLocation(window.location, {
+      cookieHeader: document.cookie,
+      consent: next,
+      gpc,
+    });
+    setAdsConsent(next);
   };
 
   useEffect(() => {
@@ -205,7 +213,7 @@ export function JoinFlow({ mode = 'join', preview = null }) {
       config: adsConfigFromEnv(import.meta.env),
       hostname: window.location.hostname,
       click: readAdsClick(document.cookie),
-      consent: adsConsent,
+      consent: effectiveAdsConsent(adsConsent, navigator.globalPrivacyControl),
     });
   }, [adsConsent, confirmation.sendConversion, preview, receipt]);
 
