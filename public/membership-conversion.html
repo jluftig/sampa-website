@@ -36,7 +36,7 @@
     if (!/^[A-Za-z0-9_-]{1,40}$/.test(payload.label || '')) return;
     if (!/^cs_(test|live)_[A-Za-z0-9]{8,}$/.test(payload.transactionId || '')) return;
     if (payload.currency !== 'USD') return;
-    if (typeof payload.value !== 'number' || !isFinite(payload.value) || payload.value < 0) return;
+    if (typeof payload.value !== 'number' || !isFinite(payload.value) || !(payload.value > 0)) return;
     var packed = JSON.stringify(payload);
     if (packed.indexOf('@') !== -1) return;
     if (payload.user_data || payload.email || payload.phone || payload.address) return;

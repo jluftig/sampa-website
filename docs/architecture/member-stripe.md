@@ -90,8 +90,10 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
   The page confirms payment only after `GET /api/create-checkout-session`
   shows that session is paid and belongs to the signed-in user. The Ads
   value is the membership line's `amount_total` after discounts. Patron and
-  donation lines are excluded. A Patron bundle with no line items is not
-  priced from the session total.   `active` is a renewal. `past_due` and `canceled` are renewals only when a
+  donation lines are excluded.   A Patron bundle with no line items is not
+  priced from the session total. A membership line of zero is not a
+  conversion, including when the only money charged is a Patron add-on.
+  Checkout prices are unchanged.   `active` is a renewal. `past_due` and `canceled` are renewals only when a
   paid membership invoice exists for that Stripe customer. An incomplete first
   payment is stored as `past_due` and has no paid membership invoice, so a
   later checkout is still a new membership. If that invoice list errors or is

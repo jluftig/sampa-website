@@ -33,7 +33,11 @@ export function checkoutConfirmation({
       screen: active ? 'active' : 'paid_waiting',
       claimPayment: true,
       claimActive: active,
-      sendConversion: outcome === 'new_membership' && Boolean(receipt?.transactionId),
+      sendConversion: outcome === 'new_membership'
+        && Boolean(receipt?.transactionId)
+        && receipt?.currency === 'USD'
+        && typeof receipt?.value === 'number'
+        && receipt.value > 0,
     };
   }
 

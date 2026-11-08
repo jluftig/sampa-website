@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import vm from 'node:vm';
 import { createElement } from 'react';
@@ -773,6 +774,175 @@ describe('opaque frame network', () => {
     });
     assert.equal(box.scripts.length, 0);
     assert.equal(box.fetches.length, 0);
+  });
+});
+
+const PUBLIC_ADS_LABEL = 'sTtECNm9j7QdENWa1LhE';
+const PREVIEW_ORIGIN = 'https://sampa-website-git-cursor-membership-ad-dca602-jluftigs-projects.vercel.app';
+const ALLOWED = { choice: 'granted', adStorage: 'granted', optOut: false, gpc: false };
+
+function publicLabelConfig() {
+  return adsConfigFromEnv({
+    VITE_GOOGLE_ADS_TAG_ID: EXISTING_GOOGLE_ADS_TAG_ID,
+    VITE_GOOGLE_ADS_NEW_MEMBERSHIP_LABEL: PUBLIC_ADS_LABEL,
+  });
+}
+
+describe('strict dues and bad conversion inputs', () => {
+  it('does not convert a zero-dues membership that only charged Patron', () => {
+    const session = {
+      ...PAID_NEW,
+      id: 'cs_test_zerodues01',
+      amount_total: 2500,
+      metadata: { ...PAID_NEW.metadata, patron: 'true' },
+      line_items: {
+        data: [
+          pricedLine(0, 'Fellow membership'),
+          pricedLine(2500, 'Patron add-on', { sampa_addon: 'patron' }),
+        ],
+      },
+    };
+    const receipt = receiptFor(session);
+    assert.equal(membershipAmountCents(session), 0);
+    assert.equal(receipt.outcome, 'new_membership');
+    assert.equal(receipt.value, null);
+    assert.equal(receipt.currency, null);
+    assert.equal(checkoutConfirmation({
+      phase: 'confirmation',
+      receiptStatus: 'ready',
+      receipt,
+      profileStatus: 'active',
+      arrivalStatus: null,
+    }).sendConversion, false);
+    const doc = fakeDocument();
+    const report = reportVerifiedMembershipConversion({
+      confirmation: { sendConversion: true },
+      receipt,
+      config: publicLabelConfig(),
+      hostname: 'www.addictionpas.org',
+      consent: ALLOWED,
+      document: doc,
+      storage: memoryStore(),
+    });
+    assert.equal(report.send, false);
+    assert.equal(doc.elements.length, 0);
+  });
+
+  it('rejects bad amounts, currencies, and session ids in the plan and the frame', () => {
+    const config = publicLabelConfig();
+    assert.equal(config.label, PUBLIC_ADS_LABEL);
+    assert.equal(config.configured, true);
+    const valid = {
+      outcome: 'new_membership',
+      transactionId: 'cs_test_table00001',
+      value: 50,
+      currency: 'USD',
+    };
+    const rows = [
+      ['null amount', { value: null }],
+      ['string amount', { value: '50' }],
+      ['NaN amount', { value: Number.NaN }],
+      ['Infinity amount', { value: Number.POSITIVE_INFINITY }],
+      ['negative amount', { value: -1 }],
+      ['zero amount', { value: 0 }],
+      ['missing currency', { currency: undefined }],
+      ['wrong currency', { currency: 'EUR' }],
+      ['lowercase currency', { currency: 'usd' }],
+      ['absent session', { transactionId: null }],
+      ['bad session', { transactionId: 'success' }],
+    ];
+    for (const [name, patch] of rows) {
+      const receipt = { ...valid, ...patch };
+      const plan = planMembershipConversion({
+        receipt,
+        config,
+        hostname: 'www.addictionpas.org',
+        sentIds: new Set(),
+        consent: ALLOWED,
+      });
+      assert.equal(plan.send, false, name);
+      const doc = fakeDocument();
+      const report = reportVerifiedMembershipConversion({
+        confirmation: { sendConversion: true },
+        receipt,
+        config,
+        hostname: 'www.addictionpas.org',
+        consent: ALLOWED,
+        document: doc,
+        storage: memoryStore(),
+      });
+      assert.equal(report.send, false, name);
+      assert.equal(doc.elements.length, 0, name);
+      const frame = loadFrame();
+      frame.box.listeners.message(frameMessage({
+        tagId: EXISTING_GOOGLE_ADS_TAG_ID,
+        label: PUBLIC_ADS_LABEL,
+        transactionId: 'cs_test_table00001',
+        value: 50,
+        currency: 'USD',
+        consent: 'granted',
+        optOut: false,
+        ...patch,
+      }));
+      assert.equal(frame.box.scripts.length, 0, name);
+      assert.equal(frame.box.fetches.length, 0, name);
+      assert.equal(conversionCalls(frame.sandbox.window.dataLayer).length, 0, name);
+    }
+  });
+
+  it('does not emit from the preview origin when the public label is configured', () => {
+    const hostname = new URL(PREVIEW_ORIGIN).hostname;
+    assert.equal(hostname, 'sampa-website-git-cursor-membership-ad-dca602-jluftigs-projects.vercel.app');
+    assert.notEqual(hostname, 'www.addictionpas.org');
+    const doc = fakeDocument();
+    const report = reportVerifiedMembershipConversion({
+      confirmation: { sendConversion: true },
+      receipt: receiptFor(PAID_NEW),
+      config: publicLabelConfig(),
+      hostname,
+      consent: ALLOWED,
+      document: doc,
+      storage: memoryStore(),
+    });
+    assert.equal(report.send, false);
+    assert.equal(report.reason, 'off_host');
+    assert.equal(doc.elements.length, 0);
+    assert.equal(planMembershipConversion({
+      receipt: receiptFor(PAID_NEW),
+      config: publicLabelConfig(),
+      hostname: PREVIEW_ORIGIN,
+      sentIds: new Set(),
+      consent: ALLOWED,
+    }).reason, 'off_host');
+  });
+});
+
+describe('Join build wiring', () => {
+  it('reads the build env and still withholds the preview host', () => {
+    const join = readFileSync(new URL('../src/pages/Join.jsx', import.meta.url), 'utf8');
+    assert.match(join, /config:\s*adsConfigFromEnv\(import\.meta\.env\)/);
+    assert.match(join, /hostname:\s*window\.location\.hostname/);
+    assert.match(join, /reportVerifiedMembershipConversion\(/);
+    const built = spawnSync('npx', ['vite', 'build'], {
+      cwd: new URL('..', import.meta.url),
+      env: {
+        ...process.env,
+        VITE_SUPABASE_URL: 'https://example.supabase.co',
+        VITE_SUPABASE_ANON_KEY: 'sb_publishable_preview_only',
+        VITE_GOOGLE_ADS_TAG_ID: EXISTING_GOOGLE_ADS_TAG_ID,
+        VITE_GOOGLE_ADS_NEW_MEMBERSHIP_LABEL: PUBLIC_ADS_LABEL,
+      },
+      encoding: 'utf8',
+    });
+    assert.equal(built.status, 0, built.stderr || built.stdout);
+    const assets = readdirSync(new URL('../dist/assets', import.meta.url));
+    const joinFile = assets.find((name) => name.startsWith('Join-') && name.endsWith('.js'));
+    assert.ok(joinFile);
+    const source = readFileSync(new URL(`../dist/assets/${joinFile}`, import.meta.url), 'utf8');
+    assert.match(source, new RegExp(PUBLIC_ADS_LABEL));
+    assert.match(source, /www\.addictionpas\.org/);
+    assert.equal(source.includes('googletagmanager.com/gtag/js'), false);
+    assert.equal(source.includes(new URL(PREVIEW_ORIGIN).hostname), false);
   });
 });
 

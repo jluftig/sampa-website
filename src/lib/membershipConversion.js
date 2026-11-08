@@ -34,7 +34,7 @@ export function adsConfigFromEnv(env = {}) {
 export function normalizeReceipt(body) {
   const outcome = OUTCOMES.has(body?.outcome) ? body.outcome : 'unknown';
   const transactionId = isCheckoutSessionId(body?.transactionId) ? body.transactionId : null;
-  const value = typeof body?.value === 'number' && Number.isFinite(body.value) && body.value >= 0
+  const value = typeof body?.value === 'number' && Number.isFinite(body.value) && body.value > 0
     ? body.value
     : null;
   const currency = body?.currency === 'USD' && value != null ? 'USD' : null;
@@ -52,7 +52,7 @@ export function planMembershipConversion({ receipt, config, hostname, sentIds, c
   if (!consentAllowsAds(consent)) {
     return { send: false, reason: consent?.optOut ? 'opt_out' : 'consent' };
   }
-  if (clean.outcome !== 'new_membership' || !clean.transactionId || clean.currency !== 'USD' || clean.value == null) {
+  if (clean.outcome !== 'new_membership' || !clean.transactionId || clean.currency !== 'USD' || !(clean.value > 0)) {
     return { send: false, reason: 'ineligible' };
   }
   if (sentIds?.has?.(clean.transactionId) || inflight.has(clean.transactionId)) {
@@ -95,8 +95,11 @@ export function mountConversionFrame({ document, payload, hostname, consent }) {
   if (!consentAllowsAds(consent) || payload?.optOut === true || payload?.consent !== 'granted') {
     return { mounted: false, reason: consent?.optOut || payload?.optOut ? 'opt_out' : 'consent' };
   }
-  if (!payload?.label || payload.tagId !== EXISTING_GOOGLE_ADS_TAG_ID || !payload.transactionId) {
+  if (!payload?.label || payload.tagId !== EXISTING_GOOGLE_ADS_TAG_ID || !isCheckoutSessionId(payload.transactionId)) {
     return { mounted: false, reason: 'unconfigured' };
+  }
+  if (payload.currency !== 'USD' || typeof payload.value !== 'number' || !Number.isFinite(payload.value) || !(payload.value > 0)) {
+    return { mounted: false, reason: 'ineligible' };
   }
   if (payloadHasContactData(payload)) return { mounted: false, reason: 'pii' };
   if (!document?.createElement || !document.body) return { mounted: false, reason: 'no_document' };

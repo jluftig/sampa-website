@@ -76,7 +76,7 @@ export function classifyCheckoutSession(session, userId) {
   if (kind === 'new_membership') {
     const usd = String(session.currency || '').toLowerCase() === 'usd';
     const cents = membershipAmountCents(session);
-    const value = usd && Number.isInteger(cents) && cents >= 0 ? cents / 100 : null;
+    const value = usd && Number.isInteger(cents) && cents > 0 ? cents / 100 : null;
     return {
       outcome: 'new_membership',
       transactionId: session.id,
