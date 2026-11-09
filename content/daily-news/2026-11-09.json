@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-09",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Federal cuts to test-strip funding leave North Carolina harm reduction groups paying out of pocket",
+      "outlet": "NC Newsline (KFF Health News)",
+      "date": "Nov 9",
+      "summary": "In April, SAMHSA told grantees they could no longer use its money to buy fentanyl, xylazine or medetomidine test strips, and it had been the exclusive funder of strips distributed through North Carolina's state opioid response program. One rural group lost a little more than $15,000 a year, part of a reduction of more than $300 million in federal overdose prevention and treatment funding nationally. Programs distributing drug-checking supplies face a gap as outreach workers report more adulterants, including medetomidine and nitazenes, in the street supply.",
+      "url": "https://ncnewsline.com/2026/11/09/federal-cuts-hobble-efforts-to-prevent-overdoses-from-contaminated-drugs/"
+    },
+    {
+      "headline": "New ICD code lets clinicians track medetomidine toxicity, with a withdrawal code due next year",
+      "outlet": "The Philadelphia Inquirer",
+      "date": "Nov 7",
+      "summary": "Since the start of October, clinicians nationwide can use an ICD code for medetomidine toxicity, and CDC will add a code for medetomidine withdrawal by the same date next year, after Philadelphia health officials lobbied for both. The animal tranquilizer, never approved for human use, is now present in more than 80% of illegally sold opioids, according to the Inquirer, and can cause dangerous blackouts and slow heart rates. Better coding should help emergency and addiction clinicians document cases and let health departments track a drug that has complicated opioid withdrawal care.",
+      "url": "https://www.inquirer.com/health/medetomidine-animal-tranquilizer-withdrawal-public-health-tracking-20261107.html"
+    },
+    {
+      "headline": "CMS approves Connecticut Medicaid coverage starting 60 days before release from prison",
+      "outlet": "Office of Gov. Ned Lamont",
+      "date": "Nov 6",
+      "summary": "CMS approved Connecticut's proposal to begin Medicaid coverage 60 days before eligible people leave correctional facilities, aimed at helping those with chronic conditions, including substance use disorders, connect to care after release. CMS also said Connecticut will keep receiving federal reimbursement for HUSKY members' residential and inpatient substance use treatment, in effect since April 2022. Pre-release coverage gives jail- and prison-based clinicians a path to start treatment and arrange continuity before the high-risk weeks after release.",
+      "url": "https://portal.ct.gov/governor/news/press-releases/2026/11-2026/governor-lamont-announces-federal-approval-of-health-initiative-for-justice-involved-individuals"
+    },
+    {
+      "headline": "Dallas Fire-Rescue to brief council on paramedics starting buprenorphine at overdose scenes",
+      "outlet": "dallastx.city",
+      "date": "Nov 7",
+      "summary": "Dallas Fire-Rescue leaders are scheduled to brief the City Council's Public Safety Committee at 1 PM today on a program called Bridge to Treatment, in which crews would screen patients for substance use disorder, offer buprenorphine on scene when appropriate, and hand willing patients to treatment partners. The slides list referrals, overdose survival and fewer repeat calls as success measures, and give no start date or cost. Field initiation by EMS is an emerging way to reach people at a moment of openness to treatment, so the protocol details will matter to clinicians.",
+      "url": "https://dallastx.city/article/paramedics-would-start-addiction-treatment-at-overdose-scenes-under-a-plan-dallas-fire-rescue-briefs-monday"
+    },
+    {
+      "headline": "Model study estimates each person kept in opioid treatment for a year cuts UK societal costs by £140,876",
+      "outlet": "Camurus (press release)",
+      "date": "Nov 9",
+      "summary": "A model-based analysis by the Swedish Institute for Health Economics and Camurus, published in Addiction, estimated societal costs were £140,876 lower for each person recruited into or retained in opioid dependence treatment for a year. About 37% of the reduction accrued to families and communities, 37% to economic productivity and 23% to criminal justice, with 2% in healthcare. The study was conducted with a maker of long-acting buprenorphine and uses secondary data, but it supports cross-sector funding of treatment.",
+      "url": "https://news.cision.com/camurus-ab/r/ihe-and-camurus-study-indicates-substantial-societal-cost-reductions-associated-with-opioid-dependen,c4421237"
+    }
+  ]
+}
