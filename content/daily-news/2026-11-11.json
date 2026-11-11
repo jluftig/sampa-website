@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-11",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "ASAM releases first national clinical guide on medetomidine intoxication and withdrawal",
+      "outlet": "American Society of Addiction Medicine",
+      "date": "Nov 10",
+      "summary": "ASAM's new guidance says medetomidine intoxication causes bradycardia and persistent sedation, and withdrawal can escalate quickly to severe tachycardia and hypertension that do not respond to usual withdrawal medications. It recommends alpha-2 agonists, with intravenous dexmedetomidine at higher than usual doses for severe cases, and incremental naloxone only until breathing is restored, since naloxone does not reverse the sedation. Routine toxicology screens miss it, so clinicians should track local drug supply surveillance and expect that moderate to severe withdrawal may need hospital care.",
+      "url": "https://www.asam.org/quality-care/clinical-recommendations/medetomidine"
+    },
+    {
+      "headline": "First-in-human trial of MCAM, a weeks-long opioid blocker, is underway in Kansas",
+      "outlet": "UT Health San Antonio",
+      "date": "Nov 10",
+      "summary": "UT Health San Antonio researchers began a phase 1 trial in October of methocinnamox (MCAM), a long-acting opioid receptor antagonist that blocked opioid effects for weeks after one dose in animal studies. Part one tests three escalating doses against placebo in healthy adults for safety and blood levels, and part two will test whether one dose blocks a controlled opioid exposure in people with prior opioid experience but no current dependence. If the blockade lasts in humans, it could protect people during high-risk periods such as relapse after abstinence, which naloxone, active for about an hour, does not cover.",
+      "url": "https://news.uthscsa.edu/decades-in-the-making-mcam-enters-initial-human-testing/"
+    },
+    {
+      "headline": "Pittsburgh trial will test weekly semaglutide for alcohol and opioid use disorder in up to 1,200 adults",
+      "outlet": "The Pharmacist",
+      "date": "Nov 10",
+      "summary": "A randomized trial led by the Center for Addiction Science, Policy and Research and Allegheny County, Pennsylvania, expected to start in early 2027, will give half of up to 1,200 adults with alcohol use disorder, opioid use disorder or both weekly semaglutide for 52 weeks alongside standard treatment. Participants are adults at elevated risk of criminal justice involvement, and outcomes will include employment, housing, health care use and rearrest drawn from county administrative data. If it shows benefit, a medication-based approach could be adopted by other health systems more easily than a complex program.",
+      "url": "https://www.thepharmacist.co.uk/clinical/nutrition-and-gastroenterology/semaglutide-to-be-tested-as-treatment-for-alcohol-and-opioid-addiction/"
+    },
+    {
+      "headline": "Meta-analysis: higher-dose stimulants improved ADHD symptoms and stimulant use in adults with both conditions",
+      "outlet": "Medical Dialogues",
+      "date": "Nov 10",
+      "summary": "A network meta-analysis of six trials in the Journal of Clinical Psychiatry found active pharmacotherapy raised the odds of negative urine toxicology (odds ratio 1.65) and reduced ADHD symptom severity versus placebo, with mixed amphetamine salts showing the largest benefit on the main outcome (odds ratio 8.45). Higher-dose methylphenidate and mixed amphetamine salts ranked highest, and safety did not differ much from placebo. The authors note the evidence base is small and call for larger randomized trials before practice changes.",
+      "url": "https://medicaldialogues.in/psychiatry/news/stimulant-medications-may-benefit-adhd-with-stimulant-use-disorder-finds-study-182526"
+    },
+    {
+      "headline": "Active cannabis use independently predicted death in alcohol-associated hepatitis, at 2.5 times the mortality",
+      "outlet": "Medical Xpress (Research Society on Alcohol)",
+      "date": "Nov 9",
+      "summary": "A study of 800 patients hospitalized with alcohol-associated hepatitis at 40 centers in 13 countries, published in Alcohol: Clinical and Experimental Research, found one in four had died by about 80 days. Active substance use, especially cannabis, predicted death independent of liver disease severity, and the 50 patients reporting active cannabis use had 2.5 times the mortality. The authors recommend assessing and treating substance use as part of care for these patients.",
+      "url": "https://medicalxpress.com/news/2026-11-cannabis-linked-higher-death-people.html"
+    }
+  ]
+}
