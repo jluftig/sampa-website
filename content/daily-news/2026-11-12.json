@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-12",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Hospital addiction consult service raised OUD medication use without longer stays or readmissions",
+      "outlet": "Penn LDI",
+      "date": "Nov 11",
+      "summary": "A study of 10,637 opioid-related admissions in one Philadelphia health system, published in the Journal of General Internal Medicine, compared one hospital that launched an addiction consult service in July 2023 with three that did not. The service was associated with more patients receiving medication for opioid use disorder and more discharged on therapeutic doses, with no significant change in length of stay or 30-day readmissions. That counters a common cost concern for hospital leaders, though the study did not show reductions in later health care use.",
+      "url": "https://ldi.upenn.edu/our-work/research-updates/addiction-consults-improve-substance-use-care-without-more-readmissions-or-longer-stays/"
+    },
+    {
+      "headline": "Ontario analysis links monthly injectable buprenorphine to the fewest overdoses among opioid treatments",
+      "outlet": "CBC News",
+      "date": "Nov 12",
+      "summary": "A London, Ontario analysis of more than 45,000 Ontarians with opioid-related overdoses between 2022 and 2024 found that fewer than five people taking Sublocade (extended-release buprenorphine) died or had an overdose. Of more than 750 overdose deaths, 58 occurred on methadone, 37 on Suboxone and 18 on Kadian, and 640 among people on no opioid-replacement medication. The lead researcher cautioned that Sublocade does not protect against overdoses involving other drugs, and the comparison is observational, so clinicians should read it as support for long-acting options rather than proof of superiority.",
+      "url": "https://www.cbc.ca/news/canada/london/new-drug-helps-curb-fentanyl-cravings-and-may-protect-against-overdose-london-doctor-says-9.7418150"
+    },
+    {
+      "headline": "DEA proposes 2027 quotas: lower for fentanyl and opioids, higher for amphetamine and methylphenidate",
+      "outlet": "Federal Register (DEA)",
+      "date": "Nov 10",
+      "summary": "DEA's proposed 2027 production quotas, with comments due December 10, would cut quotas for fentanyl, hydrocodone, hydromorphone, oxycodone and oxymorphone, after FDA predicted Schedule II opioid medical use will fall 9.68 percent on average. Quotas for amphetamine, lisdexamfetamine and methylphenidate would rise to address ADHD medication shortages, and MDMA and ibogaine quotas would rise to support clinical trials. Clinicians and policy leaders can comment through docket DEA-1730P.",
+      "url": "https://www.federalregister.gov/documents/2026/11/10/2026-22843/proposed-aggregate-production-quotas-for-schedule-i-and-ii-controlled-substances-and-assessment-of"
+    },
+    {
+      "headline": "Ohio coroner: fentanyl in four of five deaths from September surge; no cychlorphine found",
+      "outlet": "10TV (Columbus)",
+      "date": "Nov 11",
+      "summary": "Final autopsies for five deaths in a 24-hour overdose surge in Franklin County show four people tested positive for fentanyl, and most cases were polysubstance mixtures, with cocaine and methamphetamine also found in some. All five were tested for cychlorphine, a synthetic opioid believed to be about 10 times more potent than fentanyl, and none tested positive. The coroner said fentanyl remains the driver of death, a reminder that surge alerts need toxicology confirmation.",
+      "url": "https://www.10tv.com/article/news/local/coroner-autopsies-reveal-fentanyl-killed-4-of-5-people-in-franklin-county-overdose-surge-columbus-ohio/530-94acd6f3-6a1b-4b2b-8be6-ea1547a00802"
+    },
+    {
+      "headline": "OSHA releases workplace fact sheet on opioid overdose rescue with reversal medications",
+      "outlet": "CBIA",
+      "date": "Nov 11",
+      "summary": "OSHA's new fact sheet, part of the Great American Recovery Initiative, covers recognizing overdose signs such as slow, shallow breathing, unresponsiveness, blue or discolored lips and pinpoint pupils. It describes injectable and nasal spray reversal medications, advises employers to tell employees what is available and how to use it, and says to call 911 even if the person wakes up. For clinicians and policy leaders, it is a ready resource for employers asking how to prepare for overdoses at work.",
+      "url": "https://www.cbia.com/news/hr-safety/osha-opioid-overdose"
+    }
+  ]
+}
