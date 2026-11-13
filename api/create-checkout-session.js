@@ -1,6 +1,12 @@
 import { stripeClient, supabaseAdmin, requireUser, json } from './_lib/clients.js';
 import { requestSiteOrigin } from './_lib/siteUrl.js';
-import { buildCheckoutSessionParams, duplicateMembershipBlock } from './_lib/checkoutSession.js';
+import {
+  buildCheckoutSessionParams,
+  duplicateMembershipBlock,
+  membershipConversionKind,
+  priorPaidFromInvoiceList,
+} from './_lib/checkoutSession.js';
+import { classifyCheckoutSession, emptyReceipt, isCheckoutSessionId, publicReceipt } from './_lib/membershipReceipt.js';
 
 // POST { tier, duration, patron?, auto_renew? } → { url } of a Stripe Checkout session.
 // auto_renew defaults true. false keeps the same Price and sets cancel_at_period_end.
@@ -11,9 +17,34 @@ import { buildCheckoutSessionParams, duplicateMembershipBlock } from './_lib/che
 // membership_tier. Sign-in first: the Supabase user id rides along as
 // client_reference_id and metadata, so the webhook can update exactly the
 // right profiles row — the Stripe↔Supabase link is never inferred from email.
-export async function POST(request) {
+export async function GET(request, deps = {}) {
+  const require = deps.requireUser || requireUser;
+  const user = await require(request);
+  if (!user) return json(emptyReceipt('unknown'), 401);
+
+  let sessionId = '';
   try {
-    const user = await requireUser(request);
+    sessionId = new URL(request.url).searchParams.get('session_id') || '';
+  } catch {
+    sessionId = '';
+  }
+  if (!isCheckoutSessionId(sessionId)) return json(emptyReceipt('unknown'));
+
+  try {
+    const retrieve = deps.retrieve || ((id) => stripeClient().checkout.sessions.retrieve(id, {
+      expand: ['line_items.data.price.product'],
+    }));
+    const session = await retrieve(sessionId);
+    return json(publicReceipt(classifyCheckoutSession(session, user.id)));
+  } catch {
+    return json(emptyReceipt('unknown'));
+  }
+}
+
+export async function POST(request, deps = {}) {
+  try {
+    const require = deps.requireUser || requireUser;
+    const user = await require(request);
     if (!user) return json({ error: 'Sign in required' }, 401);
 
     const body = await request.json().catch(() => ({}));
@@ -22,17 +53,44 @@ export async function POST(request) {
     const wantPatron = body.patron === true;
     const autoRenew = body.auto_renew !== false;
 
-    const { data: profile } = await supabaseAdmin()
-      .from('profiles')
-      .select('stripe_customer_id, membership_status, renews_on, cancel_at_period_end')
-      .eq('id', user.id)
-      .maybeSingle();
+    const loadProfile = deps.loadProfile || (async (userId) => {
+      const { data: profile } = await supabaseAdmin()
+        .from('profiles')
+        .select('stripe_customer_id, membership_status, renews_on, cancel_at_period_end')
+        .eq('id', userId)
+        .maybeSingle();
+      return profile;
+    });
+    const profile = await loadProfile(user.id);
 
     const block = duplicateMembershipBlock(profile);
     if (block) {
       return json({
         error: 'You already have an active membership. Manage billing from your dashboard instead of starting another subscription.',
       }, 409);
+    }
+
+    const listInvoices = deps.listInvoices || (async (customerId) => {
+      const list = await stripeClient().invoices.list({
+        customer: customerId,
+        status: 'paid',
+        limit: 100,
+      });
+      return list;
+    });
+    let priorPaid;
+    const needsPaidProof = profile?.membership_status === 'past_due' || profile?.membership_status === 'canceled';
+    if (!needsPaidProof) priorPaid = undefined;
+    // No customer id means the paid-invoice lookup cannot run. That is unknown
+    // history, not proof the person never paid, so the session gets no
+    // new-membership stamp.
+    else if (!profile?.stripe_customer_id) priorPaid = null;
+    else {
+      try {
+        priorPaid = priorPaidFromInvoiceList(await listInvoices(profile.stripe_customer_id));
+      } catch {
+        priorPaid = null;
+      }
     }
 
     const built = buildCheckoutSessionParams({
@@ -44,10 +102,12 @@ export async function POST(request) {
       wantPatron,
       autoRenew,
       origin: requestSiteOrigin(request),
+      conversion: membershipConversionKind(profile, { priorPaid }),
     });
     if (built.error) return json({ error: built.error }, 400);
 
-    const session = await stripeClient().checkout.sessions.create(built.params);
+    const createSession = deps.createSession || ((params) => stripeClient().checkout.sessions.create(params));
+    const session = await createSession(built.params);
 
     return json({ url: session.url });
   } catch (err) {

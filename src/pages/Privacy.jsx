@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import AdsMeasurementChoice from '../components/AdsMeasurementChoice';
 import LegalPage from '../components/LegalPage';
+import { rememberAdsClickFromLocation } from '../lib/adsClick';
+import { adsConsentCookieLines, effectiveAdsConsent, readAdsConsent } from '../lib/adsConsent';
 
 const CONTACT_FORM_URL = 'https://forms.gle/YqYYRVE9z2nCYdNz5';
 
 export default function Privacy() {
+  const [adsConsent, setAdsConsent] = useState(() => readAdsConsent(''));
+  useEffect(() => {
+    const gpc = navigator.globalPrivacyControl === true;
+    setAdsConsent(effectiveAdsConsent(readAdsConsent(document.cookie), gpc));
+  }, []);
+  const chooseAds = (choice) => {
+    const gpc = navigator.globalPrivacyControl === true;
+    const lines = adsConsentCookieLines(gpc ? 'denied' : choice, {
+      hostname: window.location.hostname,
+      secure: window.location.protocol === 'https:',
+    });
+    for (const line of lines) document.cookie = line;
+    const next = effectiveAdsConsent(readAdsConsent(document.cookie), gpc);
+    rememberAdsClickFromLocation(window.location, {
+      cookieHeader: document.cookie,
+      consent: next,
+      gpc,
+    });
+    setAdsConsent(next);
+  };
   return (
-    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="October 22, 2026">
+    <LegalPage label="Legal" title="Privacy Policy" effectiveDate="November 7, 2026">
       <p>
         The Society of Addiction Medicine Physician Associates ("SAMPA," "we,"
         "us") operates <strong>www.addictionpas.org</strong>, a professional
@@ -25,7 +48,8 @@ export default function Privacy() {
         <li>Active members can use a <strong>member networking directory</strong> to find each other. That directory is not public. You control whether you appear and whether peers see your email or phone.</li>
         <li>Payments are handled by Stripe — <strong>we never see or store your card number</strong>.</li>
         <li>This is a site for clinicians. <strong>We do not collect patient information of any kind.</strong></li>
-        <li>We don't sell your information, and we don't show ads.</li>
+        <li>We don't sell your information, and we don't show ads on this site.</li>
+        <li>After the server confirms a paid new membership, we can tell Google Ads that one conversion happened. The report is a transaction id and the amount. It does not include your name, email, profile, or health information. Nothing is sent until a conversion action label is configured, and preview sites never send it.</li>
       </ul>
 
       <h2>Information we collect</h2>
@@ -33,8 +57,8 @@ export default function Privacy() {
       <h3>Visitors (no account)</h3>
       <p>
         Reading our news, key points, and other public pages requires no account
-        and no personal information. We do not use advertising trackers or
-        third-party analytics. Like nearly every website, our hosting providers
+        and no personal information. Ordinary page views do not load an advertising tag.
+        Like nearly every website, our hosting providers
         keep standard, short-lived server logs (such as IP address and browser
         type) for security and operations.
       </p>
@@ -178,8 +202,10 @@ export default function Privacy() {
         <li>To keep the site secure and understand aggregate (not individual) usage.</li>
       </ul>
       <p>
-        We do not sell personal information, and we do not share it with
-        advertisers. Ever. We also do not sell or rent the member directory.
+        We do not sell personal information, and we do not sell or rent the member
+        directory. We do not give advertisers your name, email, profile, or health
+        information. The only advertising report is the new-membership conversion
+        described below.
       </p>
 
       <h2>Service providers</h2>
@@ -190,7 +216,7 @@ export default function Privacy() {
         <li><strong>Vercel</strong> — website hosting.</li>
         <li><strong>Brevo</strong> — email delivery for magic-link / auth messages and for SAMPA email lists (the SAMPA Weekly Newsletter, the SAMPA Daily News Roundup, and the SAMPA Emerging Practice Monthly). Brevo's handling of subscriber data is described in{' '}
           <a href="https://www.brevo.com/legal/privacypolicy/" target="_blank" rel="noopener noreferrer">Brevo's privacy policy</a>.</li>
-        <li><strong>Google</strong> — the optional "Sign in with Google" service.</li>
+        <li><strong>Google</strong> — the optional "Sign in with Google" service. Google Ads also receives the new-membership conversion described below, and only that.</li>
       </ul>
       <p>
         Beyond these providers, we disclose personal information only if
@@ -202,8 +228,23 @@ export default function Privacy() {
 
       <h2>Cookies and local storage</h2>
       <p>
-        We use your browser's local storage for one purpose: keeping you signed
-        in. There are no advertising cookies and no cross-site tracking.
+        We use your browser's local storage, and a first-party cookie, to keep you
+        signed in. If you arrive from an ad, we store that click id in a separate
+        first-party cookie so a completed new membership can be tied to the ad.
+        The click id is not your name, email, or health information. We do not
+        store that click id until you allow a new-membership report, and we do
+        not store it when your browser sends Global Privacy Control. If you
+        allow the report only after you return from Stripe, the original click
+        id is no longer in the address and was not saved, so that membership
+        cannot be tied to the ad. Choosing
+        "Don't allow" removes a stored click id and turns the report off. That
+        choice wins, and Global Privacy Control wins over an earlier allow. We
+        do not turn on Google ad storage unless you allow the report and Global
+        Privacy Control is off. We do not send your name, email, phone, or address. The amount
+        is the membership dues, not a Patron add-on and not a donation.
+        Renewals are not reported. Google's account setting for automatic
+        contact collection is not something this site can switch. We do not
+        treat a tag id and a container id as the same install.
       </p>
 
       <h2>Retention and deletion</h2>
@@ -227,8 +268,10 @@ export default function Privacy() {
         </li>
         <li>Unsubscribe from every SAMPA email list via the link in any email we send through Brevo. That link is a full exit. It is separate from the per-list switches.</li>
         <li>Manage or cancel your membership through the billing portal on your dashboard.</li>
+        <li>Allow or refuse a new-membership report to Google Ads. Refusal is the default.</li>
         <li>Request a copy or deletion of your information via the <a href={CONTACT_FORM_URL} target="_blank" rel="noopener noreferrer">contact form</a>.</li>
       </ul>
+      <AdsMeasurementChoice consent={adsConsent} onChoose={chooseAds} />
 
       <h2>Security</h2>
       <p>
