@@ -23,6 +23,7 @@ Rules:
 - `date` matches the filename (`YYYY-MM-DD.json`).
 - `items` holds 1 to 7 objects. Each object has `headline`, `outlet`, `date`, `summary`, and an `https://` `url`.
 - A file that fails those checks is skipped. The build still succeeds.
+- The `daily-news` GitHub check rejects the pull request when a file is invalid JSON, when the date does not match the filename, when an item is missing a field or uses a non-https url, when two items share a url, when `feature` is present but the wrong shape, or when the loader would skip the file. Run `npm run test:daily-content` before pushing.
 - Commits that only add or replace a file in this folder stay content-only. No application code in those commits.
 - Keywords are not stored in the file. The site tags each item from a fixed vocabulary when it renders.
 - `feature` is optional. When it is present, `/news/daily` and `/news/daily/<date>` show a featured card above the stories. A missing `feature` changes nothing. A broken `feature` is dropped and the day's items still publish.

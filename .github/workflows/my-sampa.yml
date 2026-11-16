@@ -66,3 +66,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:donor-badge
+
+  daily-news:
+    name: daily-news
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:daily-content
+      - run: npm run test:daily-news
+      - run: npm run test:daily-archive

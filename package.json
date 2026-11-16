@@ -32,6 +32,7 @@
     "test:policy-work-bundle": "node scripts/verify-policy-work-bundle.mjs",
     "test:giveaway": "node scripts/verify-giveaway.mjs",
     "test:daily-news": "node --test scripts/verify-daily-news.mjs",
+    "test:daily-content": "node scripts/verify-daily-news-content.mjs && node --test scripts/verify-daily-news-content.test.mjs",
     "test:topic-roundup": "node --import ./scripts/register-jsx.mjs --test scripts/verify-topic-roundup.mjs",
     "test:subscriptions": "node --test scripts/verify-subscriptions.mjs && node --import ./scripts/register-jsx.mjs --test scripts/verify-subscriptions-page.mjs",
     "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",
