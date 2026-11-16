@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-16",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "San Francisco starts same-day long-acting buprenorphine injections at a low-barrier clinic",
+      "outlet": "SF.gov (SFDPH)",
+      "date": "Nov 13",
+      "summary": "San Francisco's health department launched a pilot at the Maria X Martinez Health Resource Center that lets patients get a first dose of long-acting injectable buprenorphine on site, which the clinic could not store or give before. The roughly $500,000 pilot buys 460 starting doses and 500 follow-up doses over two years, runs through April 2028, and may expand to up to five more city clinics in 2027. The city will track overdoses, emergency use and retention, so clinicians should watch for outcome data on same-day injection starts.",
+      "url": "https://www.sf.gov/news-san-francisco-department-of-public-health-launches-new-on-demand-long-acting-injectable-buprenorphine-pilot-at-maria-x-martinez-health-resource-center-made-possible-by-breaking-the-cycle-fund"
+    },
+    {
+      "headline": "Mass General Brigham plans one ED opioid treatment model across its hospitals, starting with Salem",
+      "outlet": "Mass General Brigham",
+      "date": "Nov 13",
+      "summary": "Mass General Brigham says it is working to bring the model used at Massachusetts General and the Brigham to its other emergency departments: clinicians start buprenorphine in the ED, addiction specialists consult at the bedside, and walk-in bridge clinics continue care. Salem Hospital clinicians are beginning training, and a federal grant will fund a consult team and bridge clinic at Cooley Dickinson Hospital. This is the system's own account with no outcome data or timeline, but it shows a large system treating ED opioid treatment starts as a routine quality measure.",
+      "url": "https://www.pubt.io/view/C1212D03DBCD249DD4A7F49C08EE1D3DB2D76BF3"
+    },
+    {
+      "headline": "Opioid settlement spending put more than $340 million into housing in 2025, more than the naloxone strategy",
+      "outlet": "Medical Daily (KFF Health News analysis)",
+      "date": "Nov 13",
+      "summary": "A KFF Health News analysis published November 12 found state and local governments reported spending or committing more than $340 million of opioid settlement money on housing in 2025, about 9% of roughly $3.7 billion and more than the core strategy that covers overdose-reversal drugs such as naloxone. Connecticut's $58.6 million voucher program had moved about 170 people into housing by mid-September, though researchers note most people who are homeless do not have an addiction. Clinicians and policy leaders should ask how housing programs connect to treatment, since the data cover only publicly reported spending.",
+      "url": "https://www.medicaldaily.com/opioid-settlement-money-housing-spending-2025-481201"
+    },
+    {
+      "headline": "Alcohol drives older adults' acute care visits while cannabis dominates among adolescents, study finds",
+      "outlet": "Infectious Disease Advisor (HealthDay)",
+      "date": "Nov 13",
+      "summary": "A study in the American Journal of Psychiatry of 1.36 million people ages 16 to 64 with a substance-related ED or inpatient encounter found alcohol accounted for 19 to 26 percent of adolescent admissions and 73 to 76 percent among ages 55 to 64, while cannabis ran 70 to 78 percent in adolescents and 10 to 11 percent in older adults. Alcohol-related admissions rose significantly among ages 25 to 44, and cannabis-related admissions rose fastest among ages 19 to 24. The claims data run through 2023, but they suggest screening and treatment resources should differ by age.",
+      "url": "https://www.infectiousdiseaseadvisor.com/news/ed-visits-hospitalizations-for-alcohol-cannabis-vary-by-age/"
+    },
+    {
+      "headline": "Phase 2 trial: weekly pemvidutide cut heavy drinking days more than placebo in alcohol use disorder",
+      "outlet": "Altimmune",
+      "date": "Nov 9",
+      "summary": "In the RECLAIM trial of about 100 adults with moderate-to-severe alcohol use disorder and a BMI above 25, heavy drinking days per week fell by 4.20 with pemvidutide versus 2.75 with placebo over 24 weeks, and 42.2% had zero heavy drinking days versus 17.4%. Weight fell 8.7% on pemvidutide, and nausea was more common (44% versus 24%). These are company-reported results presented at a late-breaker session, with an FDA End-of-Phase 2 meeting planned for December, so they are early evidence for clinicians following GLP-1-based approaches to alcohol use disorder.",
+      "url": "https://ir.altimmune.com/news-releases/news-release-details/altimmune-presents-positive-late-breaking-pemvidutide-data-aasld"
+    }
+  ]
+}
