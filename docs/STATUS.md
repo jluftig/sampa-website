@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-05 (T79 Founders Feature article, gated until Nov 10. Draft PR. Do not merge.)
+**Last updated:** 2026-11-16 (T80 CI runs the auth, session, and gate suites. Preview PR. Do not merge.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -65,6 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T80 | CI fails a pull request that breaks sign-in, sessions, or role gates | cursor | 2026-11-16 | **Claimed cursor.** Preview PR **#179**. Do not merge. `npm run test:offline` runs the auth, session, and gate suites plus the other `test:*` scripts that pass on main with no secrets and no network. `test:route-gates` walks every `Require*` route in `src/App.jsx`. `/survey/:year` and `/dashboard/emails` were missing from `isGuardedPath`. Live gates already bounce those two. The walker now sees them. |
 | T79 | Founders Feature article (Jim Anderson and Shani Wilson) | cursor | 2026-11-05 | **Claimed cursor.** Draft PR **#170**. Public article `/news/features/founders-jim-anderson-shani-wilson` by Kerith Hartmann, PA-C. HTTP 404 for every user agent until 2026-11-10 America/Los_Angeles. Essay JSON is served by `api/share` after that day, not bundled in the client. Optional `feature` lead on a daily issue. Do not merge. |
 | T78 | Board dashboard membership, finance, and newsletter show zeros | cursor | 2026-11-05 | **Claimed cursor.** PR **#169** (preview only). Signed-in admins on `/board` Dashboard saw Membership "Active now 0", Finances $0.00, and an empty newsletter chart because `GET` / `POST` on `newsletter-stats` treated Vercel's request context as deps. An async `cache.get` serialized to `{}`. `route` takes deps. `GET` and `POST` pass `{}`. An empty section shows "Couldn't load". A real zero still renders. Do not merge. |
 | T77 | Board member-observer contacts | cursor | 2026-11-03 | **Claimed cursor.** PR **#165** (preview only). `/board` schedule intro keeps info@addictionpas.org and adds mailto links for the President (president@addictionpas.org) and the Secretary (secretary@addictionpas.org). No Zoom link. Member gate stays. Do not merge. |
