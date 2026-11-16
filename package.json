@@ -37,6 +37,7 @@
     "test:daily-archive": "node --test scripts/verify-daily-news-archive.mjs",
     "test:news-feed": "node --test scripts/verify-news-feed.mjs",
     "test:news-features": "node --import ./scripts/register-jsx.mjs --test scripts/verify-news-features.mjs",
+    "test:route-gates": "node --test scripts/verify-route-gates.mjs",
     "sitemap:daily": "node scripts/write-daily-sitemap.mjs",
     "prebuild": "node scripts/write-daily-sitemap.mjs"
   },

@@ -29,6 +29,9 @@ function nextFromSearch(search = '') {
 
 function isGuardedPath(pathname) {
   return pathname === '/dashboard'
+    || pathname.startsWith('/dashboard/')
+    || pathname === '/survey'
+    || pathname.startsWith('/survey/')
     || pathname === '/members'
     || pathname.startsWith('/members/')
     || pathname === '/board'
