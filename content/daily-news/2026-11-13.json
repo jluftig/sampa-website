@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-13",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "DEA could schedule concentrated 7-OH kratom products as early as today",
+      "outlet": "NPR",
+      "date": "Nov 13",
+      "summary": "NPR reports that the federal government could make some highly potent kratom-related products, including 7-OH tablets, gummies and tonics sold at gas stations and smoke shops, illegal as early as Friday. DEA's October 14 notice of intent says a temporary Schedule I order for 7-hydroxymitragynine and mitragynine pseudoindoxyl may be published on or after November 13, applying above 1 mg per gram or per milliliter, and leaf kratom is not targeted. Clinicians should expect patients who are dependent on these products to seek withdrawal care and opioid use disorder treatment.",
+      "url": "https://www.npr.org/2026/11/13/nx-s1-6039203/kratom-7-oh-dea-addiction-opioid"
+    },
+    {
+      "headline": "HHS funds ibogaine groundwork through ARPA-H, with later awards planned for substance use disorders",
+      "outlet": "HHS",
+      "date": "Nov 12",
+      "summary": "HHS announced up to $4.9 million over five years through ARPA-H to prepare ibogaine for future clinical trials in PTSD, with Mark Cuban Cost Plus Drug Company and Beond, Inc. as the first research teams. Additional awards are expected to focus on ibogaine for substance use disorders, including opioid use disorder. The funding covers regulatory and manufacturing work only, does not authorize trials or imply FDA approval, and HHS cites serious cardiac risks, so clinicians should treat it as early-stage research.",
+      "url": "https://www.hhs.gov/press-room/hhs-advances-ibogaine-ptsd-research-rapid-acting-mental-health-treatments.html"
+    },
+    {
+      "headline": "Small Canadian case series: starting with extended-release buprenorphine followed fewer overdoses",
+      "outlet": "Detox.com",
+      "date": "Nov 12",
+      "summary": "In 21 people actively using fentanyl who received 300 mg of extended-release buprenorphine within 24 hours of intake through a virtual program tied to two harm reduction sites, mean monthly overdoses fell from 0.87 to 0.08. No deaths or serious adverse events occurred, 62 percent reported using less fentanyl, and 57 percent received at least one maintenance dose. The authors call it a small retrospective case series that needs larger prospective studies, but it points to a possible low-barrier start for people in shelters.",
+      "url": "https://www.detox.com/news/rapid-buprenorphine-induction-cuts-overdoses-in-shelter-study/"
+    },
+    {
+      "headline": "UNM launches contingency management for stimulant use inside an Albuquerque methadone clinic",
+      "outlet": "EIN Presswire",
+      "date": "Nov 11",
+      "summary": "The University of New Mexico School of Medicine's COMPASS program offers a 12-week contingency management course at MedMark Five Points, an opioid treatment program, for patients on methadone who also use methamphetamine or cocaine. Participants can earn escalating incentives for stimulant-negative urine drug tests, and staff work inside the clinic's existing referral and testing workflow. This is a press release with no outcome data yet, but it is a concrete model for treating stimulant use where patients already receive opioid treatment.",
+      "url": "https://www.einpresswire.com/article/955916845/university-of-new-mexico-launches-contingency-management-program-addressing-stimulant-use-among-methadone-patients"
+    },
+    {
+      "headline": "SAMHSA-funded center will train 6,700 rural New England providers on opioid and stimulant use",
+      "outlet": "UMass Chan Medical School",
+      "date": "Nov 12",
+      "summary": "UMass Chan and the New England Rural Health Association are running the New England Rural Opioid Technical Assistance Regional Center, one of 10 SAMHSA-funded regional centers nationwide, with $650,000 over three years. It expects to give training and technical assistance to about 6,700 rural health care providers, community organizations and residents across six states, covering prevention, treatment, recovery and overdose response for opioid and stimulant use disorders. Rural clinicians and policy leaders can use it as a source of workforce support.",
+      "url": "https://www.umassmed.edu/news/articles/2026/11/umass-chan-new-england-rural-health-association-partner-to-address-rural-substance-use-crisis/"
+    }
+  ]
+}

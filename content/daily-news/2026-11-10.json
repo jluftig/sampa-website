@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-10",
+  "title": "Addiction Daily Roundup",
+  "feature": {
+    "title": "Founders Feature: Jim Anderson and Shani Wilson",
+    "teaser": "When Jim Anderson started in SAMPA, formerly (and fondly) called SPAAM, it was little more than a spark of an idea.",
+    "href": "/news/features/founders-jim-anderson-shani-wilson",
+    "byline": "Kerith Hartmann, PA-C, Advocacy, Success, and Impact Officer, SAMPA"
+  },
+  "items": [
+    {
+      "headline": "GAO: every Medicare Part D and Medicaid enrollee had naloxone coverage, but nalmefene coverage is less common",
+      "outlet": "U.S. Government Accountability Office",
+      "date": "Nov 9",
+      "summary": "GAO found all Medicare Part D enrollees in 2025 and Medicaid enrollees in 2024 had coverage of some form of naloxone, while coverage of nalmefene, a newer and longer-acting reversal medication, was less common. Medicaid covered the over-the-counter naloxone nasal spray in 2024, but Part D plans generally did not in 2025, and Part D costs ran from a $3 to $10 median copay for generic injections to 25 to 35 percent coinsurance for brand high-dose naloxone and nalmefene sprays. Cost sharing on newer formulations could shape which reversal product patients leave with.",
+      "url": "https://www.gao.gov/products/gao-27-108163"
+    },
+    {
+      "headline": "CDC estimates about 67,000 U.S. overdose deaths in the 12 months ending April 2026",
+      "outlet": "Federal Register (CDC)",
+      "date": "Nov 9",
+      "summary": "In a notice sent to the Office of Management and Budget for a 30-day comment period, CDC said it predicts around 67,000 Americans died from a drug overdose in the 12 months ending April 2026. The notice seeks approval to streamline surveys for the Overdose Response Strategy, which pairs public health and public safety teams, cutting annual respondent burden from 653 hours to 327. The estimate is a federal figure clinicians and policy leaders can cite.",
+      "url": "https://www.federalregister.gov/documents/full_text/html/2026/11/09/2026-22820.html"
+    },
+    {
+      "headline": "Kaiser Napa-Solano dropped all buprenorphine requirements; its recovery group closed once optional",
+      "outlet": "Acuity",
+      "date": "Nov 9",
+      "summary": "Dr. Charles Whitehill said the Kaiser Napa-Solano program, which once required patients to enter treatment, attend group and abstain from other substances, now attaches no conditions to buprenorphine. Its recovery group ended after attendance fell once it became voluntary, and the clinic is considering an optional group. The report notes federal rules have moved away from tying opioid treatment program medication to counseling, while Kentucky still requires a behavioral program, so prescribers face different expectations depending on the state.",
+      "url": "https://acuity.news/regulation/kaiser-napa-solano-low-barrier-buprenorphine-abstinence-requirements-dropped-2026/"
+    },
+    {
+      "headline": "Cherokee Nation approves $10 million in opioid settlement funds for a Stilwell outpatient treatment facility",
+      "outlet": "KOSU",
+      "date": "Nov 10",
+      "summary": "The Cherokee Nation Tribal Council unanimously approved using opioid settlement money for a 10,000-square-foot outpatient substance use treatment facility on the north side of Stilwell, in Adair County, which has one of Oklahoma's highest per capita overdose death rates. It will be one of three Cherokee Nation facilities offering intensive outpatient care, alongside an inpatient center in Tahlequah that is due to open in 2027. Settlement dollars are increasingly going to treatment capacity in rural and tribal communities with few nearby options.",
+      "url": "https://www.kosu.org/health/2026-11-10/cherokee-nation-commits-10-million-to-new-outpatient-treatment-facility-in-stilwell"
+    },
+    {
+      "headline": "Erie County, Ohio, adds outpatient detox for opioids and stimulants, keeping alcohol withdrawal inpatient",
+      "outlet": "Detox.com",
+      "date": "Nov 9",
+      "summary": "The Erie County Health Department launched an outpatient detox program in which screened patients receive withdrawal medication and return daily for five to seven days for check-ins with a nurse and a substance use disorder counselor. It covers opioids, including heroin, fentanyl and kratom, and stimulants such as methamphetamine and cocaine, while alcohol detox stays inpatient because of seizure risk. Average inpatient census fell from about 12 to 13 patients a day to around seven, which staff partly attribute to people who cannot leave work or child care for a week.",
+      "url": "https://www.detox.com/news/erie-county-ohio-launches-outpatient-detox-for-opioids-and-stimulants/"
+    }
+  ]
+}
