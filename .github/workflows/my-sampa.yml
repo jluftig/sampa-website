@@ -56,6 +56,17 @@ jobs:
       - run: npm ci
       - run: npm run test:join-flow
 
+  membership-conversion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:membership-conversion
+
   donor-badge:
     runs-on: ubuntu-latest
     steps:

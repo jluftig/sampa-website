@@ -86,7 +86,28 @@ Not a seventh card, not Platinum, not Associate, not `/donate`.
   `cancel_at_period_end`. The webhook calls `subscriptions.update` with that
   flag, then copies `willCancel` onto `profiles.cancel_at_period_end`. Active auto-renew and lifetime members get
   409 instead of a second subscription. Success returns to
-  `/join?step=checkout&checkout=success`. Server adds a matching-term
+  `/join?step=checkout&checkout=success&session_id={CHECKOUT_SESSION_ID}`.
+  The page confirms payment only after `GET /api/create-checkout-session`
+  shows that session is paid and belongs to the signed-in user. The Ads
+  value is the membership line's `amount_total` after discounts. Patron and
+  donation lines are excluded.   A Patron bundle with no line items is not
+  priced from the session total. A membership line of zero is not a
+  conversion, including when the only money charged is a Patron add-on.
+  Checkout prices are unchanged.   `active` is a renewal. `past_due` and `canceled` are renewals only when a
+  paid membership invoice exists for that Stripe customer. An incomplete first
+  payment is stored as `past_due` and has no paid membership invoice, so a
+  later checkout is still a new membership. If that invoice list errors or is
+  truncated before a paid membership invoice is seen, the session is not
+  stamped and is not reported as a new membership. A `past_due` or `canceled`
+  profile with no `stripe_customer_id` is the same unknown. It is not treated
+  as never paid, and it is not stamped as a new membership. The click id
+  cookie is written only after the browser allows the report and Global
+  Privacy Control is off. If that allow happens only after the return from
+  Stripe, the original click id is already gone from the address and was not
+  stored. That visit cannot be tied to the ad. The click id is not kept
+  earlier to recover it. The conversion label env var is required. Preview
+  hosts do not load the tag.
+  Server adds a matching-term
   Stripe `price_data` line item (recurring with the membership interval; lifetime
   is one-time) — no new `STRIPE_PRICE_*` env required for preview.
 - Session / subscription metadata may include `patron=true`. **Never** set
@@ -120,6 +141,9 @@ front of `/join`. Card payers never see a form unless they click the quiet
 4. When the link is paid, `checkout.session.completed` fires with
    `metadata.supabase_user_id` / `tier` / `duration` / `patron` — the existing
    webhook activates the profile. No second membership path.
+5. That payment is not an Ads conversion. The return URL is
+   `/dashboard?checkout=success` and does not carry a Checkout Session id.
+   This code does not invent a receipt for it.
 
 ## Session continuity (web)
 

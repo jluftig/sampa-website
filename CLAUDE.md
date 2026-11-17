@@ -6,7 +6,7 @@ Machine-oriented entry point for agents on the SAMPA website.
 **Deep dives:** [`docs/architecture/`](docs/architecture/).  
 `AGENTS.md` points here for non-Claude agents.
 
-Last updated: 2026-11-05 (feature articles at /news/features, publish-day gate).
+Last updated: 2026-11-07 (new-membership Ads conversion fails closed without a label).
 
 ## What this project is
 
@@ -50,7 +50,8 @@ Repo: `jluftig/sampa-website`. Supabase ref: `xbzzawjnphpnexwfjtif`.
 
 **Client (Vite, safe to expose — RLS is the boundary):**  
 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (`sb_publishable_…`)  
-Local: `.env.local`. Missing → blank page.
+Optional public Ads config: `VITE_GOOGLE_ADS_NEW_MEMBERSHIP_LABEL` (required before any Ads request; absent means send nothing). `VITE_GOOGLE_ADS_TAG_ID` is optional and must stay `AW-18372431189` if set.  
+Local: `.env.local`. Missing Supabase vars → blank page.
 
 **Server (Vercel only, never `VITE_`):**  
 `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY` (or Secret key),  
@@ -116,6 +117,7 @@ Policy hub framing / access levers: **`docs/architecture/policy-hub.md`**.
 19. **Join / renew** — `/join` and `/renew` are one 4-step flow (`?step=profile|membership|support|checkout`). Tier A columns are self-writable and are not in `guard_profile_role`. Private ones stay out of `member_directory*`. `auto_renew: false` keeps the existing Stripe Price and sets `cancel_at_period_end`. The annual survey is `member_survey_responses` at `/survey/:year` and never blocks checkout. SQL: `supabase/migrations/2026-11-01-join-flow-profile.sql`.
 20. **Donor badge** — `profiles.donated_at` is webhook-written from a successful `/donate` gift (user id, else a unique Stripe customer, else a unique email). `member_directory*` returns `donor` for the last 12 months and does not return the timestamp. Patron is not a donation. SQL: `supabase/migrations/2026-11-01-donor-directory-badge.sql`.
 20. **Board meetings** — `/board` + `/board/:slug` gated like the directory (`RequireActiveMember` / `is_active_member()`). Hub chrome is AAPA-sparse: full title, three tab labels, Records/Schedule official intros, date lists, plus aggregate “SAMPA by the numbers” (member count, weekly and daily subscriber counts, policy comments filed). No extra access-policy essays. Agenda and minutes bodies live in `public.board_meetings` and are served from `GET /api/newsletter-stats?section=board` (rewritten as `/api/board-meetings`) after a server check of the same active-member rule. The Relay balance lives in `public.relay_balances` and is readable only by the board dashboard gate. Do not commit minutes text or a balance amount. `/board/dashboard` is a separate gate (`canViewBoardDashboard`: admin, `is_board`, or `is_committee_chair`), not active-membership. Do not import the minutes module from `src/`. Do not paste Zoom join URLs. Do not add a 13th `api/*.js` file (Hobby plan caps functions at 12). The daily subscriber snapshot is a cron on `newsletter-stats?section=subscriber-snapshot`, authorized with `CRON_SECRET`.
+21. **New-membership Ads conversion** — public tag id `AW-18372431189`. Container id `GTM-K8FNBLFL` was reported beside it. Do not treat those ids as the same snippet, and do not install both. Ads-side automatic contact collection and enhanced conversions are not confirmed off. `ad_storage` stays denied unless the browser cookie `sampa_ads_consent=granted` and Global Privacy Control is off. `denied` and Global Privacy Control both win, and the click-id cookie is not written before that allow. `past_due` and `canceled` are renewals only when Stripe has a paid membership invoice. A missing `stripe_customer_id`, a lookup error, or a truncated list does not stamp a new membership. Allowing the report only after the Stripe return cannot recover a click id that was correctly left unstored. The conversion value is strictly positive membership dues from Stripe line items. A zero dues line is not a conversion, even when a Patron add-on was charged. Do not use `amount_total` when Patron is bundled. No label (`VITE_GOOGLE_ADS_NEW_MEMBERSHIP_LABEL`), any host other than `www.addictionpas.org`, or missing consent sends nothing. Employer invoice payments return to `/dashboard?checkout=success` with no session id and are not conversions. The receipt is `GET /api/create-checkout-session?session_id=`.
 
 ## Rollback (short)
 
