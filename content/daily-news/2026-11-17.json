@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-17",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "CDC provisional data: 65,724 U.S. overdose deaths in the 12 months ending June 2026",
+      "outlet": "White House ONDCP (CDC data)",
+      "date": "Nov 16",
+      "summary": "The Office of National Drug Control Policy highlighted CDC's predicted provisional estimate of 65,724 overdose deaths for the 12 months ending June 2026, about 41.5% below the series peak of 112,418 and the lowest since December 2016. Synthetic opioid deaths fell 18.7%, psychostimulant deaths 14.1% and cocaine deaths 6.3%. The figures are predicted, provisional estimates adjusted for reporting delays, so clinicians and policy leaders should read them as a trend signal rather than a final count.",
+      "url": "https://www.whitehouse.gov/releases/2026/11/u-s-drug-overdose-deaths-decrease-for-18th-consecutive-month-under-trump-administration/"
+    },
+    {
+      "headline": "Maryland finalizes $3.5 million Indivior settlement, including $2 million in OUD medication",
+      "outlet": "Maryland Office of the Attorney General",
+      "date": "Nov 16",
+      "summary": "Maryland Attorney General Anthony Brown announced a finalized settlement with Indivior, maker of buprenorphine products, giving the state and its subdivisions over $1.5 million in opioid abatement funds plus $2 million in opioid use disorder treatment medication. The consent judgment limits some promotional activities, requires truthful promotion, and bars tying sales staff pay or discipline to opioid use disorder product volume. For clinicians and policy leaders, the added medication is a concrete resource for local treatment programs.",
+      "url": "https://oag.maryland.gov/News/pages/attorney-general-brown-secures-%243.5-million-settlement-with-drug-manufacturer-indivior.aspx"
+    },
+    {
+      "headline": "Pennsylvania AG: 12 long-term care companies agree to end blanket rejection of patients on opioids",
+      "outlet": "Pennsylvania Office of Attorney General",
+      "date": "Nov 16",
+      "summary": "Pennsylvania Attorney General Dave Sunday announced that a dozen nursing home and long-term care companies, covering more than 200 facilities, agreed to assess prospective residents individually rather than automatically denying admission because of medications such as methadone. The investigation began with a 2024 complaint about a woman who had taken methadone for chronic pain and was refused by numerous facilities. The agreements reinforce that medications for opioid use disorder and pain are protected under disability law, which affects discharge planning.",
+      "url": "https://www.attorneygeneral.gov/taking-action/ag-sundays-civil-rights-enforcement-section-secures-agreement-from-care-providers-to-end-rejection-practices-against-patients-taking-opioids/"
+    },
+    {
+      "headline": "Ontario medical regulator pauses new safer supply prescribing rules after legal challenge",
+      "outlet": "CBC News (Canadian Press)",
+      "date": "Nov 16",
+      "summary": "The College of Physicians and Surgeons of Ontario said it is pausing enforcement of new safer supply prescribing rules, which were set to take effect Monday, after being served Friday with a legal action that includes a motion for an injunction. The rules would require safer supply drugs to be prescribed alongside opioid agonist therapy and taken under supervision. The pause leaves prescribers and patients in limbo, and the outcome may shape how other jurisdictions regulate safer supply.",
+      "url": "https://www.cbc.ca/news/canada/toronto/safer-supply-ontario-changes-pause-9.7424145"
+    },
+    {
+      "headline": "Charlotte opens a mobile opioid treatment unit funded by opioid settlement money",
+      "outlet": "WFAE",
+      "date": "Nov 16",
+      "summary": "Mecklenburg County opened a $350,000 Mobile Opioid Treatment Program, a converted trailer on a truck, near Beatties Ford Road in Charlotte, funded through its roughly $75 million opioid settlement share over 18 years. McLeod Centers for Wellbeing will oversee it, with a doctor, nurse and counselor providing methadone and buprenorphine. The county recorded over 270 fatal overdoses in 2024, and the unit targets transportation barriers that keep people from distant treatment sites.",
+      "url": "https://www.wfae.org/health/2026-11-16/a-new-mobile-clinic-aims-to-tackle-the-opioid-crisis-by-bringing-doctors-and-medicine-where-they-are-needed"
+    }
+  ]
+}
