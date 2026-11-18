@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-18",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "KFF Health News: federal ban on buying drug test strips strains harm reduction groups",
+      "outlet": "KFF Health News",
+      "date": "Nov 17",
+      "summary": "A KFF Health News report describes how an April SAMHSA letter barred grantees from using federal funds to buy fentanyl, xylazine and medetomidine test strips, part of a cut of more than $300 million in federal overdose prevention and treatment funding. In North Carolina, SAMHSA was the state opioid response program's exclusive test strip funder, and small groups now rely on personal funds and donations. Front-line workers say the supply is growing more complex, so losing a low-cost screening tool matters.",
+      "url": "https://kffhealthnews.org/public-health/fentanyl-test-strips-federal-cuts-samhsa-street-drugs-overdose-harm-reduction/"
+    },
+    {
+      "headline": "Higher methadone doses were linked to better quality of life in a New Haven clinic study",
+      "outlet": "UConn Today",
+      "date": "Nov 17",
+      "summary": "A study in Health and Quality of Life Outcomes of patients at a New Haven methadone clinic found that those on the two highest dose levels, 90 to 120 mg and above 120 mg, had higher SF-6D quality of life scores than patients on lower doses. The authors say dose is not the main driver of quality of life, and the improvement may be modest, and the patients were fairly well established in treatment. Because clinics control dosing directly, the findings support reviewing doses for patients still using fentanyl on top of methadone.",
+      "url": "https://today.uconn.edu/2026/11/increasing-methadone-doses-associated-with-improved-quality-of-life/"
+    },
+    {
+      "headline": "Cannabis use disorder tied to 57% higher odds of suicidal thoughts in national survey data",
+      "outlet": "ScienceDaily (Journal of Studies on Alcohol and Drugs)",
+      "date": "Nov 16",
+      "summary": "Researchers analyzed National Survey on Drug Use and Health data from more than 415,000 U.S. adults from 2014 to 2023 and found that adults with cannabis use disorder had 57% higher odds of suicidal thoughts than those without it, with women and younger adults at higher risk. The association stayed consistent across the decade despite changes in legalization, and the authors stress it applies to the disorder, not all cannabis use, and does not prove causation. Clinicians treating cannabis use disorder may want to screen routinely for suicidal ideation.",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261116023342.htm"
+    },
+    {
+      "headline": "Early study: Ritalin reduced alcohol cravings in young adults with ADHD and alcohol use disorder",
+      "outlet": "BrainFacts (Society for Neuroscience)",
+      "date": "Nov 17",
+      "summary": "University of Florida researchers presented preliminary findings at Neuroscience 2026 from 33 young adults with both ADHD and alcohol use disorder, who reported lower alcohol cravings after a single dose of methylphenidate than after placebo while viewing alcohol images in an fMRI scanner. Scans showed less activity in a reward region and more in a region tied to executive function. The work was done in a controlled lab, so it does not yet show whether stimulant treatment helps in daily life.",
+      "url": "https://www.brainfacts.org/diseases-and-disorders/childhood-disorders/2026/adhd-medication-may-curb-cravings-for-some-with-alcohol-use-disorder-111726"
+    },
+    {
+      "headline": "Brown pilot: MDMA-assisted therapy for veterans with PTSD and alcohol use disorder was feasible",
+      "outlet": "Medical Xpress (Brown University)",
+      "date": "Nov 17",
+      "summary": "In the first open-label pilot of MDMA-assisted therapy for veterans with PTSD and alcohol use disorder, nine of 10 participants completed the five-month, 11-session program, and no serious adverse events were reported. Mean CAPS-5 scores fell by more than 22 points, while drinks per drinking day fell 31% and heavy drinking days 54%, changes the researchers did not consider clinically significant given the lack of a control group. A larger randomized trial with the Providence VA is planned, so this remains early evidence only.",
+      "url": "https://medicalxpress.com/news/2026-11-military-veterans-ptsd-alcohol-disorder.html"
+    }
+  ]
+}
