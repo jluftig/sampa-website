@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-19",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Rhino tranq withdrawal: ASAM shares sample protocols and a free Dec 1 webinar",
+      "outlet": "Medscape",
+      "date": "Nov 17",
+      "summary": "Medscape reports on ASAM's new medetomidine guidance, which includes example protocols from UPMC and the University of Pennsylvania. Naloxone is advised in incremental doses only until breathing is restored, since it does not reverse medetomidine sedation, while severe withdrawal, which can start 4 to 6 hours after last use, calls for early oral alpha-2 agonists, often at higher-than-usual doses, and IV dexmedetomidine for refractory cases. ASAM hosts a free webinar on Dec 1 at 12 PM PT (3 PM ET), and routine tox screens miss medetomidine, so clinicians need a high index of suspicion.",
+      "url": "https://www.medscape.com/viewarticle/new-guidance-targets-dangerous-rhino-tranq-withdrawal-2026a10018pe"
+    },
+    {
+      "headline": "Allegheny County plans a $13 million trial of weekly semaglutide for opioid and alcohol use disorder",
+      "outlet": "Pittsburgh Post-Gazette",
+      "date": "Nov 18",
+      "summary": "A partnership of UPMC Western Psychiatric Hospital, Allegheny County Human Services and the Center for Addiction Science, Policy and Research will enroll 1,200 county residents with opioid or alcohol use disorder, all receiving standard treatment and half also receiving weekly semaglutide, funded by Arnold Ventures. Recruitment is expected to start in January with one year of follow-up, and the trial will track downstream costs such as jail and housing use. The study has not enrolled anyone yet, so it signals interest in GLP-1 drugs for addiction rather than evidence of benefit.",
+      "url": "https://www.post-gazette.com/health/ozempic-addiction-study-SGQR652TFVCERN3WTBMYO6FBIE/"
+    },
+    {
+      "headline": "Oklahoma's first $12.1 million in opioid settlement grants reached 115,890 people",
+      "outlet": "KOSU",
+      "date": "Nov 18",
+      "summary": "Consultants told the Oklahoma Opioid Abatement Board that the first grant round, awarded to 85 grantees in 2024, reached 115,890 people, including 4,171 connected or referred to treatment, 2,369 who received medication for opioid use disorder and 11,823 naloxone kits distributed. About $1.33 million went unspent and was returned to the board, and a full spending breakdown is due in early 2027. The preliminary figures give policy leaders a benchmark for what settlement dollars buy, though they count reach rather than outcomes.",
+      "url": "https://www.kosu.org/health/2026-11-18/opioid-abatement-boards-first-round-of-grants-reached-115-890-oklahomans"
+    },
+    {
+      "headline": "South Dakota opens $11 million in opioid settlement grant requests, including MOUD and recovery housing",
+      "outlet": "KELOLAND",
+      "date": "Nov 18",
+      "summary": "South Dakota's Department of Social Services opened requests for proposals in five areas: local community needs, evidence-based prevention, common entry portals, a treatment and recovery continuum that includes medications for opioid use disorder and recovery housing, and treatment for justice-involved people. Local community grants range from $5,000 to $50,000. Programs and treatment providers in the state can apply now, so they should check the DSS release for deadlines and eligibility.",
+      "url": "https://www.keloland.com/news/local-news/5-more-opioid-grants-released-by-dss/"
+    },
+    {
+      "headline": "FDA ibogaine trial-design comment period closes tomorrow, Nov 20",
+      "outlet": "FDA",
+      "date": "Oct 5",
+      "summary": "FDA's request for information on early-phase ibogaine trials asks for input on study design, dose selection and escalation (starting dose not above 10 mg/kg), cardiac and neurologic safety monitoring, and ethics and oversight. HHS is prioritizing adults with opioid use disorder and adults with PTSD for federally supported research. Comments go to docket FDA-2026-N-10429 on regulations.gov and late comments will not be considered, so clinicians and organizations with views have until Friday.",
+      "url": "https://www.fda.gov/news-events/press-announcements/fda-seeks-public-input-support-ibogaine-research"
+    }
+  ]
+}
