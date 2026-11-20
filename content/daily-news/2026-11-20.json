@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-20",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "Ottawa warns of protonitazepyne, a nitazene about 25 times as potent as fentanyl, in fake M30 pills",
+      "outlet": "CBC News",
+      "date": "Nov 18",
+      "summary": "Ottawa Public Health says Health Canada detected protonitazepyne in counterfeit pills stamped \"M30\" that resemble oxycodone, and estimates the nitazene is roughly 25 times more potent than fentanyl and 350 times stronger than morphine. Officials and local experts note that multiple naloxone doses are typically needed, that standard fentanyl-oriented testing may miss nitazenes, and that the city's last supervised consumption site closed in June, which may have delayed detection. Clinicians in any region should expect counterfeit pills to contain unpredictable opioids and be ready to give repeat naloxone doses.",
+      "url": "https://www.cbc.ca/news/canada/ottawa/protonitazepyne-detected-in-ottawa-unregulated-drug-market-9.7427285"
+    },
+    {
+      "headline": "DEA telemedicine prescribing flexibilities end Dec 31; final rule still under White House review",
+      "outlet": "Reimbursement Watch",
+      "date": "Nov 16",
+      "summary": "The current rule that lets DEA-registered clinicians prescribe Schedule II-V drugs by video without an in-person visit runs only through December 31, 2026. DEA's final special registration rule (RIN 1117-AB40) has been at the White House regulatory office since August 25 and was still pending on November 16, with no fifth extension under review. Buprenorphine for opioid use disorder stays on a separate permanent telemedicine pathway, so practices should identify patients who have never had an in-person evaluation and plan accordingly.",
+      "url": "https://reimbursementwatch.com/updates/dea-telemedicine-prescribing-flexibilities-expire-dec-31-special-registration-oira/"
+    },
+    {
+      "headline": "Naltrexone plus counseling for alcohol use disorder saves money in alcohol-associated liver disease",
+      "outlet": "JAMA Network Open",
+      "date": "Nov 18",
+      "summary": "In an economic evaluation whose corresponding author is at Columbia University, treating patients with alcohol-associated liver disease at stage F3 fibrosis with naltrexone and a cognitive-behavioral intervention cost less and was more effective than no treatment, reducing progression to compensated and decompensated cirrhosis. The results held at earlier stages F1 and F2 and when societal costs and the costs of alcohol use disorder were counted. This is a modeling study, but it supports screening for liver disease and starting alcohol use disorder medication early, since many patients are diagnosed only at advanced stages.",
+      "url": "https://media.jamanetwork.com/media-releases/10.1001/jamanetworkopen.2026.44980"
+    },
+    {
+      "headline": "New Mexico health department links at least 29 deaths to kratom, mostly with other drugs",
+      "outlet": "KSFR",
+      "date": "Nov 19",
+      "summary": "A New Mexico Department of Health study published last week reports at least 29 kratom-related overdose deaths from 2019 to 2024, most in people who had also used other substances including fentanyl, plus more than 70 kratom-related emergency room visits that did not end in death. Kratom is unregulated in the state and has no approved medical use in the U.S., and the researchers note that data on kratom deaths remain very limited. Clinicians should ask about kratom and 7-OH products when taking substance use histories and expect polysubstance involvement.",
+      "url": "https://www.ksfr.org/ksfr-daily-news-update/2026-11-19/federal-funding-for-disaster-remediation-dwindles-state-tracks-kratom-overdoses-more"
+    },
+    {
+      "headline": "Berrien County, Michigan commits up to $1.4 million in settlement funds to recovery housing and transportation",
+      "outlet": "Berrien County, MI",
+      "date": "Nov 19",
+      "summary": "Berrien County's Board of Commissioners approved up to $1.4 million over three years for three organizations: Sacred Heart Rehabilitation Center (up to $700,000, including recovery housing for pregnant and postpartum women), First Church of God ($457,770 to grow Restoration House from nine to 15 beds) and Berrien Recovery Hub (up to $250,000 for transportation to treatment). The money comes from the county's roughly $8.6 million share of the national opioid settlement. It shows settlement dollars moving toward housing and transportation gaps that often interrupt treatment.",
+      "url": "https://www.berriencounty.org/m/newsflash/Home/Detail/2593"
+    }
+  ]
+}
