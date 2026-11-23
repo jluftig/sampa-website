@@ -66,7 +66,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/daily" element={<DailyRoundup />} />
-          <Route path="/news/daily/archive" element={<Navigate to="/news" replace />} />
+          <Route path="/news/daily/archive" element={<Navigate to="/news/daily" replace />} />
           <Route path="/news/daily/tag/:slug" element={<DailyTagView />} />
           <Route path="/news/daily/:date" element={<DailyRoundup />} />
           <Route path="/news/topic" element={<TopicRoundup />} />

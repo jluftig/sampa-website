@@ -98,11 +98,11 @@ test('nav has a single News item per menu and no separate Daily Roundup entry', 
   }
 });
 
-test('/news/daily still works and the old archive path lands on /news', () => {
+test('/news/daily still works and the old archive path redirects to /news/daily', () => {
   const app = read('src/App.jsx');
   assert.match(app, /path="\/news\/daily" element=\{<DailyRoundup \/>\}/);
   assert.match(app, /path="\/news\/daily\/:date" element=\{<DailyRoundup \/>\}/);
-  assert.match(app, /path="\/news\/daily\/archive" element=\{<Navigate to="\/news" replace \/>\}/);
+  assert.match(app, /path="\/news\/daily\/archive" element=\{<Navigate to="\/news\/daily" replace \/>\}/);
   assert.match(app, /path="\/news\/:slug" element=\{<PostView \/>\}/);
   assert.doesNotMatch(read('src/pages/DailyRoundup.jsx'), /\/news\/daily\/archive/);
 });
