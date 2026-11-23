@@ -534,8 +534,8 @@ test('the subscriptions page names the three lists and the removal warning', () 
   assert.match(choices, /SAMPA Daily News Roundup/);
   assert.match(choices, /SAMPA Weekly Newsletter/);
   assert.match(choices, /SAMPA Emerging Practice Monthly/);
-  const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
-  const route = app.indexOf('path="/subscriptions"');
-  const catchAll = app.indexOf('path="*"');
+  const app = readFileSync(new URL('../src/lib/routeManifest.js', import.meta.url), 'utf8');
+  const route = app.indexOf("path: '/subscriptions'");
+  const catchAll = app.indexOf("path: '*'");
   assert.ok(route !== -1 && catchAll !== -1 && route < catchAll);
 });

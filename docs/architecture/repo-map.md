@@ -113,6 +113,8 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 ## Routes
 
+The ordered list is `src/lib/routeManifest.js`. `App.jsx` renders it. `npm run test:routes` fails when `vercel.json` share rewrites, the archive redirect, `public/sitemap.xml`, or an in-app link disagree with that list.
+
 | Audience | Paths |
 |----------|--------|
 | Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; tag route before `:date`; `/news/daily/archive` redirects to `/news/daily`; static segments before `/news/:slug`), `/news/topic`, `/news/topic/:date`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/subscriptions`, `/newsletter-confirmed` (`?list=daily` for the roundup list, `?list=weekly` for the weekly list, `?list=topic` for the topic list) |

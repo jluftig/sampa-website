@@ -254,7 +254,7 @@ describe('chair flag storage', () => {
     const schema = readFileSync('supabase/schema.sql', 'utf8');
     const migration = readFileSync('supabase/migrations/2026-10-08-committee-chair-subscriber-snapshots.sql', 'utf8');
     const people = readFileSync('src/pages/AdminPeople.jsx', 'utf8');
-    const app = readFileSync('src/App.jsx', 'utf8');
+    const app = readFileSync('src/lib/routeManifest.js', 'utf8');
     const gate = readFileSync('src/components/RequireBoardDashboard.jsx', 'utf8');
     const page = readFileSync('src/pages/BoardDashboard.jsx', 'utf8');
     const job = readFileSync('api/_lib/subscriberSnapshotJob.js', 'utf8');
@@ -269,8 +269,8 @@ describe('chair flag storage', () => {
     assert.match(people, /Committee chair/);
     assert.match(people, /is_committee_chair: next\.committeeChair/);
     assert.match(people, /disabled=\{disabled\}/);
-    const dashboardAt = app.indexOf('path="/board/dashboard"');
-    const slugAt = app.indexOf('path="/board/:slug"');
+    const dashboardAt = app.indexOf("path: '/board/dashboard'");
+    const slugAt = app.indexOf("path: '/board/:slug'");
     assert.ok(dashboardAt > 0 && dashboardAt < slugAt);
     assert.equal((gate.match(/<Navigate/g) || []).length, 1);
     assert.match(gate, /if \(loginTo\)/);

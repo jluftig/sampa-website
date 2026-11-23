@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Assert T45 Board meeting pages: real Drive-backed seed, member gate, no Zoom secrets.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { routes } from '../src/lib/routeManifest.js';
 import { BOARD_HUB, observerCopyParts } from '../src/data/boardHub.js';
 import {
   agendaListTitle,
@@ -229,14 +230,19 @@ if (!recordsPage.includes('relay_balances') || !recordsPage.includes('board_meet
   fail('Admin records page must edit both tables');
 }
 
-const appSrc = readFileSync('src/App.jsx', 'utf8');
-if (!appSrc.includes('path="/editor/records"')) fail('App must declare /editor/records');
-if (appSrc.indexOf('path="/editor/records"') > appSrc.indexOf('path="/editor/:id"')) {
+const routePaths = routes.map((route) => route.path);
+if (!routePaths.includes('/editor/records')) fail('App must declare /editor/records');
+if (routePaths.indexOf('/editor/records') > routePaths.indexOf('/editor/:id')) {
   fail('/editor/records must be registered before the post editor');
 }
-if (!appSrc.includes('path="/board"')) fail('App must declare /board');
-if (!appSrc.includes('path="/board/:slug"')) fail('App must declare /board/:slug');
-if ((appSrc.match(/deniedCopy="Board meeting agendas and minutes/g) || []).length < 2) {
+if (!routePaths.includes('/board')) fail('App must declare /board');
+if (!routePaths.includes('/board/:slug')) fail('App must declare /board/:slug');
+const boardRoutes = routes.filter((route) => route.path === '/board' || route.path === '/board/:slug');
+const denied = boardRoutes[0]?.gateProps?.deniedCopy || '';
+if (boardRoutes.length !== 2 || !denied.startsWith('Board meeting agendas and minutes')) {
+  fail('Both board routes must use Board-specific RequireActiveMember copy');
+}
+if (!boardRoutes.every((route) => route.gateProps?.deniedCopy === denied)) {
   fail('Both board routes must use Board-specific RequireActiveMember copy');
 }
 

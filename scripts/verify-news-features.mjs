@@ -341,9 +341,9 @@ test('built client assets do not contain the essay', { timeout: 120000 }, () => 
 });
 
 test('the feature route is registered ahead of the post slug, and every user agent rewrites to share', () => {
-  const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
-  const featureAt = app.indexOf('path="/news/features/:slug"');
-  const postAt = app.indexOf('path="/news/:slug"');
+  const app = readFileSync(new URL('../src/lib/routeManifest.js', import.meta.url), 'utf8');
+  const featureAt = app.indexOf("path: '/news/features/:slug'");
+  const postAt = app.indexOf("path: '/news/:slug'");
   assert.ok(featureAt > -1 && featureAt < postAt);
   const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
   const rule = vercel.rewrites.find((entry) => entry.source === '/news/features/:slug');
