@@ -6,6 +6,7 @@
     }
   ],
   "redirects": [
+    { "source": "/news/daily/archive", "destination": "/news/daily", "permanent": true },
     { "source": "/store", "destination": "https://sampastore.printful.me", "permanent": false },
     { "source": "/merch", "destination": "https://sampastore.printful.me", "permanent": false },
     {
@@ -25,17 +26,6 @@
     {
       "source": "/api/board-meetings",
       "destination": "/api/newsletter-stats?section=board"
-    },
-    {
-      "source": "/news/daily/archive",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": ".*(facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Slack-ImgProxy|TelegramBot|WhatsApp|Discordbot|Pinterestbot|redditbot|SkypeUriPreview|vkShare).*"
-        }
-      ],
-      "destination": "/api/share?slug=daily&view=archive"
     },
     {
       "source": "/news/daily/:date(\\d{4}-\\d{2}-\\d{2})",

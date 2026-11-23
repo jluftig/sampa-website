@@ -55,7 +55,6 @@ function featureBodyPayload(feature) {
 import { topicPage } from '../src/lib/topicRoundup.js';
 
 const DAILY_DESCRIPTION = 'Five short addiction-medicine items, published each weekday by SAMPA.';
-const ARCHIVE_DESCRIPTION = 'Past SAMPA daily addiction-medicine roundups, newest first.';
 const TOPIC_DESCRIPTION = 'This issue of SAMPA Emerging Practice Monthly: a new outpatient case series, a systematic review, inpatient approaches and a cautionary case on moving people from methadone to long-acting injectable bup.';
 
 const esc = (s = '') =>
@@ -172,7 +171,6 @@ export async function GET(request, maybeNow) {
   const reqUrl = new URL(request.url);
   const slug = reqUrl.searchParams.get('slug') || '';
   const date = reqUrl.searchParams.get('date') || '';
-  const view = reqUrl.searchParams.get('view') || '';
   const featureSlug = reqUrl.searchParams.get('feature') || '';
   const isDaily = slug === 'daily';
   const isTopic = slug === 'topic';
@@ -219,27 +217,24 @@ export async function GET(request, maybeNow) {
       headers: { 'content-type': 'text/plain; charset=utf-8' },
     });
   }
-  const isArchive = isDaily && view === 'archive';
-  const dated = isDaily && date && !isArchive ? publishedRoundup(date) : null;
-  if (isDaily && date && !isArchive && !dated) {
+  const dated = isDaily && date ? publishedRoundup(date) : null;
+  if (isDaily && date && !dated) {
     return new Response('Not found', {
       status: 404,
       headers: { 'content-type': 'text/plain; charset=utf-8' },
     });
   }
-  const latest = isDaily && !date && !isArchive ? latestRoundup() : null;
+  const latest = isDaily && !date ? latestRoundup() : null;
   const issue = dated || latest;
-  const canonical = isArchive
-    ? `${reqUrl.origin}/news/daily/archive`
-    : feature
-      ? `${reqUrl.origin}${feature.path}`
-      : issue
-        ? `${reqUrl.origin}/news/daily/${issue.date}`
-        : isDaily
-          ? `${reqUrl.origin}/news/daily`
-          : topic
-            ? `${reqUrl.origin}${topic.path}`
-            : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
+  const canonical = feature
+    ? `${reqUrl.origin}${feature.path}`
+    : issue
+      ? `${reqUrl.origin}/news/daily/${issue.date}`
+      : isDaily
+        ? `${reqUrl.origin}/news/daily`
+        : topic
+          ? `${reqUrl.origin}${topic.path}`
+          : `${reqUrl.origin}/news/${encodeURIComponent(slug)}`;
 
   const supaUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
@@ -258,29 +253,25 @@ export async function GET(request, maybeNow) {
     }
   }
 
-  const title = isArchive
-    ? 'Daily News archive | SAMPA'
-    : feature
-      ? feature.title
-      : issue
-        ? dailyNewsTitle(issue.date)
-        : isDaily
-          ? 'SAMPA Daily News Roundup'
-          : topic
-            ? topic.title
-            : post
-              ? post.title
-              : 'SAMPA News';
-  const description = isArchive
-    ? ARCHIVE_DESCRIPTION
-    : feature
-      ? feature.description
+  const title = feature
+    ? feature.title
+    : issue
+      ? dailyNewsTitle(issue.date)
       : isDaily
-        ? DAILY_DESCRIPTION
+        ? 'SAMPA Daily News Roundup'
         : topic
-          ? topic.description
-          : post?.excerpt ||
-            'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
+          ? topic.title
+          : post
+            ? post.title
+            : 'SAMPA News';
+  const description = feature
+    ? feature.description
+    : isDaily
+      ? DAILY_DESCRIPTION
+      : topic
+        ? topic.description
+        : post?.excerpt ||
+          'Addiction medicine news for PAs — Society of Addiction Medicine Physician Associates.';
   const image = post?.cover_image_url || '';
 
   const html = `<!doctype html>
@@ -309,7 +300,7 @@ ${image ? `<meta name="twitter:image" content="${esc(image)}">` : ''}
 </html>`;
 
   return new Response(html, {
-    status: post || issue || isArchive || (isDaily && !date) || topic || feature ? 200 : 404,
+    status: post || issue || (isDaily && !date) || topic || feature ? 200 : 404,
     headers: {
       'content-type': 'text/html; charset=utf-8',
       // Cache at the edge; a re-published post refreshes within 5 minutes.
