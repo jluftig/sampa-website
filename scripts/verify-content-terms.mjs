@@ -99,6 +99,41 @@ test('JSX after export default is copy', () => {
   assert.equal(hits[0].match, 'MAT');
 });
 
+test('quoted mobile copy attributes are scanned', () => {
+  const source = [
+    'export function Screen() {',
+    '  return (',
+    '    <Scaffold',
+    '      subtitle="an addict"',
+    '      accessibilityLabel="BUP dose"',
+    '      accessibilityHint="bupe today"',
+    '      className="MAT"',
+    '    />',
+    '  );',
+    '}',
+  ].join('\n');
+  const hits = errors('Screen.tsx', source);
+  assert.deepEqual(hits.map((hit) => `${hit.rule}:${hit.match}`), [
+    'stigmatizing-addict:addict',
+    'bup-case:BUP',
+    'bup-case:bupe',
+  ]);
+});
+
+test('a wrapped proper name is allowed and a longer word is not', () => {
+  const wrapped = [
+    'export const agency = `The Substance Abuse and Mental Health',
+    'Services Administration published the note.`;',
+    'export const nida = "National Institute on\\nDrug Abuse";',
+    'export const statute = "Waiver elimination (MAT\\nAct)";',
+  ].join('\n');
+  assert.deepEqual(errors('wrapped.js', wrapped), []);
+  const longer = 'export const title = "MAT Action plan";\n';
+  const hits = errors('plan.js', longer);
+  assert.equal(hits.length, 1);
+  assert.equal(hits[0].match, 'MAT');
+});
+
 test('MAT Act is the statute name, and a longer word is not covered by that phrase', () => {
   const statute = `export const title = "Waiver elimination (MAT Act)";\n`;
   assert.deepEqual(errors('resources.js', statute), []);

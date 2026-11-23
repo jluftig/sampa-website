@@ -28,6 +28,7 @@ const OP_WORDS = new Set([
 const COPY_ATTRS = new Set([
   'alt', 'title', 'placeholder', 'aria-label', 'aria-description',
   'aria-placeholder', 'aria-roledescription', 'content', 'summary', 'label', 'abbr',
+  'subtitle', 'accessibilitylabel', 'accessibilityhint',
 ]);
 
 export function loadConfig(root = process.cwd()) {
@@ -193,32 +194,23 @@ function maskSegment(text, rule) {
 
 function maskPhrases(text, phrases, insensitive) {
   let out = text;
-  const ordered = [...phrases].sort((a, b) => b.length - a.length);
+  const ordered = [...phrases].filter(Boolean).sort((a, b) => b.length - a.length);
   for (const phrase of ordered) {
-    if (!phrase) continue;
-    const needle = insensitive ? phrase.toLowerCase() : phrase;
-    let from = 0;
-    while (from <= out.length - phrase.length) {
-      const hay = insensitive ? out.toLowerCase() : out;
-      const at = hay.indexOf(needle, from);
-      if (at < 0) break;
-      const end = at + phrase.length;
-      if (!isWordBoundary(out, at) || !isWordBoundary(out, end)) {
-        from = at + 1;
-        continue;
-      }
-      out = `${out.slice(0, at)}${' '.repeat(phrase.length)}${out.slice(end)}`;
-      from = end;
-    }
+    const pattern = phrasePattern(phrase, insensitive);
+    if (!pattern) continue;
+    out = out.replace(pattern, (match) => ' '.repeat(match.length));
   }
   return out;
 }
 
-function isWordBoundary(text, index) {
-  if (index <= 0 || index >= text.length) return true;
-  const before = text[index - 1];
-  const after = text[index];
-  return !/[\p{L}\p{N}_]/u.test(before) || !/[\p{L}\p{N}_]/u.test(after);
+function phrasePattern(phrase, insensitive) {
+  const words = phrase.trim().split(/\s+/).filter(Boolean).map(escapeRegExp);
+  if (!words.length) return null;
+  return new RegExp(`\\b${words.join('\\s+')}\\b`, insensitive ? 'gi' : 'g');
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function allowlisted(config, finding, text) {
