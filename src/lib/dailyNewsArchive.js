@@ -1,5 +1,6 @@
 import { isRealIsoDate } from './dailyNewsLoad.js';
 import { DAILY_VOCABULARY } from './dailyNewsVocabulary.js';
+import { listsDailyDates, staticSitemapPaths } from './routeManifest.js';
 
 export const ARCHIVE_PAGE_SIZE = 10;
 export const TAG_DECISION_STORAGE_KEY = 'sampa.dailyTagDecisions';
@@ -352,10 +353,8 @@ export function dailySitemapPaths(roundups) {
     dates.push(roundup.date);
   }
   return [
-    '/',
-    '/news',
-    '/news/daily',
-    ...dates.map((date) => `/news/daily/${date}`),
+    ...staticSitemapPaths(),
+    ...(listsDailyDates() ? dates.map((date) => `/news/daily/${date}`) : []),
   ];
 }
 

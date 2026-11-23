@@ -9,244 +9,87 @@ import RequirePolicyWork from './components/RequirePolicyWork';
 import RequireBoardDashboard from './components/RequireBoardDashboard';
 import Home from './pages/Home';
 import Subscriptions from './pages/Subscriptions';
+import { routes } from './lib/routeManifest';
 
 // Route-level code splitting: the homepage and /subscriptions load eagerly.
 // Every other page (and TipTap / DOMPurify) loads on demand. Subscriptions
 // stays in the first bundle because a lazy route keeps the previous page
-// on screen until its chunk arrives.
-const News = lazy(() => import('./pages/News'));
-const DailyRoundup = lazy(() => import('./pages/DailyRoundup'));
-const FeatureArticle = lazy(() => import('./pages/FeatureArticle'));
-const TopicRoundup = lazy(() => import('./pages/TopicRoundup'));
-const DailyTagView = lazy(() => import('./pages/DailyTagView'));
-const PostView = lazy(() => import('./pages/PostView'));
-const Policy = lazy(() => import('./pages/Policy'));
-const PolicyView = lazy(() => import('./pages/PolicyView'));
-const Tags = lazy(() => import('./pages/Tags'));
-const TagView = lazy(() => import('./pages/TagView'));
-const Search = lazy(() => import('./pages/Search'));
-const Login = lazy(() => import('./pages/Login'));
-const Join = lazy(() => import('./pages/Join'));
-const JoinPreview = import.meta.env.DEV ? lazy(() => import('./pages/JoinPreview')) : null;
-const DirectoryBadgePreview = import.meta.env.DEV ? lazy(() => import('./pages/DirectoryBadgePreview')) : null;
-const JoinInvoice = lazy(() => import('./pages/JoinInvoice'));
-const AnnualSurvey = lazy(() => import('./pages/AnnualSurvey'));
-const Donate = lazy(() => import('./pages/Donate'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const EmailChoices = lazy(() => import('./pages/EmailChoices'));
-const EmailChoicesPreview = lazy(() => import('./pages/EmailChoicesPreview'));
-const MemberDirectory = lazy(() => import('./pages/MemberDirectory'));
-const MemberProfile = lazy(() => import('./pages/MemberProfile'));
-const BoardMeetings = lazy(() => import('./pages/BoardMeetings'));
-const BoardDashboard = lazy(() => import('./pages/BoardDashboard'));
-const BoardMeetingView = lazy(() => import('./pages/BoardMeetingView'));
-const Giveaway = lazy(() => import('./pages/Giveaway'));
-const About = lazy(() => import('./pages/About'));
-const Resources = lazy(() => import('./pages/Resources'));
-const Caq = lazy(() => import('./pages/Caq'));
-const Privacy = lazy(() => import('./pages/Privacy'));
-const NewsletterConfirmed = lazy(() => import('./pages/NewsletterConfirmed'));
-const Terms = lazy(() => import('./pages/Terms'));
-const EditorDashboard = lazy(() => import('./pages/EditorDashboard'));
-const PostEditor = lazy(() => import('./pages/PostEditor'));
-const AdminTags = lazy(() => import('./pages/AdminTags'));
-const SuggestedDailyTags = lazy(() => import('./pages/SuggestedDailyTags'));
-const AdminPeople = lazy(() => import('./pages/AdminPeople'));
-const AdminRecords = lazy(() => import('./pages/AdminRecords'));
-const AdminMembers = lazy(() => import('./pages/AdminMembers'));
-const PolicyWorkHub = lazy(() => import('./pages/PolicyWorkHub'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+// on screen until its chunk arrives. The route list lives in routeManifest.
+const pages = {
+  Home: Home,
+  Subscriptions: Subscriptions,
+  News: lazy(() => import('./pages/News')),
+  DailyRoundup: lazy(() => import('./pages/DailyRoundup')),
+  FeatureArticle: lazy(() => import('./pages/FeatureArticle')),
+  TopicRoundup: lazy(() => import('./pages/TopicRoundup')),
+  DailyTagView: lazy(() => import('./pages/DailyTagView')),
+  PostView: lazy(() => import('./pages/PostView')),
+  Policy: lazy(() => import('./pages/Policy')),
+  PolicyView: lazy(() => import('./pages/PolicyView')),
+  Tags: lazy(() => import('./pages/Tags')),
+  TagView: lazy(() => import('./pages/TagView')),
+  Search: lazy(() => import('./pages/Search')),
+  Login: lazy(() => import('./pages/Login')),
+  Join: lazy(() => import('./pages/Join')),
+  JoinPreview: import.meta.env.DEV ? lazy(() => import('./pages/JoinPreview')) : null,
+  DirectoryBadgePreview: import.meta.env.DEV ? lazy(() => import('./pages/DirectoryBadgePreview')) : null,
+  JoinInvoice: lazy(() => import('./pages/JoinInvoice')),
+  AnnualSurvey: lazy(() => import('./pages/AnnualSurvey')),
+  Donate: lazy(() => import('./pages/Donate')),
+  Dashboard: lazy(() => import('./pages/Dashboard')),
+  EmailChoices: lazy(() => import('./pages/EmailChoices')),
+  EmailChoicesPreview: lazy(() => import('./pages/EmailChoicesPreview')),
+  MemberDirectory: lazy(() => import('./pages/MemberDirectory')),
+  MemberProfile: lazy(() => import('./pages/MemberProfile')),
+  BoardMeetings: lazy(() => import('./pages/BoardMeetings')),
+  BoardDashboard: lazy(() => import('./pages/BoardDashboard')),
+  BoardMeetingView: lazy(() => import('./pages/BoardMeetingView')),
+  Giveaway: lazy(() => import('./pages/Giveaway')),
+  About: lazy(() => import('./pages/About')),
+  Resources: lazy(() => import('./pages/Resources')),
+  Caq: lazy(() => import('./pages/Caq')),
+  Privacy: lazy(() => import('./pages/Privacy')),
+  NewsletterConfirmed: lazy(() => import('./pages/NewsletterConfirmed')),
+  Terms: lazy(() => import('./pages/Terms')),
+  EditorDashboard: lazy(() => import('./pages/EditorDashboard')),
+  PostEditor: lazy(() => import('./pages/PostEditor')),
+  AdminTags: lazy(() => import('./pages/AdminTags')),
+  SuggestedDailyTags: lazy(() => import('./pages/SuggestedDailyTags')),
+  AdminPeople: lazy(() => import('./pages/AdminPeople')),
+  AdminRecords: lazy(() => import('./pages/AdminRecords')),
+  AdminMembers: lazy(() => import('./pages/AdminMembers')),
+  PolicyWorkHub: lazy(() => import('./pages/PolicyWorkHub')),
+  NotFound: lazy(() => import('./pages/NotFound')),
+};
+
+const gates = {
+  RequireAuth,
+  RequireActiveMember,
+  RequireMemberViewer,
+  RequirePolicyWork,
+  RequireBoardDashboard,
+  RequireEditor,
+};
+
+function elementFor(route) {
+  if (route.redirect) return <Navigate to={route.redirect} replace />;
+  const Page = pages[route.page];
+  const child = <Page />;
+  if (!route.gate) return child;
+  const Gate = gates[route.gate];
+  return <Gate {...(route.gateProps || {})}>{child}</Gate>;
+}
 
 function App() {
+  const visible = routes.filter((route) => !route.devOnly || import.meta.env.DEV);
   return (
     <>
       <ScrollToTop />
       <Suspense fallback={<div className="min-h-screen bg-background" />}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/news/daily" element={<DailyRoundup />} />
-          <Route path="/news/daily/archive" element={<Navigate to="/news/daily" replace />} />
-          <Route path="/news/daily/tag/:slug" element={<DailyTagView />} />
-          <Route path="/news/daily/:date" element={<DailyRoundup />} />
-          <Route path="/news/topic" element={<TopicRoundup />} />
-          <Route path="/news/topic/:date" element={<TopicRoundup />} />
-          <Route path="/news/features/:slug" element={<FeatureArticle />} />
-          {import.meta.env.DEV && (
-            <Route path="/__preview/suggested-tags" element={<SuggestedDailyTags />} />
-          )}
-          {import.meta.env.DEV && (
-            <Route path="/__preview/email-choices" element={<EmailChoicesPreview />} />
-          )}
-          {import.meta.env.DEV && (
-            <Route path="/__preview/join" element={<JoinPreview />} />
-          )}
-          {import.meta.env.DEV && (
-            <Route path="/__preview/directory-badges" element={<DirectoryBadgePreview />} />
-          )}
-          {import.meta.env.DEV && (
-            <Route path="/__preview/survey" element={<AnnualSurvey />} />
-          )}
-          <Route path="/news/:slug" element={<PostView />} />
-          <Route path="/policy" element={<Policy />} />
-          <Route path="/policy/:slug" element={<PolicyView />} />
-          <Route path="/keywords" element={<Tags />} />
-          <Route path="/keywords/:slug" element={<TagView />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/join" element={<Join />} />
-          <Route path="/renew" element={<Join />} />
-          <Route path="/join/invoice" element={<JoinInvoice />} />
-          <Route
-            path="/survey/:year"
-            element={
-              <RequireAuth>
-                <AnnualSurvey />
-              </RequireAuth>
-            }
-          />
-          <Route path="/donate" element={<Donate />} />
-          <Route path="/giveaway" element={<Giveaway />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/caq" element={<Caq />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/newsletter-confirmed" element={<NewsletterConfirmed />} />
-          <Route path="/subscriptions" element={<Subscriptions />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route
-            path="/dashboard"
-            element={
-              <RequireAuth>
-                <Dashboard />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/dashboard/emails"
-            element={
-              <RequireAuth>
-                <EmailChoices />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/members"
-            element={
-              <RequireActiveMember>
-                <MemberDirectory />
-              </RequireActiveMember>
-            }
-          />
-          <Route
-            path="/members/:id"
-            element={
-              <RequireActiveMember>
-                <MemberProfile />
-              </RequireActiveMember>
-            }
-          />
-          <Route
-            path="/board"
-            element={
-              <RequireActiveMember
-                deniedCopy="Board meeting agendas and minutes are a benefit of active SAMPA membership. Join to read this year’s Board meeting schedule, agendas, and approved minutes."
-              >
-                <BoardMeetings />
-              </RequireActiveMember>
-            }
-          />
-          <Route
-            path="/board/dashboard"
-            element={
-              <RequireBoardDashboard>
-                <BoardDashboard />
-              </RequireBoardDashboard>
-            }
-          />
-          <Route
-            path="/board/:slug"
-            element={
-              <RequireActiveMember
-                deniedCopy="Board meeting agendas and minutes are a benefit of active SAMPA membership. Join to read this year’s Board meeting schedule, agendas, and approved minutes."
-              >
-                <BoardMeetingView />
-              </RequireActiveMember>
-            }
-          />
-          <Route
-            path="/editor"
-            element={
-              <RequireEditor>
-                <EditorDashboard />
-              </RequireEditor>
-            }
-          />
-          <Route
-            path="/editor/new"
-            element={
-              <RequireEditor>
-                <PostEditor />
-              </RequireEditor>
-            }
-          />
-          <Route
-            path="/editor/keywords"
-            element={
-              <RequireEditor adminOnly>
-                <AdminTags />
-              </RequireEditor>
-            }
-          />
-          <Route
-            path="/editor/daily-tags"
-            element={
-              <RequireEditor adminOnly adminDenied="Suggested tags are limited to administrators.">
-                <SuggestedDailyTags />
-              </RequireEditor>
-            }
-          />
-          <Route
-            path="/editor/people"
-            element={
-              <RequireEditor adminOnly>
-                <AdminPeople />
-              </RequireEditor>
-            }
-          />
-          <Route
-            path="/editor/records"
-            element={
-              <RequireEditor adminOnly adminDenied="Board records and the Relay balance are limited to administrators.">
-                <AdminRecords />
-              </RequireEditor>
-            }
-          />
-          <Route
-            path="/editor/members"
-            element={
-              <RequireMemberViewer>
-                <AdminMembers />
-              </RequireMemberViewer>
-            }
-          />
-          <Route
-            path="/editor/policy"
-            element={
-              <RequirePolicyWork>
-                <PolicyWorkHub />
-              </RequirePolicyWork>
-            }
-          />
-          <Route
-            path="/editor/:id"
-            element={
-              <RequireEditor>
-                <PostEditor />
-              </RequireEditor>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
+          {visible.map((route) => (
+            <Route key={route.path} path={route.path} element={elementFor(route)} />
+          ))}
         </Routes>
       </Suspense>
     </>
