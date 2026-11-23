@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-23",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "DEA and Baton Rouge sheriff dismantle first U.S. nitazene synthesis lab, confirm etonitazene",
+      "outlet": "DEA",
+      "date": "Nov 20",
+      "summary": "DEA and the East Baton Rouge Sheriff's Office announced that a Nov 12 raid uncovered a lab with a 100-liter reactor holding about 58 liters of liquid, which DEA testing confirmed on Nov 18 was etonitazene. DEA called it the first nitazene synthesis lab it has dismantled in the U.S., and said more than 80% of etonitazene exhibits it seized nationwide this year came from Louisiana. Clinicians should know DEA warns that nitazene overdoses may need multiple naloxone doses.",
+      "url": "https://www.dea.gov/press-releases/2026/11/20/ebrso-and-dea-dismantle-large-scale-nitazene-laboratory-baton-rouge"
+    },
+    {
+      "headline": "CDC-led study finds nitazenes in 1,443 overdose deaths, often in people with prior overdose or treatment",
+      "outlet": "International Journal of Drug Policy",
+      "date": "Nov 20",
+      "summary": "Researchers from CDC and two forensic toxicology labs found nitazene analogs in 1,443 overdose deaths across 47 jurisdictions from 2019 to 2024, most often alongside illicit fentanyls, stimulants or illegal benzodiazepines. Compared with deaths involving other opioids, nitazene deaths more often showed evidence of injection drug use, prior overdose and prior substance use disorder treatment. The authors say nitazenes are likely under-detected because routine toxicology rarely screens for them, so clinicians should keep naloxone and follow-up in place for patients leaving treatment.",
+      "url": "https://doi.org/10.1016/j.drugpo.2026.105588"
+    },
+    {
+      "headline": "Medicaid use of MOUD in the 180 days before surgery rose 58.2% from 2016 to 2021",
+      "outlet": "Michigan Medicine",
+      "date": "Nov 20",
+      "summary": "A University of Michigan team reported in JAMA Health Forum that Medicaid claims show a 58.2% increase in buprenorphine, methadone or extended-release naltrexone use in the 180 days before surgery, with growth across demographic and income groups. Eight of the 10 most common procedures were orthopedic or musculoskeletal, such as amputations and fracture repairs. The lead author says surgery is a key touchpoint and calls for better coordination among surgery, anesthesia, pain and addiction teams.",
+      "url": "https://www.michiganmedicine.org/health-lab/study-reveals-improving-trends-treatment-opioid-use-disorder-surgery"
+    },
+    {
+      "headline": "Senate FY27 HHS bill keeps SAMHSA near $7.5 billion and State Opioid Response grants at $1.6 billion",
+      "outlet": "ASTHO",
+      "date": "Nov 19",
+      "summary": "ASTHO's summary of the Senate Appropriations Committee's FY27 Labor-HHS bill, released Nov 16, lists $7.5 billion for SAMHSA (up $18 million), $1.6 billion for State Opioid Response grants (up $15 million) and $510.6 million for CDC opioid overdose prevention and surveillance (up $5 million). Funding currently runs under a continuing resolution through Dec 11, and the Senate and House versions still differ. Treatment programs that depend on federal grants should watch whether Congress passes a short-term extension or a broader package.",
+      "url": "https://www.astho.org/advocacy/federal-government-affairs/leg-alerts/2026/summary-of-fy27-senate-lhhs-appropriations-bill-nov-2026/"
+    },
+    {
+      "headline": "Idaho Medicaid contractor ends Pocatello PHP and IOP contracts with under 24 hours' notice",
+      "outlet": "Local News 8 (KIFI)",
+      "date": "Nov 20",
+      "summary": "Local News 8 reports that Magellan of Idaho terminated Moonlight Mountain Recovery's partial hospitalization and intensive outpatient contracts effective Nov 19, leaving dozens of people in early recovery without treatment or the housing tied to those programs. The center says it can still provide residential treatment and has laid off staff, and the reason for the termination has not been explained. The case shows how a sudden Medicaid contract change can interrupt a step-down level of care, so clinicians may need to plan referrals for displaced patients.",
+      "url": "https://localnews8.com/news/2026/11/20/addiction-recovery-programs-shutdown/"
+    }
+  ]
+}
