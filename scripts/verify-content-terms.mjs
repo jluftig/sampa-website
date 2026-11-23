@@ -88,9 +88,27 @@ test('allows SAMHSA and NIDA proper names and still flags a bare phrase', () => 
   assert.equal(hits[0].match.toLowerCase(), 'substance abuse');
 });
 
-test('MAT Act is the statute name', () => {
-  const source = `export const title = "Waiver elimination (MAT Act)";\n`;
-  assert.deepEqual(errors('resources.js', source), []);
+test('MAT Act is the statute name, and a longer word is not covered by that phrase', () => {
+  const statute = `export const title = "Waiver elimination (MAT Act)";\n`;
+  assert.deepEqual(errors('resources.js', statute), []);
+  const longer = `export const title = "MAT Action plan";\n`;
+  const hits = errors('plan.js', longer);
+  assert.equal(hits.length, 1);
+  assert.equal(hits[0].rule, 'mat');
+  assert.equal(hits[0].match, 'MAT');
+});
+
+test('a lone lowercase banned word is still copy', () => {
+  const source = `
+    export const label = "bupe";
+    export const who = "addict";
+    export const slug = "mat-act";
+  `;
+  const hits = errors('labels.js', source);
+  assert.deepEqual(hits.map((hit) => `${hit.rule}:${hit.match}`), [
+    'bup-case:bupe',
+    'stigmatizing-addict:addict',
+  ]);
 });
 
 test('prior-auth PA is advisory and does not fail; PA-C and PA billing stay quiet', () => {

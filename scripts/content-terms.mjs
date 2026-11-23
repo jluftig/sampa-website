@@ -202,11 +202,23 @@ function maskPhrases(text, phrases, insensitive) {
       const hay = insensitive ? out.toLowerCase() : out;
       const at = hay.indexOf(needle, from);
       if (at < 0) break;
-      out = `${out.slice(0, at)}${' '.repeat(phrase.length)}${out.slice(at + phrase.length)}`;
-      from = at + phrase.length;
+      const end = at + phrase.length;
+      if (!isWordBoundary(out, at) || !isWordBoundary(out, end)) {
+        from = at + 1;
+        continue;
+      }
+      out = `${out.slice(0, at)}${' '.repeat(phrase.length)}${out.slice(end)}`;
+      from = end;
     }
   }
   return out;
+}
+
+function isWordBoundary(text, index) {
+  if (index <= 0 || index >= text.length) return true;
+  const before = text[index - 1];
+  const after = text[index];
+  return !/[\p{L}\p{N}_]/u.test(before) || !/[\p{L}\p{N}_]/u.test(after);
 }
 
 function allowlisted(config, finding, text) {
@@ -265,7 +277,8 @@ function shouldKeep(text) {
   if (!trimmed || !/[A-Za-z]/.test(trimmed)) return false;
   if (/^(?:https?:|mailto:|data:)/i.test(trimmed)) return false;
   if (/^(?:\.?\.?\/|@\/)/.test(trimmed) && !/\s/.test(trimmed)) return false;
-  if (/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/.test(trimmed)) return false;
+  // Kebab and snake tokens are ids and slugs. A single lowercase word can be copy.
+  if (/^[a-z0-9]+(?:[-_][a-z0-9]+)+$/.test(trimmed)) return false;
   if (/^#[0-9a-f]{3,8}$/i.test(trimmed)) return false;
   return true;
 }
