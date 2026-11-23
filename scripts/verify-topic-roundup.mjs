@@ -171,11 +171,11 @@ describe('skipped and missing issues', () => {
 
 describe('topic routes stay out of the daily catalog', () => {
   it('registers the topic routes before the news slug', () => {
-    const app = source('src/App.jsx');
+    const app = source('src/lib/routeManifest.js');
     const news = source('src/pages/News.jsx');
-    const topic = app.indexOf('path="/news/topic"');
-    const dated = app.indexOf('path="/news/topic/:date"');
-    const slug = app.indexOf('path="/news/:slug"');
+    const topic = app.indexOf("path: '/news/topic'");
+    const dated = app.indexOf("path: '/news/topic/:date'");
+    const slug = app.indexOf("path: '/news/:slug'");
     assert.ok(topic !== -1 && dated !== -1 && slug !== -1);
     assert.ok(topic < slug);
     assert.ok(dated < slug);

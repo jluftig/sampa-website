@@ -39,7 +39,7 @@ if (ANNOUNCEMENTS[0].id !== GIVEAWAY_ID) fail('giveaway should be the first anno
 
 const page = readFileSync('src/pages/Giveaway.jsx', 'utf8');
 const footer = readFileSync('src/components/Footer.jsx', 'utf8');
-const app = readFileSync('src/App.jsx', 'utf8');
+const app = readFileSync('src/lib/routeManifest.js', 'utf8');
 const navbar = readFileSync('src/components/Navbar.jsx', 'utf8');
 
 if (!page.includes('This giveaway has ended')) fail('ended state copy missing');
@@ -79,7 +79,7 @@ for (const line of [
 ]) {
   if (!page.includes(line)) fail(`page missing: ${line}`);
 }
-if (!app.includes('path="/giveaway"')) fail('route missing');
+if (!app.includes("path: '/giveaway'")) fail('route missing');
 if (!navbar.includes('AnnouncementBanner')) fail('banner not mounted in Navbar');
 
 const flyer = statSync('public/giveaway/psych-congress-pa-institute.webp');

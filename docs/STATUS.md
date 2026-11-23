@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-23 (T83 archive redirect is on main via #190. T84 content term lint is preview PR #193, updated onto that main.)
+**Last updated:** 2026-11-23 (T83 route manifest is on main via #191. T84 content term lint is preview PR #193, updated onto that main.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -65,7 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T84 | House-style content term lint in CI | cursor | 2026-11-23 | **Claimed cursor.** Preview PR **#193**. `npm run lint:content` fails a pull request on banned copy in JSX/Markdown/JSON and shipping email HTML (`content-style.json`). Local run: 272 files, 0 errors, 0 advisories. Prior-auth “PA” is advisory and does not fail CI. Updated onto main after #188 and #190. Do not merge. |
+| T84 | House-style content term lint in CI | cursor | 2026-11-23 | **Claimed cursor.** Preview PR **#193**. `npm run lint:content` fails a pull request on banned copy in JSX/Markdown/JSON and shipping email HTML (`content-style.json`). Local run: 272 files, 0 errors, 0 advisories. Prior-auth “PA” is advisory and does not fail CI. Updated onto main after #188, #190, and #191. Do not merge. |
 | T83 | One route list, and remove `/news/daily/archive` | cursor | 2026-11-23 | **Claimed cursor.** `/news/daily/archive` redirects to `/news/daily`. The page, sitemap entry, and crawler share card go away. A route manifest is the only route list, and CI fails when App, Vercel, the sitemap, or nav drift from it. Preview only. Do not merge. |
 | T82 | Restore daily news, daily archive, and news feature CI | cursor | 2026-11-23 | **Claimed cursor.** Preview PR **#188**. #179 left `test:daily-news`, `test:daily-archive`, and `test:news-features` out of CI because they pinned launch-week dates. The checks follow the files on disk. Supersedes the suite fixes on #180. Do not merge. |
 | T81 | New-membership Google Ads conversion | cursor | 2026-11-07 | **Claimed cursor.** **Merged PR #172** (`e78eb5e`). Live on production (deploy `dpl_5ZMLtnwsKnpFxvnEX77tufoXNCyV`, READY 8:04 AM PT 2026-11-17). `VITE_GOOGLE_ADS_NEW_MEMBERSHIP_LABEL` is set on Production and confirmed in the live Join bundle. The Ads campaign stays paused until a real paid-checkout attribution check passes on www. |

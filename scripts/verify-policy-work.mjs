@@ -340,11 +340,13 @@ describe('browser overlay', () => {
 describe('route wiring', () => {
   it('registers /editor/policy before /editor/:id and gates it', () => {
     const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
-    const policyAt = app.indexOf('path="/editor/policy"');
-    const idAt = app.indexOf('path="/editor/:id"');
+    const manifest = readFileSync(new URL('../src/lib/routeManifest.js', import.meta.url), 'utf8');
+    const policyAt = manifest.indexOf("path: '/editor/policy'");
+    const idAt = manifest.indexOf("path: '/editor/:id'");
     assert.ok(policyAt > 0);
     assert.ok(idAt > policyAt);
     assert.match(app, /RequirePolicyWork/);
+    assert.match(manifest, /gate: 'RequirePolicyWork'/);
     const guard = readFileSync(new URL('../src/components/RequirePolicyWork.jsx', import.meta.url), 'utf8');
     assert.match(guard, /useAuthGate/);
     assert.match(guard, /canViewPolicyWork/);

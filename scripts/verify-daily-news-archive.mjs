@@ -18,6 +18,7 @@ import {
   visibleArchive,
   withMonthHeadings,
 } from '../src/lib/dailyNewsArchive.js';
+import { routes as manifestRoutes } from '../src/lib/routeManifest.js';
 import { collectRoundups } from '../src/lib/dailyNewsLoad.js';
 import { DAILY_VOCABULARY } from '../src/lib/dailyNewsVocabulary.js';
 
@@ -232,19 +233,19 @@ test('sitemap lists dated roundup pages and not month bins', () => {
 });
 
 test('router redirects the old archive path ahead of the dated page, and unknown dates render NotFound', () => {
-  const app = readFileSync('src/App.jsx', 'utf8');
-  const archiveAt = app.indexOf('path="/news/daily/archive"');
-  const tagAt = app.indexOf('path="/news/daily/tag/:slug"');
-  const dateAt = app.indexOf('path="/news/daily/:date"');
+  const paths = manifestRoutes.map((route) => route.path);
+  const archiveAt = paths.indexOf('/news/daily/archive');
+  const tagAt = paths.indexOf('/news/daily/tag/:slug');
+  const dateAt = paths.indexOf('/news/daily/:date');
   assert.ok(archiveAt > -1 && tagAt > archiveAt && dateAt > tagAt);
-  assert.match(app, /path="\/news\/daily\/archive" element=\{<Navigate to="\/news\/daily" replace \/>}/);
+  assert.equal(manifestRoutes[archiveAt].redirect, '/news/daily');
   assert.equal(existsSync('src/pages/DailyArchive.jsx'), false);
   const roundup = readFileSync('src/pages/DailyRoundup.jsx', 'utf8');
   assert.match(roundup, /resolveDailyDate/);
   assert.match(roundup, /status === 'not-found'\) return <NotFound/);
   assert.doesNotMatch(roundup, /<Navigate/);
-  const editorAt = app.indexOf('path="/editor/daily-tags"');
-  const editorIdAt = app.indexOf('path="/editor/:id"');
+  const editorAt = paths.indexOf('/editor/daily-tags');
+  const editorIdAt = paths.indexOf('/editor/:id');
   assert.ok(editorAt > -1 && editorAt < editorIdAt);
 });
 

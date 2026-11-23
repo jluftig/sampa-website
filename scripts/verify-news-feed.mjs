@@ -11,6 +11,7 @@ import {
   postDayKey,
 } from '../src/lib/newsFeed.js';
 import { collectRoundups } from '../src/lib/dailyNewsLoad.js';
+import { routes } from '../src/lib/routeManifest.js';
 
 const read = (path) => readFileSync(path, 'utf8');
 
@@ -99,10 +100,10 @@ test('nav has a single News item per menu and no separate Daily Roundup entry', 
 });
 
 test('/news/daily still works and the old archive path redirects to /news/daily', () => {
-  const app = read('src/App.jsx');
-  assert.match(app, /path="\/news\/daily" element=\{<DailyRoundup \/>\}/);
-  assert.match(app, /path="\/news\/daily\/:date" element=\{<DailyRoundup \/>\}/);
-  assert.match(app, /path="\/news\/daily\/archive" element=\{<Navigate to="\/news\/daily" replace \/>\}/);
-  assert.match(app, /path="\/news\/:slug" element=\{<PostView \/>\}/);
+  const byPath = Object.fromEntries(routes.map((route) => [route.path, route]));
+  assert.equal(byPath['/news/daily'].page, 'DailyRoundup');
+  assert.equal(byPath['/news/daily/:date'].page, 'DailyRoundup');
+  assert.equal(byPath['/news/daily/archive'].redirect, '/news/daily');
+  assert.equal(byPath['/news/:slug'].page, 'PostView');
   assert.doesNotMatch(read('src/pages/DailyRoundup.jsx'), /\/news\/daily\/archive/);
 });
