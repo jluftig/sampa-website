@@ -81,11 +81,22 @@ test('allows SAMHSA and NIDA proper names and still flags a bare phrase', () => 
     export const nida = "National Institute on Drug Abuse";
     export const journal = "Substance Abuse Treatment, Prevention, and Policy";
     export const bare = "substance abuse in the lede";
+    export const generic = "substance abuse and mental health care";
   `;
   const hits = errors('names.js', source);
+  assert.deepEqual(hits.map((hit) => hit.match.toLowerCase()), [
+    'substance abuse',
+    'substance abuse',
+  ]);
+  assert.ok(hits.every((hit) => hit.rule === 'substance-or-drug-abuse'));
+});
+
+test('JSX after export default is copy', () => {
+  const source = 'export default <p>access to MAT</p>;\n';
+  const hits = errors('Default.jsx', source);
   assert.equal(hits.length, 1);
-  assert.equal(hits[0].rule, 'substance-or-drug-abuse');
-  assert.equal(hits[0].match.toLowerCase(), 'substance abuse');
+  assert.equal(hits[0].rule, 'mat');
+  assert.equal(hits[0].match, 'MAT');
 });
 
 test('MAT Act is the statute name, and a longer word is not covered by that phrase', () => {

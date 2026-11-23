@@ -422,7 +422,9 @@ function startsJsx(ctx) {
   while (j >= 0 && /\s/.test(ctx.source[j])) j -= 1;
   if (j < 0) return true;
   const prev = ctx.source[j];
-  if (/[A-Za-z0-9_$]/.test(prev)) return ctx.lastWord === 'return' || ctx.lastWord === 'yield' || ctx.lastWord === 'throw' || ctx.lastWord === 'case';
+  if (/[A-Za-z0-9_$]/.test(prev)) {
+    return ctx.lastWord === 'return' || ctx.lastWord === 'yield' || ctx.lastWord === 'throw' || ctx.lastWord === 'case' || ctx.lastWord === 'default';
+  }
   return true;
 }
 
