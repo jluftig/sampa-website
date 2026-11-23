@@ -39,3 +39,17 @@ Words as Josh and the site use them. No implementation details here (see `CLAUDE
 **My SAMPA**: The signed-in menu. It holds My account, Sign out, and Directory, Board, and Editor when that person is allowed in.
 
 **Renew**: What a lapsed member sees instead of Join. Past due, it means fix the payment. Canceled, it means start membership again. _Avoid_: Rejoin.
+
+## House style
+
+**Medications for addiction treatment**: Medication treatment across use disorders. _Avoid_: MAT.
+
+**MOUD**: Medications for opioid use disorder. _Avoid_: MAT, when the subject is opioids.
+
+**MAUD**: Medications for alcohol use disorder. _Avoid_: MAT, when the subject is alcohol.
+
+**bup**: Lowercase short form of buprenorphine. The merch slogan "XR BUP" stays in that exact form. _Avoid_: BUP, Bupe, bupe.
+
+**Person-first**: "A person with a substance use disorder", "people who use fentanyl", "people who use drugs". A urine drug test is positive or negative. _Avoid_: addict, abuser, substance abuse, drug abuse, clean or dirty urine, fentanyl users, drug users.
+
+**prior auth**: Prior authorization. _Avoid_: calling that step PA. In SAMPA copy, PA means physician associate.

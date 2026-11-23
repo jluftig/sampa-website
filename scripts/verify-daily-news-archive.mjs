@@ -122,7 +122,7 @@ test('approving a suggestion removes it from the queue and tags the item', () =>
 test('dismiss hides a suggestion without tagging the item', () => {
   const annotated = annotateRoundups([
     roundup('2026-09-29', [item({
-      headline: 'One in nine older adult cannabis users meet criteria for cannabis use disorder',
+      headline: 'One in nine older adults who use cannabis meet criteria for cannabis use disorder',
       summary: 'Most cases are mild.',
       url: 'https://example.com/cannabis',
     })]),

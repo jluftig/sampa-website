@@ -65,6 +65,8 @@ Paraphrase surrounding substance-use prose with **misuse** / **SUD**.
 
 Generator cue: `Misuse not abuse for drugs/SUD only; keep child/elder abuse and proper names.`
 
+`npm run lint:content` fails CI on the same family of terms (`content-style.json`): MAT (say MOUD, MAUD, or medications for addiction treatment), uppercase BUP or bupe (say bup; the merch slogan "XR BUP" is exact), addict, abuser, substance abuse, drug abuse, clean or dirty urine or tests, and "fentanyl users" / "drug users". A direct quote or proper name that the allow-phrases do not already cover gets `<!-- content-terms-ignore -->` or an allowlist row. Do not rename physician associate PA. Prior-auth "PA" is advisory only.
+
 ---
 
 ## Agency / policy posts (preferred H2 set)

@@ -1,0 +1,84 @@
+{
+  "roots": ["src", "content", "api/_lib/email-templates", "public", "mobile"],
+  "extensions": [".js", ".jsx", ".ts", ".tsx", ".md", ".mdx", ".json", ".html", ".htm"],
+  "excludeDirs": ["node_modules", "dist", ".expo", "coverage", "ios", "android"],
+  "excludeFiles": ["package.json", "package-lock.json", "membership-conversion.html"],
+  "skipKeys": ["url", "href", "src", "slug", "id", "email", "path", "icon", "logo", "canonical", "feed", "doi", "image", "avatar", "file"],
+  "rules": [
+    {
+      "id": "mat",
+      "severity": "error",
+      "pattern": "\\bMAT\\b",
+      "allowPhrases": ["MAT Act"],
+      "message": "Use MOUD (opioids), MAUD (alcohol), or \"medications for addiction treatment\" (all use disorders)."
+    },
+    {
+      "id": "bup-case",
+      "severity": "error",
+      "pattern": "\\b[Bb][Uu][Pp][Ee]\\b|\\b(?!bup\\b)[Bb][Uu][Pp]\\b",
+      "allowPhrases": ["XR BUP"],
+      "message": "Use lowercase \"bup\". The merch slogan \"XR BUP\" is the one allowed uppercase form."
+    },
+    {
+      "id": "stigmatizing-addict",
+      "severity": "error",
+      "pattern": "\\baddicts?\\b",
+      "flags": "i",
+      "message": "Use person-first language (\"a person with a substance use disorder\"), not \"addict\"."
+    },
+    {
+      "id": "stigmatizing-abuser",
+      "severity": "error",
+      "pattern": "\\babusers?\\b",
+      "flags": "i",
+      "message": "Use person-first language (\"a person who uses drugs\"), not \"abuser\"."
+    },
+    {
+      "id": "substance-or-drug-abuse",
+      "severity": "error",
+      "pattern": "\\b(?:substance|drug)\\s+abuse\\b",
+      "flags": "i",
+      "allowPhrasesInsensitive": [
+        "Substance Abuse and Mental Health Services Administration",
+        "Center for Substance Abuse Treatment",
+        "Center for Substance Abuse Prevention",
+        "National Institute on Drug Abuse",
+        "National Institute on Alcohol Abuse and Alcoholism",
+        "Substance Abuse Treatment, Prevention, and Policy",
+        "Subst Abuse Treat Prev Policy",
+        "Subst Abus",
+        "J Subst Abuse Treat",
+        "Drug Abuse Warning Network"
+      ],
+      "message": "Say \"misuse\" or \"substance use disorder\". Keep a proper name (SAMHSA, NIDA, a journal title) or mark the line content-terms-ignore when it is a direct quote."
+    },
+    {
+      "id": "clean-dirty-test",
+      "severity": "error",
+      "pattern": "\\b(?:clean|dirty)\\s+(?:urine|urines|toxicology|toxicologies|uds|uas?|drug\\s+tests?|drug\\s+screens?|screens?)\\b|\\b(?:urine|toxicology|uds|uas?|drug\\s+tests?|drug\\s+screens?)\\s+(?:(?:is|was|were|came\\s+back)\\s+)?(?:clean|dirty)\\b|\\btested\\s+(?:clean|dirty)\\b",
+      "flags": "i",
+      "message": "Say \"positive\" or \"negative\" (for example, \"urine drug test was negative\"), not \"clean\" or \"dirty\"."
+    },
+    {
+      "id": "substance-users",
+      "severity": "error",
+      "pattern": "\\b(?:fentanyl|drugs?|opioids?|heroin|meth|methamphetamine|cocaine|crack|stimulants?|kratom|benzos?|benzodiazepines?|alcohol|substances?|narcotics?|xylazine|cannabis|marijuana)\\s+users?\\b",
+      "flags": "i",
+      "message": "Use person-first language (\"people who use fentanyl\"), not \"fentanyl users\" or \"drug users\"."
+    },
+    {
+      "id": "prior-auth-pa",
+      "severity": "advisory",
+      "pattern": "\\bPA\\s+(?:requests?|required|requirements?|approvals?|auth)\\b|\\b(?:submit(?:ting)?|need(?:s|ed)?|get(?:ting)?|obtain(?:ing)?|requires?)\\s+(?:a\\s+|the\\s+)?PA\\b",
+      "message": "Advisory only, and it does not fail CI. If this PA means prior authorization, write \"prior auth\". PA otherwise means physician associate. Do not lint PA globally."
+    }
+  ],
+  "allowlist": [
+    {
+      "file": "src/data/practiceResources.js",
+      "rule": "mat",
+      "contains": "MAT Act",
+      "reason": "SAMHSA card title for the Mainstreaming Addiction Treatment Act. Statute short name, not the treatment acronym."
+    }
+  ]
+}

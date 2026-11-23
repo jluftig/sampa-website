@@ -140,7 +140,7 @@ test('seed file for 2026-09-29 loads with the published source URLs', () => {
     [
       ['Medetomidine withdrawal is driving ICU-level care', 'JAMA Internal Medicine', 'Sep 28'],
       ['NOHARM trial', 'JAMA Network Open', 'Sep 28'],
-      ['One in nine older adult cannabis users meet criteria for cannabis use disorder', 'Addiction, UCSD', 'Sep 28'],
+      ['One in nine older adults who use cannabis meet criteria for cannabis use disorder', 'Addiction, UCSD', 'Sep 28'],
       ['HRSA awarded $89.3M for rural addiction care', 'HRSA', 'Sep 25'],
       ['CDC report on buprenorphine access', 'CDC MMWR', 'August, recirculated Sep 28'],
     ],
