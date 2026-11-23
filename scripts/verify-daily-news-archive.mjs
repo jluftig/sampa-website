@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import test from 'node:test';
 import { GET as shareGet } from '../api/share.js';
 import {
@@ -209,6 +209,7 @@ test('archive list is newest first, grouped by month headings, and pages onward'
   assert.equal(pageTwo.hasMore, true);
   const paths = dailySitemapPaths(catalog);
   assert.ok(paths.includes('/news/daily/2026-10-02'));
+  assert.equal(paths.includes('/news/daily/archive'), false);
   assert.equal(paths.includes('/news/daily/2026-10'), false);
   assert.equal(paths.includes('/news/daily/2026-09'), false);
 });
@@ -222,6 +223,7 @@ test('sitemap lists dated roundup pages and not month bins', () => {
     .map((match) => match[1]);
   assert.ok(listed.length > 0);
   for (const date of listed) assert.equal(published.has(date), true, date);
+  assert.doesNotMatch(xml, /\/news\/daily\/archive/);
   assert.doesNotMatch(xml, /\/news\/daily\/\d{4}-\d{2}<\/loc>/);
 
   const dated = dailySitemapPaths(roundups)
@@ -229,12 +231,14 @@ test('sitemap lists dated roundup pages and not month bins', () => {
   assert.deepEqual(dated, roundups.map((entry) => `/news/daily/${entry.date}`));
 });
 
-test('router keeps archive and tag paths ahead of the dated page, and unknown dates render NotFound', () => {
+test('router redirects the old archive path ahead of the dated page, and unknown dates render NotFound', () => {
   const app = readFileSync('src/App.jsx', 'utf8');
   const archiveAt = app.indexOf('path="/news/daily/archive"');
   const tagAt = app.indexOf('path="/news/daily/tag/:slug"');
   const dateAt = app.indexOf('path="/news/daily/:date"');
   assert.ok(archiveAt > -1 && tagAt > archiveAt && dateAt > tagAt);
+  assert.match(app, /path="\/news\/daily\/archive" element=\{<Navigate to="\/news\/daily" replace \/>}/);
+  assert.equal(existsSync('src/pages/DailyArchive.jsx'), false);
   const roundup = readFileSync('src/pages/DailyRoundup.jsx', 'utf8');
   assert.match(roundup, /resolveDailyDate/);
   assert.match(roundup, /status === 'not-found'\) return <NotFound/);
@@ -297,14 +301,16 @@ test('crawler rewrites keep archive and tag paths off the dated share route', as
   assert.deepEqual(caughtAsDate, []);
 
   const archiveRule = crawlerRewrites.find((rule) => rule.source === '/news/daily/archive');
-  assert.equal(archiveRule.destination, '/api/share?slug=daily&view=archive');
+  assert.equal(archiveRule, undefined);
+  const archiveRedirect = config.redirects.find((rule) => rule.source === '/news/daily/archive');
+  assert.equal(archiveRedirect.destination, '/news/daily');
+  assert.equal(archiveRedirect.permanent, true);
 
   const preview = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=daily&view=archive'));
   assert.equal(preview.status, 200);
   const html = await preview.text();
-  assert.match(html, /<title>Daily News archive \| SAMPA<\/title>/);
-  assert.match(html, /rel="canonical" href="https:\/\/www\.addictionpas\.org\/news\/daily\/archive"/);
-  assert.match(html, /og:url" content="https:\/\/www\.addictionpas\.org\/news\/daily\/archive"/);
+  assert.doesNotMatch(html, /Daily News archive/);
+  assert.doesNotMatch(html, /\/news\/daily\/archive/);
 });
 
 test('an unknown daily date is noindex for the soft 404', () => {

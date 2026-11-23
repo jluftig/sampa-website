@@ -355,7 +355,6 @@ export function dailySitemapPaths(roundups) {
     '/',
     '/news',
     '/news/daily',
-    '/news/daily/archive',
     ...dates.map((date) => `/news/daily/${date}`),
   ];
 }

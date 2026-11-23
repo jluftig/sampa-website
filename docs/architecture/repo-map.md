@@ -86,7 +86,7 @@ src/
                             Login, Join, JoinInvoice, Donate, About, Caq, Dashboard, MemberDirectory,
                             MemberProfile, BoardMeetings, BoardMeetingView, Privacy, Terms,
                             EditorDashboard, PostEditor,
-                            AdminTags, AdminPeople, AdminMembers, DailyArchive, DailyTagView,
+                            AdminTags, AdminPeople, AdminMembers, DailyTagView,
                             SuggestedDailyTags
 public/
   files/policy/             Official Policy PDFs (e.g. HHS RFI comment)
@@ -106,7 +106,7 @@ scripts/
   sampa-post/               News post generator (repo agents)
   sampa-email/              Brevo campaigns (repo agents)
 mobile/                     Expo iOS/Android — separate build, same Supabase (see architecture/mobile.md)
-vercel.json                 SPA rewrite; apex→www; crawler UAs on /news/:slug, /news/daily/archive, and /news/daily/YYYY-MM-DD only → /api/share
+vercel.json                 SPA rewrite; apex→www; /news/daily/archive → /news/daily; crawler UAs on /news/:slug and /news/daily/YYYY-MM-DD only → /api/share
 ```
 
 Marketing email architecture: **`docs/architecture/email-brevo.md`**.
@@ -115,7 +115,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 
 | Audience | Paths |
 |----------|--------|
-| Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/archive`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; archive and tag routes before `:date`; static segments before `/news/:slug`), `/news/topic`, `/news/topic/:date`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/subscriptions`, `/newsletter-confirmed` (`?list=daily` for the roundup list, `?list=weekly` for the weekly list, `?list=topic` for the topic list) |
+| Public | `/`, `/about` (`#leadership`), `/resources`, `/caq`, `/giveaway` (temporary; expires with `GIVEAWAY_ENDS_AT`), `/news`, `/news/daily`, `/news/daily/tag/:slug`, `/news/daily/:date` (JSON roundup; tag route before `:date`; `/news/daily/archive` redirects to `/news/daily`; static segments before `/news/:slug`), `/news/topic`, `/news/topic/:date`, `/news/:slug` (`#point-<item id>`), `/policy`, `/policy/:slug`, `/keywords`, `/keywords/:slug` (`?and=` intersection), `/search?q=`, `/login`, `/join`, `/join/invoice`, `/donate`, `/privacy`, `/terms`, `/subscriptions`, `/newsletter-confirmed` (`?list=daily` for the roundup list, `?list=weekly` for the weekly list, `?list=topic` for the topic list) |
 | Signed-in | `/dashboard` |
 | Active member or staff | `/members`, `/members/:id` (peer directory — not staff roster); `/board` (AAPA-sparse Agendas / Records / Schedule, plus aggregate member numbers), `/board/:slug` (agenda + minutes — `RequireActiveMember`, not `is_board`) |
 | Admin, board, or committee chair | `/board/dashboard` (org dashboard, finances included — `canViewBoardDashboard`) |
@@ -125,7 +125,7 @@ Marketing email architecture: **`docs/architecture/email-brevo.md`**.
 | Policy work (`canViewPolicyWork`) | `/editor/policy` (PHP committee tracker; admin or `is_board`. Internal cards from `newsletter-stats?section=policy-work`, which reads `POLICY_WORK_INTERNAL`) |
 
 Declare `/editor/keywords`, `/editor/people`, `/editor/members`, `/editor/daily-tags`, `/editor/policy` **before** `/editor/:id`.
-Declare `/news/daily/archive` and `/news/daily/tag/:slug` **before** `/news/daily/:date`.
+Declare `/news/daily/tag/:slug` **before** `/news/daily/:date`. Keep the `/news/daily/archive` redirect ahead of `:date` so that segment is not a date.
 `content/topic-roundup` is not part of the daily catalog.
 `/login?next=` must be an in-app path starting with `/` (not `//`).
 
