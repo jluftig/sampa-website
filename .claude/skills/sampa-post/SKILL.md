@@ -42,6 +42,12 @@ do not need “physician associate(s)” spelled out every time. **Never** write
   key points unless it is a **direct quote** or an immutable proper name/title (e.g. SAMHSA, NIDA).
   **Preserve** child abuse, elder abuse, and other non-substance uses of “abuse.” See
   `docs/news-article-structure.md` § Substance language.
+- **House-style terms the content lint fails** (`npm run lint:content`, `content-style.json`):
+  do not write **MAT** (use **MOUD** for opioids, **MAUD** for alcohol, or **medications for addiction treatment**
+  for all use disorders). The statute name **MAT Act** may stay. Write **bup**, not BUP or bupe.
+  The merch slogan **XR BUP** stays exact. Person-first: not addict, abuser, clean/dirty urine, or
+  “fentanyl users” / “drug users”. A direct quote that must keep a banned term gets an allowlist row
+  or `content-terms-ignore`. Do not rename physician associate **PA**.
 - When referring to **PAs and NPs together**, prefer **"PAs and NPs"** (the voice rule
   above applies), or **"advanced practice providers"** (APP) / **"advanced practice
   clinicians"** (APC).

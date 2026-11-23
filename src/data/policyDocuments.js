@@ -30,7 +30,7 @@ export const POLICY_TYPES = {
 };
 
 /**
- * Levers SAMPA intends to use to expand buprenorphine / MOUD / MAT access.
+ * Levers SAMPA intends to use to expand access to medications for addiction treatment.
  * Examples are grounded in the July 2026 HHS RFI public comment (first published
  * Policy hub material) plus planned follow-on work. Roadmap / intent — not a claim
  * that each lever is already active. Canonical framing: docs/architecture/policy-hub.md.
@@ -93,7 +93,7 @@ export const POLICY_HUB = {
   oneLiner:
     'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments — to HHS on the chronic disease of addiction, to HRSA on the safe rollout of emerging psychedelic therapies, to ASAM on correctional settings and reentry standards, and to CMS on the CY 2027 Medicare Physician Fee Schedule — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, clinical standards, payment systems, workforce rules, and everyday practice.',
   leversIntro:
-    'To expand buprenorphine, MOUD, and MAT access for substance use disorders, SAMPA will work on several fronts—not only federal dockets. These reflect the agenda in our first public comment and the work still ahead:',
+    'To expand access to medications for addiction treatment, including buprenorphine and other MOUD, for substance use disorders, SAMPA will work on several fronts—not only federal dockets. These reflect the agenda in our first public comment and the work still ahead:',
   prioritiesIntro:
     'Priorities from our first public comment (HHS RFI, July 2026)—the near-term access roadmap we intend to advance:',
   disclaimer:

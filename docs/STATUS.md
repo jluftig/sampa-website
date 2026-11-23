@@ -173,7 +173,7 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
   `api/create-donation-session.js`. Donate page shows tax-deductible boilerplate.
 - **Merch store** — nav/footer links + `/store` redirect to the Printful storefront. Welcome email has a merch card; renewal links the store (T4, 2026-08-10).
 - **Policy hub** — public `/policy` + `/policy/:slug`. **Framing:** where SAMPA
-  **will publish** its public voice for **access** to MAT/MOUD—not a “comments only”
+  **will publish** its public voice for **access** to medications for addiction treatment, including MOUD—not a “comments only”
   archive and not nav-labeled “Advocacy.” Nav stays **Policy**. Honest scope today:
   four public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
   91 FR 43103; ASAM correctional settings & reentry **2026-08-31** with `[P## L##]`

@@ -128,8 +128,9 @@ export default function Policy() {
           <div className="overflow-x-auto rounded-3xl border border-primary/10 bg-white">
             <table className="w-full min-w-[40rem] text-left text-sm md:text-base">
               <caption className="sr-only">
-                Domains where SAMPA intends to expand buprenorphine, MOUD, and MAT
-                access, with examples and planned work
+                Domains where SAMPA intends to expand access to buprenorphine,
+                MOUD, and other medications for addiction treatment, with examples
+                and planned work
               </caption>
               <thead>
                 <tr className="border-b border-primary/10 bg-primary/5">

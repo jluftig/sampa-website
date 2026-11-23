@@ -8,7 +8,7 @@ Board status: `docs/STATUS.md`.
 ## What this is
 
 SAMPA’s **Policy hub**—where the society **will publish** its public voice for
-expanding access to medications for addiction treatment (MAT)—including
+expanding access to medications for addiction treatment—including
 buprenorphine, methadone, naltrexone, and other medications for opioid use
 disorder (MOUD), especially in rural and underserved communities.
 
@@ -51,7 +51,7 @@ unless volume forces a CMS/`policy_documents` table (see STATUS backlog).
 
 ## Access levers (roadmap)
 
-To expand buprenorphine / MOUD / MAT access, SAMPA **will** work across several
+To expand access to medications for addiction treatment, including buprenorphine and other MOUD, SAMPA **will** work across several
 levers—not only federal dockets. Keep in sync with `POLICY_LEVERS` in
 `src/data/policyDocuments.js` (rendered on `/policy`).
 
