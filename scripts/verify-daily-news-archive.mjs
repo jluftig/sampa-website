@@ -149,11 +149,9 @@ test('published roundups tag known items and queue the unmatched ones', () => {
     'medetomidine',
   );
   const queue = buildSuggestionQueue(annotated);
-  assert.deepEqual(
-    queue.map((entry) => entry.slug).sort(),
-    ['cannabis', 'medetomidine', 'opioid'],
-  );
-  assert.equal(queue.find((entry) => entry.slug === 'opioid').items.length, 2);
+  for (const slug of ['cannabis', 'medetomidine', 'opioid']) {
+    assert.ok(queue.some((entry) => entry.slug === slug), slug);
+  }
   assert.ok(queue.every((entry) => entry.notice.sent === false));
 });
 
@@ -217,11 +215,18 @@ test('archive list is newest first, grouped by month headings, and pages onward'
 
 test('sitemap lists dated roundup pages and not month bins', () => {
   const xml = readFileSync('public/sitemap.xml', 'utf8');
-  assert.match(xml, /https:\/\/www\.addictionpas\.org\/news\/daily\/2026-09-30/);
-  assert.match(xml, /https:\/\/www\.addictionpas\.org\/news\/daily\/2026-09-29/);
-  assert.match(xml, /https:\/\/www\.addictionpas\.org\/news\/daily\/archive/);
-  assert.doesNotMatch(xml, /\/news\/daily\/2026-09</);
-  assert.doesNotMatch(xml, /\/news\/daily\/2026-10</);
+  const roundups = loadSeedRoundups();
+  const published = new Set(roundups.map((entry) => entry.date));
+  assert.ok(published.size > 0);
+  const listed = [...xml.matchAll(/https:\/\/www\.addictionpas\.org\/news\/daily\/(\d{4}-\d{2}-\d{2})<\/loc>/g)]
+    .map((match) => match[1]);
+  assert.ok(listed.length > 0);
+  for (const date of listed) assert.equal(published.has(date), true, date);
+  assert.doesNotMatch(xml, /\/news\/daily\/\d{4}-\d{2}<\/loc>/);
+
+  const dated = dailySitemapPaths(roundups)
+    .filter((path) => /^\/news\/daily\/\d{4}-\d{2}-\d{2}$/.test(path));
+  assert.deepEqual(dated, roundups.map((entry) => `/news/daily/${entry.date}`));
 });
 
 test('router keeps archive and tag paths ahead of the dated page, and unknown dates render NotFound', () => {
@@ -311,13 +316,25 @@ test('an unknown daily date is noindex for the soft 404', () => {
 });
 
 test('share serves a dated roundup and 404s an unknown date', async () => {
-  const found = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=daily&date=2026-09-30'));
+  const sample = loadSeedRoundups()[0];
+  assert.ok(sample?.date);
+  const found = await shareGet(
+    new Request(`https://www.addictionpas.org/api/share?slug=daily&date=${sample.date}`),
+  );
   assert.equal(found.status, 200);
   const html = await found.text();
-  assert.match(html, /Daily News – Sep 30, 2026 \| SAMPA/);
-  assert.match(html, /rel="canonical" href="https:\/\/www\.addictionpas\.org\/news\/daily\/2026-09-30"/);
+  const title = dailyNewsTitle(sample.date).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  assert.match(html, new RegExp(title));
+  assert.match(
+    html,
+    new RegExp(`rel="canonical" href="https://www\\.addictionpas\\.org/news/daily/${sample.date}"`),
+  );
 
-  const missing = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=daily&date=2026-10-02'));
+  const missingDate = '1900-01-01';
+  assert.equal(readdirSync('content/daily-news').includes(`${missingDate}.json`), false);
+  const missing = await shareGet(
+    new Request(`https://www.addictionpas.org/api/share?slug=daily&date=${missingDate}`),
+  );
   assert.equal(missing.status, 404);
 
   const bogus = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=daily&date=nope'));

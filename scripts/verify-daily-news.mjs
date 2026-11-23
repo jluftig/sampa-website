@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { afterEach, beforeEach, test } from 'node:test';
+import { dailyNewsTitle } from '../src/lib/dailyNewsArchive.js';
 import { collectRoundups, formatRoundupDate } from '../src/lib/dailyNewsLoad.js';
 import { POST } from '../api/newsletter-signup.js';
 import { GET as shareGet } from '../api/share.js';
@@ -27,6 +28,15 @@ function item(overrides = {}) {
     url: 'https://example.com/story',
     ...overrides,
   };
+}
+
+function publishedRoundups() {
+  const modules = {};
+  for (const name of readdirSync('content/daily-news')) {
+    if (!name.endsWith('.json')) continue;
+    modules[`/content/daily-news/${name}`] = JSON.parse(readFileSync(`content/daily-news/${name}`, 'utf8'));
+  }
+  return collectRoundups(modules, () => {});
 }
 
 function file(date, items = [item()]) {
@@ -243,11 +253,17 @@ test('share slug daily canonical is the latest dated issue', async () => {
   globalThis.fetch = async () => {
     throw new Error('supabase should not be called for the daily slug');
   };
+  const latest = publishedRoundups()[0];
+  assert.ok(latest?.date);
   const res = await shareGet(new Request('https://www.addictionpas.org/api/share?slug=daily'));
   assert.equal(res.status, 200);
   const html = await res.text();
-  assert.match(html, /<title>Daily News – Sep 30, 2026 \| SAMPA<\/title>/);
-  assert.match(html, /rel="canonical" href="https:\/\/www\.addictionpas\.org\/news\/daily\/2026-09-30"/);
+  const title = dailyNewsTitle(latest.date).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  assert.match(html, new RegExp(`<title>${title}</title>`));
+  assert.match(
+    html,
+    new RegExp(`rel="canonical" href="https://www\\.addictionpas\\.org/news/daily/${latest.date}"`),
+  );
 });
 
 test('api stays at the Hobby plan limit of 12 functions', () => {
