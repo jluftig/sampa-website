@@ -349,6 +349,12 @@ test('the feature route is registered ahead of the post slug, and every user age
   const rule = vercel.rewrites.find((entry) => entry.source === '/news/features/:slug');
   assert.equal(rule.destination, '/api/share?slug=feature&feature=:slug');
   assert.equal(rule.has, undefined);
-  assert.equal(existsSync(new URL('../content/daily-news/2026-11-10.json', import.meta.url)), false);
+  const dailyDir = new URL('../content/daily-news/', import.meta.url);
+  const dailyFiles = readdirSync(dailyDir).filter((name) => name.endsWith('.json'));
+  assert.ok(dailyFiles.length > 0);
+  for (const name of dailyFiles) {
+    const text = readFileSync(new URL(name, dailyDir), 'utf8');
+    assert.equal(text.includes(ESSAY_SENTENCE), false, name);
+  }
   assert.equal(existsSync(new URL('../src/lib/newsFeatureCatalog.js', import.meta.url)), false);
 });
