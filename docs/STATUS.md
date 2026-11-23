@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-23 (T83 route manifest is on main via #191. T84 content term lint is preview PR #193, updated onto that main.)
+**Last updated:** 2026-11-23 (T82 merged in #188. T83 route manifest is on main via #191. T84 content term lint is preview PR #193, updated onto that main.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -67,7 +67,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 |----|------|-------|---------|-------|
 | T84 | House-style content term lint in CI | cursor | 2026-11-23 | **Claimed cursor.** Preview PR **#193**. `npm run lint:content` fails a pull request on banned copy in JSX/Markdown/JSON and shipping email HTML (`content-style.json`). Local run: 272 files, 0 errors, 0 advisories. Prior-auth “PA” is advisory and does not fail CI. Updated onto main after #188, #190, and #191. Do not merge. |
 | T83 | One route list, and remove `/news/daily/archive` | cursor | 2026-11-23 | **Claimed cursor.** `/news/daily/archive` redirects to `/news/daily`. The page, sitemap entry, and crawler share card go away. A route manifest is the only route list, and CI fails when App, Vercel, the sitemap, or nav drift from it. Preview only. Do not merge. |
-| T82 | Restore daily news, daily archive, and news feature CI | cursor | 2026-11-23 | **Claimed cursor.** Preview PR **#188**. #179 left `test:daily-news`, `test:daily-archive`, and `test:news-features` out of CI because they pinned launch-week dates. The checks follow the files on disk. Supersedes the suite fixes on #180. Do not merge. |
 | T81 | New-membership Google Ads conversion | cursor | 2026-11-07 | **Claimed cursor.** **Merged PR #172** (`e78eb5e`). Live on production (deploy `dpl_5ZMLtnwsKnpFxvnEX77tufoXNCyV`, READY 8:04 AM PT 2026-11-17). `VITE_GOOGLE_ADS_NEW_MEMBERSHIP_LABEL` is set on Production and confirmed in the live Join bundle. The Ads campaign stays paused until a real paid-checkout attribution check passes on www. |
 | T79 | Founders Feature article (Jim Anderson and Shani Wilson) | cursor | 2026-11-05 | **Claimed cursor.** Draft PR **#170**. Public article `/news/features/founders-jim-anderson-shani-wilson` by Kerith Hartmann, PA-C. HTTP 404 for every user agent until 2026-11-10 America/Los_Angeles. Essay JSON is served by `api/share` after that day, not bundled in the client. Optional `feature` lead on a daily issue. Do not merge. |
 | T78 | Board dashboard membership, finance, and newsletter show zeros | cursor | 2026-11-05 | **Claimed cursor.** PR **#169** (preview only). Signed-in admins on `/board` Dashboard saw Membership "Active now 0", Finances $0.00, and an empty newsletter chart because `GET` / `POST` on `newsletter-stats` treated Vercel's request context as deps. An async `cache.get` serialized to `{}`. `route` takes deps. `GET` and `POST` pass `{}`. An empty section shows "Couldn't load". A real zero still renders. Do not merge. |
@@ -99,11 +98,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T82 | Restore daily news, daily archive, and news feature CI | cursor | 2026-11-23 | **Merged PR #188** (`6475153`). `news` runs `test:daily-news`, `test:daily-archive`, and `test:news-features` on every pull request. Assertions follow the files on disk. Josh can mark the `news` check required. |
 | T80 | CI fails a pull request that breaks sign-in, sessions, or role gates | cursor | 2026-11-16 | **Merged PR #179** (`60c1417`). `npm run test:offline` runs on every pull request. `test:route-gates` walks every `Require*` route. Josh can mark the `offline` check required. |
 | T74 | Name the daily and topic lists for members | cursor | 2026-10-29 | **Merged PR #159** (`d1bdb78`). List 15 is SAMPA Daily News Roundup. List 18 is SAMPA Emerging Practice Monthly. |
 | T73 | Rename member-visible SAMPA Updates to SAMPA Weekly Newsletter | cursor | 2026-10-29 | **Merged PR #158** (`9bb3cfe`). Member-visible copy says SAMPA Weekly Newsletter. Internal key `updates`, `BREVO_LIST_UPDATES`, and `#updates-signup` stay. Weekly manage confirm uses `list=weekly`. |
 | T72 | Manage subscriptions page at /subscriptions | cursor | 2026-10-27 | **Merged PR #147** (`e266f7f`). `/subscriptions` chooses daily, weekly, and topic. An empty submit returns 400 and sends nothing. An unchecked list is removed only after the emailed confirm link. |
-| T64 | Daily addiction roundup on `/news/daily` + daily-email opt-in | cursor | 2026-09-29 | **Merged PR #119** (`41d82f4`) and content **#120** (`dcc59d8`). Weekday JSON roundup and daily-list opt-in. T65 is the archive prototype and is not merged. |
 
 ### Task workflow (agents + humans)
 
