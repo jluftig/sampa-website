@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-24 (T85 In Progress: ASAM Behavioral Addictions comment on /policy. T84, T82, and T81 are Done. T83 is Done, dated 2026-11-22. T61 stays until Josh pastes the join-flow SQL.)
+**Last updated:** 2026-11-24 (T85 is Done, merged PR #195. T84, T82, and T81 are Done. T83 is Done, dated 2026-11-22. T61 stays until Josh pastes the join-flow SQL.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -65,7 +65,6 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
-| T85 | ASAM Behavioral Addictions comment on /policy | cursor | 2026-11-24 | Preview only. Public comment at `/policy/asam-behavioral-addictions-framework-2026`. Thirty-two line-cited comments and a PDF. |
 | T61 | Join / renew flow and 2026 member survey | cursor | 2026-11-01 | **Merged PR #162** (`6c58cc4`) to production. Deploy `dpl_F18sx2d1nDLvBqvdRYdhDWzMgacc` is READY on www.addictionpas.org. SQL `supabase/migrations/2026-11-01-join-flow-profile.sql` is **not** applied yet. `career_stage` and `member_survey_responses` are still missing in production. Josh pastes that file in the Supabase SQL Editor. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast sends are **not** pre-approved — each needs Josh's explicit `send campaign N`. Clean draft **#19** (no TEST) was ⚠ **stale** after templates changed in PRs #66/#68/#69 (2026-08-12); sign-off Shani Wilson President (PR #67). PR **#83** (Weekly #01 email copy) closed as obsolete on 2026-09-27. Weekly is at issue **#04** (Brevo campaign 30). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
@@ -74,11 +73,11 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Done | Notes |
 |----|------|-------|------|-------|
+| T85 | ASAM Behavioral Addictions comment on /policy | cursor | 2026-11-24 | **Merged PR #195** (`0eef412`). Public comment at `/policy/asam-behavioral-addictions-framework-2026`. Thirty-two line-cited comments and a PDF. |
 | T84 | House-style content term lint in CI | cursor | 2026-11-23 | **Merged PR #193** (`f1c5954`). The `content-terms` job runs `npm run test:content-terms` and `npm run lint:content` on every pull request. Prior-auth “PA” is advisory and does not fail CI. |
 | T82 | Restore daily news, daily archive, and news feature CI | cursor | 2026-11-23 | **Merged PR #188** (`6475153`). `news` runs `test:daily-news`, `test:daily-archive`, and `test:news-features` on every pull request. Assertions follow the files on disk. Josh can mark the `news` check required. |
 | T83 | One route list, and remove `/news/daily/archive` | cursor | 2026-11-22 | **Merged PR #191** (`e0cfb27`) and **#190** (`b044202`). `/news/daily/archive` redirects to `/news/daily`. A route manifest is the only route list, and CI fails when App, Vercel, the sitemap, or nav drift from it. |
 | T81 | New-membership Google Ads conversion | cursor | 2026-11-17 | **Merged PR #172** (`e78eb5e`). Live on production. `VITE_GOOGLE_ADS_NEW_MEMBERSHIP_LABEL` is set. The Ads campaign stays paused until a real paid-checkout attribution check passes on www. Campaign launch is not done. |
-| T80 | CI fails a pull request that breaks sign-in, sessions, or role gates | cursor | 2026-11-16 | **Merged PR #179** (`60c1417`). `npm run test:offline` runs on every pull request. `test:route-gates` walks every `Require*` route. Josh can mark the `offline` check required. |
 
 ### Task workflow (agents + humans)
 
@@ -152,9 +151,11 @@ Code is on `main` and auto-deploys via Vercel. Shared Supabase DB (prod + previe
 - **Policy hub** — public `/policy` + `/policy/:slug`. **Framing:** where SAMPA
   **will publish** its public voice for **access** to medications for addiction treatment, including MOUD—not a “comments only”
   archive and not nav-labeled “Advocacy.” Nav stays **Policy**. Honest scope today:
-  four public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
+  five public comments (HHS **2026-07-05**; HRSA psychedelic-therapies **2026-08-11**,
   91 FR 43103; ASAM correctional settings & reentry **2026-08-31** with `[P## L##]`
-  capsules; CMS CY 2027 PFS **CMS-1848-P** **2026-09-14**); levers table + Position/Statement
+  capsules; CMS CY 2027 PFS **CMS-1848-P** **2026-09-14**; ASAM Behavioral Addictions
+  Volume **2026-11-20**, published **2026-11-24**, with General chips for page 0 / line 0);
+  levers table + Position/Statement
   types are **roadmap / intent** (“How we will improve access”, “What we will publish”).
   `/policy` also shows **Roadmap from our first comment** priorities seeded by that
   HHS RFI (telehealth, state/OTP alignment, workforce, payment, stigma/peers, data).
