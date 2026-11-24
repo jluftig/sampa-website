@@ -82,9 +82,17 @@ class CitationCapsule(Flowable):
 class CapsuleTitleRow(Flowable):
     """Capsule chip + numbered title on one baseline row."""
 
-    def __init__(self, page: int, line: int, title: str, index: int, max_width: float):
+    def __init__(
+        self,
+        page: int,
+        line: int,
+        title: str,
+        index: int,
+        max_width: float,
+        label: str | None = None,
+    ):
         super().__init__()
-        self.capsule = CitationCapsule(format_capsule(page, line))
+        self.capsule = CitationCapsule(label or format_capsule(page, line))
         self.title = f"{index}. {title}"
         self.max_width = max_width
         self.gap = 8

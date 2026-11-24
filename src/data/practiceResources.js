@@ -30,6 +30,16 @@ export const SAMPA_RESOURCES = [
     cta: 'Browse Key Points',
   },
   {
+    id: 'policy-asam-behavioral',
+    origin: 'sampa',
+    title: 'ASAM comment on the Behavioral Addictions Volume',
+    blurb:
+      'Our November 2026 line-cited comments on ASAM’s draft framework for the Behavioral Addictions Volume of The ASAM Criteria. They ask that PAs and advanced practice registered nurses be named in staffing and leadership, and that coverage not depend on treatment failure or a co-occurring substance use disorder diagnosis.',
+    href: '/policy/asam-behavioral-addictions-framework-2026',
+    asOf: 'Submitted November 2026',
+    cta: 'Read the comment',
+  },
+  {
     id: 'policy-cms-pfs',
     origin: 'sampa',
     title: 'CMS comment on the CY 2027 fee schedule',
@@ -74,7 +84,7 @@ export const SAMPA_RESOURCES = [
     origin: 'sampa',
     title: 'Policy hub',
     blurb:
-      'Where SAMPA publishes that public voice. Four comments are live: CMS on the CY 2027 fee schedule, ASAM on correctional and reentry standards, HRSA on emerging psychedelic therapies, and HHS on access to MOUD. Positions and statements are still ahead.',
+      'Where SAMPA publishes that public voice. Five comments are live: ASAM on the Behavioral Addictions Volume, CMS on the CY 2027 fee schedule, ASAM on correctional and reentry standards, HRSA on emerging psychedelic therapies, and HHS on access to MOUD. Positions and statements are still ahead.',
     href: '/policy',
     cta: 'Open the policy hub',
   },

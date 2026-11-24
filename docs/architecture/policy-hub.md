@@ -12,9 +12,10 @@ expanding access to medications for addiction treatment—including
 buprenorphine, methadone, naltrexone, and other medications for opioid use
 disorder (MOUD), especially in rural and underserved communities.
 
-**Honest scope today:** four published public comments (HHS RFI July 2026; HRSA
+**Honest scope today:** five published public comments (HHS RFI July 2026; HRSA
 psychedelic-therapies August 2026; ASAM correctional settings August 2026; CMS
-CY 2027 PFS / CMS-1848-P September 2026). Most levers and document types are
+CY 2027 PFS / CMS-1848-P September 2026; ASAM Behavioral Addictions Volume
+November 2026). Most levers and document types are
 **roadmap / intent**, not a claim that SAMPA already operates across every lever.
 Site copy must stay in future/intent tense for the levers table and type
 taxonomy (“How we will…”, “What we will publish”). The **Roadmap from our first
@@ -90,9 +91,11 @@ clusters.
 
 - PDFs live under `public/files/policy/` (not `/policy/…pdf`) so they do not collide
   with the SPA route `/policy/:slug`.
-- Optional **`lineComments`** on a document (ASAM correctional standards, 2026-08-31)
+- Optional **`lineComments`** on a document (ASAM correctional standards, 2026-08-31;
+  ASAM Behavioral Addictions Volume, submitted 2026-11-20)
   render as a “Submitted comments” list on `/policy/:slug` with `[P## L##]` citation
-  capsules via `formatCitationCapsule`. HHS/HRSA/CMS entries omit the field.
+  capsules via `formatCitationCapsule`. Page 0 and line 0 render as **General**.
+  HHS/HRSA/CMS entries omit the field.
 - 501(c)(3) disclaimer stays on hub + detail pages: educational / public-health
   mission; no political campaign activity.
 - First published artifact was an HHS public comment; empty Position/Statement
