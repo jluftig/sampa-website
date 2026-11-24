@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-24",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "SAMPA filed comments on ASAM’s behavioral addictions framework",
+      "outlet": "SAMPA",
+      "date": "Nov 20",
+      "summary": "On Nov 20, SAMPA submitted 32 line-cited comments on ASAM’s draft framework for the Behavioral Addictions Volume of The ASAM Criteria, Fourth Edition (Volume 4), the close of ASAM’s public comment period. The Public Health Policy Committee’s comments ask ASAM to name PAs and advanced practice registered nurses (APRNs) in staffing and leadership, require significant distress or functional impairment in the diagnostic criteria, add harm-reduction and telehealth principles, and make clear that coverage should not depend on a treatment-failure requirement or a co-occurring substance use disorder diagnosis. The full comment is on SAMPA’s policy page.",
+      "url": "https://www.addictionpas.org/policy/asam-behavioral-addictions-framework-2026"
+    },
+    {
+      "headline": "Senator Heinrich and Rep. Tonko introduce bill to exempt buprenorphine from suspicious-order reporting",
+      "outlet": "Reuters",
+      "date": "Nov 24",
+      "summary": "The BUPE for Recovery Act would exempt buprenorphine from the DEA-run suspicious order reporting system that distributors such as McKesson and Cardinal Health use, for the length of the U.S. opioid public health emergency. Addiction physicians say flagging leads pharmacies to ration orders, and a 2025 University of Texas study found heightened monitoring caused rationing and care interruptions. A similar bill stalled in 2024, so clinicians whose patients struggle to fill prescriptions should watch the next Congress.",
+      "url": "https://m.economictimes.com/news/international/world-news/us-bill-aims-to-clear-hurdle-to-medication-for-people-with-opioid-addiction/amp_articleshow/136129945.cms"
+    },
+    {
+      "headline": "USC team reports 39 injectable buprenorphine starts in encampments, none with severe withdrawal",
+      "outlet": "Annals of Family Medicine",
+      "date": "Nov 23",
+      "summary": "USC Street Medicine described a direct-to-inject protocol that uses weekly injectable buprenorphine to start treatment and bridge to a monthly formulation, given in encampments and temporary housing in Los Angeles. Among 39 inductions, 86% completed the process, none had severe withdrawal, and 88% of completers were still on the monthly injection at three months. This is an early single-program report rather than a trial, but it offers clinicians a model for starting people who cannot sustain sublingual buprenorphine starts.",
+      "url": "https://www.annfammed.org/content/24/6/553"
+    },
+    {
+      "headline": "New York caps 7-OH in kratom products at 2% of alkaloids or 1 mg per serving",
+      "outlet": "New York State Governor’s Office",
+      "date": "Nov 23",
+      "summary": "Governor Hochul signed legislation (S8925A/A9156B) banning sale of products with 7-hydroxymitragynine above 2% of total alkaloids or 1 mg per serving, with civil penalties of up to $500 for a first violation and $1,000 for each later one. Penalty money goes to the state’s Drug Treatment and Public Education Fund. The state notes that laboratory-made 7-OH products have opioid-like effects linked to dependence and withdrawal, so clinicians may see more questions about kratom products as federal DEA scheduling proceeds.",
+      "url": "https://www.governor.ny.gov/news/governor-hochul-signs-legislation-protect-new-yorkers-against-harmful-effects-concentrated-and"
+    },
+    {
+      "headline": "SAMHSA proposes adding GLP-1 and crisis line questions to the 2027 national drug use survey",
+      "outlet": "Federal Register (SAMHSA)",
+      "date": "Nov 23",
+      "summary": "SAMHSA published a notice seeking public comment on planned 2027 changes to the National Survey on Drug Use and Health, including new questions on past-year use of GLP-1 medications, antidepressants and other mental health medications, and crisis line use. It would also ask about polysubstance use in the past 30 days and reinstate questions on workplace drug and alcohol testing. The survey is the main national source on substance use and treatment, so these changes will shape what data policy leaders and clinicians can see.",
+      "url": "https://www.federalregister.gov/documents/2026/11/23/2026-23788/agency-information-collection-activities-proposed-collection-comment-request"
+    }
+  ]
+}
