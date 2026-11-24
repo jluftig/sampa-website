@@ -1,0 +1,226 @@
+[
+  {
+    "page": 1,
+    "line": 4,
+    "title": "Editorial team should include PAs and APRNs",
+    "comment": "We note that there are no physician associates (PAs) or advanced practice registered nurses (APRNs) on the editorial team. Including PAs, APRNs, and other pertinent members of the healthcare team in future iterations would further strengthen the framework.",
+    "revision": null
+  },
+  {
+    "page": 1,
+    "line": 21,
+    "title": "Glossary: loot boxes and gacha-style mechanics",
+    "comment": "Please consider including a glossary entry that defines “loot boxes” and “gacha-style randomized-reward monetization mechanics” to ensure consistent interpretation and understanding of the terms.",
+    "revision": null
+  },
+  {
+    "page": 1,
+    "line": 22,
+    "title": "Name legalized online sports betting as a risk factor",
+    "comment": "Line 22 refers to “sports betting apps that allow non-monetary bets.” We recommend naming legalized online sports betting, prediction markets, and sweepstakes-style gambling platforms as environmental risk factors for both adults and adolescents, not only non-monetary betting. The framework’s own reference 7 (JAMA Internal Medicine 2025) addresses sportsbooks, and these platforms are expanding rapidly with little consumer protection.",
+    "revision": "“…loot boxes and gacha-style randomized-reward monetization mechanics in video games, sports betting apps that allow non-monetary bets, and legalized online sports betting, prediction markets, and sweepstakes-style gambling platforms.”"
+  },
+  {
+    "page": 2,
+    "line": 1,
+    "title": "Body-focused repetitive behaviors",
+    "comment": "There may be value in noting that body-focused repetitive behaviors are sometimes approached within the literature and clinical practice as behavioral addictions, particularly when repetitive urges and compulsive engagement share features with addictive behaviors.",
+    "revision": null
+  },
+  {
+    "page": 2,
+    "line": 28,
+    "title": "Merge duplicate overeating items",
+    "comment": "Lines 28 and 29 duplicate each other: “Compulsive overeating” and “Binge eating disorder/compulsive overeating.” We recommend merging them into a single item, “Binge eating disorder/compulsive overeating,” and clarifying how this category relates to established eating disorder diagnoses and treatment.",
+    "revision": null
+  },
+  {
+    "page": 3,
+    "line": 20,
+    "title": "Delete “without compensatory or proportional benefits”",
+    "comment": "Consider deleting the phrase “without compensatory or proportional benefits.” An individual may experience significant harm or loss of control despite receiving substantial financial or other rewards. For example, a highly successful gamer may earn considerable income while still exhibiting problematic behavior patterns.",
+    "revision": null
+  },
+  {
+    "page": 3,
+    "line": 33,
+    "title": "Replace “Olympic” with “elite”",
+    "comment": "Consider replacing “Olympic” with “elite” to avoid referencing a specific brand or organization.",
+    "revision": null
+  },
+  {
+    "page": 3,
+    "line": 37,
+    "title": "Cultural humility in diagnostic criteria",
+    "comment": "We recommend including language that emphasizes cultural humility or responsiveness in the diagnostic criteria.",
+    "revision": null
+  },
+  {
+    "page": 3,
+    "line": 9,
+    "title": "Require impairment plus two or more criteria",
+    "comment": "We recommend requiring significant distress or functional impairment (page 3, lines 22-23) plus two or more of the remaining criteria, rather than any two of six. A two-of-six threshold sits well below DSM-5 gambling disorder, which requires 4 of 9 criteria with impairment, and ICD-11 gaming disorder (6C51), which requires all three core features plus significant impairment. Requiring impairment would still catch milder cases early while avoiding labeling enriching hobbies as disorders, and it would strengthen the diagnosis’s credibility with payers.",
+    "revision": "Current text: “associated with two or more of the following”. New text: “associated with significant distress or functional impairment and two or more of the following”."
+  },
+  {
+    "page": 4,
+    "line": 20,
+    "title": "Glossary: platform features",
+    "comment": "Please consider including a glossary entry that defines “micro-betting, micro-rewards, multi-line betting, loot-boxes, infinite scrolling, targeted promotions and other features of the platforms” to ensure consistent interpretation and understanding of the terms.",
+    "revision": null
+  },
+  {
+    "page": 4,
+    "line": 35,
+    "title": "Adolescent and TAY family assessment",
+    "comment": "Consider changing to “For adolescent patients and transition-aged youth, assessment should also include comprehensive evaluation of the family and other support systems and treatment plans should be family-driven, youth-guided, and culturally sensitive.”",
+    "revision": "“For adolescent patients and transition-aged youth, assessment should also include comprehensive evaluation of the family and other support systems and treatment plans should be family-driven, youth-guided, and culturally sensitive.”"
+  },
+  {
+    "page": 5,
+    "line": 21,
+    "title": "Informed consent/assent",
+    "comment": "We recommend changing to “Informed consent/assent and shared decision-making accompany treatment decisions.”",
+    "revision": "“Informed consent/assent and shared decision-making accompany treatment decisions.”"
+  },
+  {
+    "page": 6,
+    "line": 5,
+    "title": "Culturally sensitive adolescent treatment",
+    "comment": "Consider adding “and culturally sensitive” so the sentence reads: “Adolescent treatment should be family-driven (when appropriate), youth-guided, and culturally sensitive.”",
+    "revision": "“Adolescent treatment should be family-driven (when appropriate), youth-guided, and culturally sensitive.”"
+  },
+  {
+    "page": 6,
+    "line": 42,
+    "title": "Specialty behavioral addiction care",
+    "comment": "Line 42 says early intervention “may warrant specialty SUD care.” Because this volume addresses behavioral addictions, we believe this should read “specialty behavioral addiction care.”",
+    "revision": "“Secondary prevention and early intervention are critical for avoiding disease progression and may warrant specialty behavioral addiction care.”"
+  },
+  {
+    "page": 7,
+    "line": 4,
+    "title": "Name PAs and APRNs among primary care providers",
+    "comment": "We recommend changing to “Primary care providers (eg, pediatricians, family physicians, physician associates, and advanced practice registered nurses).”",
+    "revision": "“Primary care providers (eg, pediatricians, family physicians, physician associates, and advanced practice registered nurses).”"
+  },
+  {
+    "page": 9,
+    "line": 15,
+    "title": "Sexual- and gender-diverse language",
+    "comment": "Consider including language regarding sexual- and gender-diverse individuals (e.g., avoiding “men’s group” and “women’s group”).",
+    "revision": null
+  },
+  {
+    "page": 10,
+    "line": 11,
+    "title": "Replace “advanced practice providers”",
+    "comment": "We recommend changing “advanced practice providers” to “physician associates and advanced practice registered nurses.”",
+    "revision": null
+  },
+  {
+    "page": 10,
+    "line": 29,
+    "title": "Replace “advanced practice providers”",
+    "comment": "We recommend changing “advanced practice providers” to “physician associates and advanced practice registered nurses.”",
+    "revision": null
+  },
+  {
+    "page": 12,
+    "line": 0,
+    "title": "Define psychiatric oversight in the COE table",
+    "comment": "Under the Co-Occurring Enhanced (COE) section, we recommend defining “psychiatric oversight” more explicitly to clarify that this includes medication management and prescribing services provided by qualified clinicians, such as physicians, physician associates, and advanced practice registered nurses.",
+    "revision": null
+  },
+  {
+    "page": 14,
+    "line": 3,
+    "title": "Dimension 1 is not physiologic withdrawal management",
+    "comment": "Dimension 1 and the level-of-care tables (pages 19-25) carry over “direct withdrawal management” from the SUD volumes. Behavioral addictions do not involve a physiologic withdrawal syndrome requiring medical management, and the framework itself excludes tolerance (page 3, lines 28-30). We recommend clarifying that for this volume, Dimension 1 addresses co-occurring substance intoxication or withdrawal and addiction medications, so that payers and programs do not misread withdrawal management as a requirement or a medical-necessity criterion for behavioral addiction care.",
+    "revision": null
+  },
+  {
+    "page": 14,
+    "line": 12,
+    "title": "Pregnancy-related concerns; no reproductive coercion",
+    "comment": "In Figure 3 and the paragraph at line 12, under the Biomedical Concerns section, we recommend reiterating the importance of addressing pregnancy-related concerns within the narrative text and adding language emphasizing avoidance of reproductive coercion.",
+    "revision": null
+  },
+  {
+    "page": 15,
+    "line": 10,
+    "title": "Assess body-focused repetitive behaviors in Dimension 4",
+    "comment": "Consider including assessment for body-focused repetitive behaviors in Dimension 4 due to their phenomenological overlap with behavioral addictions.",
+    "revision": null
+  },
+  {
+    "page": 15,
+    "line": 10,
+    "title": "Name financial harm in Dimension 4",
+    "comment": "We recommend that Dimension 4 name financial harm explicitly. This includes assessing debt, access to credit and financial accounts, illegal acts to fund the behavior, and risk to family finances. We also recommend listing financial counseling as a core service at every level of care, not only as an affiliation (page 10, line 7, “Financial services (eg, debt counselors)”). Financial harm is often the most destabilizing consequence of gambling disorder and a key driver of suicide risk.",
+    "revision": null
+  },
+  {
+    "page": 20,
+    "line": 0,
+    "title": "Replace “advanced practice providers” in Tables A2, B1, B2",
+    "comment": "We recommend changing “advanced practice providers” to “physician associates and advanced practice registered nurses.”",
+    "revision": null
+  },
+  {
+    "page": 19,
+    "line": 0,
+    "title": "PAs and APRNs as directors of services",
+    "comment": "Consider adding language that, unless expressly prohibited by statute or regulation, physician associates and advanced practice registered nurses should be allowed to serve as directors of medical, program, and/or clinical services. This could help expand access to care and address workforce shortages.",
+    "revision": null
+  },
+  {
+    "page": 19,
+    "line": 0,
+    "title": "Add legends under Tables A1, A2, B1, B2",
+    "comment": "Please add legends under each table.",
+    "revision": null
+  },
+  {
+    "page": 22,
+    "line": 0,
+    "title": "Define “Psychiatric and Addiction Expertise”",
+    "comment": "We recommend defining “Psychiatric and Addiction Expertise” as qualified clinicians, such as physicians, physician associates, and advanced practice registered nurses.",
+    "revision": null
+  },
+  {
+    "page": 0,
+    "line": 0,
+    "title": "General: harm reduction principle",
+    "comment": "Harm reduction is not mentioned anywhere in the framework. We recommend adding a treatment principle stating that goals may include reduced or controlled engagement as well as abstinence. Examples include spending and time limits, blocking software, gambling self-exclusion programs, and transferring financial control to a trusted person. This is especially important for behaviors such as eating, internet use, and gaming, where full abstinence is not realistic.",
+    "revision": null
+  },
+  {
+    "page": 0,
+    "line": 0,
+    "title": "General: name evidence-based treatments",
+    "comment": "Although the framework cites a review of pharmacologic management of gambling disorder (reference 13), it never names the evidence-based treatments. We recommend stating them plainly, along with the strength of the evidence: cognitive behavioral therapy and motivational approaches for gambling disorder, and opioid antagonists such as naltrexone, which have the most trial support among medications. We also recommend noting that physicians, physician associates, and advanced practice registered nurses prescribe and manage these medications.",
+    "revision": null
+  },
+  {
+    "page": 0,
+    "line": 0,
+    "title": "General: telehealth at outpatient and IOP levels",
+    "comment": "Telehealth appears only once, in a level-of-care table (“telehealth 24/7”). We recommend adding a principle supporting telehealth delivery at outpatient and intensive outpatient levels of care. People with gambling and gaming disorders often face stigma and travel barriers, and payers look to ASAM language when deciding what to cover.",
+    "revision": null
+  },
+  {
+    "page": 0,
+    "line": 0,
+    "title": "General: coverage without treatment-failure or co-occurring SUD rules",
+    "comment": "The framework does not address coverage. We recommend adding a statement that these criteria are intended to guide level-of-care and medical-necessity determinations, and that payers should not require “treatment failure” at a lower level of care (consistent with page 4, lines 13-15) or a co-occurring substance use disorder diagnosis to cover behavioral addiction treatment.",
+    "revision": null
+  },
+  {
+    "page": 0,
+    "line": 0,
+    "title": "General: groups with higher risk and less access",
+    "comment": "Beyond cultural humility, we recommend naming groups with higher risk and less access to care. These include young men targeted by sports betting marketing, veterans, people with low incomes, and people with limited English proficiency. We also recommend that screening tools and patient materials be validated across languages and cultures.",
+    "revision": null
+  }
+]

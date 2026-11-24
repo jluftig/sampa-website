@@ -7,6 +7,7 @@
  * Framing: docs/architecture/policy-hub.md
  */
 
+import asamBehavioralLineComments from './asam-behavioral-addictions-line-comments-2026.json' with { type: 'json' };
 import asamCorrectionalLineComments from './asam-correctional-line-comments-2026.json' with { type: 'json' };
 
 export const POLICY_TYPES = {
@@ -91,7 +92,7 @@ export const POLICY_HUB = {
   eyebrow: 'Access to evidence-based addiction care',
   title: 'Policy',
   oneLiner:
-    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments — to HHS on the chronic disease of addiction, to HRSA on the safe rollout of emerging psychedelic therapies, to ASAM on correctional settings and reentry standards, and to CMS on the CY 2027 Medicare Physician Fee Schedule — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, clinical standards, payment systems, workforce rules, and everyday practice.',
+    'When people with substance use disorders can’t get medications for addiction treatment such as buprenorphine or methadone, the barrier is often policy, not medicine. SAMPA’s policy hub is our nonpartisan public voice for removing those barriers, so patients can reach high-quality care from the PAs who serve them, especially in rural and underserved areas. We are starting with public comments — to HHS on the chronic disease of addiction, to HRSA on the safe rollout of emerging psychedelic therapies, to ASAM on correctional settings and reentry standards, to ASAM on the Behavioral Addictions Volume of The ASAM Criteria, Fourth Edition, and to CMS on the CY 2027 Medicare Physician Fee Schedule — and over time will publish positions, statements, and related materials wherever access is decided — federal and state policy, clinical standards, payment systems, workforce rules, and everyday practice.',
   leversIntro:
     'To expand access to medications for addiction treatment, including buprenorphine and other MOUD, for substance use disorders, SAMPA will work on several fronts—not only federal dockets. These reflect the agenda in our first public comment and the work still ahead:',
   prioritiesIntro:
@@ -131,13 +132,45 @@ export const POLICY_HUB = {
  * @property {PolicyLineComment[]} [lineComments] optional line-survey comments with [P## L##] capsules
  */
 
-/** Format a page/line locator as a citation capsule, e.g. [P63 L24]. */
+/** Format a page/line locator as a citation capsule, e.g. [P63 L24].
+ *  A comment on the framework as a whole (page 0 and line 0) is labeled General. */
 export function formatCitationCapsule(page, line) {
+  if (Number(page) === 0 && Number(line) === 0) return 'General';
   return `[P${page} L${line}]`;
 }
 
 /** @type {PolicyDocument[]} */
 const DOCUMENTS = [
+  {
+    slug: 'asam-behavioral-addictions-framework-2026',
+    type: 'comment',
+    title:
+      'Response to ASAM’s Framework for the Behavioral Addictions Volume (The ASAM Criteria, Fourth Edition, Volume 4)',
+    summary:
+      'SAMPA’s November 2026 public comment to ASAM on the draft framework for the Behavioral Addictions Volume of The ASAM Criteria, Fourth Edition (Volume 4). Thirty-two line-cited comments urge PA and APRN recognition in staffing and leadership, a diagnostic threshold that requires significant distress or functional impairment, harm-reduction and telehealth principles, and coverage that does not depend on a treatment-failure requirement or a co-occurring substance use disorder diagnosis.',
+    themes: [
+      'Name physician associates and advanced practice registered nurses on the editorial team, and replace “advanced practice providers” with “physician associates and advanced practice registered nurses” in staffing language',
+      'Unless expressly prohibited by statute or regulation, allow PAs and APRNs to serve as directors of medical, program, and/or clinical services',
+      'Require significant distress or functional impairment plus two or more of the remaining criteria, rather than any two of six',
+      'Name legalized online sports betting, prediction markets, and sweepstakes-style platforms as environmental risk factors; add glossary entries for platform features',
+      'Clarify that Dimension 1 in this volume addresses co-occurring substance intoxication or withdrawal, not physiologic withdrawal management',
+      'Add principles on harm reduction, telehealth at outpatient and intensive outpatient levels, financial harm in Dimension 4, and coverage without a treatment-failure or co-occurring SUD requirement',
+      'Name evidence-based treatments for gambling disorder — cognitive behavioral therapy, motivational approaches, and opioid antagonists such as naltrexone — and note that physicians, PAs, and APRNs prescribe and manage these medications',
+    ],
+    agency: 'American Society of Addiction Medicine (ASAM)',
+    docket:
+      'Framework for the Behavioral Addictions Volume · The ASAM Criteria, Fourth Edition, Volume 4',
+    submittedAt: '2026-11-20',
+    publishedAt: '2026-11-24',
+    pdfUrl: '/files/policy/asam-behavioral-addictions-framework-2026.pdf',
+    onBehalfOfMembers: true,
+    lineComments: asamBehavioralLineComments,
+    bodyHtml: `
+<p>SAMPA submitted these comments through ASAM’s line-by-line public-comment survey on the draft Framework for the Behavioral Addictions Volume of The ASAM Criteria, Fourth Edition (Volume 4). The comments were entered on November 20, 2026, the close of ASAM’s public comment period.</p>
+<p>The central message is that this volume should recognize PAs and advanced practice registered nurses (APRNs) in staffing and leadership, set a diagnostic threshold that requires significant distress or functional impairment, treat harm reduction and telehealth as principles of care, and guide coverage so payers do not require treatment failure at a lower level of care or a co-occurring substance use disorder diagnosis. Josh Luftig, PA-C, SAMPA President-Elect, entered the comments for the Public Health Policy Committee.</p>
+<p>Each submitted comment cites a page and line from ASAM’s public-comment PDF, or is marked general where it applies to the framework as a whole. <a href="https://www.asam.org/asam-criteria/behavioral-addictions" target="_blank" rel="noopener noreferrer">ASAM’s framework page</a>. Questions go to the SAMPA Public Health Policy Committee at policy@addictionpas.org.</p>
+`.trim(),
+  },
   {
     slug: 'cms-pfs-cy-2027-1848-p',
     type: 'comment',

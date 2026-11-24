@@ -14,7 +14,7 @@ describe('policy hub filings', () => {
     const docs = listPolicyDocuments();
     const stats = shapePolicyImpact(docs, NOW);
     assert.equal(stats.source, 'policyDocuments');
-    assert.equal(stats.total, 4);
+    assert.equal(stats.total, 5);
     assert.equal(stats.undated, 0);
     assert.equal(stats.yearOnly, false);
     assert.equal(stats.chartsReady, true);
@@ -22,17 +22,22 @@ describe('policy hub filings', () => {
       { month: '2026-07', count: 1 },
       { month: '2026-08', count: 2 },
       { month: '2026-09', count: 1 },
+      { month: '2026-10', count: 0 },
+      { month: '2026-11', count: 1 },
     ]);
-    assert.deepEqual(stats.cumulative.map((point) => point.total), [1, 3, 4]);
+    assert.deepEqual(stats.cumulative.map((point) => point.total), [1, 3, 4, 4, 5]);
     assert.deepEqual(stats.recent.map((item) => item.slug), [
+      'asam-behavioral-addictions-framework-2026',
       'cms-pfs-cy-2027-1848-p',
       'asam-correctional-settings-2026',
       'hrsa-rfi-psychedelic-therapies-2026',
       'hhs-rfi-chronic-disease-addiction-2026',
     ]);
-    assert.equal(stats.recent[0].date, '2026-09-14');
-    assert.equal(stats.recent[0].href, '/policy/cms-pfs-cy-2027-1848-p');
-    assert.equal(stats.recent[0].title.includes('CMS-1848-P'), true);
+    assert.equal(stats.recent[0].date, '2026-11-20');
+    assert.equal(stats.recent[0].href, '/policy/asam-behavioral-addictions-framework-2026');
+    assert.equal(stats.recent[1].date, '2026-09-14');
+    assert.equal(stats.recent[1].href, '/policy/cms-pfs-cy-2027-1848-p');
+    assert.equal(stats.recent[1].title.includes('CMS-1848-P'), true);
   });
 });
 

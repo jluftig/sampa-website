@@ -80,8 +80,8 @@ if (!view.includes('doc.docket') || !view.includes('sanitizePolicyHtml(doc.docke
 must(view, "ADD_ATTR: ['target']", 'PolicyView.jsx');
 
 const slugs = [...seed.matchAll(/slug: '([^']+)'/g)].map((m) => m[1]);
-if (slugs[0] !== 'cms-pfs-cy-2027-1848-p') {
-  fail(`DOCUMENTS should list CMS first (got ${slugs[0]})`);
+if (!slugs.includes('cms-pfs-cy-2027-1848-p')) {
+  fail('DOCUMENTS must include the CMS comment');
 }
 
 const pdfPath = join(root, pdfRel);
