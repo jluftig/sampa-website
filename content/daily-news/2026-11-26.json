@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-26",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "DEA renames Narcotic Treatment Programs as Opioid Treatment Programs in its regulations",
+      "outlet": "Federal Register (DEA)",
+      "date": "Nov 25",
+      "summary": "A DEA final rule published Nov 25 and effective the same day changes the term \"Narcotic Treatment Program\" to \"Opioid Treatment Program\" across its regulations. DEA calls it a technical amendment with no change to the definition of a narcotic drug or of the programs themselves, and says it aligns DEA terminology with HHS, SAMHSA and state usage. For methadone and buprenorphine providers, it means one consistent name across federal registration and certification paperwork.",
+      "url": "https://www.federalregister.gov/documents/2026/11/25/2026-23962/renaming-narcotic-treatment-program-ntp-to-opioid-treatment-program-otp-in-dea-regulations"
+    },
+    {
+      "headline": "MetroHealth gets $2.9 million SAMHSA grant for EMS buprenorphine and overdose receiving centers",
+      "outlet": "MetroHealth",
+      "date": "Nov 25",
+      "summary": "The four-year SAMHSA grant will let Cleveland EMS paramedics use buprenorphine in the field and direct patients to designated Emergency Departments called Overdose Receiving Centers, where substance use navigators start treatment. The project also doubles MetroHealth's navigator team from two to four and funds naloxone training for first responders starting in April 2027, in a county with 27.2 overdose deaths per 100,000 people. The model links prehospital care to ED-initiated treatment, which is a template for other emergency systems.",
+      "url": "https://www.metrohealth.org/en/newsroom/2026/metrohealth-gets-$2.9m-to-oversee-expansion-of-opioid-prevention-and-treatment"
+    },
+    {
+      "headline": "Medicaid prior authorization limits tied to 19% more buprenorphine patients where PA was common",
+      "outlet": "Medical Xpress (University of Michigan)",
+      "date": "Nov 24",
+      "summary": "In a JAMA Network Open study of 12.7 million Medicaid buprenorphine prescriptions, state laws limiting prior authorization were linked to a 19% rise in monthly buprenorphine patients and a 34% rise in new starts in Arkansas, Illinois and Wisconsin, where PA rejections were common. The other 10 jurisdictions showed no significant change, and results across all 13 were not significant. The study covered immediate-release buprenorphine through 2020 and did not measure overdoses, so it suggests PA reform helps mainly where PA is a real barrier.",
+      "url": "https://medicalxpress.com/news/2026-11-prior-authorization-limits-opioid-addiction.html"
+    },
+    {
+      "headline": "Louisiana drops facility need reviews for opioid treatment programs, with only 11 in the state",
+      "outlet": "The Pew Charitable Trusts",
+      "date": "Nov 24",
+      "summary": "Pew reports that Louisiana SB 26 eliminates the requirement that opioid treatment programs pass a state facility need review before opening. Louisiana has only 11 such programs, one of which opened since 2015, and it was among 20 states with a facility need review or certificate-of-need requirement as of 2022. Because these programs are generally the only place to get methadone, removing the review is a state lever for expanding access.",
+      "url": "https://www.pew.org/en/research-and-analysis/articles/2026/11/24/louisiana-law-helps-opioid-treatment-programs-provide-care"
+    },
+    {
+      "headline": "Suffolk County, NY awards $53.9 million in opioid settlement funds to 56 programs",
+      "outlet": "Suffolk County Government",
+      "date": "Nov 20",
+      "summary": "Suffolk County Executive Ed Romaine announced third-round awards covering 16 prevention, 10 harm reduction, 12 treatment and 16 recovery programs, plus two administration initiatives, under three-year agreements starting Jan 1, 2027. The county received 122 applications requesting about $180 million, and awards include $32.5 million for 42 community programs and $21.4 million for 14 county initiatives. The round shows how local governments are prioritizing prevention and recovery services that often lack insurance funding.",
+      "url": "https://www.suffolkcountyny.gov/News/ArtMID/583/ArticleID/15719"
+    }
+  ]
+}
