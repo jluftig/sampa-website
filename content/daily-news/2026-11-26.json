@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-26",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "New Brunswick coverage gap leads a patient to travel to P.E.I. for monthly injectable bup",
+      "outlet": "CBC News",
+      "date": "Nov 26",
+      "summary": "A woman with opioid use disorder who moved from Prince Edward Island to New Brunswick still returns every 26 days for a monthly injectable buprenorphine (Sublocade) shot that P.E.I. covers for residents. New Brunswick covers it as a full benefit only under a premium drug plan or a social-assistance prescription program, with no gap coverage while people wait for a New Brunswick health card. She was told treatment there would cost $700 a month, a reminder that coverage gaps can interrupt medication for opioid use disorder when patients move.",
+      "url": "https://www.cbc.ca/news/canada/new-brunswick/opioid-addiction-drug-coverage-new-brunswick-9.7437681"
+    },
+    {
+      "headline": "Federal judge blocks HUD plan to shift more than $1 billion toward mandated treatment",
+      "outlet": "NPR",
+      "date": "Nov 25",
+      "summary": "A federal judge blocked a Trump administration effort to redirect more than $1 billion from current U.S. Department of Housing and Urban Development housing programs into programs that mandate treatment for addiction or mental health. The judge ruled the shift goes against what Congress intended for the homelessness funding program, in a case brought by the National Alliance to End Homelessness. The group says nearly 100,000 people could lose housing if the plan proceeded, and money for many current federal programs is set to run out January 1.",
+      "url": "https://www.npr.org/2026/11/25/nx-s1-6051420/federal-judge-blocks-trump-administrations-plan-to-overhaul-approach-to-homelessness"
+    },
+    {
+      "headline": "MetroHealth gets $2.9 million SAMHSA grant for EMS buprenorphine and overdose receiving centers",
+      "outlet": "MetroHealth",
+      "date": "Nov 25",
+      "summary": "The four-year SAMHSA grant will let Cleveland EMS paramedics use buprenorphine in the field and direct patients to designated Emergency Departments called Overdose Receiving Centers, where substance use navigators start treatment. The project also doubles MetroHealth's navigator team from two to four and funds naloxone training for first responders starting in April 2027, in a county with 27.2 overdose deaths per 100,000 people. The model links prehospital care to ED-initiated treatment, which is a template for other emergency systems.",
+      "url": "https://www.metrohealth.org/en/newsroom/2026/metrohealth-gets-$2.9m-to-oversee-expansion-of-opioid-prevention-and-treatment"
+    },
+    {
+      "headline": "Mindfulness recovery program linked to lower late ED use for veterans on long-term opioids",
+      "outlet": "JAMA Network Open",
+      "date": "Nov 23",
+      "summary": "A JAMA Network Open study of veterans receiving long-term opioid therapy found that mindfulness-oriented recovery enhancement was associated with lower emergency department use and related costs during months 9 through 12 after treatment started, but not during earlier follow-up periods. The authors say the approach may reduce long-term acute care use and should be evaluated further for its health-system impact. Clinicians should treat this as a signal about delayed effects, not evidence of a short-term reduction in emergency visits.",
+      "url": "https://media.jamanetwork.com/media-releases/10.1001/jamanetworkopen.2026.44883"
+    },
+    {
+      "headline": "Suffolk County, NY awards $53.9 million in opioid settlement funds to 56 programs",
+      "outlet": "Suffolk County Government",
+      "date": "Nov 20",
+      "summary": "Suffolk County Executive Ed Romaine announced third-round awards covering 16 prevention, 10 harm reduction, 12 treatment and 16 recovery programs, plus two administration initiatives, under three-year agreements starting Jan 1, 2027. The county received 122 applications requesting about $180 million, and awards include $32.5 million for 42 community programs and $21.4 million for 14 county initiatives. The round shows how local governments are prioritizing prevention and recovery services that often lack insurance funding.",
+      "url": "https://www.suffolkcountyny.gov/News/ArtMID/583/ArticleID/15719"
+    }
+  ]
+}
