@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-25",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "DEA renames Narcotic Treatment Programs as Opioid Treatment Programs in its regulations",
+      "outlet": "Federal Register",
+      "date": "Nov 25",
+      "summary": "A DEA final rule, effective Nov 25, changes the term Narcotic Treatment Program to Opioid Treatment Program throughout DEA regulations so it matches the term HHS and SAMHSA already use. The agency describes it as a technical amendment that makes no substantive change to the definition of a narcotic drug or of a treatment program. For clinicians and program leaders, the change aligns DEA, SAMHSA and state terminology in registration and licensure paperwork without altering requirements.",
+      "url": "https://www.federalregister.gov/documents/2026/11/25/2026-23962/renaming-narcotic-treatment-program-ntp-to-opioid-treatment-program-otp-in-dea-regulations"
+    },
+    {
+      "headline": "Limits on Medicaid prior authorization raised buprenorphine use only in states with frequent rejections",
+      "outlet": "University of Michigan School of Public Health",
+      "date": "Nov 24",
+      "summary": "A JAMA Network Open study of 13 jurisdictions that limited prior authorization found a roughly 19% rise in the monthly rate of Medicaid patients receiving buprenorphine and a 34% rise in the rate starting it in Arkansas, Illinois and Wisconsin, where rejections had been common. The other 10 jurisdictions showed no significant change, and the study covered immediate-release buprenorphine through 2020 and did not measure overdoses. Policy leaders may find that prior authorization limits help most where approvals are a frequent barrier, and that other barriers matter elsewhere.",
+      "url": "https://sph.umich.edu/news/2026posts/prior-authorization-laws-buprenorphine-medicaid.html"
+    },
+    {
+      "headline": "Louisiana removes facility need review for opioid treatment programs",
+      "outlet": "The Pew Charitable Trusts",
+      "date": "Nov 24",
+      "summary": "Louisiana law SB 26 ends the requirement that opioid treatment programs pass a state facility need review before opening or operating. The state has only 11 programs, with one new program opened since 2015, and Pew counted Louisiana among 20 states with such a review or certificate of need as of 2022. Because these programs are generally the only place to obtain methadone, advocates in other states with similar requirements may point to Louisiana, Florida and South Carolina as examples.",
+      "url": "https://www.pew.org/en/research-and-analysis/articles/2026/11/24/louisiana-law-helps-opioid-treatment-programs-provide-care"
+    },
+    {
+      "headline": "Survey: 44% of GLP-1 users who drank reported drinking less in the first three months",
+      "outlet": "Brown University School of Public Health",
+      "date": "Nov 24",
+      "summary": "In a JAMA Psychiatry survey of 2,009 U.S. adults, 242 people who drank alcohol when they started a GLP-1 medication were asked about changes. Of these, 44.2% reported drinking less, 52.6% no change and 3.3% more, with 54.1% reporting less among those with a past-year heavy drinking episode. The data are self-reported and the study did not screen for alcohol use disorder, so clinicians should treat it as a signal for trials rather than evidence of treatment effect.",
+      "url": "https://sph.brown.edu/news/2026-11-24/glp-1-drinking"
+    },
+    {
+      "headline": "Cannabis use disorder linked to 1.57 times the odds of suicidal ideation, stable from 2014 to 2023",
+      "outlet": "Psychiatry Advisor",
+      "date": "Nov 24",
+      "summary": "A study in the Journal of Studies on Alcohol and Drugs analyzed National Surveys on Drug Use and Health data for 415,861 adults. Adults with cannabis use disorder had higher odds of past-year suicidal ideation (odds ratio 1.57), and the association did not change significantly over the decade overall or within sex or age groups. Because the data are cross-sectional survey responses, clinicians should still screen for suicidal thoughts in patients with cannabis use disorder as cannabis becomes more available.",
+      "url": "https://www.psychiatryadvisor.com/news/odds-of-suicidal-ideation-elevated-for-adults-with-cannabis-use-disorder/"
+    }
+  ]
+}
