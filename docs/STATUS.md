@@ -12,7 +12,7 @@
 > the end of a work session; humans should too. Use absolute dates, never "last week".
 > Delete items instead of letting stale ones pile up — git history remembers.
 
-**Last updated:** 2026-11-24 (T85 is Done, merged PR #195. T84, T82, and T81 are Done. T83 is Done, dated 2026-11-22. T61 stays until Josh pastes the join-flow SQL.)
+**Last updated:** 2026-11-27 (T86 is In Progress. The merge-lane check classifies each pull request from its file list. T85 is Done, merged PR #195. T61 stays until Josh pastes the join-flow SQL.)
 
 **Doc roles (one board — not three sources of truth):**
 
@@ -65,6 +65,7 @@ Parked claims — **not** Todo. Claim only when reactivation criteria in Notes a
 
 | ID | Task | Owner | Started | Notes |
 |----|------|-------|---------|-------|
+| T86 | Merge-lane check | cursor | 2026-11-27 | Classifies each pull request from its file list. `tier-0` is one daily JSON, with or without `public/sitemap.xml`, or `docs/STATUS.md` only. A `daily-news/` branch outside that daily set fails the check. See `docs/merge-lanes.md`. |
 | T61 | Join / renew flow and 2026 member survey | cursor | 2026-11-01 | **Merged PR #162** (`6c58cc4`) to production. Deploy `dpl_F18sx2d1nDLvBqvdRYdhDWzMgacc` is READY on www.addictionpas.org. SQL `supabase/migrations/2026-11-01-join-flow-profile.sql` is **not** applied yet. `career_stage` and `member_survey_responses` are still missing in production. Josh pastes that file in the Supabase SQL Editor. |
 | T3 | Brevo email — campaigns + first real send path | egg | 2026-08-07 | **Claimed egg.** Lifecycle welcome/renewal/donation + DOI **LIVE**. Weekly blast sends are **not** pre-approved — each needs Josh's explicit `send campaign N`. Clean draft **#19** (no TEST) was ⚠ **stale** after templates changed in PRs #66/#68/#69 (2026-08-12); sign-off Shani Wilson President (PR #67). PR **#83** (Weekly #01 email copy) closed as obsolete on 2026-09-27. Weekly is at issue **#04** (Brevo campaign 30). |
 | T16 | Member welcome + renewal + donation thanks (Brevo) | egg | 2026-08-07 | **Claimed egg · LIVE path.** Needs `BREVO_API_KEY` on Vercel Production + redeploy. Kill-switch only: `BREVO_MEMBER_EMAILS_ENABLED=false`. Note: T4 adds merch/store links to welcome/renewal (email social icons pulled 2026-08-12) — files read at send time, no Brevo action. |
