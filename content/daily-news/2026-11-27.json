@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-27",
+  "title": "Addiction Daily Roundup",
+  "items": [
+    {
+      "headline": "SAMHSA proposes 2027 NSDUH changes: crisis line use, GLP-1 questions, and broader marijuana wording",
+      "outlet": "Federal Register (SAMHSA)",
+      "date": "Nov 23",
+      "summary": "A SAMHSA notice published Nov 23 outlines planned 2027 National Survey on Drug Use and Health changes, including asking about \"using\" rather than \"smoking\" marijuana to capture vaping and edibles, new questions on past-year crisis line use, and questions on GLP-1, SSRI, SNRI, mood stabilizer and antipsychotic use. It also reinstates workplace drug and alcohol testing items and shifts polysubstance questions to a past-30-day window, with a public comment period running through Dec 23. NSDUH is the main federal source for use and treatment estimates, so wording changes will affect how future trends are read.",
+      "url": "https://www.federalregister.gov/documents/full_text/html/2026/11/23/2026-23788.html"
+    },
+    {
+      "headline": "Study: fentanyl use is 10% of reported opioid misuse in surveys, yet synthetics are in 91% of opioid deaths",
+      "outlet": "Dove Medical Press",
+      "date": "Nov 26",
+      "summary": "Researchers compared 2022-2023 NSDUH responses (n=115,774) with CDC WONDER mortality data and found self-reported fentanyl use of 315 per 100,000 against 3,223 per 100,000 for opioid misuse, while synthetic opioids were involved in 91% of opioid overdose deaths. The implied ratio was 7.0 deaths per 100 people reporting fentanyl use, higher for men and for non-Hispanic Black respondents. The authors caution the ratios are ecological, not individual-level risk, but conclude surveys capture only part of fentanyl exposure, which supports adding toxicology and wastewater surveillance.",
+      "url": "https://www.dovepress.com/discrepancy-between-self-reported-fentanyl-use-and-fentanyl-involved-m-peer-reviewed-fulltext-article-SAR"
+    },
+    {
+      "headline": "Mississippi opioid settlement council approves about $39 million in recommendations amid scoring concerns",
+      "outlet": "Mississippi Today",
+      "date": "Nov 24",
+      "summary": "The Mississippi Opioid Settlement Fund Advisory Council settled on roughly $39 million in top 2026 funding recommendations after receiving 149 applications from 120 organizations, which an outside firm, the Steadman Group, scored. Members raised the roughly $14 million in lower-scored state agency applications to the top tier, and several said they had not reviewed the firm's notes or its reasoning. One member noted the firm did not ask whether applicants allow patients to continue prescribed addiction medications, a requirement the council adopted last year, so funding oversight remains a live issue for treatment providers.",
+      "url": "https://mississippitoday.org/2026/11/24/opioid-settlement-council-finalizes-recommendations/"
+    },
+    {
+      "headline": "Ohio health centers install 70 wall-mounted naloxone kits as Cuyahoga County flags a spike in overdose deaths",
+      "outlet": "Hoodline (citing WKYC and cleveland.com)",
+      "date": "Nov 26",
+      "summary": "The Centers, which operates five federally qualified health centers in northern Ohio, is placing 70 ONEbox stations above defibrillators, each holding two naloxone doses, gloves, a rescue-breathing mask and a tab-activated instructional video in English and Spanish. The rollout follows a Cuyahoga County Medical Examiner alert citing 40 suspected overdose deaths in October and November, most with cocaine on preliminary screens and about half also involving fentanyl. Because naloxone does not reverse cocaine toxicity on its own, the pattern is a reminder that stimulant-involved deaths need responses beyond opioid-focused kits.",
+      "url": "https://hoodline.com/2026/11/cleveland-nonprofit-installs-70-overdose-rescue-boxes-as-cuyahoga-county-sees-deadly-spike/"
+    },
+    {
+      "headline": "Chatham-Kent, Ontario reports 40 suspected overdose deaths through October, about 2.5 times last year",
+      "outlet": "CK News Today",
+      "date": "Nov 26",
+      "summary": "Chatham-Kent Public Health says 40 residents died of suspected drug overdoses from Jan 1 to Oct 31, with a rate of 34.7 per 100,000 compared with 14.2 in Ontario. Paramedics logged 295 suspected opioid overdose calls in the first 10 months, up from 135 a year earlier, including 31 in October, while emergency department visits for suspected opioid overdoses fell to 14 from 21 in September. The divergence between EMS calls and ED visits shows why a single surveillance measure can understate community burden.",
+      "url": "https://cknewstoday.ca/chatham/news/2026/11/26/ck-opioid-overdose-ems-calls-increase-in-october-hospital-visits-decrease"
+    }
+  ]
+}
